@@ -1,3 +1,13 @@
+module dvode_module
+
+    implicit none
+
+    private
+
+    public :: dvode
+
+contains
+
 !DECK DVODE
       SUBROUTINE DVODE(F,Neq,Y,T,Tout,Itol,Rtol,Atol,Itask,Istate,Iopt, &
                        Rwork,Lrw,Iwork,Liw,JAC,Mf,Rpar,Ipar)
@@ -1039,7 +1049,7 @@
 !
 ! Type declarations for local variables --------------------------------
 !
-      EXTERNAL DVNLSD
+!      EXTERNAL DVNLSD
       LOGICAL ihit
       DOUBLE PRECISION atoli , big , ewti , four , h0 , hmax , hmx ,    &
                        hun , one , pt2 , rh , rtoli , size , tcrit ,    &
@@ -1051,7 +1061,7 @@
 !
 ! Type declaration for function subroutines called ---------------------
 !
-      DOUBLE PRECISION DUMACH , DVNORM
+!      DOUBLE PRECISION DUMACH , DVNORM
 !
       DIMENSION mord(2)
 !-----------------------------------------------------------------------
@@ -1750,7 +1760,7 @@
  1500 Istate = -3
       RETURN
 !----------------------- End of Subroutine DVODE -----------------------
-99999 END
+99999 END Subroutine DVODE
 !DECK DVHIN
       SUBROUTINE DVHIN(N,T0,Y0,Ydot,F,Rpar,Ipar,Tout,Uround,Ewt,Itol,   &
                        Atol,Y,Temp,H0,Niter,Ier)
@@ -1809,7 +1819,7 @@
 !
 ! Type declaration for function subroutines called ---------------------
 !
-      DOUBLE PRECISION DVNORM
+!      DOUBLE PRECISION DVNORM
 !-----------------------------------------------------------------------
 ! The following Fortran-77 declaration is to cause the values of the
 ! listed (local) variables to be saved between calls to this integrator.
@@ -1895,7 +1905,7 @@
       Ier = 0
       RETURN
 !----------------------- End of Subroutine DVHIN -----------------------
-99999 END
+99999 END Subroutine DVHIN
 !DECK DVINDY
       SUBROUTINE DVINDY(T,K,Yh,Ldyh,Dky,Iflag)
       IMPLICIT NONE
@@ -2032,7 +2042,7 @@
       CALL DSCAL(N,r,Dky,1)
       RETURN
 !----------------------- End of Subroutine DVINDY ----------------------
-99999 END
+99999 END Subroutine DVINDY
 !DECK DVSTEP
       SUBROUTINE DVSTEP(Y,Yh,Ldyh,Yh1,Ewt,Savf,Vsav,Acor,Wm,Iwm,F,JAC,  &
                         PSOL,VNLS,Rpar,Ipar)
@@ -2128,7 +2138,7 @@
 !
 ! Type declaration for function subroutines called ---------------------
 !
-      DOUBLE PRECISION DVNORM
+!      DOUBLE PRECISION DVNORM
 !-----------------------------------------------------------------------
 ! The following Fortran-77 declaration is to cause the values of the
 ! listed (local) variables to be saved between calls to this integrator.
@@ -2498,9 +2508,9 @@
       CALL DSCAL(N,r,Acor,1)
  600  JSTart = 1
 !----------------------- End of Subroutine DVSTEP ----------------------
-      END
+      END Subroutine DVSTEP
 !DECK DVSET
-      SUBROUTINE DVSET
+      SUBROUTINE DVSET()
       IMPLICIT NONE
 !-----------------------------------------------------------------------
 ! Call sequence communication: None
@@ -2712,7 +2722,7 @@
       ENDIF
       TQ(4) = cortes*TQ(2)
 !----------------------- End of Subroutine DVSET -----------------------
-      END
+      END Subroutine DVSET
 !DECK DVJUST
       SUBROUTINE DVJUST(Yh,Ldyh,Iord)
       IMPLICIT NONE
@@ -2885,7 +2895,7 @@
          RETURN
       ENDIF
 !----------------------- End of Subroutine DVJUST ----------------------
-      END
+      END Subroutine DVJUST
 !DECK DVNLSD
       SUBROUTINE DVNLSD(Y,Yh,Ldyh,Vsav,Savf,Ewt,Acor,Iwm,Wm,F,JAC,PDUM, &
                         Nflag,Rpar,Ipar)
@@ -2977,7 +2987,7 @@
 !
 ! Type declaration for function subroutines called ---------------------
 !
-      DOUBLE PRECISION DVNORM
+!      DOUBLE PRECISION DVNORM
 !-----------------------------------------------------------------------
 ! The following Fortran-77 declaration is to cause the values of the
 ! listed (local) variables to be saved between calls to this integrator.
@@ -3128,7 +3138,7 @@
       IPUp = MITer
       RETURN
 !----------------------- End of Subroutine DVNLSD ----------------------
-99999 END
+99999 END Subroutine DVNLSD
 !DECK DVJAC
       SUBROUTINE DVJAC(Y,Yh,Ldyh,Ewt,Ftem,Savf,Wm,Iwm,F,JAC,Ierpj,Rpar, &
                        Ipar)
@@ -3220,7 +3230,7 @@
 !
 ! Type declaration for function subroutines called ---------------------
 !
-      DOUBLE PRECISION DVNORM
+!      DOUBLE PRECISION DVNORM
 !-----------------------------------------------------------------------
 ! The following Fortran-77 declaration is to cause the values of the
 ! listed (local) variables to be saved between calls to this subroutine.
@@ -3416,7 +3426,7 @@
 ! End of code block for MITER = 4 or 5. --------------------------------
 !
 !----------------------- End of Subroutine DVJAC -----------------------
-      END
+      END Subroutine DVJAC
 !DECK DACOPY
       SUBROUTINE DACOPY(Nrow,Ncol,A,Nrowa,B,Nrowb)
       IMPLICIT NONE
@@ -3442,7 +3452,7 @@
       ENDDO
 !
 !----------------------- End of Subroutine DACOPY ----------------------
-      END
+      END Subroutine DACOPY
 !DECK DVSOL
       SUBROUTINE DVSOL(Wm,Iwm,X,Iersl)
       IMPLICIT NONE
@@ -3546,7 +3556,7 @@
  100  Iersl = 1
       RETURN
 !----------------------- End of Subroutine DVSOL -----------------------
-99999 END
+99999 END Subroutine DVSOL
 !DECK DVSRCO
       SUBROUTINE DVSRCO(Rsav,Isav,Job)
       IMPLICIT NONE
@@ -3617,7 +3627,7 @@
       RETURN
 !
 !----------------------- End of Subroutine DVSRCO ----------------------
-99999 END
+99999 END Subroutine DVSRCO
 !DECK DEWSET
       SUBROUTINE DEWSET(N,Itol,Rtol,Atol,Ycur,Ewt)
       IMPLICIT NONE
@@ -3671,7 +3681,7 @@
       ENDDO
       RETURN
 !----------------------- END OF SUBROUTINE DEWSET ----------------------
-99999 END
+99999 END SUBROUTINE DEWSET
 !DECK DVNORM
       DOUBLE PRECISION FUNCTION DVNORM(N,V,W)
       IMPLICIT NONE
@@ -3707,7 +3717,7 @@
       ENDDO
       DVNORM = SQRT(sum/N)
 !----------------------- END OF FUNCTION DVNORM ------------------------
-      END
+      END FUNCTION DVNORM
 !DECK XERRWD
       SUBROUTINE XERRWD(Msg,Nmes,Nerr,Level,Ni,I1,I2,Nr,R1,R2)
       IMPLICIT NONE
@@ -3776,7 +3786,7 @@
 !
 !  Declare local variables.
 !
-      INTEGER lunit , IXSAV , mesflg
+      INTEGER lunit , mesflg
 !
 !  Get logical unit number and message print flag.
 !
@@ -3804,7 +3814,7 @@
       IF ( Level/=2 ) RETURN
       STOP
 !----------------------- End of Subroutine XERRWD ----------------------
-      END
+      END Subroutine XERRWD
 !DECK XSETF
       SUBROUTINE XSETF(Mflag)
       IMPLICIT NONE
@@ -3834,12 +3844,12 @@
 ! Function routine called by XSETF.. IXSAV
 !-----------------------------------------------------------------------
 !**End
-      INTEGER Mflag , junk , IXSAV
+      INTEGER Mflag , junk
 !
 !***FIRST EXECUTABLE STATEMENT  XSETF
       IF ( Mflag==0 .OR. Mflag==1 ) junk = IXSAV(2,Mflag,.TRUE.)
 !----------------------- End of Subroutine XSETF -----------------------
-      END
+      END Subroutine XSETF
 !DECK XSETUN
       SUBROUTINE XSETUN(Lun)
       IMPLICIT NONE
@@ -3867,12 +3877,12 @@
 ! Function routine called by XSETUN.. IXSAV
 !-----------------------------------------------------------------------
 !**End
-      INTEGER Lun , junk , IXSAV
+      INTEGER Lun , junk
 !
 !***FIRST EXECUTABLE STATEMENT  XSETUN
       IF ( Lun>0 ) junk = IXSAV(1,Lun,.TRUE.)
 !----------------------- End of Subroutine XSETUN ----------------------
-      END
+      END Subroutine XSETUN
 !DECK IXSAV
       INTEGER FUNCTION IXSAV(Ipar,Ivalue,Iset)
       IMPLICIT NONE
@@ -3924,7 +3934,7 @@
       LOGICAL Iset
       INTEGER Ipar , Ivalue
 !-----------------------------------------------------------------------
-      INTEGER IUMACH , lunit , mesflg
+      INTEGER lunit , mesflg
 !-----------------------------------------------------------------------
 ! The following Fortran-77 declaration is to cause the values of the
 ! listed (local) variables to be saved between calls to this routine.
@@ -3945,7 +3955,7 @@
       ENDIF
 !
 !----------------------- End of Function IXSAV -------------------------
-      END
+      END Function IXSAV
 !DECK IUMACH
       INTEGER FUNCTION IUMACH()
       IMPLICIT NONE
@@ -3978,7 +3988,7 @@
       IUMACH = 6
 !
 !----------------------- End of Function IUMACH ------------------------
-      END
+      END Function IUMACH
 !DECK DUMACH
       DOUBLE PRECISION FUNCTION DUMACH()
       IMPLICIT NONE
@@ -4017,13 +4027,15 @@
       IF ( comp/=1.0D0 ) GOTO 100
       DUMACH = u*2.0D0
 !----------------------- End of Function DUMACH ------------------------
-      END
+      END Function DUMACH
+
       SUBROUTINE DUMSUM(A,B,C)
       IMPLICIT NONE
 !     Routine to force normal storing of A + B, for DUMACH.
       DOUBLE PRECISION A , B , C
       C = A + B
-      END
+      END SUBROUTINE DUMSUM
+
 !DECK DGEFA
       SUBROUTINE DGEFA(A,Lda,N,Ipvt,Info)
       IMPLICIT NONE
@@ -4088,7 +4100,7 @@
       DOUBLE PRECISION A(Lda,*)
 !
       DOUBLE PRECISION t
-      INTEGER IDAMAX , j , k , kp1 , l , nm1
+      INTEGER j , k , kp1 , l , nm1
 !
 !     GAUSSIAN ELIMINATION WITH PARTIAL PIVOTING
 !
@@ -4138,7 +4150,8 @@
       ENDIF
       Ipvt(N) = N
       IF ( A(N,N)==0.0D0 ) Info = N
-      END
+      END SUBROUTINE DGEFA
+
 !DECK DGESL
       SUBROUTINE DGESL(A,Lda,N,Ipvt,B,Job)
       IMPLICIT NONE
@@ -4213,7 +4226,7 @@
       INTEGER Lda , N , Ipvt(*) , Job
       DOUBLE PRECISION A(Lda,*) , B(*)
 !
-      DOUBLE PRECISION DDOT , t
+      DOUBLE PRECISION t
       INTEGER k , kb , l , nm1
 !***FIRST EXECUTABLE STATEMENT  DGESL
       nm1 = N - 1
@@ -4267,7 +4280,7 @@
             CALL DAXPY(k-1,t,A(1,k),1,B(1),1)
          ENDDO
       ENDIF
-      END
+      END SUBROUTINE DGESL
 !DECK DGBFA
       SUBROUTINE DGBFA(Abd,Lda,N,Ml,Mu,Ipvt,Info)
       IMPLICIT NONE
@@ -4368,7 +4381,7 @@
       DOUBLE PRECISION Abd(Lda,*)
 !
       DOUBLE PRECISION t
-      INTEGER i , IDAMAX , i0 , j , ju , jz , j0 , j1 , k , kp1 , l ,   &
+      INTEGER i , i0 , j , ju , jz , j0 , j1 , k , kp1 , l ,   &
               lm , m , mm , nm1
 !
 !***FIRST EXECUTABLE STATEMENT  DGBFA
@@ -4454,7 +4467,7 @@
       ENDIF
       Ipvt(N) = N
       IF ( Abd(m,N)==0.0D0 ) Info = N
-      END
+      END SUBROUTINE DGBFA
 !DECK DGBSL
       SUBROUTINE DGBSL(Abd,Lda,N,Ml,Mu,Ipvt,B,Job)
       IMPLICIT NONE
@@ -4536,7 +4549,7 @@
       INTEGER Lda , N , Ml , Mu , Ipvt(*) , Job
       DOUBLE PRECISION Abd(Lda,*) , B(*)
 !
-      DOUBLE PRECISION DDOT , t
+      DOUBLE PRECISION t
       INTEGER k , kb , l , la , lb , lm , m , nm1
 !***FIRST EXECUTABLE STATEMENT  DGBSL
       m = Mu + Ml + 1
@@ -4603,7 +4616,7 @@
             CALL DAXPY(lm,t,Abd(la,k),1,B(lb),1)
          ENDDO
       ENDIF
-      END
+      END SUBROUTINE DGBSL
 !DECK DAXPY
       SUBROUTINE DAXPY(N,Da,Dx,Incx,Dy,Incy)
       IMPLICIT NONE
@@ -4703,7 +4716,7 @@
          Dy(i+3) = Dy(i+3) + Da*Dx(i+3)
       ENDDO
       RETURN
-99999 END
+99999 END SUBROUTINE DAXPY
 !DECK DCOPY
       SUBROUTINE DCOPY(N,Dx,Incx,Dy,Incy)
       IMPLICIT NONE
@@ -4804,7 +4817,7 @@
          Dy(i+6) = Dx(i+6)
       ENDDO
       RETURN
-99999 END
+99999 END SUBROUTINE DCOPY
 !DECK DDOT
       DOUBLE PRECISION FUNCTION DDOT(N,Dx,Incx,Dy,Incy)
       IMPLICIT NONE
@@ -4901,7 +4914,7 @@
                 + Dx(i+3)*Dy(i+3) + Dx(i+4)*Dy(i+4)
       ENDDO
       RETURN
-99999 END
+99999 END FUNCTION DDOT
 !DECK DNRM2
       DOUBLE PRECISION FUNCTION DNRM2(N,Dx,Incx)
       IMPLICIT NONE
@@ -5068,7 +5081,7 @@
 !              COMPUTE SQUARE ROOT AND ADJUST FOR SCALING.
 !
       DNRM2 = xmax*SQRT(sum)
-99999 END
+99999 END FUNCTION DNRM2
 !DECK DSCAL
       SUBROUTINE DSCAL(N,Da,Dx,Incx)
       IMPLICIT NONE
@@ -5150,7 +5163,7 @@
          ENDDO
          RETURN
       ENDIF
-      END
+      END SUBROUTINE DSCAL
 !DECK IDAMAX
       INTEGER FUNCTION IDAMAX(N,Dx,Incx)
       IMPLICIT NONE
@@ -5233,4 +5246,6 @@
          ix = ix + Incx
       ENDDO
       RETURN
-99999 END
+99999 END FUNCTION IDAMAX
+
+end module dvode_module
