@@ -4,9 +4,9 @@
 !  BLAS support routines for DVODE.
 !  These have been refactored into modern Fortran.
 
-    module blas_module
+    module dvode_blas_module
 
-    use dvode_kinds
+    use dvode_kinds_module, wp => dvode_wp
 
     implicit none
 
@@ -392,5 +392,5 @@
 !*******************************************************************************
 
 !*******************************************************************************
-    end module blas_module
+    end module dvode_blas_module
 !*******************************************************************************
