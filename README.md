@@ -10,5 +10,9 @@ Modern Fortran Edition of the DVODE ODE Solver.
 [![codecov](https://codecov.io/gh/jacobwilliams/dvode/branch/master/graph/badge.svg?token=BHtd51oUTE)](https://codecov.io/gh/jacobwilliams/dvode)
 
 
+### Documentation
+The latest API documentation can be found [here](https://jacobwilliams.github.io/dvode/). This was generated from the source code using [FORD](https://github.com/Fortran-FOSS-Programmers/ford) (i.e. by running `ford ford.md`).
+
+
 ### References
  * [ODEPACK](https://computing.llnl.gov/projects/odepack)
