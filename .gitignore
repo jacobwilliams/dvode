@@ -2,6 +2,7 @@
 lib
 bin
 doc
+build
 
 # Compiled Object files
 *.slo
@@ -31,3 +32,6 @@ doc
 *.exe
 *.out
 *.app
+
+# Misc
+.DS_Store
