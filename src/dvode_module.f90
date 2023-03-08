@@ -1,8 +1,8 @@
 module dvode_module
 
-    use dvode_kinds
-    use blas_module
-    use linpack_module
+    use dvode_blas_module
+    use dvode_linpack_module
+    use dvode_kinds_module, wp => dvode_wp
     use iso_fortran_env,    only: output_unit
 
     implicit none

@@ -8,7 +8,7 @@
     <meta name="author" content="Jacob Williams" >
     <link rel="icon" href="../favicon.png">
 
-    <title>linpack_module &ndash; dvode</title>
+    <title>dvode_blas_module &ndash; dvode</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -74,7 +74,7 @@
 
     <div class="container">
   <div class="row">
-    <h1>linpack_module 
+    <h1>dvode_blas_module 
     <small>Module</small>
     
     </h1>
@@ -82,22 +82,22 @@
     <div class="col-lg-12">
       <div class="well well-sm">
         <ul class="list-inline" style="margin-bottom:0px;display:inline">
-            <li id="meta-license"><i class="fa fa-legal"></i> bsd</li>
+            <li id="meta-license"><i class="fa fa-legal"></i> BSD</li>
 
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="10.5% of total for modules and submodules.">210 statements</a>
+               title="10.5% of total for modules and submodules.">209 statements</a>
           </li>
 
             <li id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/linpack_module.f90"> Source File</a>
+              <a href="../src/dvode_blas_module.f90"> Source File</a>
             </li>
         </ul>
         <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/linpack_module.f90.html'>linpack_module.f90</a></li>
-          <li class="active">linpack_module</li>
+              <li><a href='../sourcefile/dvode_blas_module.f90.html'>dvode_blas_module.f90</a></li>
+          <li class="active">dvode_blas_module</li>
         </ol>
       </div>
     </div>
@@ -115,8 +115,24 @@
       <div id="sidebar">
       <h3>Contents</h3>
   
-  
-  
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#vars-0">Variables</a>
+        </h3>
+      </div>
+      <div id="vars-0" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/dvode_blas_module.html#variable-zero">zero</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#variable-one">one</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#variable-two">two</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#variable-four">four</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#variable-ten">ten</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#variable-hun">hun</a>
+        </div>
+      </div>
+    </div>
+
   
   
   
@@ -129,15 +145,29 @@
       <div class="panel panel-primary">
       <div class="panel-heading text-left">
         <h3 class="panel-title">
+          <a data-toggle="collapse" href="#funcs-0">Functions</a>
+        </h3>
+      </div>
+      <div id="funcs-0" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/dvode_blas_module.html#proc-ddot">ddot</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#proc-dnrm2">dnrm2</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#proc-idamax">idamax</a>
+        </div>
+      </div>
+    </div>
+
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
           <a data-toggle="collapse" href="#subs-0">Subroutines</a>
         </h3>
       </div>
       <div id="subs-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/linpack_module.html#proc-dgefa">dgefa</a>
-            <a class="list-group-item" href="../module/linpack_module.html#proc-dgesl">dgesl</a>
-            <a class="list-group-item" href="../module/linpack_module.html#proc-dgbfa">dgbfa</a>
-            <a class="list-group-item" href="../module/linpack_module.html#proc-dgbsl">dgbsl</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#proc-daxpy">daxpy</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#proc-dcopy">dcopy</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#proc-dscal">dscal</a>
         </div>
       </div>
     </div>
@@ -155,8 +185,8 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <p>linpack support routines for dvode.
- these have been refactored into modern fortran.</p>
+    <p>BLAS support routines for DVODE.
+ These have been refactored into modern Fortran.</p>
 <br>        <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Uses</h3>
@@ -164,8 +194,7 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/blas_module.html'>blas_module</a></li>
-                <li><a href='../module/dvode_kinds.html'>dvode_kinds</a></li>
+                <li><a href='../module/dvode_kinds_module.html'>dvode_kinds_module</a></li>
             </ul>
           </li>
           <li class="list-group-item">
@@ -174,68 +203,47 @@
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <!-- Generated by graphviz version 2.43.0 (0)
  -->
-<!-- Title: module~~linpack_module~~UsesGraph Pages: 1 -->
-<svg id="modulelinpack_moduleUsesGraph" width="466pt" height="52pt"
- viewBox="0.00 0.00 466.00 52.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="module~~linpack_module~~UsesGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 48)">
-<title>module~~linpack_module~~UsesGraph</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-48 462,-48 462,4 -4,4"/>
-<!-- module~linpack_module -->
-<g id="module~~linpack_module~~UsesGraph_node1" class="node">
-<title>module~linpack_module</title>
-<polygon fill="none" stroke="black" points="458,-24 361,-24 361,0 458,0 458,-24"/>
-<text text-anchor="middle" x="409.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">linpack_module</text>
+<!-- Title: module~~dvode_blas_module~~UsesGraph Pages: 1 -->
+<svg id="moduledvode_blas_moduleUsesGraph" width="416pt" height="32pt"
+ viewBox="0.00 0.00 416.00 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="module~~dvode_blas_module~~UsesGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>module~~dvode_blas_module~~UsesGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 412,-28 412,4 -4,4"/>
+<!-- module~dvode_blas_module -->
+<g id="module~~dvode_blas_module~~UsesGraph_node1" class="node">
+<title>module~dvode_blas_module</title>
+<polygon fill="none" stroke="black" points="408,-24 290,-24 290,0 408,0 408,-24"/>
+<text text-anchor="middle" x="349" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">dvode_blas_module</text>
 </g>
-<!-- module~blas_module -->
-<g id="module~~linpack_module~~UsesGraph_node2" class="node">
-<title>module~blas_module</title>
-<g id="a_module~~linpack_module~~UsesGraph_node2"><a xlink:href=".././module/blas_module.html" xlink:title="blas_module">
-<polygon fill="#337ab7" stroke="#337ab7" points="325,-44 245,-44 245,-20 325,-20 325,-44"/>
-<text text-anchor="middle" x="285" y="-29.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">blas_module</text>
+<!-- module~dvode_kinds_module -->
+<g id="module~~dvode_blas_module~~UsesGraph_node2" class="node">
+<title>module~dvode_kinds_module</title>
+<g id="a_module~~dvode_blas_module~~UsesGraph_node2"><a xlink:href=".././module/dvode_kinds_module.html" xlink:title="dvode_kinds_module">
+<polygon fill="#337ab7" stroke="#337ab7" points="254,-24 130,-24 130,0 254,0 254,-24"/>
+<text text-anchor="middle" x="192" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode_kinds_module</text>
 </a>
 </g>
 </g>
-<!-- module~linpack_module&#45;&gt;module~blas_module -->
-<g id="module~~linpack_module~~UsesGraph_edge1" class="edge">
-<title>module~linpack_module&#45;&gt;module~blas_module</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M360.79,-19.79C352.38,-21.16 343.62,-22.59 335.17,-23.97"/>
-<polygon fill="#000000" stroke="#000000" points="334.38,-20.55 325.08,-25.62 335.51,-27.46 334.38,-20.55"/>
-</g>
-<!-- module~dvode_kinds -->
-<g id="module~~linpack_module~~UsesGraph_node3" class="node">
-<title>module~dvode_kinds</title>
-<g id="a_module~~linpack_module~~UsesGraph_node3"><a xlink:href=".././module/dvode_kinds.html" xlink:title="dvode_kinds">
-<polygon fill="#337ab7" stroke="#337ab7" points="209,-24 130,-24 130,0 209,0 209,-24"/>
-<text text-anchor="middle" x="169.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode_kinds</text>
-</a>
-</g>
-</g>
-<!-- module~linpack_module&#45;&gt;module~dvode_kinds -->
-<g id="module~~linpack_module~~UsesGraph_edge2" class="edge">
-<title>module~linpack_module&#45;&gt;module~dvode_kinds</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M360.81,-11.33C349.1,-11.19 336.6,-11.07 325,-11 289.45,-10.79 280.55,-10.76 245,-11 236.72,-11.06 227.93,-11.15 219.4,-11.25"/>
-<polygon fill="#000000" stroke="#000000" points="219.12,-7.75 209.17,-11.38 219.21,-14.75 219.12,-7.75"/>
-</g>
-<!-- module~blas_module&#45;&gt;module~dvode_kinds -->
-<g id="module~~linpack_module~~UsesGraph_edge3" class="edge">
-<title>module~blas_module&#45;&gt;module~dvode_kinds</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M244.94,-25.12C236.64,-23.66 227.79,-22.09 219.18,-20.58"/>
-<polygon fill="#000000" stroke="#000000" points="219.7,-17.12 209.25,-18.83 218.49,-24.01 219.7,-17.12"/>
+<!-- module~dvode_blas_module&#45;&gt;module~dvode_kinds_module -->
+<g id="module~~dvode_blas_module~~UsesGraph_edge1" class="edge">
+<title>module~dvode_blas_module&#45;&gt;module~dvode_kinds_module</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M289.84,-12C281.45,-12 272.73,-12 264.11,-12"/>
+<polygon fill="#000000" stroke="#000000" points="264.07,-8.5 254.07,-12 264.07,-15.5 264.07,-8.5"/>
 </g>
 <!-- iso_fortran_env -->
-<g id="module~~linpack_module~~UsesGraph_node4" class="node">
+<g id="module~~dvode_blas_module~~UsesGraph_node3" class="node">
 <title>iso_fortran_env</title>
-<g id="a_module~~linpack_module~~UsesGraph_node4"><a xlink:href="https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html" xlink:title="iso_fortran_env">
+<g id="a_module~~dvode_blas_module~~UsesGraph_node3"><a xlink:href="https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html" xlink:title="iso_fortran_env">
 <polygon fill="#337ab7" stroke="#337ab7" points="94,-24 0,-24 0,0 94,0 94,-24"/>
 <text text-anchor="middle" x="47" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">iso_fortran_env</text>
 </a>
 </g>
 </g>
-<!-- module~dvode_kinds&#45;&gt;iso_fortran_env -->
-<g id="module~~linpack_module~~UsesGraph_edge4" class="edge">
-<title>module~dvode_kinds&#45;&gt;iso_fortran_env</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M129.71,-12C121.6,-12 112.89,-12 104.29,-12"/>
-<polygon fill="#000000" stroke="#000000" points="104.29,-8.5 94.29,-12 104.29,-15.5 104.29,-8.5"/>
+<!-- module~dvode_kinds_module&#45;&gt;iso_fortran_env -->
+<g id="module~~dvode_blas_module~~UsesGraph_edge2" class="edge">
+<title>module~dvode_kinds_module&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M129.94,-12C121.41,-12 112.68,-12 104.25,-12"/>
+<polygon fill="#000000" stroke="#000000" points="104.15,-8.5 94.15,-12 104.15,-15.5 104.15,-8.5"/>
 </g>
 </g>
 </svg>
@@ -312,32 +320,53 @@
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <!-- Generated by graphviz version 2.43.0 (0)
  -->
-<!-- Title: module~~linpack_module~~UsedByGraph Pages: 1 -->
-<svg id="modulelinpack_moduleUsedByGraph" width="232pt" height="32pt"
- viewBox="0.00 0.00 232.00 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="module~~linpack_module~~UsedByGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
-<title>module~~linpack_module~~UsedByGraph</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 228,-28 228,4 -4,4"/>
-<!-- module~linpack_module -->
-<g id="module~~linpack_module~~UsedByGraph_node1" class="node">
-<title>module~linpack_module</title>
-<polygon fill="none" stroke="black" points="97,-24 0,-24 0,0 97,0 97,-24"/>
-<text text-anchor="middle" x="48.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">linpack_module</text>
+<!-- Title: module~~dvode_blas_module~~UsedByGraph Pages: 1 -->
+<svg id="moduledvode_blas_moduleUsedByGraph" width="424pt" height="52pt"
+ viewBox="0.00 0.00 424.00 52.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="module~~dvode_blas_module~~UsedByGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 48)">
+<title>module~~dvode_blas_module~~UsedByGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-48 420,-48 420,4 -4,4"/>
+<!-- module~dvode_blas_module -->
+<g id="module~~dvode_blas_module~~UsedByGraph_node1" class="node">
+<title>module~dvode_blas_module</title>
+<polygon fill="none" stroke="black" points="118,-44 0,-44 0,-20 118,-20 118,-44"/>
+<text text-anchor="middle" x="59" y="-29.6" font-family="Helvetica,sans-Serif" font-size="10.50">dvode_blas_module</text>
 </g>
-<!-- module~dvode_module -->
-<g id="module~~linpack_module~~UsedByGraph_node2" class="node">
-<title>module~dvode_module</title>
-<g id="a_module~~linpack_module~~UsedByGraph_node2"><a xlink:href=".././module/dvode_module.html" xlink:title="dvode_module">
-<polygon fill="#337ab7" stroke="#337ab7" points="224,-24 133,-24 133,0 224,0 224,-24"/>
-<text text-anchor="middle" x="178.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode_module</text>
+<!-- module~dvode_linpack_module -->
+<g id="module~~dvode_blas_module~~UsedByGraph_node2" class="node">
+<title>module~dvode_linpack_module</title>
+<g id="a_module~~dvode_blas_module~~UsedByGraph_node2"><a xlink:href=".././module/dvode_linpack_module.html" xlink:title="dvode_linpack_module">
+<polygon fill="#337ab7" stroke="#337ab7" points="289,-24 154,-24 154,0 289,0 289,-24"/>
+<text text-anchor="middle" x="221.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode_linpack_module</text>
 </a>
 </g>
 </g>
-<!-- module~dvode_module&#45;&gt;module~linpack_module -->
-<g id="module~~linpack_module~~UsedByGraph_edge1" class="edge">
-<title>module~dvode_module&#45;&gt;module~linpack_module</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M132.73,-12C124.53,-12 115.87,-12 107.35,-12"/>
-<polygon fill="#000000" stroke="#000000" points="107.07,-8.5 97.07,-12 107.07,-15.5 107.07,-8.5"/>
+<!-- module~dvode_linpack_module&#45;&gt;module~dvode_blas_module -->
+<g id="module~~dvode_blas_module~~UsedByGraph_edge1" class="edge">
+<title>module~dvode_linpack_module&#45;&gt;module~dvode_blas_module</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M153.83,-20.31C145.29,-21.37 136.53,-22.46 127.97,-23.53"/>
+<polygon fill="#000000" stroke="#000000" points="127.52,-20.06 118.03,-24.77 128.38,-27.01 127.52,-20.06"/>
+</g>
+<!-- module~dvode_module -->
+<g id="module~~dvode_blas_module~~UsedByGraph_node3" class="node">
+<title>module~dvode_module</title>
+<g id="a_module~~dvode_blas_module~~UsedByGraph_node3"><a xlink:href=".././module/dvode_module.html" xlink:title="dvode_module">
+<polygon fill="#337ab7" stroke="#337ab7" points="416,-44 325,-44 325,-20 416,-20 416,-44"/>
+<text text-anchor="middle" x="370.5" y="-29.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode_module</text>
+</a>
+</g>
+</g>
+<!-- module~dvode_module&#45;&gt;module~dvode_blas_module -->
+<g id="module~~dvode_blas_module~~UsedByGraph_edge2" class="edge">
+<title>module~dvode_module&#45;&gt;module~dvode_blas_module</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M324.79,-32.65C313.14,-32.8 300.6,-32.93 289,-33 229,-33.37 214,-33.32 154,-33 145.67,-32.96 136.93,-32.89 128.27,-32.81"/>
+<polygon fill="#000000" stroke="#000000" points="128.2,-29.31 118.17,-32.72 128.13,-36.31 128.2,-29.31"/>
+</g>
+<!-- module~dvode_module&#45;&gt;module~dvode_linpack_module -->
+<g id="module~~dvode_blas_module~~UsedByGraph_edge3" class="edge">
+<title>module~dvode_module&#45;&gt;module~dvode_linpack_module</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M325,-25.95C316.77,-24.83 307.96,-23.63 299.1,-22.42"/>
+<polygon fill="#000000" stroke="#000000" points="299.47,-18.94 289.09,-21.06 298.53,-25.88 299.47,-18.94"/>
 </g>
 </g>
 </svg>
@@ -408,8 +437,24 @@
     <section class="visible-xs visible-sm hidden-md">
         <h3>Contents</h3>
   
-  
-  
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#vars-1">Variables</a>
+        </h3>
+      </div>
+      <div id="vars-1" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/dvode_blas_module.html#variable-zero">zero</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#variable-one">one</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#variable-two">two</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#variable-four">four</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#variable-ten">ten</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#variable-hun">hun</a>
+        </div>
+      </div>
+    </div>
+
   
   
   
@@ -422,15 +467,29 @@
       <div class="panel panel-primary">
       <div class="panel-heading text-left">
         <h3 class="panel-title">
+          <a data-toggle="collapse" href="#funcs-1">Functions</a>
+        </h3>
+      </div>
+      <div id="funcs-1" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/dvode_blas_module.html#proc-ddot">ddot</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#proc-dnrm2">dnrm2</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#proc-idamax">idamax</a>
+        </div>
+      </div>
+    </div>
+
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
           <a data-toggle="collapse" href="#subs-1">Subroutines</a>
         </h3>
       </div>
       <div id="subs-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/linpack_module.html#proc-dgefa">dgefa</a>
-            <a class="list-group-item" href="../module/linpack_module.html#proc-dgesl">dgesl</a>
-            <a class="list-group-item" href="../module/linpack_module.html#proc-dgbfa">dgbfa</a>
-            <a class="list-group-item" href="../module/linpack_module.html#proc-dgbsl">dgbsl</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#proc-daxpy">daxpy</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#proc-dcopy">dcopy</a>
+            <a class="list-group-item" href="../module/dvode_blas_module.html#proc-dscal">dscal</a>
         </div>
       </div>
     </div>
@@ -447,20 +506,403 @@
     <br class="visible-xs visible-sm hidden-md">
 
 
+    <section>
+    <h2>Variables</h2>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Visibility</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+<th></th><th>Initial</th>        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-zero"></span>
+              real(kind=wp),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>zero</strong></td>
+<td> =</td>
+                <td>0.0_wp</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-one"></span>
+              real(kind=wp),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>one</strong></td>
+<td> =</td>
+                <td>1.0_wp</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-two"></span>
+              real(kind=wp),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>two</strong></td>
+<td> =</td>
+                <td>2.0_wp</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-four"></span>
+              real(kind=wp),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>four</strong></td>
+<td> =</td>
+                <td>4.0_wp</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ten"></span>
+              real(kind=wp),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>ten</strong></td>
+<td> =</td>
+                <td>10.0_wp</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-hun"></span>
+              real(kind=wp),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>hun</strong></td>
+<td> =</td>
+                <td>100.0_wp</td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    </section>
+    <br>
     
     
 
     
     
+ 
+    <section>
+    <h2>Functions</h2>
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-ddot"></span><h3>public  function <a href='../proc/ddot.html'>ddot</a>(n, dx, incx, dy, incy)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>forms the dot product of two vectors.
+  uses unrolled loops for increments equal to one.</p><a href="../proc/ddot.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>n</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dx</strong>(*)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>incx</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dy</strong>(*)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>incy</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real(kind=wp)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-dnrm2"></span><h3>public  function <a href='../proc/dnrm2.html'>dnrm2</a>(n, x, incx)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Function that returns the Euclidean norm
+  <script type="math/tex"> \sqrt{ \mathbf{x}^T \mathbf{x} } </script> of a vector <script type="math/tex"> \mathbf{x} </script>.</p><a href="../proc/dnrm2.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>n</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(*)
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>incx</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>real(kind=wp)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-idamax"></span><h3>public  function <a href='../proc/idamax.html'>idamax</a>(n, dx, incx)  
+</h3></div>
+    <div class="panel-body">
+          
+  <p>Find the smallest index of that component of a vector
+  having the maximum magnitude.</p><a href="../proc/idamax.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>n</strong></td>
+            <td>
+<p>number of elements in input vector(s)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(*)
+            </td>
+            <td>::</td>
+            <td><strong>dx</strong></td>
+            <td>
+<p>double precision vector with <code>N</code> elements</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>incx</strong></td>
+            <td>
+<p>storage spacing between elements of <code>DX</code></p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+    </section>
+    <br>
 
     <section>
     <h2>Subroutines</h2>
       <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-dgefa"></span><h3>public  subroutine <a href='../proc/dgefa.html'>dgefa</a>(a, lda, n, ipvt, info)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-daxpy"></span><h3>public  subroutine <a href='../proc/daxpy.html'>daxpy</a>(n, da, dx, incx, dy, incy)  
 </h3></div>
     <div class="panel-body">
           
-  <p>factor a matrix using gaussian elimination.</p><a href="../proc/dgefa.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+  <p>constant times a vector plus a vector.
+  uses unrolled loops for increments equal to one.</p><a href="../proc/daxpy.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -473,36 +915,6 @@
         <th></th>
     </thead>
     <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              double precision
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong>(lda,*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>lda</strong></td>
-            <td>
-
-            </td>
-        </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
@@ -521,14 +933,29 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              real(kind=wp)
             </td>
 <td></td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>ipvt</strong>(*)</td>
+            <td><strong>da</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dx</strong>(*)</td>
             <td>
 
             </td>
@@ -543,7 +970,37 @@
               
             </td>
             <td>::</td>
-            <td><strong>info</strong></td>
+            <td><strong>incx</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dy</strong>(*)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>incy</strong></td>
             <td>
 
             </td>
@@ -556,12 +1013,12 @@
   </div>
 
       <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-dgesl"></span><h3>public  subroutine <a href='../proc/dgesl.html'>dgesl</a>(a, lda, n, ipvt, b, job)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-dcopy"></span><h3>public  subroutine <a href='../proc/dcopy.html'>dcopy</a>(n, dx, incx, dy, incy)  
 </h3></div>
     <div class="panel-body">
           
-  <p>solve the real system a<em>x=b or trans(a)</em>x=b using the
-  factors computed by dgeco or dgefa.</p><a href="../proc/dgesl.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+  <p>copies a vector, x, to a vector, y.
+  uses unrolled loops for increments equal to one.</p><a href="../proc/dcopy.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -574,36 +1031,6 @@
         <th></th>
     </thead>
     <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              double precision
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong>(lda,*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>lda</strong></td>
-            <td>
-
-            </td>
-        </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
@@ -622,29 +1049,14 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              real(kind=wp)
             </td>
 <td></td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>ipvt</strong>(*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              double precision
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong>(*)</td>
+            <td><strong>dx</strong>(*)</td>
             <td>
 
             </td>
@@ -659,7 +1071,37 @@
               
             </td>
             <td>::</td>
-            <td><strong>job</strong></td>
+            <td><strong>incx</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dy</strong>(*)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>incy</strong></td>
             <td>
 
             </td>
@@ -672,11 +1114,12 @@
   </div>
 
       <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-dgbfa"></span><h3>public  subroutine <a href='../proc/dgbfa.html'>dgbfa</a>(abd, lda, n, ml, mu, ipvt, info)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-dscal"></span><h3>public  subroutine <a href='../proc/dscal.html'>dscal</a>(n, da, dx, incx)  
 </h3></div>
     <div class="panel-body">
           
-  <p>factor a band matrix using gaussian elimination.</p><a href="../proc/dgbfa.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+  <p>scales a vector by a constant.
+  uses unrolled loops for increment equal to one.</p><a href="../proc/dscal.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -689,36 +1132,6 @@
         <th></th>
     </thead>
     <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              double precision
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>abd</strong>(lda,*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>lda</strong></td>
-            <td>
-
-            </td>
-        </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
@@ -737,14 +1150,29 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              real(kind=wp)
             </td>
 <td></td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>ml</strong></td>
+            <td><strong>da</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dx</strong>(*)</td>
             <td>
 
             </td>
@@ -759,183 +1187,7 @@
               
             </td>
             <td>::</td>
-            <td><strong>mu</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ipvt</strong>(*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>info</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-      <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-dgbsl"></span><h3>public  subroutine <a href='../proc/dgbsl.html'>dgbsl</a>(abd, lda, n, ml, mu, ipvt, b, job)  
-</h3></div>
-    <div class="panel-body">
-          
-  <p>solve the real band system a<em>x=b or trans(a)</em>x=b using
-  the factors computed by dgbco or dgbfa.</p><a href="../proc/dgbsl.html" class="pull-right"><emph>Read more&hellip;</emph></a>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              double precision
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>abd</strong>(lda,*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>lda</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>n</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ml</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>mu</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ipvt</strong>(*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              double precision
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong>(*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>job</strong></td>
+            <td><strong>incx</strong></td>
             <td>
 
             </td>

@@ -4,10 +4,10 @@
 !  linpack support routines for dvode.
 !  these have been refactored into modern fortran.
 
-    module linpack_module
+    module dvode_linpack_module
 
-    use dvode_kinds
-    use blas_module
+    use dvode_kinds_module, wp => dvode_wp
+    use dvode_blas_module
 
     implicit none
 
@@ -595,4 +595,4 @@
        endif
        end subroutine dgbsl
 
-end module linpack_module
+end module dvode_linpack_module
