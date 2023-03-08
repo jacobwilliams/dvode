@@ -16,66 +16,64 @@
     contains
 !*******************************************************************************
 
- !deck dgefa
-       subroutine dgefa(a,lda,n,ipvt,info)
-       implicit none
- !***begin prologue  dgefa
- !***purpose  factor a matrix using gaussian elimination.
- !***category  d2a1
- !***type      double precision (sgefa-s, dgefa-d, cgefa-c)
- !***keywords  general matrix, linear algebra, linpack,
- !             matrix factorization
- !***author  moler, c. b., (u. of new mexico)
- !***description
- !
- !     dgefa factors a double precision matrix by gaussian elimination.
- !
- !     dgefa is usually called by dgeco, but it can be called
- !     directly with a saving in time if  rcond  is not needed.
- !     (time for dgeco) = (1 + 9/n)*(time for dgefa) .
- !
- !     on entry
- !
- !        a       double precision(lda, n)
- !                the matrix to be factored.
- !
- !        lda     integer
- !                the leading dimension of the array  a .
- !
- !        n       integer
- !                the order of the matrix  a .
- !
- !     on return
- !
- !        a       an upper triangular matrix and the multipliers
- !                which were used to obtain it.
- !                the factorization can be written  a = l*u  where
- !                l  is a product of permutation and unit lower
- !                triangular matrices and  u  is upper triangular.
- !
- !        ipvt    integer(n)
- !                an integer vector of pivot indices.
- !
- !        info    integer
- !                = 0  normal value.
- !                = k  if  u(k,k) .eq. 0.0 .  this is not an error
- !                     condition for this subroutine, but it does
- !                     indicate that dgesl or dgedi will divide by zero
- !                     if called.  use  rcond  in dgeco for a reliable
- !                     indication of singularity.
- !
- !***references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
- !                 stewart, linpack users' guide, siam, 1979.
- !***routines called  daxpy, dscal, idamax
- !***revision history  (yymmdd)
- !   780814  date written
- !   890831  modified array declarations.  (wrb)
- !   890831  revision date from version 3.2
- !   891214  prologue converted to version 4.0 format.  (bab)
- !   900326  removed duplicate information from description section.
- !           (wrb)
- !   920501  reformatted the references section.  (wrb)
- !***end prologue  dgefa
+!*****************************************************************************************
+!>
+!  factor a matrix using gaussian elimination.
+!
+!***author  moler, c. b., (u. of new mexico)
+!***description
+!
+!     dgefa factors a double precision matrix by gaussian elimination.
+!
+!     dgefa is usually called by dgeco, but it can be called
+!     directly with a saving in time if  rcond  is not needed.
+!     (time for dgeco) = (1 + 9/n)*(time for dgefa) .
+!
+!     on entry
+!
+!        a       double precision(lda, n)
+!                the matrix to be factored.
+!
+!        lda     integer
+!                the leading dimension of the array  a .
+!
+!        n       integer
+!                the order of the matrix  a .
+!
+!     on return
+!
+!        a       an upper triangular matrix and the multipliers
+!                which were used to obtain it.
+!                the factorization can be written  a = l*u  where
+!                l  is a product of permutation and unit lower
+!                triangular matrices and  u  is upper triangular.
+!
+!        ipvt    integer(n)
+!                an integer vector of pivot indices.
+!
+!        info    integer
+!                = 0  normal value.
+!                = k  if  u(k,k) .eq. 0.0 .  this is not an error
+!                     condition for this subroutine, but it does
+!                     indicate that dgesl or dgedi will divide by zero
+!                     if called.  use  rcond  in dgeco for a reliable
+!                     indication of singularity.
+!
+!***references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
+!                 stewart, linpack users' guide, siam, 1979.
+!***routines called  daxpy, dscal, idamax
+!***revision history  (yymmdd)
+!   780814  date written
+!   890831  modified array declarations.  (wrb)
+!   890831  revision date from version 3.2
+!   891214  prologue converted to version 4.0 format.  (bab)
+!   900326  removed duplicate information from description section.
+!           (wrb)
+!   920501  reformatted the references section.  (wrb)
+
+    subroutine dgefa(a,lda,n,ipvt,info)
+      implicit none
+
        integer lda , n , ipvt(*) , info
        double precision a(lda,*)
  !
@@ -132,77 +130,76 @@
        if ( a(n,n)==0.0d0 ) info = n
        end subroutine dgefa
 
- !deck dgesl
+!*****************************************************************************************
+!>
+!  solve the real system a*x=b or trans(a)*x=b using the
+!  factors computed by dgeco or dgefa.
+!
+!***author  moler, c. b., (u. of new mexico)
+!***description
+!
+!     dgesl solves the double precision system
+!     a * x = b  or  trans(a) * x = b
+!     using the factors computed by dgeco or dgefa.
+!
+!     on entry
+!
+!        a       double precision(lda, n)
+!                the output from dgeco or dgefa.
+!
+!        lda     integer
+!                the leading dimension of the array  a .
+!
+!        n       integer
+!                the order of the matrix  a .
+!
+!        ipvt    integer(n)
+!                the pivot vector from dgeco or dgefa.
+!
+!        b       double precision(n)
+!                the right hand side vector.
+!
+!        job     integer
+!                = 0         to solve  a*x = b ,
+!                = nonzero   to solve  trans(a)*x = b  where
+!                            trans(a)  is the transpose.
+!
+!     on return
+!
+!        b       the solution vector  x .
+!
+!     error condition
+!
+!        a division by zero will occur if the input factor contains a
+!        zero on the diagonal.  technically this indicates singularity
+!        but it is often caused by improper arguments or improper
+!        setting of lda .  it will not occur if the subroutines are
+!        called correctly and if dgeco has set rcond .gt. 0.0
+!        or dgefa has set info .eq. 0 .
+!
+!     to compute  inverse(a) * c  where  c  is a matrix
+!     with  p  columns
+!           call dgeco(a,lda,n,ipvt,rcond,z)
+!           if (rcond is too small) go to ...
+!           do 10 j = 1, p
+!              call dgesl(a,lda,n,ipvt,c(1,j),0)
+!        10 continue
+!
+!***references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
+!                 stewart, linpack users' guide, siam, 1979.
+!***routines called  daxpy, ddot
+!***revision history  (yymmdd)
+!   780814  date written
+!   890831  modified array declarations.  (wrb)
+!   890831  revision date from version 3.2
+!   891214  prologue converted to version 4.0 format.  (bab)
+!   900326  removed duplicate information from description section.
+!           (wrb)
+!   920501  reformatted the references section.  (wrb)
+
        subroutine dgesl(a,lda,n,ipvt,b,job)
-       implicit none
- !***begin prologue  dgesl
- !***purpose  solve the real system a*x=b or trans(a)*x=b using the
- !            factors computed by dgeco or dgefa.
- !***category  d2a1
- !***type      double precision (sgesl-s, dgesl-d, cgesl-c)
- !***keywords  linear algebra, linpack, matrix, solve
- !***author  moler, c. b., (u. of new mexico)
- !***description
- !
- !     dgesl solves the double precision system
- !     a * x = b  or  trans(a) * x = b
- !     using the factors computed by dgeco or dgefa.
- !
- !     on entry
- !
- !        a       double precision(lda, n)
- !                the output from dgeco or dgefa.
- !
- !        lda     integer
- !                the leading dimension of the array  a .
- !
- !        n       integer
- !                the order of the matrix  a .
- !
- !        ipvt    integer(n)
- !                the pivot vector from dgeco or dgefa.
- !
- !        b       double precision(n)
- !                the right hand side vector.
- !
- !        job     integer
- !                = 0         to solve  a*x = b ,
- !                = nonzero   to solve  trans(a)*x = b  where
- !                            trans(a)  is the transpose.
- !
- !     on return
- !
- !        b       the solution vector  x .
- !
- !     error condition
- !
- !        a division by zero will occur if the input factor contains a
- !        zero on the diagonal.  technically this indicates singularity
- !        but it is often caused by improper arguments or improper
- !        setting of lda .  it will not occur if the subroutines are
- !        called correctly and if dgeco has set rcond .gt. 0.0
- !        or dgefa has set info .eq. 0 .
- !
- !     to compute  inverse(a) * c  where  c  is a matrix
- !     with  p  columns
- !           call dgeco(a,lda,n,ipvt,rcond,z)
- !           if (rcond is too small) go to ...
- !           do 10 j = 1, p
- !              call dgesl(a,lda,n,ipvt,c(1,j),0)
- !        10 continue
- !
- !***references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
- !                 stewart, linpack users' guide, siam, 1979.
- !***routines called  daxpy, ddot
- !***revision history  (yymmdd)
- !   780814  date written
- !   890831  modified array declarations.  (wrb)
- !   890831  revision date from version 3.2
- !   891214  prologue converted to version 4.0 format.  (bab)
- !   900326  removed duplicate information from description section.
- !           (wrb)
- !   920501  reformatted the references section.  (wrb)
- !***end prologue  dgesl
+         implicit none
+
        integer lda , n , ipvt(*) , job
        double precision a(lda,*) , b(*)
  !
@@ -261,102 +258,102 @@
           enddo
        endif
        end subroutine dgesl
- !deck dgbfa
+
+!*****************************************************************************************
+!>
+!  factor a band matrix using gaussian elimination.
+!
+!***author  moler, c. b., (u. of new mexico)
+!***description
+!
+!     dgbfa factors a double precision band matrix by elimination.
+!
+!     dgbfa is usually called by dgbco, but it can be called
+!     directly with a saving in time if  rcond  is not needed.
+!
+!     on entry
+!
+!        abd     double precision(lda, n)
+!                contains the matrix in band storage.  the columns
+!                of the matrix are stored in the columns of  abd  and
+!                the diagonals of the matrix are stored in rows
+!                ml+1 through 2*ml+mu+1 of  abd .
+!                see the comments below for details.
+!
+!        lda     integer
+!                the leading dimension of the array  abd .
+!                lda must be .ge. 2*ml + mu + 1 .
+!
+!        n       integer
+!                the order of the original matrix.
+!
+!        ml      integer
+!                number of diagonals below the main diagonal.
+!                0 .le. ml .lt.  n .
+!
+!        mu      integer
+!                number of diagonals above the main diagonal.
+!                0 .le. mu .lt.  n .
+!                more efficient if  ml .le. mu .
+!     on return
+!
+!        abd     an upper triangular matrix in band storage and
+!                the multipliers which were used to obtain it.
+!                the factorization can be written  a = l*u  where
+!                l  is a product of permutation and unit lower
+!                triangular matrices and  u  is upper triangular.
+!
+!        ipvt    integer(n)
+!                an integer vector of pivot indices.
+!
+!        info    integer
+!                = 0  normal value.
+!                = k  if  u(k,k) .eq. 0.0 .  this is not an error
+!                     condition for this subroutine, but it does
+!                     indicate that dgbsl will divide by zero if
+!                     called.  use  rcond  in dgbco for a reliable
+!                     indication of singularity.
+!
+!     band storage
+!
+!           if  a  is a band matrix, the following program segment
+!           will set up the input.
+!
+!                   ml = (band width below the diagonal)
+!                   mu = (band width above the diagonal)
+!                   m = ml + mu + 1
+!                   do 20 j = 1, n
+!                      i1 = max(1, j-mu)
+!                      i2 = min(n, j+ml)
+!                      do 10 i = i1, i2
+!                         k = i - j + m
+!                         abd(k,j) = a(i,j)
+!                10    continue
+!                20 continue
+!
+!           this uses rows  ml+1  through  2*ml+mu+1  of  abd .
+!           in addition, the first  ml  rows in  abd  are used for
+!           elements generated during the triangularization.
+!           the total number of rows needed in  abd  is  2*ml+mu+1 .
+!           the  ml+mu by ml+mu  upper left triangle and the
+!           ml by ml  lower right triangle are not referenced.
+!
+!***references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
+!                 stewart, linpack users' guide, siam, 1979.
+!***routines called  daxpy, dscal, idamax
+!***revision history  (yymmdd)
+!   780814  date written
+!   890531  changed all specific intrinsics to generic.  (wrb)
+!   890831  modified array declarations.  (wrb)
+!   890831  revision date from version 3.2
+!   891214  prologue converted to version 4.0 format.  (bab)
+!   900326  removed duplicate information from description section.
+!           (wrb)
+!   920501  reformatted the references section.  (wrb)
+
        subroutine dgbfa(abd,lda,n,ml,mu,ipvt,info)
-       implicit none
- !***begin prologue  dgbfa
- !***purpose  factor a band matrix using gaussian elimination.
- !***category  d2a2
- !***type      double precision (sgbfa-s, dgbfa-d, cgbfa-c)
- !***keywords  banded, linear algebra, linpack, matrix factorization
- !***author  moler, c. b., (u. of new mexico)
- !***description
- !
- !     dgbfa factors a double precision band matrix by elimination.
- !
- !     dgbfa is usually called by dgbco, but it can be called
- !     directly with a saving in time if  rcond  is not needed.
- !
- !     on entry
- !
- !        abd     double precision(lda, n)
- !                contains the matrix in band storage.  the columns
- !                of the matrix are stored in the columns of  abd  and
- !                the diagonals of the matrix are stored in rows
- !                ml+1 through 2*ml+mu+1 of  abd .
- !                see the comments below for details.
- !
- !        lda     integer
- !                the leading dimension of the array  abd .
- !                lda must be .ge. 2*ml + mu + 1 .
- !
- !        n       integer
- !                the order of the original matrix.
- !
- !        ml      integer
- !                number of diagonals below the main diagonal.
- !                0 .le. ml .lt.  n .
- !
- !        mu      integer
- !                number of diagonals above the main diagonal.
- !                0 .le. mu .lt.  n .
- !                more efficient if  ml .le. mu .
- !     on return
- !
- !        abd     an upper triangular matrix in band storage and
- !                the multipliers which were used to obtain it.
- !                the factorization can be written  a = l*u  where
- !                l  is a product of permutation and unit lower
- !                triangular matrices and  u  is upper triangular.
- !
- !        ipvt    integer(n)
- !                an integer vector of pivot indices.
- !
- !        info    integer
- !                = 0  normal value.
- !                = k  if  u(k,k) .eq. 0.0 .  this is not an error
- !                     condition for this subroutine, but it does
- !                     indicate that dgbsl will divide by zero if
- !                     called.  use  rcond  in dgbco for a reliable
- !                     indication of singularity.
- !
- !     band storage
- !
- !           if  a  is a band matrix, the following program segment
- !           will set up the input.
- !
- !                   ml = (band width below the diagonal)
- !                   mu = (band width above the diagonal)
- !                   m = ml + mu + 1
- !                   do 20 j = 1, n
- !                      i1 = max(1, j-mu)
- !                      i2 = min(n, j+ml)
- !                      do 10 i = i1, i2
- !                         k = i - j + m
- !                         abd(k,j) = a(i,j)
- !                10    continue
- !                20 continue
- !
- !           this uses rows  ml+1  through  2*ml+mu+1  of  abd .
- !           in addition, the first  ml  rows in  abd  are used for
- !           elements generated during the triangularization.
- !           the total number of rows needed in  abd  is  2*ml+mu+1 .
- !           the  ml+mu by ml+mu  upper left triangle and the
- !           ml by ml  lower right triangle are not referenced.
- !
- !***references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
- !                 stewart, linpack users' guide, siam, 1979.
- !***routines called  daxpy, dscal, idamax
- !***revision history  (yymmdd)
- !   780814  date written
- !   890531  changed all specific intrinsics to generic.  (wrb)
- !   890831  modified array declarations.  (wrb)
- !   890831  revision date from version 3.2
- !   891214  prologue converted to version 4.0 format.  (bab)
- !   900326  removed duplicate information from description section.
- !           (wrb)
- !   920501  reformatted the references section.  (wrb)
- !***end prologue  dgbfa
+         implicit none
+
        integer lda , n , ml , mu , ipvt(*) , info
        double precision abd(lda,*)
  !
@@ -448,84 +445,84 @@
        ipvt(n) = n
        if ( abd(m,n)==0.0d0 ) info = n
        end subroutine dgbfa
- !deck dgbsl
+
+!*****************************************************************************************
+!>
+!  solve the real band system a*x=b or trans(a)*x=b using
+!  the factors computed by dgbco or dgbfa.
+!
+!***author  moler, c. b., (u. of new mexico)
+!***description
+!
+!     dgbsl solves the double precision band system
+!     a * x = b  or  trans(a) * x = b
+!     using the factors computed by dgbco or dgbfa.
+!
+!     on entry
+!
+!        abd     double precision(lda, n)
+!                the output from dgbco or dgbfa.
+!
+!        lda     integer
+!                the leading dimension of the array  abd .
+!
+!        n       integer
+!                the order of the original matrix.
+!
+!        ml      integer
+!                number of diagonals below the main diagonal.
+!
+!        mu      integer
+!                number of diagonals above the main diagonal.
+!
+!        ipvt    integer(n)
+!                the pivot vector from dgbco or dgbfa.
+!
+!        b       double precision(n)
+!                the right hand side vector.
+!
+!        job     integer
+!                = 0         to solve  a*x = b ,
+!                = nonzero   to solve  trans(a)*x = b , where
+!                            trans(a)  is the transpose.
+!
+!     on return
+!
+!        b       the solution vector  x .
+!
+!     error condition
+!
+!        a division by zero will occur if the input factor contains a
+!        zero on the diagonal.  technically this indicates singularity
+!        but it is often caused by improper arguments or improper
+!        setting of lda .  it will not occur if the subroutines are
+!        called correctly and if dgbco has set rcond .gt. 0.0
+!        or dgbfa has set info .eq. 0 .
+!
+!     to compute  inverse(a) * c  where  c  is a matrix
+!     with  p  columns
+!           call dgbco(abd,lda,n,ml,mu,ipvt,rcond,z)
+!           if (rcond is too small) go to ...
+!           do 10 j = 1, p
+!              call dgbsl(abd,lda,n,ml,mu,ipvt,c(1,j),0)
+!        10 continue
+!
+!***references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
+!                 stewart, linpack users' guide, siam, 1979.
+!***routines called  daxpy, ddot
+!***revision history  (yymmdd)
+!   780814  date written
+!   890531  changed all specific intrinsics to generic.  (wrb)
+!   890831  modified array declarations.  (wrb)
+!   890831  revision date from version 3.2
+!   891214  prologue converted to version 4.0 format.  (bab)
+!   900326  removed duplicate information from description section.
+!           (wrb)
+!   920501  reformatted the references section.  (wrb)
+
        subroutine dgbsl(abd,lda,n,ml,mu,ipvt,b,job)
-       implicit none
- !***begin prologue  dgbsl
- !***purpose  solve the real band system a*x=b or trans(a)*x=b using
- !            the factors computed by dgbco or dgbfa.
- !***category  d2a2
- !***type      double precision (sgbsl-s, dgbsl-d, cgbsl-c)
- !***keywords  banded, linear algebra, linpack, matrix, solve
- !***author  moler, c. b., (u. of new mexico)
- !***description
- !
- !     dgbsl solves the double precision band system
- !     a * x = b  or  trans(a) * x = b
- !     using the factors computed by dgbco or dgbfa.
- !
- !     on entry
- !
- !        abd     double precision(lda, n)
- !                the output from dgbco or dgbfa.
- !
- !        lda     integer
- !                the leading dimension of the array  abd .
- !
- !        n       integer
- !                the order of the original matrix.
- !
- !        ml      integer
- !                number of diagonals below the main diagonal.
- !
- !        mu      integer
- !                number of diagonals above the main diagonal.
- !
- !        ipvt    integer(n)
- !                the pivot vector from dgbco or dgbfa.
- !
- !        b       double precision(n)
- !                the right hand side vector.
- !
- !        job     integer
- !                = 0         to solve  a*x = b ,
- !                = nonzero   to solve  trans(a)*x = b , where
- !                            trans(a)  is the transpose.
- !
- !     on return
- !
- !        b       the solution vector  x .
- !
- !     error condition
- !
- !        a division by zero will occur if the input factor contains a
- !        zero on the diagonal.  technically this indicates singularity
- !        but it is often caused by improper arguments or improper
- !        setting of lda .  it will not occur if the subroutines are
- !        called correctly and if dgbco has set rcond .gt. 0.0
- !        or dgbfa has set info .eq. 0 .
- !
- !     to compute  inverse(a) * c  where  c  is a matrix
- !     with  p  columns
- !           call dgbco(abd,lda,n,ml,mu,ipvt,rcond,z)
- !           if (rcond is too small) go to ...
- !           do 10 j = 1, p
- !              call dgbsl(abd,lda,n,ml,mu,ipvt,c(1,j),0)
- !        10 continue
- !
- !***references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
- !                 stewart, linpack users' guide, siam, 1979.
- !***routines called  daxpy, ddot
- !***revision history  (yymmdd)
- !   780814  date written
- !   890531  changed all specific intrinsics to generic.  (wrb)
- !   890831  modified array declarations.  (wrb)
- !   890831  revision date from version 3.2
- !   891214  prologue converted to version 4.0 format.  (bab)
- !   900326  removed duplicate information from description section.
- !           (wrb)
- !   920501  reformatted the references section.  (wrb)
- !***end prologue  dgbsl
+         implicit none
+
        integer lda , n , ml , mu , ipvt(*) , job
        double precision abd(lda,*) , b(*)
  !

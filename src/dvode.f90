@@ -16,11 +16,13 @@ module dvode_module
 
 contains
 
-
-!-----------------------------------------------------------------------
-! dvode: variable-coefficient ordinary differential equation solver,
-! with fixed-leading-coefficient implementation.
-! this version is in double precision.
+!*****************************************************************************************
+!>
+!  dvode: variable-coefficient ordinary differential equation solver,
+!  with fixed-leading-coefficient implementation.
+!  this version is in double precision.
+!
+!```
 !
 ! dvode solves the initial value problem for stiff or nonstiff
 ! systems of first order odes,
@@ -1028,7 +1030,7 @@ contains
 ! note:  dvnorm, dumach, ixsav, and iumach are function routines.
 ! all the others are subroutines.
 !
-!-----------------------------------------------------------------------
+!```
 
 subroutine dvode(f,neq,y,t,tout,itol,rtol,atol,itask,istate,iopt, &
                  rwork,lrw,iwork,liw,jac,mf,rpar,ipar)
@@ -1772,16 +1774,18 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
 99999 end subroutine dvode
 
-      subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
-                       atol,y,temp,h0,niter,ier)
-      implicit none
-      external f
-      double precision t0 , y0 , ydot , rpar , tout , uround , ewt ,    &
-                       atol , y , temp , h0
-      integer n , ipar , itol , niter , ier
-      dimension y0(*) , ydot(*) , ewt(*) , atol(*) , y(*) , temp(*) ,   &
-                rpar(*) , ipar(*)
-!-----------------------------------------------------------------------
+!*****************************************************************************************
+!>
+!  this routine computes the step size, h0, to be attempted on the
+!  first step, when the user has not supplied a value for this.
+!
+!  first we check that tout - t0 differs significantly from zero.  then
+!  an iteration is done to approximate the initial second derivative
+!  and this is used to define h from w.r.m.s.norm(h**2 * yddot / 2) = 1.
+!  a bias factor of 1/2 is applied to the resulting h.
+!  the sign of h0 is inferred from the initial values of tout and t0.
+!
+!```
 ! call sequence input -- n, t0, y0, ydot, f, rpar, ipar, tout, uround,
 !                        ewt, itol, atol, y, temp
 ! call sequence output -- h0, niter, ier
@@ -1790,14 +1794,6 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! subroutines called by dvhin:  f
 ! function routines called by dvhi: dvnorm
 !-----------------------------------------------------------------------
-! this routine computes the step size, h0, to be attempted on the
-! first step, when the user has not supplied a value for this.
-!
-! first we check that tout - t0 differs significantly from zero.  then
-! an iteration is done to approximate the initial second derivative
-! and this is used to define h from w.r.m.s.norm(h**2 * yddot / 2) = 1.
-! a bias factor of 1/2 is applied to the resulting h.
-! the sign of h0 is inferred from the initial values of tout and t0.
 !
 ! communication with dvhin is done with the following variables:
 !
@@ -1818,7 +1814,17 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! ier    = the error flag, returned with the value
 !          ier = 0  if no trouble occurred, or
 !          ier = -1 if tout and t0 are considered too close to proceed.
-!-----------------------------------------------------------------------
+!```
+
+subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
+                       atol,y,temp,h0,niter,ier)
+      implicit none
+      external f
+      double precision t0 , y0 , ydot , rpar , tout , uround , ewt ,    &
+                       atol , y , temp , h0
+      integer n , ipar , itol , niter , ier
+      dimension y0(*) , ydot(*) , ewt(*) , atol(*) , y(*) , temp(*) ,   &
+                rpar(*) , ipar(*)
 !
 ! type declarations for local variables --------------------------------
 !
@@ -1917,12 +1923,15 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
 99999 end subroutine dvhin
 
-      subroutine dvindy(t,k,yh,ldyh,dky,iflag)
-      implicit none
-      double precision t , yh , dky
-      integer k , ldyh , iflag
-      dimension yh(ldyh,*) , dky(*)
-!-----------------------------------------------------------------------
+!*****************************************************************************************
+!>
+!  dvindy computes interpolated values of the k-th derivative of the
+!  dependent variable vector y, and stores it in dky.  this routine
+!  is called within the package with k = 0 and t = tout, but may
+!  also be called by the user for any k up to the current order.
+!  (see detailed instructions in the usage documentation.)
+!
+!```
 ! call sequence input -- t, k, yh, ldyh
 ! call sequence output -- dky, iflag
 ! common block variables accessed:
@@ -1931,12 +1940,6 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !
 ! subroutines called by dvindy: dscal, xerrwd
 ! function routines called by dvindy: none
-!-----------------------------------------------------------------------
-! dvindy computes interpolated values of the k-th derivative of the
-! dependent variable vector y, and stores it in dky.  this routine
-! is called within the package with k = 0 and t = tout, but may
-! also be called by the user for any k up to the current order.
-! (see detailed instructions in the usage documentation.)
 !-----------------------------------------------------------------------
 ! the computed values in dky are gotten by interpolation using the
 ! nordsieck history array yh.  this array corresponds uniquely to a
@@ -1952,7 +1955,13 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! iflag is returned negative if either k or t is out of bounds.
 !
 ! discussion above and comments in driver explain all variables.
-!-----------------------------------------------------------------------
+!```
+
+      subroutine dvindy(t,k,yh,ldyh,dky,iflag)
+      implicit none
+      double precision t , yh , dky
+      integer k , ldyh , iflag
+      dimension yh(ldyh,*) , dky(*)
 !
 ! type declarations for labeled common block dvod01 --------------------
 !
@@ -2054,16 +2063,20 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
 99999 end subroutine dvindy
 
-      subroutine dvstep(y,yh,ldyh,yh1,ewt,savf,vsav,acor,wm,iwm,f,jac,  &
-                        psol,vnls,rpar,ipar)
-      implicit none
-      external f , jac , psol , vnls
-      double precision y , yh , yh1 , ewt , savf , vsav , acor , wm ,   &
-                       rpar
-      integer ldyh , iwm , ipar
-      dimension y(*) , yh(ldyh,*) , yh1(*) , ewt(*) , savf(*) , vsav(*) &
-                , acor(*) , wm(*) , iwm(*) , rpar(*) , ipar(*)
-!-----------------------------------------------------------------------
+!*****************************************************************************************
+!>
+!  dvstep performs one step of the integration of an initial value
+!  problem for a system of ordinary differential equations.
+!  dvstep calls subroutine vnls for the solution of the nonlinear system
+!  arising in the time step.  thus it is independent of the problem
+!  jacobian structure and the type of nonlinear system solution method.
+!  dvstep returns a completion flag kflag (in common).
+!  a return with kflag = -1 or -2 means either abs(h) = hmin or 10
+!  consecutive failures occurred.  on a return with kflag negative,
+!  the values of tn and the yh array are as of the beginning of the last
+!  step, and h is the last step size attempted.
+!
+!```
 ! call sequence input -- y, yh, ldyh, yh1, ewt, savf, vsav,
 !                        acor, wm, iwm, f, jac, psol, vnls, rpar, ipar
 ! call sequence output -- yh, acor, wm, iwm
@@ -2077,17 +2090,6 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !                               dvjust, vnls, dvset
 ! function routines called by dvstep: dvnorm
 !-----------------------------------------------------------------------
-! dvstep performs one step of the integration of an initial value
-! problem for a system of ordinary differential equations.
-! dvstep calls subroutine vnls for the solution of the nonlinear system
-! arising in the time step.  thus it is independent of the problem
-! jacobian structure and the type of nonlinear system solution method.
-! dvstep returns a completion flag kflag (in common).
-! a return with kflag = -1 or -2 means either abs(h) = hmin or 10
-! consecutive failures occurred.  on a return with kflag negative,
-! the values of tn and the yh array are as of the beginning of the last
-! step, and h is the last step size attempted.
-!
 ! communication with dvstep is done with the following variables:
 !
 ! y      = an array of length n used for the dependent variable vector.
@@ -2119,7 +2121,17 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! vnls   = dummy name for the nonlinear system solving subroutine,
 !          whose real name is dependent on the method used.
 ! rpar, ipar = dummy names for user's real and integer work arrays.
-!-----------------------------------------------------------------------
+!```
+
+      subroutine dvstep(y,yh,ldyh,yh1,ewt,savf,vsav,acor,wm,iwm,f,jac,  &
+                        psol,vnls,rpar,ipar)
+      implicit none
+      external f , jac , psol , vnls
+      double precision y , yh , yh1 , ewt , savf , vsav , acor , wm ,   &
+                       rpar
+      integer ldyh , iwm , ipar
+      dimension y(*) , yh(ldyh,*) , yh1(*) , ewt(*) , savf(*) , vsav(*) &
+                , acor(*) , wm(*) , iwm(*) , rpar(*) , ipar(*)
 !
 ! type declarations for labeled common block dvod01 --------------------
 !
@@ -2520,9 +2532,11 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
       end subroutine dvstep
 
-      subroutine dvset()
-      implicit none
-!-----------------------------------------------------------------------
+!*****************************************************************************************
+!>
+!  dvset is called by dvstep and sets coefficients for use there.
+!
+!```
 ! call sequence communication: none
 ! common block variables accessed:
 !     /dvod01/ -- el(13), h, tau(13), tq(5), l(= nq + 1),
@@ -2531,7 +2545,6 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! subroutines called by dvset: none
 ! function routines called by dvset: none
 !-----------------------------------------------------------------------
-! dvset is called by dvstep and sets coefficients for use there.
 !
 ! for each order nq, the coefficients in el are calculated by use of
 !  the generating polynomial lambda(x), with coefficients el(i).
@@ -2566,7 +2579,10 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !            the number of columns of the yh array being used.
 !   nqwait = a counter controlling the frequency of order changes.
 !            an order change is about to be considered if nqwait = 1.
-!-----------------------------------------------------------------------
+!```
+
+      subroutine dvset()
+      implicit none
 !
 ! type declarations for labeled common block dvod01 --------------------
 !
@@ -2734,12 +2750,19 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
       end subroutine dvset
 
-      subroutine dvjust(yh,ldyh,iord)
-      implicit none
-      double precision yh
-      integer ldyh , iord
-      dimension yh(ldyh,*)
-!-----------------------------------------------------------------------
+!*****************************************************************************************
+!>
+!  this subroutine adjusts the yh array on reduction of order,
+!  and also when the order is increased for the stiff option (meth = 2).
+!  communication with dvjust uses the following:
+!
+!  iord  = an integer flag used when meth = 2 to indicate an order
+!          increase (iord = +1) or an order decrease (iord = -1).
+!  hscal = step size h used in scaling of nordsieck array yh.
+!          (if iord = +1, dvjust assumes that hscal = tau(1).)
+!  see references 1 and 2 for details.
+!
+!```
 ! call sequence input -- yh, ldyh, iord
 ! call sequence output -- yh
 ! common block input -- nq, meth, lmax, hscal, tau(13), n
@@ -2748,16 +2771,13 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !
 ! subroutines called by dvjust: daxpy
 ! function routines called by dvjust: none
-!-----------------------------------------------------------------------
-! this subroutine adjusts the yh array on reduction of order,
-! and also when the order is increased for the stiff option (meth = 2).
-! communication with dvjust uses the following:
-! iord  = an integer flag used when meth = 2 to indicate an order
-!         increase (iord = +1) or an order decrease (iord = -1).
-! hscal = step size h used in scaling of nordsieck array yh.
-!         (if iord = +1, dvjust assumes that hscal = tau(1).)
-! see references 1 and 2 for details.
-!-----------------------------------------------------------------------
+!```
+
+      subroutine dvjust(yh,ldyh,iord)
+      implicit none
+      double precision yh
+      integer ldyh , iord
+      dimension yh(ldyh,*)
 !
 ! type declarations for labeled common block dvod01 --------------------
 !
@@ -2907,15 +2927,14 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
       end subroutine dvjust
 
-      subroutine dvnlsd(y,yh,ldyh,vsav,savf,ewt,acor,iwm,wm,f,jac,pdum, &
-                        nflag,rpar,ipar)
-      implicit none
-      external f , jac , pdum
-      double precision y , yh , vsav , savf , ewt , acor , wm , rpar
-      integer ldyh , iwm , nflag , ipar
-      dimension y(*) , yh(ldyh,*) , vsav(*) , savf(*) , ewt(*) , acor(*)&
-                , iwm(*) , wm(*) , rpar(*) , ipar(*)
-!-----------------------------------------------------------------------
+!*****************************************************************************************
+!>
+!  subroutine dvnlsd is a nonlinear system solver, which uses functional
+!  iteration or a chord (modified newton) method.  for the chord method
+!  direct linear algebraic system solvers are used.  subroutine dvnlsd
+!  then handles the corrector phase of this integration package.
+!
+!```
 ! call sequence input -- y, yh, ldyh, savf, ewt, acor, iwm, wm,
 !                        f, jac, nflag, rpar, ipar
 ! call sequence output -- yh, acor, wm, iwm, nflag
@@ -2927,10 +2946,6 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! subroutines called by dvnlsd: f, daxpy, dcopy, dscal, dvjac, dvsol
 ! function routines called by dvnlsd: dvnorm
 !-----------------------------------------------------------------------
-! subroutine dvnlsd is a nonlinear system solver, which uses functional
-! iteration or a chord (modified newton) method.  for the chord method
-! direct linear algebraic system solvers are used.  subroutine dvnlsd
-! then handles the corrector phase of this integration package.
 !
 ! communication with dvnlsd is done with the following variables. (for
 ! more details, please see the comments in the driver subroutine.)
@@ -2972,7 +2987,16 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !                            the scalar rc or step counter nst.
 !
 ! for more details, see comments in driver subroutine.
-!-----------------------------------------------------------------------
+!```
+
+      subroutine dvnlsd(y,yh,ldyh,vsav,savf,ewt,acor,iwm,wm,f,jac,pdum, &
+                        nflag,rpar,ipar)
+      implicit none
+      external f , jac , pdum
+      double precision y , yh , vsav , savf , ewt , acor , wm , rpar
+      integer ldyh , iwm , nflag , ipar
+      dimension y(*) , yh(ldyh,*) , vsav(*) , savf(*) , ewt(*) , acor(*)&
+                , iwm(*) , wm(*) , rpar(*) , ipar(*)
 ! type declarations for labeled common block dvod01 --------------------
 !
       double precision acnrm , ccmxj , conp , crate , drc , el , eta ,  &
@@ -3150,15 +3174,22 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
 99999 end subroutine dvnlsd
 
-      subroutine dvjac(y,yh,ldyh,ewt,ftem,savf,wm,iwm,f,jac,ierpj,rpar, &
-                       ipar)
-      implicit none
-      external f , jac
-      double precision y , yh , ewt , ftem , savf , wm , rpar
-      integer ldyh , iwm , ierpj , ipar
-      dimension y(*) , yh(ldyh,*) , ewt(*) , ftem(*) , savf(*) , wm(*) ,&
-                iwm(*) , rpar(*) , ipar(*)
-!-----------------------------------------------------------------------
+!*****************************************************************************************
+!>
+!  dvjac is called by dvnlsd to compute and process the matrix
+!  p = i - h*rl1*j , where j is an approximation to the jacobian.
+!  here j is computed by the user-supplied routine jac if
+!  miter = 1 or 4, or by finite differencing if miter = 2, 3, or 5.
+!  if miter = 3, a diagonal approximation to j is used.
+!  if jsv = -1, j is computed from scratch in all cases.
+!  if jsv = 1 and miter = 1, 2, 4, or 5, and if the saved value of j is
+!  considered acceptable, then p is constructed from the saved j.
+!  j is stored in wm and replaced by p.  if miter .ne. 3, p is then
+!  subjected to lu decomposition in preparation for later solution
+!  of linear systems with p as coefficient matrix. this is done
+!  by dgefa if miter = 1 or 2, and by dgbfa if miter = 4 or 5.
+!
+!```
 ! call sequence input -- y, yh, ldyh, ewt, ftem, savf, wm, iwm,
 !                        f, jac, rpar, ipar
 ! call sequence output -- wm, iwm, ierpj
@@ -3171,18 +3202,6 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !                              dscal
 ! function routines called by dvjac: dvnorm
 !-----------------------------------------------------------------------
-! dvjac is called by dvnlsd to compute and process the matrix
-! p = i - h*rl1*j , where j is an approximation to the jacobian.
-! here j is computed by the user-supplied routine jac if
-! miter = 1 or 4, or by finite differencing if miter = 2, 3, or 5.
-! if miter = 3, a diagonal approximation to j is used.
-! if jsv = -1, j is computed from scratch in all cases.
-! if jsv = 1 and miter = 1, 2, 4, or 5, and if the saved value of j is
-! considered acceptable, then p is constructed from the saved j.
-! j is stored in wm and replaced by p.  if miter .ne. 3, p is then
-! subjected to lu decomposition in preparation for later solution
-! of linear systems with p as coefficient matrix. this is done
-! by dgefa if miter = 1 or 2, and by dgbfa if miter = 4 or 5.
 !
 ! communication with dvjac is done with the following variables.  (for
 ! more details, please see the comments in the driver subroutine.)
@@ -3213,7 +3232,16 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !              (or approximation) is now current.
 !              jcur = 0 means j is not current.
 !              jcur = 1 means j is current.
-!-----------------------------------------------------------------------
+!```
+
+      subroutine dvjac(y,yh,ldyh,ewt,ftem,savf,wm,iwm,f,jac,ierpj,rpar, &
+                       ipar)
+      implicit none
+      external f , jac
+      double precision y , yh , ewt , ftem , savf , wm , rpar
+      integer ldyh , iwm , ierpj , ipar
+      dimension y(*) , yh(ldyh,*) , ewt(*) , ftem(*) , savf(*) , wm(*) ,&
+                iwm(*) , rpar(*) , ipar(*)
 !
 ! type declarations for labeled common block dvod01 --------------------
 !
@@ -3438,23 +3466,26 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
       end subroutine dvjac
 
-      subroutine dacopy(nrow,ncol,a,nrowa,b,nrowb)
-      implicit none
-      double precision a , b
-      integer nrow , ncol , nrowa , nrowb
-      dimension a(nrowa,ncol) , b(nrowb,ncol)
-!-----------------------------------------------------------------------
+!*****************************************************************************************
+!>
+! this routine copies one rectangular array, a, to another, b,
+! where a and b may have different row dimensions, nrowa and nrowb.
+! the data copied consists of nrow rows and ncol columns.
+!
+!```
 ! call sequence input -- nrow, ncol, a, nrowa, nrowb
 ! call sequence output -- b
 ! common block variables accessed -- none
 !
 ! subroutines called by dacopy: dcopy
 ! function routines called by dacopy: none
-!-----------------------------------------------------------------------
-! this routine copies one rectangular array, a, to another, b,
-! where a and b may have different row dimensions, nrowa and nrowb.
-! the data copied consists of nrow rows and ncol columns.
-!-----------------------------------------------------------------------
+!```
+
+      subroutine dacopy(nrow,ncol,a,nrowa,b,nrowb)
+      implicit none
+      double precision a , b
+      integer nrow , ncol , nrowa , nrowb
+      dimension a(nrowa,ncol) , b(nrowb,ncol)
       integer ic
 !
       do ic = 1 , ncol
@@ -3464,12 +3495,16 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
       end subroutine dacopy
 
-      subroutine dvsol(wm,iwm,x,iersl)
-      implicit none
-      double precision wm , x
-      integer iwm , iersl
-      dimension wm(*) , iwm(*) , x(*)
-!-----------------------------------------------------------------------
+!*****************************************************************************************
+!>
+!  this routine manages the solution of the linear system arising from
+!  a chord iteration.  it is called if miter .ne. 0.
+!  if miter is 1 or 2, it calls dgesl to accomplish this.
+!  if miter = 3 it updates the coefficient h*rl1 in the diagonal
+!  matrix, and then computes the solution.
+!  if miter is 4 or 5, it calls dgbsl.
+!
+!```
 ! call sequence input -- wm, iwm, x
 ! call sequence output -- x, iersl
 ! common block variables accessed:
@@ -3478,12 +3513,7 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! subroutines called by dvsol: dgesl, dgbsl
 ! function routines called by dvsol: none
 !-----------------------------------------------------------------------
-! this routine manages the solution of the linear system arising from
-! a chord iteration.  it is called if miter .ne. 0.
-! if miter is 1 or 2, it calls dgesl to accomplish this.
-! if miter = 3 it updates the coefficient h*rl1 in the diagonal
-! matrix, and then computes the solution.
-! if miter is 4 or 5, it calls dgbsl.
+!
 ! communication with dvsol uses the following variables:
 ! wm    = real work space containing the inverse diagonal matrix if
 !         miter = 3 and the lu decomposition of the matrix otherwise.
@@ -3498,7 +3528,13 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !         on output, of length n.
 ! iersl = output flag.  iersl = 0 if no trouble occurred.
 !         iersl = 1 if a singular matrix arose with miter = 3.
-!-----------------------------------------------------------------------
+!```
+
+      subroutine dvsol(wm,iwm,x,iersl)
+      implicit none
+      double precision wm , x
+      integer iwm , iersl
+      dimension wm(*) , iwm(*) , x(*)
 !
 ! type declarations for labeled common block dvod01 --------------------
 !
@@ -3568,20 +3604,18 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
 99999 end subroutine dvsol
 
-      subroutine dvsrco(rsav,isav,job)
-      implicit none
-      double precision rsav
-      integer isav , job
-      dimension rsav(*) , isav(*)
-!-----------------------------------------------------------------------
+!*****************************************************************************************
+!>
+!  this routine saves or restores (depending on job) the contents of the
+!  common blocks dvod01 and dvod02, which are used internally by dvode.
+!
+!```
 ! call sequence input -- rsav, isav, job
 ! call sequence output -- rsav, isav
 ! common block variables accessed -- all of /dvod01/ and /dvod02/
 !
 ! subroutines/functions called by dvsrco: none
 !-----------------------------------------------------------------------
-! this routine saves or restores (depending on job) the contents of the
-! common blocks dvod01 and dvod02, which are used internally by dvode.
 !
 ! rsav = real array of length 49 or more.
 ! isav = integer array of length 41 or more.
@@ -3589,7 +3623,13 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !        job  = 1 if common is to be saved (written to rsav/isav).
 !        job  = 2 if common is to be restored (read from rsav/isav).
 !        a call with job = 2 presumes a prior call with job = 1.
-!-----------------------------------------------------------------------
+!```
+
+      subroutine dvsrco(rsav,isav,job)
+      implicit none
+      double precision rsav
+      integer isav , job
+      dimension rsav(*) , isav(*)
       double precision rvod1 , rvod2
       integer ivod1 , ivod2
       integer i , leniv1 , leniv2 , lenrv1 , lenrv2
@@ -3639,29 +3679,24 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
 99999 end subroutine dvsrco
 
-      subroutine dewset(n,itol,rtol,atol,ycur,ewt)
-      implicit none
-!***begin prologue  dewset
-!***subsidiary
-!***purpose  set error weight vector.
-!***type      double precision (sewset-s, dewset-d)
-!***author  hindmarsh, alan c., (llnl)
-!***description
+!*****************************************************************************************
+!>
+!  set error weight vector.
 !
 !  this subroutine sets the error weight vector ewt according to
 !      ewt(i) = rtol(i)*abs(ycur(i)) + atol(i),  i = 1,...,n,
 !  with the subscript on rtol and/or atol possibly replaced by 1 above,
 !  depending on the value of itol.
 !
-!***see also  dlsode
-!***routines called  (none)
+!***author  hindmarsh, alan c., (llnl)
 !***revision history  (yymmdd)
 !   791129  date written
 !   890501  modified prologue to slatec/ldoc format.  (fnf)
 !   890503  minor cosmetic changes.  (fnf)
 !   930809  renamed to allow single/double precision versions. (ach)
-!***end prologue  dewset
-!**end
+
+      subroutine dewset(n,itol,rtol,atol,ycur,ewt)
+      implicit none
       integer n , itol
       integer i
       double precision rtol , atol , ycur , ewt
@@ -3693,29 +3728,24 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
 99999 end subroutine dewset
 
-      double precision function dvnorm(n,v,w)
-      implicit none
-!***begin prologue  dvnorm
-!***subsidiary
-!***purpose  weighted root-mean-square vector norm.
-!***type      double precision (svnorm-s, dvnorm-d)
-!***author  hindmarsh, alan c., (llnl)
-!***description
+!*****************************************************************************************
+!>
+!  weighted root-mean-square vector norm.
 !
 !  this function routine computes the weighted root-mean-square norm
 !  of the vector of length n contained in the array v, with weights
 !  contained in the array w of length n:
 !    dvnorm = sqrt( (1/n) * sum( v(i)*w(i) )**2 )
 !
-!***see also  dlsode
-!***routines called  (none)
+!***author  hindmarsh, alan c., (llnl)
 !***revision history  (yymmdd)
 !   791129  date written
 !   890501  modified prologue to slatec/ldoc format.  (fnf)
 !   890503  minor cosmetic changes.  (fnf)
 !   930809  renamed to allow single/double precision versions. (ach)
-!***end prologue  dvnorm
-!**end
+
+      double precision function dvnorm(n,v,w)
+      implicit none
       integer n , i
       double precision v , w , sum
       dimension v(n) , w(n)
@@ -3728,15 +3758,9 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
       end function dvnorm
 
-      subroutine xerrwd(msg,nmes,nerr,level,ni,i1,i2,nr,r1,r2)
-      implicit none
-!***begin prologue  xerrwd
-!***subsidiary
-!***purpose  write error message with values.
-!***category  r3c
-!***type      double precision (xerrwv-s, xerrwd-d)
-!***author  hindmarsh, alan c., (llnl)
-!***description
+!*****************************************************************************************
+!>
+!  write error message with values.
 !
 !  subroutines xerrwd, xsetf, xsetun, and the function routine ixsav,
 !  as given here, constitute a simplified version of the slatec error
@@ -3766,14 +3790,13 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !  4. r1 and r2 are assumed to be in double precision and are printed
 !     in d21.13 format.
 !
-!***routines called  ixsav
+!***author  hindmarsh, alan c., (llnl)
 !***revision history  (yymmdd)
 !   920831  date written
 !   921118  replaced mflgsv/lunsav by ixsav. (ach)
 !   930329  modified prologue to slatec format. (fnf)
 !   930407  changed msg from character*1 array to variable. (fnf)
 !   930922  minor cosmetic change. (fnf)
-!***end prologue  xerrwd
 !
 !*internal notes:
 !
@@ -3785,7 +3808,9 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! subroutines called by xerrwd.. none
 ! function routine called by xerrwd.. ixsav
 !-----------------------------------------------------------------------
-!**end
+
+      subroutine xerrwd(msg,nmes,nerr,level,ni,i1,i2,nr,r1,r2)
+      implicit none
 !
 !  declare arguments.
 !
@@ -3825,83 +3850,53 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 
       end subroutine xerrwd
 
-      subroutine xsetf(mflag)
-      implicit none
-!***begin prologue  xsetf
-!***purpose  reset the error print control flag.
-!***category  r3a
-!***type      all (xsetf-a)
-!***keywords  error control
-!***author  hindmarsh, alan c., (llnl)
-!***description
+!*****************************************************************************************
+!>
+!  reset the error print control flag.
 !
-!   xsetf sets the error print control flag to mflag:
+!  xsetf sets the error print control flag to mflag:
 !      mflag=1 means print all messages (the default).
 !      mflag=0 means no printing.
 !
-!***see also  xerrwd, xerrwv
-!***references  (none)
-!***routines called  ixsav
+!***author  hindmarsh, alan c., (llnl)
 !***revision history  (yymmdd)
 !   921118  date written
 !   930329  added slatec format prologue. (fnf)
 !   930407  corrected see also section. (fnf)
 !   930922  made user-callable, and other cosmetic changes. (fnf)
-!***end prologue  xsetf
-!
-! subroutines called by xsetf.. none
-! function routine called by xsetf.. ixsav
-!-----------------------------------------------------------------------
-!**end
+
+      subroutine xsetf(mflag)
+      implicit none
       integer mflag , junk
-!
 
       if ( mflag==0 .or. mflag==1 ) junk = ixsav(2,mflag,.true.)
 
       end subroutine xsetf
 
-      subroutine xsetun(lun)
-      implicit none
-!***begin prologue  xsetun
-!***purpose  reset the logical unit number for error messages.
-!***category  r3b
-!***type      all (xsetun-a)
-!***keywords  error control
-!***description
+!*****************************************************************************************
+!>
+!  reset the logical unit number for error messages.
 !
-!   xsetun sets the logical unit number for error messages to lun.
+!  xsetun sets the logical unit number for error messages to lun.
 !
 !***author  hindmarsh, alan c., (llnl)
-!***see also  xerrwd, xerrwv
-!***references  (none)
-!***routines called  ixsav
 !***revision history  (yymmdd)
 !   921118  date written
 !   930329  added slatec format prologue. (fnf)
 !   930407  corrected see also section. (fnf)
 !   930922  made user-callable, and other cosmetic changes. (fnf)
-!***end prologue  xsetun
-!
-! subroutines called by xsetun.. none
-! function routine called by xsetun.. ixsav
-!-----------------------------------------------------------------------
-!**end
+
+      subroutine xsetun(lun)
+      implicit none
       integer lun , junk
-!
 
       if ( lun>0 ) junk = ixsav(1,lun,.true.)
 
       end subroutine xsetun
 
-      integer function ixsav(ipar,ivalue,iset)
-      implicit none
-!***begin prologue  ixsav
-!***subsidiary
-!***purpose  save and recall error message control parameters.
-!***category  r3c
-!***type      all (ixsav-a)
-!***author  hindmarsh, alan c., (llnl)
-!***description
+!*****************************************************************************************
+!>
+!  save and recall error message control parameters.
 !
 !  ixsav saves and recalls one of two error message parameters:
 !    lunit, the logical unit number to which messages are printed, and
@@ -3927,19 +3922,16 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !    ixsav = the (old) value of the parameter.
 !
 !***see also  xerrwd, xerrwv
-!***routines called  iumach
+!***author  hindmarsh, alan c., (llnl)
 !***revision history  (yymmdd)
 !   921118  date written
 !   930329  modified prologue to slatec format. (fnf)
 !   930915  added iumach call to get default output unit.  (ach)
 !   930922  minor cosmetic changes. (fnf)
 !   010425  type declaration for iumach added. (ach)
-!***end prologue  ixsav
-!
-! subroutines called by ixsav.. none
-! function routine called by ixsav.. iumach
-!-----------------------------------------------------------------------
-!**end
+
+      integer function ixsav(ipar,ivalue,iset)
+      implicit none
       logical iset
       integer ipar , ivalue
 !-----------------------------------------------------------------------
