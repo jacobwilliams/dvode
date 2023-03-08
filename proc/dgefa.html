@@ -150,6 +150,57 @@
 </h2>
     
 
+    <p>factor a matrix using gaussian elimination.</p>
+<p><strong><em>author  moler, c. b., (u. of new mexico)
+</em></strong>description</p>
+<div class="codehilite"><pre><span></span><code> <span class="nv">dgefa</span> <span class="nv">factors</span> <span class="nv">a</span> <span class="nv">double</span> <span class="nv">precision</span> <span class="nv">matrix</span> <span class="nv">by</span> <span class="nv">gaussian</span> <span class="nv">elimination</span>.
+
+ <span class="nv">dgefa</span> <span class="nv">is</span> <span class="nv">usually</span> <span class="nv">called</span> <span class="nv">by</span> <span class="nv">dgeco</span>, <span class="nv">but</span> <span class="nv">it</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">called</span>
+ <span class="nv">directly</span> <span class="nv">with</span> <span class="nv">a</span> <span class="nv">saving</span> <span class="nv">in</span> <span class="nv">time</span> <span class="k">if</span>  <span class="nv">rcond</span>  <span class="nv">is</span> <span class="nv">not</span> <span class="nv">needed</span>.
+ <span class="ss">(</span><span class="nv">time</span> <span class="k">for</span> <span class="nv">dgeco</span><span class="ss">)</span> <span class="o">=</span> <span class="ss">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">9</span><span class="o">/</span><span class="nv">n</span><span class="ss">)</span><span class="o">*</span><span class="ss">(</span><span class="nv">time</span> <span class="k">for</span> <span class="nv">dgefa</span><span class="ss">)</span> .
+
+ <span class="nv">on</span> <span class="nv">entry</span>
+
+    <span class="nv">a</span>       <span class="nv">double</span> <span class="nv">precision</span><span class="ss">(</span><span class="nv">lda</span>, <span class="nv">n</span><span class="ss">)</span>
+            <span class="nv">the</span> <span class="nv">matrix</span> <span class="nv">to</span> <span class="nv">be</span> <span class="nv">factored</span>.
+
+    <span class="nv">lda</span>     <span class="nv">integer</span>
+            <span class="nv">the</span> <span class="nv">leading</span> <span class="nv">dimension</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">array</span>  <span class="nv">a</span> .
+
+    <span class="nv">n</span>       <span class="nv">integer</span>
+            <span class="nv">the</span> <span class="nv">order</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">matrix</span>  <span class="nv">a</span> .
+
+ <span class="nv">on</span> <span class="k">return</span>
+
+    <span class="nv">a</span>       <span class="nv">an</span> <span class="nv">upper</span> <span class="nv">triangular</span> <span class="nv">matrix</span> <span class="nv">and</span> <span class="nv">the</span> <span class="nv">multipliers</span>
+            <span class="nv">which</span> <span class="nv">were</span> <span class="nv">used</span> <span class="nv">to</span> <span class="nv">obtain</span> <span class="nv">it</span>.
+            <span class="nv">the</span> <span class="nv">factorization</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">written</span>  <span class="nv">a</span> <span class="o">=</span> <span class="nv">l</span><span class="o">*</span><span class="nv">u</span>  <span class="nv">where</span>
+            <span class="nv">l</span>  <span class="nv">is</span> <span class="nv">a</span> <span class="nv">product</span> <span class="nv">of</span> <span class="nv">permutation</span> <span class="nv">and</span> <span class="nv">unit</span> <span class="nv">lower</span>
+            <span class="nv">triangular</span> <span class="nv">matrices</span> <span class="nv">and</span>  <span class="nv">u</span>  <span class="nv">is</span> <span class="nv">upper</span> <span class="nv">triangular</span>.
+
+    <span class="nv">ipvt</span>    <span class="nv">integer</span><span class="ss">(</span><span class="nv">n</span><span class="ss">)</span>
+            <span class="nv">an</span> <span class="nv">integer</span> <span class="nv">vector</span> <span class="nv">of</span> <span class="nv">pivot</span> <span class="nv">indices</span>.
+
+    <span class="nv">info</span>    <span class="nv">integer</span>
+            <span class="o">=</span> <span class="mi">0</span>  <span class="nv">normal</span> <span class="nv">value</span>.
+            <span class="o">=</span> <span class="nv">k</span>  <span class="k">if</span>  <span class="nv">u</span><span class="ss">(</span><span class="nv">k</span>,<span class="nv">k</span><span class="ss">)</span> .<span class="nv">eq</span>. <span class="mi">0</span>.<span class="mi">0</span> .  <span class="nv">this</span> <span class="nv">is</span> <span class="nv">not</span> <span class="nv">an</span> <span class="nv">error</span>
+                 <span class="nv">condition</span> <span class="k">for</span> <span class="nv">this</span> <span class="nv">subroutine</span>, <span class="nv">but</span> <span class="nv">it</span> <span class="nv">does</span>
+                 <span class="nv">indicate</span> <span class="nv">that</span> <span class="nv">dgesl</span> <span class="nv">or</span> <span class="nv">dgedi</span> <span class="nv">will</span> <span class="nv">divide</span> <span class="nv">by</span> <span class="nv">zero</span>
+                 <span class="k">if</span> <span class="nv">called</span>.  <span class="nv">use</span>  <span class="nv">rcond</span>  <span class="nv">in</span> <span class="nv">dgeco</span> <span class="k">for</span> <span class="nv">a</span> <span class="nv">reliable</span>
+                 <span class="nv">indication</span> <span class="nv">of</span> <span class="nv">singularity</span>.
+</code></pre></div>
+
+<p><strong><em>references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
+                 stewart, linpack users' guide, siam, 1979.
+</em></strong>routines called  daxpy, dscal, idamax
+***revision history  (yymmdd)
+   780814  date written
+   890831  modified array declarations.  (wrb)
+   890831  revision date from version 3.2
+   891214  prologue converted to version 4.0 format.  (bab)
+   900326  removed duplicate information from description section.
+           (wrb)
+   920501  reformatted the references section.  (wrb)</p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -516,66 +567,10 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre><span></span><span class="w">       </span><span class="k">subroutine </span><span class="n">dgefa</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">info</span><span class="p">)</span><span class="w"></span>
-<span class="w">       </span><span class="k">implicit none</span><span class="w"></span>
-<span class="w"> </span><span class="c">!***begin prologue  dgefa</span>
-<span class="w"> </span><span class="c">!***purpose  factor a matrix using gaussian elimination.</span>
-<span class="w"> </span><span class="c">!***category  d2a1</span>
-<span class="w"> </span><span class="c">!***type      double precision (sgefa-s, dgefa-d, cgefa-c)</span>
-<span class="w"> </span><span class="c">!***keywords  general matrix, linear algebra, linpack,</span>
-<span class="w"> </span><span class="c">!             matrix factorization</span>
-<span class="w"> </span><span class="c">!***author  moler, c. b., (u. of new mexico)</span>
-<span class="w"> </span><span class="c">!***description</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     dgefa factors a double precision matrix by gaussian elimination.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     dgefa is usually called by dgeco, but it can be called</span>
-<span class="w"> </span><span class="c">!     directly with a saving in time if  rcond  is not needed.</span>
-<span class="w"> </span><span class="c">!     (time for dgeco) = (1 + 9/n)*(time for dgefa) .</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     on entry</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        a       double precision(lda, n)</span>
-<span class="w"> </span><span class="c">!                the matrix to be factored.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        lda     integer</span>
-<span class="w"> </span><span class="c">!                the leading dimension of the array  a .</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        n       integer</span>
-<span class="w"> </span><span class="c">!                the order of the matrix  a .</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     on return</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        a       an upper triangular matrix and the multipliers</span>
-<span class="w"> </span><span class="c">!                which were used to obtain it.</span>
-<span class="w"> </span><span class="c">!                the factorization can be written  a = l*u  where</span>
-<span class="w"> </span><span class="c">!                l  is a product of permutation and unit lower</span>
-<span class="w"> </span><span class="c">!                triangular matrices and  u  is upper triangular.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        ipvt    integer(n)</span>
-<span class="w"> </span><span class="c">!                an integer vector of pivot indices.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        info    integer</span>
-<span class="w"> </span><span class="c">!                = 0  normal value.</span>
-<span class="w"> </span><span class="c">!                = k  if  u(k,k) .eq. 0.0 .  this is not an error</span>
-<span class="w"> </span><span class="c">!                     condition for this subroutine, but it does</span>
-<span class="w"> </span><span class="c">!                     indicate that dgesl or dgedi will divide by zero</span>
-<span class="w"> </span><span class="c">!                     if called.  use  rcond  in dgeco for a reliable</span>
-<span class="w"> </span><span class="c">!                     indication of singularity.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!***references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.</span>
-<span class="w"> </span><span class="c">!                 stewart, linpack users&#39; guide, siam, 1979.</span>
-<span class="w"> </span><span class="c">!***routines called  daxpy, dscal, idamax</span>
-<span class="w"> </span><span class="c">!***revision history  (yymmdd)</span>
-<span class="w"> </span><span class="c">!   780814  date written</span>
-<span class="w"> </span><span class="c">!   890831  modified array declarations.  (wrb)</span>
-<span class="w"> </span><span class="c">!   890831  revision date from version 3.2</span>
-<span class="w"> </span><span class="c">!   891214  prologue converted to version 4.0 format.  (bab)</span>
-<span class="w"> </span><span class="c">!   900326  removed duplicate information from description section.</span>
-<span class="w"> </span><span class="c">!           (wrb)</span>
-<span class="w"> </span><span class="c">!   920501  reformatted the references section.  (wrb)</span>
-<span class="w"> </span><span class="c">!***end prologue  dgefa</span>
-<span class="w">       </span><span class="kt">integer </span><span class="n">lda</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ipvt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="w"></span>
+    <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">dgefa</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">info</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">implicit none</span>
+
+<span class="k">       </span><span class="kt">integer </span><span class="n">lda</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ipvt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="w"></span>
 <span class="w">       </span><span class="kt">double precision </span><span class="n">a</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
 <span class="w"> </span><span class="c">!</span>
 <span class="w">       </span><span class="kt">double precision </span><span class="n">t</span><span class="w"></span>

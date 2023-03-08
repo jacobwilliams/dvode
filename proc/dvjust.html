@@ -162,6 +162,23 @@
 </h2>
     
 
+    <p>this subroutine adjusts the yh array on reduction of order,
+  and also when the order is increased for the stiff option (meth = 2).
+  communication with dvjust uses the following:</p>
+<p>iord  = an integer flag used when meth = 2 to indicate an order
+          increase (iord = +1) or an order decrease (iord = -1).
+  hscal = step size h used in scaling of nordsieck array yh.
+          (if iord = +1, dvjust assumes that hscal = tau(1).)
+  see references 1 and 2 for details.</p>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="p">,</span><span class="w"> </span><span class="n">iord</span><span class="w"></span>
+<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">yh</span><span class="w"></span>
+<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">nq</span><span class="p">,</span><span class="w"> </span><span class="n">meth</span><span class="p">,</span><span class="w"> </span><span class="n">lmax</span><span class="p">,</span><span class="w"> </span><span class="n">hscal</span><span class="p">,</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="mi">13</span><span class="p">),</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
+<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="p">:</span><span class="w"></span>
+<span class="w">     </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">hscal</span><span class="p">,</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="mi">13</span><span class="p">),</span><span class="w"> </span><span class="n">lmax</span><span class="p">,</span><span class="w"> </span><span class="n">meth</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">nq</span><span class="p">,</span><span class="w"></span>
+
+<span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvjust</span><span class="p">:</span><span class="w"> </span><span class="n">daxpy</span><span class="w"></span>
+<span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvjust</span><span class="p">:</span><span class="w"> </span><span class="n">none</span><span class="w"></span>
+</code></pre></div>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -1367,25 +1384,6 @@
 <span class="k">      </span><span class="kt">double precision </span><span class="n">yh</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer </span><span class="n">ldyh</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">iord</span><span class="w"></span>
 <span class="w">      </span><span class="k">dimension </span><span class="n">yh</span><span class="p">(</span><span class="n">ldyh</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="c">! call sequence input -- yh, ldyh, iord</span>
-<span class="c">! call sequence output -- yh</span>
-<span class="c">! common block input -- nq, meth, lmax, hscal, tau(13), n</span>
-<span class="c">! common block variables accessed:</span>
-<span class="c">!     /dvod01/ -- hscal, tau(13), lmax, meth, n, nq,</span>
-<span class="c">!</span>
-<span class="c">! subroutines called by dvjust: daxpy</span>
-<span class="c">! function routines called by dvjust: none</span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="c">! this subroutine adjusts the yh array on reduction of order,</span>
-<span class="c">! and also when the order is increased for the stiff option (meth = 2).</span>
-<span class="c">! communication with dvjust uses the following:</span>
-<span class="c">! iord  = an integer flag used when meth = 2 to indicate an order</span>
-<span class="c">!         increase (iord = +1) or an order decrease (iord = -1).</span>
-<span class="c">! hscal = step size h used in scaling of nordsieck array yh.</span>
-<span class="c">!         (if iord = +1, dvjust assumes that hscal = tau(1).)</span>
-<span class="c">! see references 1 and 2 for details.</span>
-<span class="c">!-----------------------------------------------------------------------</span>
 <span class="c">!</span>
 <span class="c">! type declarations for labeled common block dvod01 --------------------</span>
 <span class="c">!</span>

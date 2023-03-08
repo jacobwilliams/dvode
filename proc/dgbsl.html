@@ -150,6 +150,76 @@
 </h2>
     
 
+    <p>solve the real band system a<em>x=b or trans(a)</em>x=b using
+  the factors computed by dgbco or dgbfa.</p>
+<p><strong><em>author  moler, c. b., (u. of new mexico)
+</em></strong>description</p>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">dgbsl</span><span class="w"> </span><span class="n">solves</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">double</span><span class="w"> </span><span class="k">precision</span><span class="w"> </span><span class="n">band</span><span class="w"> </span><span class="k">system</span><span class="w"></span>
+<span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w">  </span><span class="ow">or</span><span class="w">  </span><span class="n">trans</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
+<span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">factors</span><span class="w"> </span><span class="n">computed</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">dgbco</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">dgbfa</span><span class="p">.</span><span class="w"></span>
+
+<span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">entry</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">abd</span><span class="w">     </span><span class="k">double</span><span class="w"> </span><span class="k">precision</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="k">output</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">dgbco</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">dgbfa</span><span class="p">.</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">lda</span><span class="w">     </span><span class="k">integer</span><span class="w"></span>
+<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="k">leading</span><span class="w"> </span><span class="n">dimension</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">array</span><span class="w">  </span><span class="n">abd</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">n</span><span class="w">       </span><span class="k">integer</span><span class="w"></span>
+<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">original</span><span class="w"> </span><span class="n">matrix</span><span class="p">.</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">ml</span><span class="w">      </span><span class="k">integer</span><span class="w"></span>
+<span class="w">            </span><span class="n">number</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">diagonals</span><span class="w"> </span><span class="n">below</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="n">diagonal</span><span class="p">.</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">mu</span><span class="w">      </span><span class="k">integer</span><span class="w"></span>
+<span class="w">            </span><span class="n">number</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">diagonals</span><span class="w"> </span><span class="n">above</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="n">diagonal</span><span class="p">.</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">ipvt</span><span class="w">    </span><span class="k">integer</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="k">pivot</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">dgbco</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">dgbfa</span><span class="p">.</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">b</span><span class="w">       </span><span class="k">double</span><span class="w"> </span><span class="k">precision</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="nf">right</span><span class="w"> </span><span class="n">hand</span><span class="w"> </span><span class="n">side</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">job</span><span class="w">     </span><span class="k">integer</span><span class="w"></span>
+<span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">         </span><span class="k">to</span><span class="w"> </span><span class="n">solve</span><span class="w">  </span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">nonzero</span><span class="w">   </span><span class="k">to</span><span class="w"> </span><span class="n">solve</span><span class="w">  </span><span class="n">trans</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="k">where</span><span class="w"></span>
+<span class="w">                        </span><span class="n">trans</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w">  </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">transpose</span><span class="p">.</span><span class="w"></span>
+
+<span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="k">return</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">b</span><span class="w">       </span><span class="n">the</span><span class="w"> </span><span class="n">solution</span><span class="w"> </span><span class="n">vector</span><span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+
+<span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="k">condition</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="n">division</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">occur</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">input</span><span class="w"> </span><span class="n">factor</span><span class="w"> </span><span class="k">contains</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
+<span class="w">    </span><span class="n">zero</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">diagonal</span><span class="p">.</span><span class="w">  </span><span class="n">technically</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">indicates</span><span class="w"> </span><span class="n">singularity</span><span class="w"></span>
+<span class="w">    </span><span class="n">but</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">often</span><span class="w"> </span><span class="n">caused</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">improper</span><span class="w"> </span><span class="n">arguments</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">improper</span><span class="w"></span>
+<span class="w">    </span><span class="n">setting</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">lda</span><span class="w"> </span><span class="p">.</span><span class="w">  </span><span class="n">it</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">occur</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="k">are</span><span class="w"></span>
+<span class="w">    </span><span class="k">called</span><span class="w"> </span><span class="n">correctly</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">dgbco</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">rcond</span><span class="w"> </span><span class="p">.</span><span class="n">gt</span><span class="p">.</span><span class="w"> </span><span class="mf">0.0</span><span class="w"></span>
+<span class="w">    </span><span class="ow">or</span><span class="w"> </span><span class="n">dgbfa</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">info</span><span class="w"> </span><span class="p">.</span><span class="n">eq</span><span class="p">.</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
+
+<span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">compute</span><span class="w">  </span><span class="n">inverse</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w">  </span><span class="k">where</span><span class="w">  </span><span class="n">c</span><span class="w">  </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">matrix</span><span class="w"></span>
+<span class="w"> </span><span class="k">with</span><span class="w">  </span><span class="n">p</span><span class="w">  </span><span class="n">columns</span><span class="w"></span>
+<span class="w">       </span><span class="k">call</span><span class="w"> </span><span class="n">dgbco</span><span class="p">(</span><span class="n">abd</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ml</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">rcond</span><span class="p">,</span><span class="n">z</span><span class="p">)</span><span class="w"></span>
+<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rcond</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">too</span><span class="w"> </span><span class="n">small</span><span class="p">)</span><span class="w"> </span><span class="k">go</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="p">...</span><span class="w"></span>
+<span class="w">       </span><span class="n">do</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="w"></span>
+<span class="w">          </span><span class="k">call</span><span class="w"> </span><span class="n">dgbsl</span><span class="p">(</span><span class="n">abd</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ml</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">c</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="mi">10</span><span class="w"> </span><span class="k">continue</span><span class="w"></span>
+</code></pre></div>
+
+<p><strong><em>references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
+                 stewart, linpack users' guide, siam, 1979.
+</em></strong>routines called  daxpy, ddot
+***revision history  (yymmdd)
+   780814  date written
+   890531  changed all specific intrinsics to generic.  (wrb)
+   890831  modified array declarations.  (wrb)
+   890831  revision date from version 3.2
+   891214  prologue converted to version 4.0 format.  (bab)
+   900326  removed duplicate information from description section.
+           (wrb)
+   920501  reformatted the references section.  (wrb)</p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -562,83 +632,9 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">       </span><span class="k">subroutine </span><span class="n">dgbsl</span><span class="p">(</span><span class="n">abd</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ml</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">job</span><span class="p">)</span><span class="w"></span>
-<span class="w">       </span><span class="k">implicit none</span><span class="w"></span>
-<span class="w"> </span><span class="c">!***begin prologue  dgbsl</span>
-<span class="w"> </span><span class="c">!***purpose  solve the real band system a*x=b or trans(a)*x=b using</span>
-<span class="w"> </span><span class="c">!            the factors computed by dgbco or dgbfa.</span>
-<span class="w"> </span><span class="c">!***category  d2a2</span>
-<span class="w"> </span><span class="c">!***type      double precision (sgbsl-s, dgbsl-d, cgbsl-c)</span>
-<span class="w"> </span><span class="c">!***keywords  banded, linear algebra, linpack, matrix, solve</span>
-<span class="w"> </span><span class="c">!***author  moler, c. b., (u. of new mexico)</span>
-<span class="w"> </span><span class="c">!***description</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     dgbsl solves the double precision band system</span>
-<span class="w"> </span><span class="c">!     a * x = b  or  trans(a) * x = b</span>
-<span class="w"> </span><span class="c">!     using the factors computed by dgbco or dgbfa.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     on entry</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        abd     double precision(lda, n)</span>
-<span class="w"> </span><span class="c">!                the output from dgbco or dgbfa.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        lda     integer</span>
-<span class="w"> </span><span class="c">!                the leading dimension of the array  abd .</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        n       integer</span>
-<span class="w"> </span><span class="c">!                the order of the original matrix.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        ml      integer</span>
-<span class="w"> </span><span class="c">!                number of diagonals below the main diagonal.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        mu      integer</span>
-<span class="w"> </span><span class="c">!                number of diagonals above the main diagonal.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        ipvt    integer(n)</span>
-<span class="w"> </span><span class="c">!                the pivot vector from dgbco or dgbfa.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        b       double precision(n)</span>
-<span class="w"> </span><span class="c">!                the right hand side vector.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        job     integer</span>
-<span class="w"> </span><span class="c">!                = 0         to solve  a*x = b ,</span>
-<span class="w"> </span><span class="c">!                = nonzero   to solve  trans(a)*x = b , where</span>
-<span class="w"> </span><span class="c">!                            trans(a)  is the transpose.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     on return</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        b       the solution vector  x .</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     error condition</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        a division by zero will occur if the input factor contains a</span>
-<span class="w"> </span><span class="c">!        zero on the diagonal.  technically this indicates singularity</span>
-<span class="w"> </span><span class="c">!        but it is often caused by improper arguments or improper</span>
-<span class="w"> </span><span class="c">!        setting of lda .  it will not occur if the subroutines are</span>
-<span class="w"> </span><span class="c">!        called correctly and if dgbco has set rcond .gt. 0.0</span>
-<span class="w"> </span><span class="c">!        or dgbfa has set info .eq. 0 .</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     to compute  inverse(a) * c  where  c  is a matrix</span>
-<span class="w"> </span><span class="c">!     with  p  columns</span>
-<span class="w"> </span><span class="c">!           call dgbco(abd,lda,n,ml,mu,ipvt,rcond,z)</span>
-<span class="w"> </span><span class="c">!           if (rcond is too small) go to ...</span>
-<span class="w"> </span><span class="c">!           do 10 j = 1, p</span>
-<span class="w"> </span><span class="c">!              call dgbsl(abd,lda,n,ml,mu,ipvt,c(1,j),0)</span>
-<span class="w"> </span><span class="c">!        10 continue</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!***references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.</span>
-<span class="w"> </span><span class="c">!                 stewart, linpack users&#39; guide, siam, 1979.</span>
-<span class="w"> </span><span class="c">!***routines called  daxpy, ddot</span>
-<span class="w"> </span><span class="c">!***revision history  (yymmdd)</span>
-<span class="w"> </span><span class="c">!   780814  date written</span>
-<span class="w"> </span><span class="c">!   890531  changed all specific intrinsics to generic.  (wrb)</span>
-<span class="w"> </span><span class="c">!   890831  modified array declarations.  (wrb)</span>
-<span class="w"> </span><span class="c">!   890831  revision date from version 3.2</span>
-<span class="w"> </span><span class="c">!   891214  prologue converted to version 4.0 format.  (bab)</span>
-<span class="w"> </span><span class="c">!   900326  removed duplicate information from description section.</span>
-<span class="w"> </span><span class="c">!           (wrb)</span>
-<span class="w"> </span><span class="c">!   920501  reformatted the references section.  (wrb)</span>
-<span class="w"> </span><span class="c">!***end prologue  dgbsl</span>
-<span class="w">       </span><span class="kt">integer </span><span class="n">lda</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ipvt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="w"></span>
+<span class="w">         </span><span class="k">implicit none</span>
+
+<span class="k">       </span><span class="kt">integer </span><span class="n">lda</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ipvt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="w"></span>
 <span class="w">       </span><span class="kt">double precision </span><span class="n">abd</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
 <span class="w"> </span><span class="c">!</span>
 <span class="w">       </span><span class="kt">double precision </span><span class="n">t</span><span class="w"></span>

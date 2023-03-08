@@ -150,6 +150,14 @@
 </h2>
     
 
+    <p>reset the logical unit number for error messages.</p>
+<p>xsetun sets the logical unit number for error messages to lun.</p>
+<p><strong><em>author  hindmarsh, alan c., (llnl)
+</em></strong>revision history  (yymmdd)
+   921118  date written
+   930329  added slatec format prologue. (fnf)
+   930407  corrected see also section. (fnf)
+   930922  made user-callable, and other cosmetic changes. (fnf)</p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -327,33 +335,8 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">      </span><span class="k">subroutine </span><span class="n">xsetun</span><span class="p">(</span><span class="n">lun</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">implicit none</span><span class="w"></span>
-<span class="c">!***begin prologue  xsetun</span>
-<span class="c">!***purpose  reset the logical unit number for error messages.</span>
-<span class="c">!***category  r3b</span>
-<span class="c">!***type      all (xsetun-a)</span>
-<span class="c">!***keywords  error control</span>
-<span class="c">!***description</span>
-<span class="c">!</span>
-<span class="c">!   xsetun sets the logical unit number for error messages to lun.</span>
-<span class="c">!</span>
-<span class="c">!***author  hindmarsh, alan c., (llnl)</span>
-<span class="c">!***see also  xerrwd, xerrwv</span>
-<span class="c">!***references  (none)</span>
-<span class="c">!***routines called  ixsav</span>
-<span class="c">!***revision history  (yymmdd)</span>
-<span class="c">!   921118  date written</span>
-<span class="c">!   930329  added slatec format prologue. (fnf)</span>
-<span class="c">!   930407  corrected see also section. (fnf)</span>
-<span class="c">!   930922  made user-callable, and other cosmetic changes. (fnf)</span>
-<span class="c">!***end prologue  xsetun</span>
-<span class="c">!</span>
-<span class="c">! subroutines called by xsetun.. none</span>
-<span class="c">! function routine called by xsetun.. ixsav</span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="c">!**end</span>
-<span class="w">      </span><span class="kt">integer </span><span class="n">lun</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">junk</span><span class="w"></span>
-<span class="c">!</span>
+<span class="w">      </span><span class="k">implicit none</span>
+<span class="k">      </span><span class="kt">integer </span><span class="n">lun</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">junk</span><span class="w"></span>
 
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">lun</span><span class="o">&gt;</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">junk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ixsav</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">lun</span><span class="p">,.</span><span class="n">true</span><span class="p">.)</span><span class="w"></span>
 

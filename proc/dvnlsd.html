@@ -165,6 +165,119 @@
 </h2>
     
 
+    <p>subroutine dvnlsd is a nonlinear system solver, which uses functional
+  iteration or a chord (modified newton) method.  for the chord method
+  direct linear algebraic system solvers are used.  subroutine dvnlsd
+  then handles the corrector phase of this integration package.</p>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="p">,</span><span class="w"> </span><span class="n">savf</span><span class="p">,</span><span class="w"> </span><span class="n">ewt</span><span class="p">,</span><span class="w"> </span><span class="n">acor</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"></span>
+<span class="w">                        </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">jac</span><span class="p">,</span><span class="w"> </span><span class="n">nflag</span><span class="p">,</span><span class="w"> </span><span class="n">rpar</span><span class="p">,</span><span class="w"> </span><span class="n">ipar</span><span class="w"></span>
+<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">acor</span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"> </span><span class="n">nflag</span><span class="w"></span>
+<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="p">:</span><span class="w"></span>
+<span class="w">     </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w"> </span><span class="n">acnrm</span><span class="p">,</span><span class="w"> </span><span class="n">crate</span><span class="p">,</span><span class="w"> </span><span class="n">drc</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">rc</span><span class="p">,</span><span class="w"> </span><span class="n">rl1</span><span class="p">,</span><span class="w"> </span><span class="n">tq</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="w"> </span><span class="n">tn</span><span class="p">,</span><span class="w"> </span><span class="n">icf</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">jcur</span><span class="p">,</span><span class="w"> </span><span class="n">meth</span><span class="p">,</span><span class="w"> </span><span class="n">miter</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">nslp</span><span class="w"></span>
+<span class="w">     </span><span class="o">/</span><span class="n">dvod02</span><span class="o">/</span><span class="w"> </span><span class="n">hu</span><span class="p">,</span><span class="w"> </span><span class="n">ncfn</span><span class="p">,</span><span class="w"> </span><span class="n">netf</span><span class="p">,</span><span class="w"> </span><span class="n">nfe</span><span class="p">,</span><span class="w"> </span><span class="n">nje</span><span class="p">,</span><span class="w"> </span><span class="n">nlu</span><span class="p">,</span><span class="w"> </span><span class="n">nni</span><span class="p">,</span><span class="w"> </span><span class="n">nqu</span><span class="p">,</span><span class="w"> </span><span class="n">nst</span><span class="w"></span>
+
+<span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvnlsd</span><span class="p">:</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">daxpy</span><span class="p">,</span><span class="w"> </span><span class="n">dcopy</span><span class="p">,</span><span class="w"> </span><span class="n">dscal</span><span class="p">,</span><span class="w"> </span><span class="n">dvjac</span><span class="p">,</span><span class="w"> </span><span class="n">dvsol</span><span class="w"></span>
+<span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvnlsd</span><span class="p">:</span><span class="w"> </span><span class="n">dvnorm</span><span class="w"></span>
+<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
+
+<span class="w"> </span><span class="n">communication</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvnlsd</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">variables</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="k">for</span><span class="w"></span>
+<span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">details</span><span class="p">,</span><span class="w"> </span><span class="n">please</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">comments</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">driver</span><span class="w"> </span><span class="n">subroutine</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
+
+<span class="w"> </span><span class="n">y</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">dependent</span><span class="w"> </span><span class="n">variable</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">yh</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">nordsieck</span><span class="w"> </span><span class="p">(</span><span class="n">taylor</span><span class="p">)</span><span class="w"> </span><span class="n">array</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">lmax</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="w"></span>
+<span class="w">              </span><span class="ow">and</span><span class="w"> </span><span class="n">output</span><span class="o">.</span><span class="w">  </span><span class="n">on</span><span class="w"> </span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">predicted</span><span class="w"> </span><span class="n">values</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">ldyh</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">constant</span><span class="w"> </span><span class="o">.</span><span class="n">ge</span><span class="o">.</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">dimension</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">vsav</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">unused</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">array</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">savf</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">ewt</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">weight</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">acor</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">accumulated</span><span class="w"></span>
+<span class="w">              </span><span class="n">corrections</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">predicted</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="n">vector</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="n">iwm</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">arrays</span><span class="w"> </span><span class="n">associated</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">matrix</span><span class="w"></span>
+<span class="w">              </span><span class="n">operations</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">chord</span><span class="w"> </span><span class="n">iteration</span><span class="w"> </span><span class="p">(</span><span class="n">miter</span><span class="w"> </span><span class="o">.</span><span class="n">ne</span><span class="o">.</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">f</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">supplied</span><span class="w"> </span><span class="n">routine</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">jac</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">supplied</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">routine</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">pdum</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">unused</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="n">name</span><span class="o">.</span><span class="w">  </span><span class="n">included</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">uniformity</span><span class="w"></span>
+<span class="w">              </span><span class="n">over</span><span class="w"> </span><span class="n">collection</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">integrators</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">nflag</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">input</span><span class="o">/</span><span class="n">output</span><span class="w"> </span><span class="n">flag</span><span class="p">,</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">meanings</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">follows</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="n">input</span><span class="w"></span>
+<span class="w">                  </span><span class="mi">0</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="n">step</span><span class="o">.</span><span class="w"></span>
+<span class="w">                 </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="n">convergence</span><span class="w"> </span><span class="n">failure</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">previous</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">dvnlsd</span><span class="o">.</span><span class="w"></span>
+<span class="w">                 </span><span class="o">-</span><span class="mi">2</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="n">failure</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">dvstep</span><span class="o">.</span><span class="w"></span>
+<span class="w">              </span><span class="n">output</span><span class="w"></span>
+<span class="w">                  </span><span class="mi">0</span><span class="w"> </span><span class="n">successful</span><span class="w"> </span><span class="n">completion</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">nonlinear</span><span class="w"> </span><span class="n">solver</span><span class="o">.</span><span class="w"></span>
+<span class="w">                 </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="n">convergence</span><span class="w"> </span><span class="n">failure</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">singular</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="w"></span>
+<span class="w">                 </span><span class="o">-</span><span class="mi">2</span><span class="w"> </span><span class="n">unrecoverable</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">preprocessing</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="n">cannot</span><span class="w"> </span><span class="n">occur</span><span class="w"> </span><span class="n">here</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
+<span class="w">                 </span><span class="o">-</span><span class="mi">3</span><span class="w"> </span><span class="n">unrecoverable</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">solution</span><span class="w"> </span><span class="p">(</span><span class="n">cannot</span><span class="w"> </span><span class="n">occur</span><span class="w"></span>
+<span class="w">                    </span><span class="n">here</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">rpar</span><span class="p">,</span><span class="w"> </span><span class="n">ipar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">names</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">user</span><span class="s1">&#39;s real and integer work arrays.</span>
+
+<span class="w"> </span><span class="n">ipup</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">own</span><span class="w"> </span><span class="n">variable</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">meanings</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">follows</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="mi">0</span><span class="p">,</span><span class="w">            </span><span class="n">do</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">newton</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="w"></span>
+<span class="w">              </span><span class="n">miter</span><span class="w"> </span><span class="o">.</span><span class="n">ne</span><span class="o">.</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="n">newton</span><span class="w"> </span><span class="n">matrix</span><span class="p">,</span><span class="w"> </span><span class="n">because</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
+<span class="w">                            </span><span class="n">initial</span><span class="w"> </span><span class="n">step</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">changed</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">error</span><span class="w"></span>
+<span class="w">                            </span><span class="n">test</span><span class="w"> </span><span class="n">failed</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">indicated</span><span class="w"> </span><span class="n">by</span><span class="w"></span>
+<span class="w">                            </span><span class="n">the</span><span class="w"> </span><span class="n">scalar</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="n">nst</span><span class="o">.</span><span class="w"></span>
+
+<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">details</span><span class="p">,</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">comments</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">driver</span><span class="w"> </span><span class="n">subroutine</span><span class="o">.</span><span class="w"></span>
+</code></pre></div>
+
+<p>dvjac is called by dvnlsd to compute and process the matrix
+  p = i - h<em>rl1</em>j , where j is an approximation to the jacobian.
+  here j is computed by the user-supplied routine jac if
+  miter = 1 or 4, or by finite differencing if miter = 2, 3, or 5.
+  if miter = 3, a diagonal approximation to j is used.
+  if jsv = -1, j is computed from scratch in all cases.
+  if jsv = 1 and miter = 1, 2, 4, or 5, and if the saved value of j is
+  considered acceptable, then p is constructed from the saved j.
+  j is stored in wm and replaced by p.  if miter .ne. 3, p is then
+  subjected to lu decomposition in preparation for later solution
+  of linear systems with p as coefficient matrix. this is done
+  by dgefa if miter = 1 or 2, and by dgbfa if miter = 4 or 5.</p>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="p">,</span><span class="w"> </span><span class="n">ewt</span><span class="p">,</span><span class="w"> </span><span class="n">ftem</span><span class="p">,</span><span class="w"> </span><span class="n">savf</span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"></span>
+<span class="w">                        </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">jac</span><span class="p">,</span><span class="w"> </span><span class="n">rpar</span><span class="p">,</span><span class="w"> </span><span class="n">ipar</span><span class="w"></span>
+<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"> </span><span class="n">ierpj</span><span class="w"></span>
+<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="p">:</span><span class="w"></span>
+<span class="w">     </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w">  </span><span class="n">ccmxj</span><span class="p">,</span><span class="w"> </span><span class="n">drc</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">rl1</span><span class="p">,</span><span class="w"> </span><span class="n">tn</span><span class="p">,</span><span class="w"> </span><span class="n">uround</span><span class="p">,</span><span class="w"> </span><span class="n">icf</span><span class="p">,</span><span class="w"> </span><span class="n">jcur</span><span class="p">,</span><span class="w"> </span><span class="n">locjs</span><span class="p">,</span><span class="w"></span>
+<span class="w">               </span><span class="n">miter</span><span class="p">,</span><span class="w"> </span><span class="n">msbj</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">nslj</span><span class="w"></span>
+<span class="w">     </span><span class="o">/</span><span class="n">dvod02</span><span class="o">/</span><span class="w">  </span><span class="n">nfe</span><span class="p">,</span><span class="w"> </span><span class="n">nst</span><span class="p">,</span><span class="w"> </span><span class="n">nje</span><span class="p">,</span><span class="w"> </span><span class="n">nlu</span><span class="w"></span>
+
+<span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvjac</span><span class="p">:</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">jac</span><span class="p">,</span><span class="w"> </span><span class="n">dacopy</span><span class="p">,</span><span class="w"> </span><span class="n">dcopy</span><span class="p">,</span><span class="w"> </span><span class="n">dgbfa</span><span class="p">,</span><span class="w"> </span><span class="n">dgefa</span><span class="p">,</span><span class="w"></span>
+<span class="w">                              </span><span class="n">dscal</span><span class="w"></span>
+<span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvjac</span><span class="p">:</span><span class="w"> </span><span class="n">dvnorm</span><span class="w"></span>
+<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
+
+<span class="w"> </span><span class="n">communication</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvjac</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">variables</span><span class="o">.</span><span class="w">  </span><span class="p">(</span><span class="k">for</span><span class="w"></span>
+<span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">details</span><span class="p">,</span><span class="w"> </span><span class="n">please</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">comments</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">driver</span><span class="w"> </span><span class="n">subroutine</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="n">y</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">predicted</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">entry</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">yh</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">nordsieck</span><span class="w"> </span><span class="n">array</span><span class="p">,</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">ldyh</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">lmax</span><span class="w"> </span><span class="n">array</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">ldyh</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">constant</span><span class="w"> </span><span class="o">.</span><span class="n">ge</span><span class="o">.</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">dimension</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">ewt</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">weight</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">savf</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">evaluated</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">predicted</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">wm</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">space</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">matrices</span><span class="o">.</span><span class="w">  </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">contains</span><span class="w"></span>
+<span class="w">              </span><span class="n">the</span><span class="w"> </span><span class="n">inverse</span><span class="w"> </span><span class="n">diagonal</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">lu</span><span class="w"></span>
+<span class="w">              </span><span class="n">decomposition</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="mf">5.</span><span class="w"></span>
+<span class="w">              </span><span class="n">storage</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">elements</span><span class="w"> </span><span class="n">starts</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
+<span class="w">              </span><span class="n">storage</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">saved</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">starts</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="n">locjs</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
+<span class="w">              </span><span class="n">wm</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">matrix</span><span class="o">-</span><span class="n">related</span><span class="w"> </span><span class="n">data</span><span class="p">:</span><span class="w"></span>
+<span class="w">              </span><span class="n">wm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sqrt</span><span class="p">(</span><span class="n">uround</span><span class="p">),</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">numerical</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">step</span><span class="o">.</span><span class="w"></span>
+<span class="w">              </span><span class="n">wm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="o">*</span><span class="n">rl1</span><span class="p">,</span><span class="w"> </span><span class="n">saved</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">later</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.</span><span class="w"></span>
+<span class="w"> </span><span class="n">iwm</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">space</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">pivot</span><span class="w"> </span><span class="n">information</span><span class="p">,</span><span class="w"></span>
+<span class="w">              </span><span class="n">starting</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="mi">31</span><span class="p">),</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="mf">5.</span><span class="w"></span>
+<span class="w">              </span><span class="n">iwm</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">band</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"></span>
+<span class="w">              </span><span class="n">mu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="mf">5.</span><span class="w"></span>
+<span class="w"> </span><span class="n">f</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">supplied</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">jac</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">supplied</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">subroutine</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">rpar</span><span class="p">,</span><span class="w"> </span><span class="n">ipar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">names</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">user</span><span class="s1">&#39;s real and integer work arrays.</span>
+<span class="w"> </span><span class="n">rl1</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="n">el</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">input</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">ierpj</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">flag</span><span class="p">,</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">trouble</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">p</span><span class="w"></span>
+<span class="w">              </span><span class="n">matrix</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">found</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">singular</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">jcur</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">indicate</span><span class="w"> </span><span class="n">whether</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">matrix</span><span class="w"></span>
+<span class="w">              </span><span class="p">(</span><span class="ow">or</span><span class="w"> </span><span class="n">approximation</span><span class="p">)</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="n">current</span><span class="o">.</span><span class="w"></span>
+<span class="w">              </span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">current</span><span class="o">.</span><span class="w"></span>
+<span class="w">              </span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">current</span><span class="o">.</span><span class="w"></span>
+</code></pre></div>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -417,259 +530,259 @@
 <!-- Generated by graphviz version 2.43.0 (0)
  -->
 <!-- Title: proc~~dvnlsd~~CallsGraph Pages: 1 -->
-<svg id="procdvnlsdCallsGraph" width="332pt" height="398pt"
- viewBox="0.00 0.00 332.00 398.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="proc~~dvnlsd~~CallsGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 394)">
+<svg id="procdvnlsdCallsGraph" width="332pt" height="436pt"
+ viewBox="0.00 0.00 332.00 436.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="proc~~dvnlsd~~CallsGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 432)">
 <title>proc~~dvnlsd~~CallsGraph</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-394 328,-394 328,4 -4,4"/>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-432 328,-432 328,4 -4,4"/>
 <!-- proc~dvnlsd -->
 <g id="proc~~dvnlsd~~CallsGraph_node1" class="node">
 <title>proc~dvnlsd</title>
-<polygon fill="none" stroke="black" points="54,-226 0,-226 0,-202 54,-202 54,-226"/>
-<text text-anchor="middle" x="27" y="-211.6" font-family="Helvetica,sans-Serif" font-size="10.50">dvnlsd</text>
+<polygon fill="none" stroke="black" points="54,-186 0,-186 0,-162 54,-162 54,-186"/>
+<text text-anchor="middle" x="27" y="-171.6" font-family="Helvetica,sans-Serif" font-size="10.50">dvnlsd</text>
 </g>
-<!-- proc~dcopy -->
+<!-- proc~dvsol -->
 <g id="proc~~dvnlsd~~CallsGraph_node2" class="node">
-<title>proc~dcopy</title>
-<g id="a_proc~~dvnlsd~~CallsGraph_node2"><a xlink:href=".././proc/dcopy.html" xlink:title="dcopy">
-<polygon fill="#d9534f" stroke="#d9534f" points="234,-390 180,-390 180,-366 234,-366 234,-390"/>
-<text text-anchor="middle" x="207" y="-375.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dcopy</text>
+<title>proc~dvsol</title>
+<g id="a_proc~~dvnlsd~~CallsGraph_node2"><a xlink:href=".././proc/dvsol.html" xlink:title="dvsol">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-386 90,-386 90,-362 144,-362 144,-386"/>
+<text text-anchor="middle" x="117" y="-371.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvsol</text>
 </a>
 </g>
 </g>
-<!-- proc~dvnlsd&#45;&gt;proc~dcopy -->
+<!-- proc~dvnlsd&#45;&gt;proc~dvsol -->
 <g id="proc~~dvnlsd~~CallsGraph_edge1" class="edge">
-<title>proc~dvnlsd&#45;&gt;proc~dcopy</title>
-<path fill="none" stroke="#000000" d="M33,-226.29C41.87,-246.84 62.08,-288.52 90,-315 113.19,-337 145.55,-353.73 170.2,-364.4"/>
-<polygon fill="#000000" stroke="#000000" points="168.99,-367.69 179.57,-368.33 171.7,-361.23 168.99,-367.69"/>
+<title>proc~dvnlsd&#45;&gt;proc~dvsol</title>
+<path fill="none" stroke="#000000" d="M33.37,-186.21C47.92,-219.27 88.22,-310.86 106.62,-352.68"/>
+<polygon fill="#000000" stroke="#000000" points="103.47,-354.21 110.7,-361.95 109.87,-351.39 103.47,-354.21"/>
 </g>
 <!-- proc~dacopy -->
 <g id="proc~~dvnlsd~~CallsGraph_node3" class="node">
 <title>proc~dacopy</title>
 <g id="a_proc~~dvnlsd~~CallsGraph_node3"><a xlink:href=".././proc/dacopy.html" xlink:title="dacopy">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-389 90,-389 90,-365 144,-365 144,-389"/>
-<text text-anchor="middle" x="117" y="-374.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dacopy</text>
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-146 90,-146 90,-122 144,-122 144,-146"/>
+<text text-anchor="middle" x="117" y="-131.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dacopy</text>
 </a>
 </g>
 </g>
 <!-- proc~dvnlsd&#45;&gt;proc~dacopy -->
-<g id="proc~~dvnlsd~~CallsGraph_edge5" class="edge">
-<title>proc~dvnlsd&#45;&gt;proc~dacopy</title>
-<path fill="none" stroke="#000000" d="M32.12,-226.22C40.7,-250.75 62.04,-307.19 90,-349 91.88,-351.81 94.04,-354.62 96.3,-357.3"/>
-<polygon fill="#000000" stroke="#000000" points="93.87,-359.83 103.18,-364.9 99.06,-355.14 93.87,-359.83"/>
-</g>
-<!-- proc~dgefa -->
-<g id="proc~~dvnlsd~~CallsGraph_node4" class="node">
-<title>proc~dgefa</title>
-<g id="a_proc~~dvnlsd~~CallsGraph_node4"><a xlink:href=".././proc/dgefa.html" xlink:title="dgefa">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-184 90,-184 90,-160 144,-160 144,-184"/>
-<text text-anchor="middle" x="117" y="-169.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgefa</text>
-</a>
-</g>
-</g>
-<!-- proc~dvnlsd&#45;&gt;proc~dgefa -->
 <g id="proc~~dvnlsd~~CallsGraph_edge4" class="edge">
-<title>proc~dvnlsd&#45;&gt;proc~dgefa</title>
-<path fill="none" stroke="#000000" d="M53.45,-201.85C62.21,-197.67 72.17,-192.92 81.52,-188.46"/>
-<polygon fill="#000000" stroke="#000000" points="83.09,-191.59 90.6,-184.12 80.07,-185.27 83.09,-191.59"/>
-</g>
-<!-- dvnorm -->
-<g id="proc~~dvnlsd~~CallsGraph_node5" class="node">
-<title>dvnorm</title>
-<polygon fill="#777777" stroke="#777777" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
-<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvnorm</text>
-</g>
-<!-- proc~dvnlsd&#45;&gt;dvnorm -->
-<g id="proc~~dvnlsd~~CallsGraph_edge2" class="edge">
-<title>proc~dvnlsd&#45;&gt;dvnorm</title>
-<path fill="none" stroke="#000000" d="M32.01,-201.78C40.39,-177.28 61.39,-120.99 90,-80 91.5,-77.85 93.19,-75.72 94.97,-73.65"/>
-<polygon fill="#000000" stroke="#000000" points="97.74,-75.82 102.07,-66.15 92.66,-71.01 97.74,-75.82"/>
+<title>proc~dvnlsd&#45;&gt;proc~dacopy</title>
+<path fill="none" stroke="#000000" d="M54.4,-162C62.66,-158.25 71.9,-154.05 80.66,-150.06"/>
+<polygon fill="#000000" stroke="#000000" points="82.26,-153.18 89.92,-145.86 79.37,-146.81 82.26,-153.18"/>
 </g>
 <!-- proc~daxpy -->
-<g id="proc~~dvnlsd~~CallsGraph_node6" class="node">
+<g id="proc~~dvnlsd~~CallsGraph_node4" class="node">
 <title>proc~daxpy</title>
-<g id="a_proc~~dvnlsd~~CallsGraph_node6"><a xlink:href=".././proc/daxpy.html" xlink:title="daxpy">
-<polygon fill="#d9534f" stroke="#d9534f" points="324,-266 270,-266 270,-242 324,-242 324,-266"/>
-<text text-anchor="middle" x="297" y="-251.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">daxpy</text>
+<g id="a_proc~~dvnlsd~~CallsGraph_node4"><a xlink:href=".././proc/daxpy.html" xlink:title="daxpy">
+<polygon fill="#d9534f" stroke="#d9534f" points="324,-346 270,-346 270,-322 324,-322 324,-346"/>
+<text text-anchor="middle" x="297" y="-331.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">daxpy</text>
 </a>
 </g>
 </g>
 <!-- proc~dvnlsd&#45;&gt;proc~daxpy -->
 <g id="proc~~dvnlsd~~CallsGraph_edge3" class="edge">
 <title>proc~dvnlsd&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M36.02,-201.91C46.51,-187.18 66.38,-162.79 90,-151 147.46,-122.32 178.86,-106.08 234,-139 267.7,-159.12 284.17,-204.58 291.3,-231.93"/>
-<polygon fill="#000000" stroke="#000000" points="287.93,-232.86 293.67,-241.76 294.73,-231.22 287.93,-232.86"/>
+<path fill="none" stroke="#000000" d="M54.01,-171.32C96.18,-168.4 180.15,-168.64 234,-209 267.86,-234.38 284.38,-283.32 291.46,-311.86"/>
+<polygon fill="#000000" stroke="#000000" points="288.07,-312.74 293.72,-321.7 294.89,-311.17 288.07,-312.74"/>
+</g>
+<!-- dvjac -->
+<g id="proc~~dvnlsd~~CallsGraph_node5" class="node">
+<title>dvjac</title>
+<polygon fill="#777777" stroke="#777777" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
+<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvjac</text>
+</g>
+<!-- proc~dvnlsd&#45;&gt;dvjac -->
+<g id="proc~~dvnlsd~~CallsGraph_edge2" class="edge">
+<title>proc~dvnlsd&#45;&gt;dvjac</title>
+<path fill="none" stroke="#000000" d="M34.91,-161.89C45.66,-143.45 67.51,-107.57 90,-80 91.69,-77.92 93.53,-75.83 95.42,-73.77"/>
+<polygon fill="#000000" stroke="#000000" points="98.31,-75.82 102.77,-66.21 93.29,-70.95 98.31,-75.82"/>
 </g>
 <!-- proc~dgbfa -->
-<g id="proc~~dvnlsd~~CallsGraph_node7" class="node">
+<g id="proc~~dvnlsd~~CallsGraph_node6" class="node">
 <title>proc~dgbfa</title>
-<g id="a_proc~~dvnlsd~~CallsGraph_node7"><a xlink:href=".././proc/dgbfa.html" xlink:title="dgbfa">
+<g id="a_proc~~dvnlsd~~CallsGraph_node6"><a xlink:href=".././proc/dgbfa.html" xlink:title="dgbfa">
 <polygon fill="#d9534f" stroke="#d9534f" points="144,-226 90,-226 90,-202 144,-202 144,-226"/>
 <text text-anchor="middle" x="117" y="-211.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgbfa</text>
 </a>
 </g>
 </g>
 <!-- proc~dvnlsd&#45;&gt;proc~dgbfa -->
-<g id="proc~~dvnlsd~~CallsGraph_edge6" class="edge">
+<g id="proc~~dvnlsd~~CallsGraph_edge5" class="edge">
 <title>proc~dvnlsd&#45;&gt;proc~dgbfa</title>
-<path fill="none" stroke="#000000" d="M54.4,-214C62.39,-214 71.31,-214 79.82,-214"/>
-<polygon fill="#000000" stroke="#000000" points="79.92,-217.5 89.92,-214 79.92,-210.5 79.92,-217.5"/>
+<path fill="none" stroke="#000000" d="M54.4,-186C62.66,-189.75 71.9,-193.95 80.66,-197.94"/>
+<polygon fill="#000000" stroke="#000000" points="79.37,-201.19 89.92,-202.14 82.26,-194.82 79.37,-201.19"/>
 </g>
-<!-- dvjac -->
-<g id="proc~~dvnlsd~~CallsGraph_node8" class="node">
-<title>dvjac</title>
-<polygon fill="#777777" stroke="#777777" points="144,-24 90,-24 90,0 144,0 144,-24"/>
-<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvjac</text>
-</g>
-<!-- proc~dvnlsd&#45;&gt;dvjac -->
-<g id="proc~~dvnlsd~~CallsGraph_edge7" class="edge">
-<title>proc~dvnlsd&#45;&gt;dvjac</title>
-<path fill="none" stroke="#000000" d="M29.75,-201.95C34.68,-171.29 50.95,-88.78 90,-33 90.35,-32.49 90.72,-32 91.11,-31.5"/>
-<polygon fill="#000000" stroke="#000000" points="93.8,-33.75 98.19,-24.11 88.74,-28.91 93.8,-33.75"/>
-</g>
-<!-- proc~dvsol -->
-<g id="proc~~dvnlsd~~CallsGraph_node9" class="node">
-<title>proc~dvsol</title>
-<g id="a_proc~~dvnlsd~~CallsGraph_node9"><a xlink:href=".././proc/dvsol.html" xlink:title="dvsol">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-306 90,-306 90,-282 144,-282 144,-306"/>
-<text text-anchor="middle" x="117" y="-291.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvsol</text>
+<!-- proc~dcopy -->
+<g id="proc~~dvnlsd~~CallsGraph_node7" class="node">
+<title>proc~dcopy</title>
+<g id="a_proc~~dvnlsd~~CallsGraph_node7"><a xlink:href=".././proc/dcopy.html" xlink:title="dcopy">
+<polygon fill="#d9534f" stroke="#d9534f" points="234,-126 180,-126 180,-102 234,-102 234,-126"/>
+<text text-anchor="middle" x="207" y="-111.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dcopy</text>
 </a>
 </g>
 </g>
-<!-- proc~dvnlsd&#45;&gt;proc~dvsol -->
-<g id="proc~~dvnlsd~~CallsGraph_edge8" class="edge">
-<title>proc~dvnlsd&#45;&gt;proc~dvsol</title>
-<path fill="none" stroke="#000000" d="M41.37,-226.15C55.66,-239.15 78.53,-259.93 95.18,-275.08"/>
-<polygon fill="#000000" stroke="#000000" points="93.04,-277.86 102.8,-282 97.75,-272.68 93.04,-277.86"/>
+<!-- proc~dvnlsd&#45;&gt;proc~dcopy -->
+<g id="proc~~dvnlsd~~CallsGraph_edge6" class="edge">
+<title>proc~dvnlsd&#45;&gt;proc~dcopy</title>
+<path fill="none" stroke="#000000" d="M35.88,-161.79C46.24,-146.99 65.96,-122.84 90,-113 115.16,-102.7 146.05,-103.54 169.63,-106.64"/>
+<polygon fill="#000000" stroke="#000000" points="169.16,-110.11 179.57,-108.13 170.2,-103.18 169.16,-110.11"/>
 </g>
 <!-- proc~dscal -->
-<g id="proc~~dvnlsd~~CallsGraph_node10" class="node">
+<g id="proc~~dvnlsd~~CallsGraph_node8" class="node">
 <title>proc~dscal</title>
-<g id="a_proc~~dvnlsd~~CallsGraph_node10"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
-<polygon fill="#d9534f" stroke="#d9534f" points="234,-226 180,-226 180,-202 234,-202 234,-226"/>
-<text text-anchor="middle" x="207" y="-211.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
+<g id="a_proc~~dvnlsd~~CallsGraph_node8"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
+<polygon fill="#d9534f" stroke="#d9534f" points="234,-306 180,-306 180,-282 234,-282 234,-306"/>
+<text text-anchor="middle" x="207" y="-291.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
 </a>
 </g>
 </g>
 <!-- proc~dvnlsd&#45;&gt;proc~dscal -->
-<g id="proc~~dvnlsd~~CallsGraph_edge9" class="edge">
+<g id="proc~~dvnlsd~~CallsGraph_edge7" class="edge">
 <title>proc~dvnlsd&#45;&gt;proc~dscal</title>
-<path fill="none" stroke="#000000" d="M54.06,-224.94C64.96,-228.96 77.89,-233 90,-235 113.68,-238.9 120.32,-238.9 144,-235 152.7,-233.57 161.83,-231.07 170.32,-228.29"/>
-<polygon fill="#000000" stroke="#000000" points="171.64,-231.54 179.94,-224.94 169.34,-224.93 171.64,-231.54"/>
+<path fill="none" stroke="#000000" d="M31.54,-186.28C38.63,-208.45 56.81,-254.91 90,-277 113.32,-292.52 145.09,-296.27 169.49,-296.41"/>
+<polygon fill="#000000" stroke="#000000" points="169.84,-299.91 179.79,-296.27 169.74,-292.91 169.84,-299.91"/>
 </g>
-<!-- proc~dacopy&#45;&gt;proc~dcopy -->
-<g id="proc~~dvnlsd~~CallsGraph_edge10" class="edge">
-<title>proc~dacopy&#45;&gt;proc~dcopy</title>
-<path fill="none" stroke="#000000" d="M144.4,-377.3C152.39,-377.39 161.31,-377.49 169.82,-377.59"/>
-<polygon fill="#000000" stroke="#000000" points="169.88,-381.09 179.92,-377.7 169.96,-374.09 169.88,-381.09"/>
+<!-- dvnorm -->
+<g id="proc~~dvnlsd~~CallsGraph_node9" class="node">
+<title>dvnorm</title>
+<polygon fill="#777777" stroke="#777777" points="144,-24 90,-24 90,0 144,0 144,-24"/>
+<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvnorm</text>
 </g>
-<!-- proc~dgefa&#45;&gt;proc~daxpy -->
-<g id="proc~~dvnlsd~~CallsGraph_edge13" class="edge">
-<title>proc~dgefa&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M139.96,-159.84C164.43,-148.08 204.42,-134.28 234,-151 264.68,-168.34 281.87,-207.63 290.01,-232.36"/>
-<polygon fill="#000000" stroke="#000000" points="286.67,-233.43 292.95,-241.96 293.36,-231.37 286.67,-233.43"/>
+<!-- proc~dvnlsd&#45;&gt;dvnorm -->
+<g id="proc~~dvnlsd~~CallsGraph_edge8" class="edge">
+<title>proc~dvnlsd&#45;&gt;dvnorm</title>
+<path fill="none" stroke="#000000" d="M31.26,-161.65C38.54,-135.79 58,-74.85 90,-33 90.46,-32.4 90.95,-31.8 91.45,-31.21"/>
+<polygon fill="#000000" stroke="#000000" points="94.04,-33.57 98.68,-24.04 89.11,-28.59 94.04,-33.57"/>
 </g>
-<!-- proc~dgefa&#45;&gt;proc~dscal -->
-<g id="proc~~dvnlsd~~CallsGraph_edge12" class="edge">
-<title>proc~dgefa&#45;&gt;proc~dscal</title>
-<path fill="none" stroke="#000000" d="M143.45,-184.15C152.21,-188.33 162.17,-193.08 171.52,-197.54"/>
-<polygon fill="#000000" stroke="#000000" points="170.07,-200.73 180.6,-201.88 173.09,-194.41 170.07,-200.73"/>
-</g>
-<!-- proc~idamax -->
-<g id="proc~~dvnlsd~~CallsGraph_node11" class="node">
-<title>proc~idamax</title>
-<g id="a_proc~~dvnlsd~~CallsGraph_node11"><a xlink:href=".././proc/idamax.html" xlink:title="idamax">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="234,-184 180,-184 180,-160 234,-160 234,-184"/>
-<text text-anchor="middle" x="207" y="-169.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">idamax</text>
+<!-- proc~dgefa -->
+<g id="proc~~dvnlsd~~CallsGraph_node10" class="node">
+<title>proc~dgefa</title>
+<g id="a_proc~~dvnlsd~~CallsGraph_node10"><a xlink:href=".././proc/dgefa.html" xlink:title="dgefa">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-268 90,-268 90,-244 144,-244 144,-268"/>
+<text text-anchor="middle" x="117" y="-253.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgefa</text>
 </a>
 </g>
 </g>
-<!-- proc~dgefa&#45;&gt;proc~idamax -->
-<g id="proc~~dvnlsd~~CallsGraph_edge11" class="edge">
-<title>proc~dgefa&#45;&gt;proc~idamax</title>
-<path fill="none" stroke="#000000" d="M144.4,-172C152.39,-172 161.31,-172 169.82,-172"/>
-<polygon fill="#000000" stroke="#000000" points="169.92,-175.5 179.92,-172 169.92,-168.5 169.92,-175.5"/>
-</g>
-<!-- proc~dgbfa&#45;&gt;proc~daxpy -->
-<g id="proc~~dvnlsd~~CallsGraph_edge16" class="edge">
-<title>proc~dgbfa&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M144.27,-223.96C155.2,-227.83 168.09,-232.03 180,-235 206.44,-241.6 236.86,-246.48 259.92,-249.64"/>
-<polygon fill="#000000" stroke="#000000" points="259.58,-253.13 269.95,-250.98 260.5,-246.19 259.58,-253.13"/>
-</g>
-<!-- proc~dgbfa&#45;&gt;proc~dscal -->
-<g id="proc~~dvnlsd~~CallsGraph_edge15" class="edge">
-<title>proc~dgbfa&#45;&gt;proc~dscal</title>
-<path fill="none" stroke="#000000" d="M144.4,-214C152.39,-214 161.31,-214 169.82,-214"/>
-<polygon fill="#000000" stroke="#000000" points="169.92,-217.5 179.92,-214 169.92,-210.5 169.92,-217.5"/>
-</g>
-<!-- proc~dgbfa&#45;&gt;proc~idamax -->
-<g id="proc~~dvnlsd~~CallsGraph_edge14" class="edge">
-<title>proc~dgbfa&#45;&gt;proc~idamax</title>
-<path fill="none" stroke="#000000" d="M143.45,-201.85C152.21,-197.67 162.17,-192.92 171.52,-188.46"/>
-<polygon fill="#000000" stroke="#000000" points="173.09,-191.59 180.6,-184.12 170.07,-185.27 173.09,-191.59"/>
+<!-- proc~dvnlsd&#45;&gt;proc~dgefa -->
+<g id="proc~~dvnlsd~~CallsGraph_edge9" class="edge">
+<title>proc~dvnlsd&#45;&gt;proc~dgefa</title>
+<path fill="none" stroke="#000000" d="M39.55,-186.05C51.77,-198.61 71.74,-218.72 90,-235 90.82,-235.73 91.67,-236.47 92.52,-237.22"/>
+<polygon fill="#000000" stroke="#000000" points="90.48,-240.07 100.39,-243.81 94.97,-234.7 90.48,-240.07"/>
 </g>
 <!-- proc~dgbsl -->
-<g id="proc~~dvnlsd~~CallsGraph_node12" class="node">
+<g id="proc~~dvnlsd~~CallsGraph_node11" class="node">
 <title>proc~dgbsl</title>
-<g id="a_proc~~dvnlsd~~CallsGraph_node12"><a xlink:href=".././proc/dgbsl.html" xlink:title="dgbsl">
-<polygon fill="#d9534f" stroke="#d9534f" points="234,-348 180,-348 180,-324 234,-324 234,-348"/>
-<text text-anchor="middle" x="207" y="-333.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgbsl</text>
+<g id="a_proc~~dvnlsd~~CallsGraph_node11"><a xlink:href=".././proc/dgbsl.html" xlink:title="dgbsl">
+<polygon fill="#d9534f" stroke="#d9534f" points="234,-428 180,-428 180,-404 234,-404 234,-428"/>
+<text text-anchor="middle" x="207" y="-413.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgbsl</text>
 </a>
 </g>
 </g>
 <!-- proc~dvsol&#45;&gt;proc~dgbsl -->
-<g id="proc~~dvnlsd~~CallsGraph_edge17" class="edge">
+<g id="proc~~dvnlsd~~CallsGraph_edge10" class="edge">
 <title>proc~dvsol&#45;&gt;proc~dgbsl</title>
-<path fill="none" stroke="#000000" d="M143.45,-306.15C152.21,-310.33 162.17,-315.08 171.52,-319.54"/>
-<polygon fill="#000000" stroke="#000000" points="170.07,-322.73 180.6,-323.88 173.09,-316.41 170.07,-322.73"/>
+<path fill="none" stroke="#000000" d="M143.45,-386.15C152.21,-390.33 162.17,-395.08 171.52,-399.54"/>
+<polygon fill="#000000" stroke="#000000" points="170.07,-402.73 180.6,-403.88 173.09,-396.41 170.07,-402.73"/>
 </g>
 <!-- proc~dgesl -->
 <g id="proc~~dvnlsd~~CallsGraph_node13" class="node">
 <title>proc~dgesl</title>
 <g id="a_proc~~dvnlsd~~CallsGraph_node13"><a xlink:href=".././proc/dgesl.html" xlink:title="dgesl">
-<polygon fill="#d9534f" stroke="#d9534f" points="234,-306 180,-306 180,-282 234,-282 234,-306"/>
-<text text-anchor="middle" x="207" y="-291.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgesl</text>
+<polygon fill="#d9534f" stroke="#d9534f" points="234,-386 180,-386 180,-362 234,-362 234,-386"/>
+<text text-anchor="middle" x="207" y="-371.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgesl</text>
 </a>
 </g>
 </g>
 <!-- proc~dvsol&#45;&gt;proc~dgesl -->
-<g id="proc~~dvnlsd~~CallsGraph_edge18" class="edge">
+<g id="proc~~dvnlsd~~CallsGraph_edge11" class="edge">
 <title>proc~dvsol&#45;&gt;proc~dgesl</title>
-<path fill="none" stroke="#000000" d="M144.4,-294C152.39,-294 161.31,-294 169.82,-294"/>
-<polygon fill="#000000" stroke="#000000" points="169.92,-297.5 179.92,-294 169.92,-290.5 169.92,-297.5"/>
+<path fill="none" stroke="#000000" d="M144.4,-374C152.39,-374 161.31,-374 169.82,-374"/>
+<polygon fill="#000000" stroke="#000000" points="169.92,-377.5 179.92,-374 169.92,-370.5 169.92,-377.5"/>
+</g>
+<!-- proc~dacopy&#45;&gt;proc~dcopy -->
+<g id="proc~~dvnlsd~~CallsGraph_edge12" class="edge">
+<title>proc~dacopy&#45;&gt;proc~dcopy</title>
+<path fill="none" stroke="#000000" d="M144.4,-128C152.48,-126.16 161.51,-124.11 170.1,-122.16"/>
+<polygon fill="#000000" stroke="#000000" points="170.94,-125.56 179.92,-119.93 169.39,-118.73 170.94,-125.56"/>
+</g>
+<!-- proc~dgbfa&#45;&gt;proc~daxpy -->
+<g id="proc~~dvnlsd~~CallsGraph_edge15" class="edge">
+<title>proc~dgbfa&#45;&gt;proc~daxpy</title>
+<path fill="none" stroke="#000000" d="M144.21,-211.73C169.32,-210.88 207.23,-213.18 234,-231 262.91,-250.24 280.43,-287.98 289.15,-312.04"/>
+<polygon fill="#000000" stroke="#000000" points="285.91,-313.39 292.46,-321.72 292.54,-311.13 285.91,-313.39"/>
+</g>
+<!-- proc~dgbfa&#45;&gt;proc~dscal -->
+<g id="proc~~dvnlsd~~CallsGraph_edge14" class="edge">
+<title>proc~dgbfa&#45;&gt;proc~dscal</title>
+<path fill="none" stroke="#000000" d="M133.68,-226.11C137.15,-228.94 140.76,-232.01 144,-235 161.09,-250.79 162.91,-257.21 180,-273 180.81,-273.75 181.64,-274.5 182.49,-275.25"/>
+<polygon fill="#000000" stroke="#000000" points="180.43,-278.09 190.32,-281.89 184.96,-272.75 180.43,-278.09"/>
+</g>
+<!-- proc~idamax -->
+<g id="proc~~dvnlsd~~CallsGraph_node12" class="node">
+<title>proc~idamax</title>
+<g id="a_proc~~dvnlsd~~CallsGraph_node12"><a xlink:href=".././proc/idamax.html" xlink:title="idamax">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="234,-264 180,-264 180,-240 234,-240 234,-264"/>
+<text text-anchor="middle" x="207" y="-249.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">idamax</text>
+</a>
+</g>
+</g>
+<!-- proc~dgbfa&#45;&gt;proc~idamax -->
+<g id="proc~~dvnlsd~~CallsGraph_edge13" class="edge">
+<title>proc~dgbfa&#45;&gt;proc~idamax</title>
+<path fill="none" stroke="#000000" d="M144.4,-225.4C152.66,-228.97 161.9,-232.96 170.66,-236.74"/>
+<polygon fill="#000000" stroke="#000000" points="169.35,-239.99 179.92,-240.74 172.13,-233.56 169.35,-239.99"/>
+</g>
+<!-- proc~dgefa&#45;&gt;proc~daxpy -->
+<g id="proc~~dvnlsd~~CallsGraph_edge18" class="edge">
+<title>proc~dgefa&#45;&gt;proc~daxpy</title>
+<path fill="none" stroke="#000000" d="M127.02,-268.18C137.93,-281.95 157.65,-303.88 180,-315 204.83,-327.35 235.99,-331.94 259.75,-333.53"/>
+<polygon fill="#000000" stroke="#000000" points="259.61,-337.03 269.78,-334.06 259.97,-330.04 259.61,-337.03"/>
+</g>
+<!-- proc~dgefa&#45;&gt;proc~dscal -->
+<g id="proc~~dvnlsd~~CallsGraph_edge17" class="edge">
+<title>proc~dgefa&#45;&gt;proc~dscal</title>
+<path fill="none" stroke="#000000" d="M144.4,-267.4C152.66,-270.97 161.9,-274.96 170.66,-278.74"/>
+<polygon fill="#000000" stroke="#000000" points="169.35,-281.99 179.92,-282.74 172.13,-275.56 169.35,-281.99"/>
+</g>
+<!-- proc~dgefa&#45;&gt;proc~idamax -->
+<g id="proc~~dvnlsd~~CallsGraph_edge16" class="edge">
+<title>proc~dgefa&#45;&gt;proc~idamax</title>
+<path fill="none" stroke="#000000" d="M144.4,-254.8C152.39,-254.44 161.31,-254.03 169.82,-253.64"/>
+<polygon fill="#000000" stroke="#000000" points="170.09,-257.14 179.92,-253.19 169.77,-250.14 170.09,-257.14"/>
 </g>
 <!-- proc~dgbsl&#45;&gt;proc~daxpy -->
 <g id="proc~~dvnlsd~~CallsGraph_edge20" class="edge">
 <title>proc~dgbsl&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M223.61,-323.81C227.08,-320.98 230.71,-317.94 234,-315 248.98,-301.64 265.11,-285.72 277.17,-273.49"/>
-<polygon fill="#000000" stroke="#000000" points="279.95,-275.64 284.45,-266.05 274.95,-270.75 279.95,-275.64"/>
+<path fill="none" stroke="#000000" d="M223.61,-403.81C227.08,-400.98 230.71,-397.94 234,-395 248.98,-381.64 265.11,-365.72 277.17,-353.49"/>
+<polygon fill="#000000" stroke="#000000" points="279.95,-355.64 284.45,-346.05 274.95,-350.75 279.95,-355.64"/>
 </g>
 <!-- proc~ddot -->
 <g id="proc~~dvnlsd~~CallsGraph_node14" class="node">
 <title>proc~ddot</title>
 <g id="a_proc~~dvnlsd~~CallsGraph_node14"><a xlink:href=".././proc/ddot.html" xlink:title="ddot">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="324,-328 270,-328 270,-304 324,-304 324,-328"/>
-<text text-anchor="middle" x="297" y="-313.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">ddot</text>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="324,-408 270,-408 270,-384 324,-384 324,-408"/>
+<text text-anchor="middle" x="297" y="-393.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">ddot</text>
 </a>
 </g>
 </g>
 <!-- proc~dgbsl&#45;&gt;proc~ddot -->
 <g id="proc~~dvnlsd~~CallsGraph_edge19" class="edge">
 <title>proc~dgbsl&#45;&gt;proc~ddot</title>
-<path fill="none" stroke="#000000" d="M234.4,-330C242.48,-328.16 251.51,-326.11 260.1,-324.16"/>
-<polygon fill="#000000" stroke="#000000" points="260.94,-327.56 269.92,-321.93 259.39,-320.73 260.94,-327.56"/>
+<path fill="none" stroke="#000000" d="M234.4,-410C242.48,-408.16 251.51,-406.11 260.1,-404.16"/>
+<polygon fill="#000000" stroke="#000000" points="260.94,-407.56 269.92,-401.93 259.39,-400.73 260.94,-407.56"/>
 </g>
 <!-- proc~dgesl&#45;&gt;proc~daxpy -->
 <g id="proc~~dvnlsd~~CallsGraph_edge22" class="edge">
 <title>proc~dgesl&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M234.4,-282C242.66,-278.25 251.9,-274.05 260.66,-270.06"/>
-<polygon fill="#000000" stroke="#000000" points="262.26,-273.18 269.92,-265.86 259.37,-266.81 262.26,-273.18"/>
+<path fill="none" stroke="#000000" d="M234.4,-362C242.66,-358.25 251.9,-354.05 260.66,-350.06"/>
+<polygon fill="#000000" stroke="#000000" points="262.26,-353.18 269.92,-345.86 259.37,-346.81 262.26,-353.18"/>
 </g>
 <!-- proc~dgesl&#45;&gt;proc~ddot -->
 <g id="proc~~dvnlsd~~CallsGraph_edge21" class="edge">
 <title>proc~dgesl&#45;&gt;proc~ddot</title>
-<path fill="none" stroke="#000000" d="M234.4,-300.6C242.48,-302.62 251.51,-304.88 260.1,-307.03"/>
-<polygon fill="#000000" stroke="#000000" points="259.37,-310.45 269.92,-309.48 261.07,-303.66 259.37,-310.45"/>
+<path fill="none" stroke="#000000" d="M234.4,-380.6C242.48,-382.62 251.51,-384.88 260.1,-387.03"/>
+<polygon fill="#000000" stroke="#000000" points="259.37,-390.45 269.92,-389.48 261.07,-383.66 259.37,-390.45"/>
 </g>
 </g>
 </svg>
@@ -2895,64 +3008,6 @@
 <span class="w">      </span><span class="kt">integer </span><span class="n">ldyh</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nflag</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ipar</span><span class="w"></span>
 <span class="w">      </span><span class="k">dimension </span><span class="n">y</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">ldyh</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">vsav</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">savf</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ewt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">acor</span><span class="p">(</span><span class="o">*</span><span class="p">)&amp;</span><span class="w"></span>
 <span class="w">                </span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">rpar</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ipar</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="c">! call sequence input -- y, yh, ldyh, savf, ewt, acor, iwm, wm,</span>
-<span class="c">!                        f, jac, nflag, rpar, ipar</span>
-<span class="c">! call sequence output -- yh, acor, wm, iwm, nflag</span>
-<span class="c">! common block variables accessed:</span>
-<span class="c">!     /dvod01/ acnrm, crate, drc, h, rc, rl1, tq(5), tn, icf,</span>
-<span class="c">!                jcur, meth, miter, n, nslp</span>
-<span class="c">!     /dvod02/ hu, ncfn, netf, nfe, nje, nlu, nni, nqu, nst</span>
-<span class="c">!</span>
-<span class="c">! subroutines called by dvnlsd: f, daxpy, dcopy, dscal, dvjac, dvsol</span>
-<span class="c">! function routines called by dvnlsd: dvnorm</span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="c">! subroutine dvnlsd is a nonlinear system solver, which uses functional</span>
-<span class="c">! iteration or a chord (modified newton) method.  for the chord method</span>
-<span class="c">! direct linear algebraic system solvers are used.  subroutine dvnlsd</span>
-<span class="c">! then handles the corrector phase of this integration package.</span>
-<span class="c">!</span>
-<span class="c">! communication with dvnlsd is done with the following variables. (for</span>
-<span class="c">! more details, please see the comments in the driver subroutine.)</span>
-<span class="c">!</span>
-<span class="c">! y          = the dependent variable, a vector of length n, input.</span>
-<span class="c">! yh         = the nordsieck (taylor) array, ldyh by lmax, input</span>
-<span class="c">!              and output.  on input, it contains predicted values.</span>
-<span class="c">! ldyh       = a constant .ge. n, the first dimension of yh, input.</span>
-<span class="c">! vsav       = unused work array.</span>
-<span class="c">! savf       = a work array of length n.</span>
-<span class="c">! ewt        = an error weight vector of length n, input.</span>
-<span class="c">! acor       = a work array of length n, used for the accumulated</span>
-<span class="c">!              corrections to the predicted y vector.</span>
-<span class="c">! wm,iwm     = real and integer work arrays associated with matrix</span>
-<span class="c">!              operations in chord iteration (miter .ne. 0).</span>
-<span class="c">! f          = dummy name for user supplied routine for f.</span>
-<span class="c">! jac        = dummy name for user supplied jacobian routine.</span>
-<span class="c">! pdum       = unused dummy subroutine name.  included for uniformity</span>
-<span class="c">!              over collection of integrators.</span>
-<span class="c">! nflag      = input/output flag, with values and meanings as follows:</span>
-<span class="c">!              input</span>
-<span class="c">!                  0 first call for this time step.</span>
-<span class="c">!                 -1 convergence failure in previous call to dvnlsd.</span>
-<span class="c">!                 -2 error test failure in dvstep.</span>
-<span class="c">!              output</span>
-<span class="c">!                  0 successful completion of nonlinear solver.</span>
-<span class="c">!                 -1 convergence failure or singular matrix.</span>
-<span class="c">!                 -2 unrecoverable error in matrix preprocessing</span>
-<span class="c">!                    (cannot occur here).</span>
-<span class="c">!                 -3 unrecoverable error in solution (cannot occur</span>
-<span class="c">!                    here).</span>
-<span class="c">! rpar, ipar = dummy names for user&#39;s real and integer work arrays.</span>
-<span class="c">!</span>
-<span class="c">! ipup       = own variable flag with values and meanings as follows:</span>
-<span class="c">!              0,            do not update the newton matrix.</span>
-<span class="c">!              miter .ne. 0, update newton matrix, because it is the</span>
-<span class="c">!                            initial step, order was changed, the error</span>
-<span class="c">!                            test failed, or an update is indicated by</span>
-<span class="c">!                            the scalar rc or step counter nst.</span>
-<span class="c">!</span>
-<span class="c">! for more details, see comments in driver subroutine.</span>
-<span class="c">!-----------------------------------------------------------------------</span>
 <span class="c">! type declarations for labeled common block dvod01 --------------------</span>
 <span class="c">!</span>
 <span class="w">      </span><span class="kt">double precision </span><span class="n">acnrm</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ccmxj</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">conp</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">crate</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">drc</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">eta</span><span class="w"> </span><span class="p">,</span><span class="w">  </span><span class="p">&amp;</span><span class="w"></span>

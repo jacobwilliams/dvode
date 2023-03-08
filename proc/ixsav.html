@@ -150,6 +150,34 @@
 </h2>
     
 
+    <p>save and recall error message control parameters.</p>
+<p>ixsav saves and recalls one of two error message parameters:
+    lunit, the logical unit number to which messages are printed, and
+    mesflg, the message print flag.
+  this is a modification of the slatec library routine j4save.</p>
+<p>saved local variables..
+   lunit  = logical unit number for messages.  the default is obtained
+            by a call to iumach (may be machine-dependent).
+   mesflg = print control flag..
+            1 means print all messages (the default).
+            0 means no printing.</p>
+<p>on input..
+    ipar   = parameter indicator (1 for lunit, 2 for mesflg).
+    ivalue = the value to be set for the parameter, if iset = .true.
+    iset   = logical flag to indicate whether to read or write.
+             if iset = .true., the parameter will be given
+             the value ivalue.  if iset = .false., the parameter
+             will be unchanged, and ivalue is a dummy argument.</p>
+<p>on return..
+    ixsav = the (old) value of the parameter.</p>
+<p><strong><em>see also  xerrwd, xerrwv
+</em></strong>author  hindmarsh, alan c., (llnl)
+***revision history  (yymmdd)
+   921118  date written
+   930329  modified prologue to slatec format. (fnf)
+   930915  added iumach call to get default output unit.  (ach)
+   930922  minor cosmetic changes. (fnf)
+   010425  type declaration for iumach added. (ach)</p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -409,53 +437,8 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">      </span><span class="kt">integer </span><span class="k">function </span><span class="n">ixsav</span><span class="p">(</span><span class="n">ipar</span><span class="p">,</span><span class="n">ivalue</span><span class="p">,</span><span class="n">iset</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">implicit none</span><span class="w"></span>
-<span class="c">!***begin prologue  ixsav</span>
-<span class="c">!***subsidiary</span>
-<span class="c">!***purpose  save and recall error message control parameters.</span>
-<span class="c">!***category  r3c</span>
-<span class="c">!***type      all (ixsav-a)</span>
-<span class="c">!***author  hindmarsh, alan c., (llnl)</span>
-<span class="c">!***description</span>
-<span class="c">!</span>
-<span class="c">!  ixsav saves and recalls one of two error message parameters:</span>
-<span class="c">!    lunit, the logical unit number to which messages are printed, and</span>
-<span class="c">!    mesflg, the message print flag.</span>
-<span class="c">!  this is a modification of the slatec library routine j4save.</span>
-<span class="c">!</span>
-<span class="c">!  saved local variables..</span>
-<span class="c">!   lunit  = logical unit number for messages.  the default is obtained</span>
-<span class="c">!            by a call to iumach (may be machine-dependent).</span>
-<span class="c">!   mesflg = print control flag..</span>
-<span class="c">!            1 means print all messages (the default).</span>
-<span class="c">!            0 means no printing.</span>
-<span class="c">!</span>
-<span class="c">!  on input..</span>
-<span class="c">!    ipar   = parameter indicator (1 for lunit, 2 for mesflg).</span>
-<span class="c">!    ivalue = the value to be set for the parameter, if iset = .true.</span>
-<span class="c">!    iset   = logical flag to indicate whether to read or write.</span>
-<span class="c">!             if iset = .true., the parameter will be given</span>
-<span class="c">!             the value ivalue.  if iset = .false., the parameter</span>
-<span class="c">!             will be unchanged, and ivalue is a dummy argument.</span>
-<span class="c">!</span>
-<span class="c">!  on return..</span>
-<span class="c">!    ixsav = the (old) value of the parameter.</span>
-<span class="c">!</span>
-<span class="c">!***see also  xerrwd, xerrwv</span>
-<span class="c">!***routines called  iumach</span>
-<span class="c">!***revision history  (yymmdd)</span>
-<span class="c">!   921118  date written</span>
-<span class="c">!   930329  modified prologue to slatec format. (fnf)</span>
-<span class="c">!   930915  added iumach call to get default output unit.  (ach)</span>
-<span class="c">!   930922  minor cosmetic changes. (fnf)</span>
-<span class="c">!   010425  type declaration for iumach added. (ach)</span>
-<span class="c">!***end prologue  ixsav</span>
-<span class="c">!</span>
-<span class="c">! subroutines called by ixsav.. none</span>
-<span class="c">! function routine called by ixsav.. iumach</span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="c">!**end</span>
-<span class="w">      </span><span class="kt">logical </span><span class="n">iset</span><span class="w"></span>
+<span class="w">      </span><span class="k">implicit none</span>
+<span class="k">      </span><span class="kt">logical </span><span class="n">iset</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer </span><span class="n">ipar</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ivalue</span><span class="w"></span>
 <span class="c">!-----------------------------------------------------------------------</span>
 <span class="w">      </span><span class="kt">integer </span><span class="n">lunit</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mesflg</span><span class="w"></span>

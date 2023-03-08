@@ -150,6 +150,16 @@
 </h2>
     
 
+    <p>reset the error print control flag.</p>
+<p>xsetf sets the error print control flag to mflag:
+      mflag=1 means print all messages (the default).
+      mflag=0 means no printing.</p>
+<p><strong><em>author  hindmarsh, alan c., (llnl)
+</em></strong>revision history  (yymmdd)
+   921118  date written
+   930329  added slatec format prologue. (fnf)
+   930407  corrected see also section. (fnf)
+   930922  made user-callable, and other cosmetic changes. (fnf)</p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -327,35 +337,8 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">      </span><span class="k">subroutine </span><span class="n">xsetf</span><span class="p">(</span><span class="n">mflag</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">implicit none</span><span class="w"></span>
-<span class="c">!***begin prologue  xsetf</span>
-<span class="c">!***purpose  reset the error print control flag.</span>
-<span class="c">!***category  r3a</span>
-<span class="c">!***type      all (xsetf-a)</span>
-<span class="c">!***keywords  error control</span>
-<span class="c">!***author  hindmarsh, alan c., (llnl)</span>
-<span class="c">!***description</span>
-<span class="c">!</span>
-<span class="c">!   xsetf sets the error print control flag to mflag:</span>
-<span class="c">!      mflag=1 means print all messages (the default).</span>
-<span class="c">!      mflag=0 means no printing.</span>
-<span class="c">!</span>
-<span class="c">!***see also  xerrwd, xerrwv</span>
-<span class="c">!***references  (none)</span>
-<span class="c">!***routines called  ixsav</span>
-<span class="c">!***revision history  (yymmdd)</span>
-<span class="c">!   921118  date written</span>
-<span class="c">!   930329  added slatec format prologue. (fnf)</span>
-<span class="c">!   930407  corrected see also section. (fnf)</span>
-<span class="c">!   930922  made user-callable, and other cosmetic changes. (fnf)</span>
-<span class="c">!***end prologue  xsetf</span>
-<span class="c">!</span>
-<span class="c">! subroutines called by xsetf.. none</span>
-<span class="c">! function routine called by xsetf.. ixsav</span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="c">!**end</span>
-<span class="w">      </span><span class="kt">integer </span><span class="n">mflag</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">junk</span><span class="w"></span>
-<span class="c">!</span>
+<span class="w">      </span><span class="k">implicit none</span>
+<span class="k">      </span><span class="kt">integer </span><span class="n">mflag</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">junk</span><span class="w"></span>
 
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">mflag</span><span class="o">==</span><span class="mi">0</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">mflag</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">junk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ixsav</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">mflag</span><span class="p">,.</span><span class="n">true</span><span class="p">.)</span><span class="w"></span>
 

@@ -150,6 +150,94 @@
 </h2>
     
 
+    <p>factor a band matrix using gaussian elimination.</p>
+<p><strong><em>author  moler, c. b., (u. of new mexico)
+</em></strong>description</p>
+<div class="codehilite"><pre><span></span><code> <span class="nv">dgbfa</span> <span class="nv">factors</span> <span class="nv">a</span> <span class="nv">double</span> <span class="nv">precision</span> <span class="nv">band</span> <span class="nv">matrix</span> <span class="nv">by</span> <span class="nv">elimination</span>.
+
+ <span class="nv">dgbfa</span> <span class="nv">is</span> <span class="nv">usually</span> <span class="nv">called</span> <span class="nv">by</span> <span class="nv">dgbco</span>, <span class="nv">but</span> <span class="nv">it</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">called</span>
+ <span class="nv">directly</span> <span class="nv">with</span> <span class="nv">a</span> <span class="nv">saving</span> <span class="nv">in</span> <span class="nv">time</span> <span class="k">if</span>  <span class="nv">rcond</span>  <span class="nv">is</span> <span class="nv">not</span> <span class="nv">needed</span>.
+
+ <span class="nv">on</span> <span class="nv">entry</span>
+
+    <span class="nv">abd</span>     <span class="nv">double</span> <span class="nv">precision</span><span class="ss">(</span><span class="nv">lda</span>, <span class="nv">n</span><span class="ss">)</span>
+            <span class="nv">contains</span> <span class="nv">the</span> <span class="nv">matrix</span> <span class="nv">in</span> <span class="nv">band</span> <span class="nv">storage</span>.  <span class="nv">the</span> <span class="nv">columns</span>
+            <span class="nv">of</span> <span class="nv">the</span> <span class="nv">matrix</span> <span class="nv">are</span> <span class="nv">stored</span> <span class="nv">in</span> <span class="nv">the</span> <span class="nv">columns</span> <span class="nv">of</span>  <span class="nv">abd</span>  <span class="nv">and</span>
+            <span class="nv">the</span> <span class="nv">diagonals</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">matrix</span> <span class="nv">are</span> <span class="nv">stored</span> <span class="nv">in</span> <span class="nv">rows</span>
+            <span class="nv">ml</span><span class="o">+</span><span class="mi">1</span> <span class="nv">through</span> <span class="mi">2</span><span class="o">*</span><span class="nv">ml</span><span class="o">+</span><span class="nv">mu</span><span class="o">+</span><span class="mi">1</span> <span class="nv">of</span>  <span class="nv">abd</span> .
+            <span class="nv">see</span> <span class="nv">the</span> <span class="nv">comments</span> <span class="nv">below</span> <span class="k">for</span> <span class="nv">details</span>.
+
+    <span class="nv">lda</span>     <span class="nv">integer</span>
+            <span class="nv">the</span> <span class="nv">leading</span> <span class="nv">dimension</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">array</span>  <span class="nv">abd</span> .
+            <span class="nv">lda</span> <span class="nv">must</span> <span class="nv">be</span> .<span class="nv">ge</span>. <span class="mi">2</span><span class="o">*</span><span class="nv">ml</span> <span class="o">+</span> <span class="nv">mu</span> <span class="o">+</span> <span class="mi">1</span> .
+
+    <span class="nv">n</span>       <span class="nv">integer</span>
+            <span class="nv">the</span> <span class="nv">order</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">original</span> <span class="nv">matrix</span>.
+
+    <span class="nv">ml</span>      <span class="nv">integer</span>
+            <span class="nv">number</span> <span class="nv">of</span> <span class="nv">diagonals</span> <span class="nv">below</span> <span class="nv">the</span> <span class="nv">main</span> <span class="nv">diagonal</span>.
+            <span class="mi">0</span> .<span class="nv">le</span>. <span class="nv">ml</span> .<span class="nv">lt</span>.  <span class="nv">n</span> .
+
+    <span class="nv">mu</span>      <span class="nv">integer</span>
+            <span class="nv">number</span> <span class="nv">of</span> <span class="nv">diagonals</span> <span class="nv">above</span> <span class="nv">the</span> <span class="nv">main</span> <span class="nv">diagonal</span>.
+            <span class="mi">0</span> .<span class="nv">le</span>. <span class="nv">mu</span> .<span class="nv">lt</span>.  <span class="nv">n</span> .
+            <span class="nv">more</span> <span class="nv">efficient</span> <span class="k">if</span>  <span class="nv">ml</span> .<span class="nv">le</span>. <span class="nv">mu</span> .
+ <span class="nv">on</span> <span class="k">return</span>
+
+    <span class="nv">abd</span>     <span class="nv">an</span> <span class="nv">upper</span> <span class="nv">triangular</span> <span class="nv">matrix</span> <span class="nv">in</span> <span class="nv">band</span> <span class="nv">storage</span> <span class="nv">and</span>
+            <span class="nv">the</span> <span class="nv">multipliers</span> <span class="nv">which</span> <span class="nv">were</span> <span class="nv">used</span> <span class="nv">to</span> <span class="nv">obtain</span> <span class="nv">it</span>.
+            <span class="nv">the</span> <span class="nv">factorization</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">written</span>  <span class="nv">a</span> <span class="o">=</span> <span class="nv">l</span><span class="o">*</span><span class="nv">u</span>  <span class="nv">where</span>
+            <span class="nv">l</span>  <span class="nv">is</span> <span class="nv">a</span> <span class="nv">product</span> <span class="nv">of</span> <span class="nv">permutation</span> <span class="nv">and</span> <span class="nv">unit</span> <span class="nv">lower</span>
+            <span class="nv">triangular</span> <span class="nv">matrices</span> <span class="nv">and</span>  <span class="nv">u</span>  <span class="nv">is</span> <span class="nv">upper</span> <span class="nv">triangular</span>.
+
+    <span class="nv">ipvt</span>    <span class="nv">integer</span><span class="ss">(</span><span class="nv">n</span><span class="ss">)</span>
+            <span class="nv">an</span> <span class="nv">integer</span> <span class="nv">vector</span> <span class="nv">of</span> <span class="nv">pivot</span> <span class="nv">indices</span>.
+
+    <span class="nv">info</span>    <span class="nv">integer</span>
+            <span class="o">=</span> <span class="mi">0</span>  <span class="nv">normal</span> <span class="nv">value</span>.
+            <span class="o">=</span> <span class="nv">k</span>  <span class="k">if</span>  <span class="nv">u</span><span class="ss">(</span><span class="nv">k</span>,<span class="nv">k</span><span class="ss">)</span> .<span class="nv">eq</span>. <span class="mi">0</span>.<span class="mi">0</span> .  <span class="nv">this</span> <span class="nv">is</span> <span class="nv">not</span> <span class="nv">an</span> <span class="nv">error</span>
+                 <span class="nv">condition</span> <span class="k">for</span> <span class="nv">this</span> <span class="nv">subroutine</span>, <span class="nv">but</span> <span class="nv">it</span> <span class="nv">does</span>
+                 <span class="nv">indicate</span> <span class="nv">that</span> <span class="nv">dgbsl</span> <span class="nv">will</span> <span class="nv">divide</span> <span class="nv">by</span> <span class="nv">zero</span> <span class="k">if</span>
+                 <span class="nv">called</span>.  <span class="nv">use</span>  <span class="nv">rcond</span>  <span class="nv">in</span> <span class="nv">dgbco</span> <span class="k">for</span> <span class="nv">a</span> <span class="nv">reliable</span>
+                 <span class="nv">indication</span> <span class="nv">of</span> <span class="nv">singularity</span>.
+
+ <span class="nv">band</span> <span class="nv">storage</span>
+
+       <span class="k">if</span>  <span class="nv">a</span>  <span class="nv">is</span> <span class="nv">a</span> <span class="nv">band</span> <span class="nv">matrix</span>, <span class="nv">the</span> <span class="nv">following</span> <span class="nv">program</span> <span class="nv">segment</span>
+       <span class="nv">will</span> <span class="nv">set</span> <span class="nv">up</span> <span class="nv">the</span> <span class="nv">input</span>.
+
+               <span class="nv">ml</span> <span class="o">=</span> <span class="ss">(</span><span class="nv">band</span> <span class="nv">width</span> <span class="nv">below</span> <span class="nv">the</span> <span class="nv">diagonal</span><span class="ss">)</span>
+               <span class="nv">mu</span> <span class="o">=</span> <span class="ss">(</span><span class="nv">band</span> <span class="nv">width</span> <span class="nv">above</span> <span class="nv">the</span> <span class="nv">diagonal</span><span class="ss">)</span>
+               <span class="nv">m</span> <span class="o">=</span> <span class="nv">ml</span> <span class="o">+</span> <span class="nv">mu</span> <span class="o">+</span> <span class="mi">1</span>
+               <span class="k">do</span> <span class="mi">20</span> <span class="nv">j</span> <span class="o">=</span> <span class="mi">1</span>, <span class="nv">n</span>
+                  <span class="nv">i1</span> <span class="o">=</span> <span class="nv">max</span><span class="ss">(</span><span class="mi">1</span>, <span class="nv">j</span><span class="o">-</span><span class="nv">mu</span><span class="ss">)</span>
+                  <span class="nv">i2</span> <span class="o">=</span> <span class="nv">min</span><span class="ss">(</span><span class="nv">n</span>, <span class="nv">j</span><span class="o">+</span><span class="nv">ml</span><span class="ss">)</span>
+                  <span class="k">do</span> <span class="mi">10</span> <span class="nv">i</span> <span class="o">=</span> <span class="nv">i1</span>, <span class="nv">i2</span>
+                     <span class="nv">k</span> <span class="o">=</span> <span class="nv">i</span> <span class="o">-</span> <span class="nv">j</span> <span class="o">+</span> <span class="nv">m</span>
+                     <span class="nv">abd</span><span class="ss">(</span><span class="nv">k</span>,<span class="nv">j</span><span class="ss">)</span> <span class="o">=</span> <span class="nv">a</span><span class="ss">(</span><span class="nv">i</span>,<span class="nv">j</span><span class="ss">)</span>
+            <span class="mi">10</span>    <span class="k">continue</span>
+            <span class="mi">20</span> <span class="k">continue</span>
+
+       <span class="nv">this</span> <span class="nv">uses</span> <span class="nv">rows</span>  <span class="nv">ml</span><span class="o">+</span><span class="mi">1</span>  <span class="nv">through</span>  <span class="mi">2</span><span class="o">*</span><span class="nv">ml</span><span class="o">+</span><span class="nv">mu</span><span class="o">+</span><span class="mi">1</span>  <span class="nv">of</span>  <span class="nv">abd</span> .
+       <span class="nv">in</span> <span class="nv">addition</span>, <span class="nv">the</span> <span class="nv">first</span>  <span class="nv">ml</span>  <span class="nv">rows</span> <span class="nv">in</span>  <span class="nv">abd</span>  <span class="nv">are</span> <span class="nv">used</span> <span class="k">for</span>
+       <span class="nv">elements</span> <span class="nv">generated</span> <span class="nv">during</span> <span class="nv">the</span> <span class="nv">triangularization</span>.
+       <span class="nv">the</span> <span class="nv">total</span> <span class="nv">number</span> <span class="nv">of</span> <span class="nv">rows</span> <span class="nv">needed</span> <span class="nv">in</span>  <span class="nv">abd</span>  <span class="nv">is</span>  <span class="mi">2</span><span class="o">*</span><span class="nv">ml</span><span class="o">+</span><span class="nv">mu</span><span class="o">+</span><span class="mi">1</span> .
+       <span class="nv">the</span>  <span class="nv">ml</span><span class="o">+</span><span class="nv">mu</span> <span class="nv">by</span> <span class="nv">ml</span><span class="o">+</span><span class="nv">mu</span>  <span class="nv">upper</span> <span class="nv">left</span> <span class="nv">triangle</span> <span class="nv">and</span> <span class="nv">the</span>
+       <span class="nv">ml</span> <span class="nv">by</span> <span class="nv">ml</span>  <span class="nv">lower</span> <span class="nv">right</span> <span class="nv">triangle</span> <span class="nv">are</span> <span class="nv">not</span> <span class="nv">referenced</span>.
+</code></pre></div>
+
+<p><strong><em>references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
+                 stewart, linpack users' guide, siam, 1979.
+</em></strong>routines called  daxpy, dscal, idamax
+***revision history  (yymmdd)
+   780814  date written
+   890531  changed all specific intrinsics to generic.  (wrb)
+   890831  modified array declarations.  (wrb)
+   890831  revision date from version 3.2
+   891214  prologue converted to version 4.0 format.  (bab)
+   900326  removed duplicate information from description section.
+           (wrb)
+   920501  reformatted the references section.  (wrb)</p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -547,101 +635,9 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">       </span><span class="k">subroutine </span><span class="n">dgbfa</span><span class="p">(</span><span class="n">abd</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ml</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">info</span><span class="p">)</span><span class="w"></span>
-<span class="w">       </span><span class="k">implicit none</span><span class="w"></span>
-<span class="w"> </span><span class="c">!***begin prologue  dgbfa</span>
-<span class="w"> </span><span class="c">!***purpose  factor a band matrix using gaussian elimination.</span>
-<span class="w"> </span><span class="c">!***category  d2a2</span>
-<span class="w"> </span><span class="c">!***type      double precision (sgbfa-s, dgbfa-d, cgbfa-c)</span>
-<span class="w"> </span><span class="c">!***keywords  banded, linear algebra, linpack, matrix factorization</span>
-<span class="w"> </span><span class="c">!***author  moler, c. b., (u. of new mexico)</span>
-<span class="w"> </span><span class="c">!***description</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     dgbfa factors a double precision band matrix by elimination.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     dgbfa is usually called by dgbco, but it can be called</span>
-<span class="w"> </span><span class="c">!     directly with a saving in time if  rcond  is not needed.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     on entry</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        abd     double precision(lda, n)</span>
-<span class="w"> </span><span class="c">!                contains the matrix in band storage.  the columns</span>
-<span class="w"> </span><span class="c">!                of the matrix are stored in the columns of  abd  and</span>
-<span class="w"> </span><span class="c">!                the diagonals of the matrix are stored in rows</span>
-<span class="w"> </span><span class="c">!                ml+1 through 2*ml+mu+1 of  abd .</span>
-<span class="w"> </span><span class="c">!                see the comments below for details.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        lda     integer</span>
-<span class="w"> </span><span class="c">!                the leading dimension of the array  abd .</span>
-<span class="w"> </span><span class="c">!                lda must be .ge. 2*ml + mu + 1 .</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        n       integer</span>
-<span class="w"> </span><span class="c">!                the order of the original matrix.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        ml      integer</span>
-<span class="w"> </span><span class="c">!                number of diagonals below the main diagonal.</span>
-<span class="w"> </span><span class="c">!                0 .le. ml .lt.  n .</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        mu      integer</span>
-<span class="w"> </span><span class="c">!                number of diagonals above the main diagonal.</span>
-<span class="w"> </span><span class="c">!                0 .le. mu .lt.  n .</span>
-<span class="w"> </span><span class="c">!                more efficient if  ml .le. mu .</span>
-<span class="w"> </span><span class="c">!     on return</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        abd     an upper triangular matrix in band storage and</span>
-<span class="w"> </span><span class="c">!                the multipliers which were used to obtain it.</span>
-<span class="w"> </span><span class="c">!                the factorization can be written  a = l*u  where</span>
-<span class="w"> </span><span class="c">!                l  is a product of permutation and unit lower</span>
-<span class="w"> </span><span class="c">!                triangular matrices and  u  is upper triangular.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        ipvt    integer(n)</span>
-<span class="w"> </span><span class="c">!                an integer vector of pivot indices.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        info    integer</span>
-<span class="w"> </span><span class="c">!                = 0  normal value.</span>
-<span class="w"> </span><span class="c">!                = k  if  u(k,k) .eq. 0.0 .  this is not an error</span>
-<span class="w"> </span><span class="c">!                     condition for this subroutine, but it does</span>
-<span class="w"> </span><span class="c">!                     indicate that dgbsl will divide by zero if</span>
-<span class="w"> </span><span class="c">!                     called.  use  rcond  in dgbco for a reliable</span>
-<span class="w"> </span><span class="c">!                     indication of singularity.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     band storage</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!           if  a  is a band matrix, the following program segment</span>
-<span class="w"> </span><span class="c">!           will set up the input.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!                   ml = (band width below the diagonal)</span>
-<span class="w"> </span><span class="c">!                   mu = (band width above the diagonal)</span>
-<span class="w"> </span><span class="c">!                   m = ml + mu + 1</span>
-<span class="w"> </span><span class="c">!                   do 20 j = 1, n</span>
-<span class="w"> </span><span class="c">!                      i1 = max(1, j-mu)</span>
-<span class="w"> </span><span class="c">!                      i2 = min(n, j+ml)</span>
-<span class="w"> </span><span class="c">!                      do 10 i = i1, i2</span>
-<span class="w"> </span><span class="c">!                         k = i - j + m</span>
-<span class="w"> </span><span class="c">!                         abd(k,j) = a(i,j)</span>
-<span class="w"> </span><span class="c">!                10    continue</span>
-<span class="w"> </span><span class="c">!                20 continue</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!           this uses rows  ml+1  through  2*ml+mu+1  of  abd .</span>
-<span class="w"> </span><span class="c">!           in addition, the first  ml  rows in  abd  are used for</span>
-<span class="w"> </span><span class="c">!           elements generated during the triangularization.</span>
-<span class="w"> </span><span class="c">!           the total number of rows needed in  abd  is  2*ml+mu+1 .</span>
-<span class="w"> </span><span class="c">!           the  ml+mu by ml+mu  upper left triangle and the</span>
-<span class="w"> </span><span class="c">!           ml by ml  lower right triangle are not referenced.</span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!***references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.</span>
-<span class="w"> </span><span class="c">!                 stewart, linpack users&#39; guide, siam, 1979.</span>
-<span class="w"> </span><span class="c">!***routines called  daxpy, dscal, idamax</span>
-<span class="w"> </span><span class="c">!***revision history  (yymmdd)</span>
-<span class="w"> </span><span class="c">!   780814  date written</span>
-<span class="w"> </span><span class="c">!   890531  changed all specific intrinsics to generic.  (wrb)</span>
-<span class="w"> </span><span class="c">!   890831  modified array declarations.  (wrb)</span>
-<span class="w"> </span><span class="c">!   890831  revision date from version 3.2</span>
-<span class="w"> </span><span class="c">!   891214  prologue converted to version 4.0 format.  (bab)</span>
-<span class="w"> </span><span class="c">!   900326  removed duplicate information from description section.</span>
-<span class="w"> </span><span class="c">!           (wrb)</span>
-<span class="w"> </span><span class="c">!   920501  reformatted the references section.  (wrb)</span>
-<span class="w"> </span><span class="c">!***end prologue  dgbfa</span>
-<span class="w">       </span><span class="kt">integer </span><span class="n">lda</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ipvt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="w"></span>
+<span class="w">         </span><span class="k">implicit none</span>
+
+<span class="k">       </span><span class="kt">integer </span><span class="n">lda</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ipvt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="w"></span>
 <span class="w">       </span><span class="kt">double precision </span><span class="n">abd</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
 <span class="w"> </span><span class="c">!</span>
 <span class="w">       </span><span class="kt">double precision </span><span class="n">t</span><span class="w"></span>

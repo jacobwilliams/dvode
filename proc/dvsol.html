@@ -164,6 +164,76 @@
 </h2>
     
 
+    <p>this routine manages the solution of the linear system arising from
+  a chord iteration.  it is called if miter .ne. 0.
+  if miter is 1 or 2, it calls dgesl to accomplish this.
+  if miter = 3 it updates the coefficient h*rl1 in the diagonal
+  matrix, and then computes the solution.
+  if miter is 4 or 5, it calls dgbsl.</p>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
+<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">iersl</span><span class="w"></span>
+<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="p">:</span><span class="w"></span>
+<span class="w">     </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">rl1</span><span class="p">,</span><span class="w"> </span><span class="n">miter</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
+
+<span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvsol</span><span class="p">:</span><span class="w"> </span><span class="n">dgesl</span><span class="p">,</span><span class="w"> </span><span class="n">dgbsl</span><span class="w"></span>
+<span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvsol</span><span class="p">:</span><span class="w"> </span><span class="n">none</span><span class="w"></span>
+<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
+
+<span class="w"> </span><span class="n">communication</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvsol</span><span class="w"> </span><span class="n">uses</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">variables</span><span class="p">:</span><span class="w"></span>
+<span class="w"> </span><span class="n">wm</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">space</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">inverse</span><span class="w"> </span><span class="n">diagonal</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="k">if</span><span class="w"></span>
+<span class="w">         </span><span class="n">miter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">lu</span><span class="w"> </span><span class="n">decomposition</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">otherwise</span><span class="o">.</span><span class="w"></span>
+<span class="w">         </span><span class="n">storage</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">elements</span><span class="w"> </span><span class="n">starts</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
+<span class="w">         </span><span class="n">wm</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">matrix</span><span class="o">-</span><span class="n">related</span><span class="w"> </span><span class="n">data</span><span class="p">:</span><span class="w"></span>
+<span class="w">         </span><span class="n">wm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sqrt</span><span class="p">(</span><span class="n">uround</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="ow">not</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="n">here</span><span class="p">),</span><span class="w"></span>
+<span class="w">         </span><span class="n">wm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hrl1</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">previous</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">h</span><span class="o">*</span><span class="n">rl1</span><span class="p">,</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.</span><span class="w"></span>
+<span class="w"> </span><span class="n">iwm</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">space</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">pivot</span><span class="w"> </span><span class="n">information</span><span class="p">,</span><span class="w"> </span><span class="n">starting</span><span class="w"> </span><span class="n">at</span><span class="w"></span>
+<span class="w">         </span><span class="n">iwm</span><span class="p">(</span><span class="mi">31</span><span class="p">),</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="mf">5.</span><span class="w">  </span><span class="n">iwm</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">band</span><span class="w"></span>
+<span class="w">         </span><span class="n">parameters</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="mf">5.</span><span class="w"></span>
+<span class="w"> </span><span class="n">x</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">right</span><span class="o">-</span><span class="n">hand</span><span class="w"> </span><span class="n">side</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">solution</span><span class="w"> </span><span class="n">vector</span><span class="w"></span>
+<span class="w">         </span><span class="n">on</span><span class="w"> </span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">iersl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">flag</span><span class="o">.</span><span class="w">  </span><span class="n">iersl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">trouble</span><span class="w"> </span><span class="n">occurred</span><span class="o">.</span><span class="w"></span>
+<span class="w">         </span><span class="n">iersl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">singular</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">arose</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.</span><span class="w"></span>
+</code></pre></div>
+
+<p>this routine saves or restores (depending on job) the contents of the
+  common blocks dvod01 and dvod02, which are used internally by dvode.</p>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">rsav</span><span class="p">,</span><span class="w"> </span><span class="n">isav</span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="w"></span>
+<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">rsav</span><span class="p">,</span><span class="w"> </span><span class="n">isav</span><span class="w"></span>
+<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">/</span><span class="n">dvod02</span><span class="o">/</span><span class="w"></span>
+
+<span class="w"> </span><span class="n">subroutines</span><span class="o">/</span><span class="n">functions</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvsrco</span><span class="p">:</span><span class="w"> </span><span class="n">none</span><span class="w"></span>
+<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
+
+<span class="w"> </span><span class="n">rsav</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">49</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">isav</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">41</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="o">.</span><span class="w"></span>
+<span class="w"> </span><span class="n">job</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="n">indicating</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">save</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">job</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">saved</span><span class="w"> </span><span class="p">(</span><span class="n">written</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">rsav</span><span class="o">/</span><span class="n">isav</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
+<span class="w">        </span><span class="n">job</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">restored</span><span class="w"> </span><span class="p">(</span><span class="n">read</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">rsav</span><span class="o">/</span><span class="n">isav</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
+<span class="w">        </span><span class="n">a</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">presumes</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">prior</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"></span>
+</code></pre></div>
+
+<p>set error weight vector.</p>
+<p>this subroutine sets the error weight vector ewt according to
+      ewt(i) = rtol(i)*abs(ycur(i)) + atol(i),  i = 1,...,n,
+  with the subscript on rtol and/or atol possibly replaced by 1 above,
+  depending on the value of itol.</p>
+<p><strong><em>author  hindmarsh, alan c., (llnl)
+</em></strong>revision history  (yymmdd)
+   791129  date written
+   890501  modified prologue to slatec/ldoc format.  (fnf)
+   890503  minor cosmetic changes.  (fnf)
+   930809  renamed to allow single/double precision versions. (ach)</p>
+<p>weighted root-mean-square vector norm.</p>
+<p>this function routine computes the weighted root-mean-square norm
+  of the vector of length n contained in the array v, with weights
+  contained in the array w of length n:
+    dvnorm = sqrt( (1/n) * sum( v(i)<em>w(i) )</em>*2 )</p>
+<p><strong><em>author  hindmarsh, alan c., (llnl)
+</em></strong>revision history  (yymmdd)
+   791129  date written
+   890501  modified prologue to slatec/ldoc format.  (fnf)
+   890503  minor cosmetic changes.  (fnf)
+   930809  renamed to allow single/double precision versions. (ach)</p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -1557,36 +1627,6 @@
 <span class="k">      </span><span class="kt">double precision </span><span class="n">wm</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer </span><span class="n">iwm</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">iersl</span><span class="w"></span>
 <span class="w">      </span><span class="k">dimension </span><span class="n">wm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="c">! call sequence input -- wm, iwm, x</span>
-<span class="c">! call sequence output -- x, iersl</span>
-<span class="c">! common block variables accessed:</span>
-<span class="c">!     /dvod01/ -- h, rl1, miter, n</span>
-<span class="c">!</span>
-<span class="c">! subroutines called by dvsol: dgesl, dgbsl</span>
-<span class="c">! function routines called by dvsol: none</span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="c">! this routine manages the solution of the linear system arising from</span>
-<span class="c">! a chord iteration.  it is called if miter .ne. 0.</span>
-<span class="c">! if miter is 1 or 2, it calls dgesl to accomplish this.</span>
-<span class="c">! if miter = 3 it updates the coefficient h*rl1 in the diagonal</span>
-<span class="c">! matrix, and then computes the solution.</span>
-<span class="c">! if miter is 4 or 5, it calls dgbsl.</span>
-<span class="c">! communication with dvsol uses the following variables:</span>
-<span class="c">! wm    = real work space containing the inverse diagonal matrix if</span>
-<span class="c">!         miter = 3 and the lu decomposition of the matrix otherwise.</span>
-<span class="c">!         storage of matrix elements starts at wm(3).</span>
-<span class="c">!         wm also contains the following matrix-related data:</span>
-<span class="c">!         wm(1) = sqrt(uround) (not used here),</span>
-<span class="c">!         wm(2) = hrl1, the previous value of h*rl1, used if miter = 3.</span>
-<span class="c">! iwm   = integer work space containing pivot information, starting at</span>
-<span class="c">!         iwm(31), if miter is 1, 2, 4, or 5.  iwm also contains band</span>
-<span class="c">!         parameters ml = iwm(1) and mu = iwm(2) if miter is 4 or 5.</span>
-<span class="c">! x     = the right-hand side vector on input, and the solution vector</span>
-<span class="c">!         on output, of length n.</span>
-<span class="c">! iersl = output flag.  iersl = 0 if no trouble occurred.</span>
-<span class="c">!         iersl = 1 if a singular matrix arose with miter = 3.</span>
-<span class="c">!-----------------------------------------------------------------------</span>
 <span class="c">!</span>
 <span class="c">! type declarations for labeled common block dvod01 --------------------</span>
 <span class="c">!</span>
