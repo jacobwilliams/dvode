@@ -15,4 +15,5 @@ The latest API documentation can be found [here](https://jacobwilliams.github.io
 
 
 ### References
- * [ODEPACK](https://computing.llnl.gov/projects/odepack)
+ * Brown, Byrne, Hindmarsh, [VODE, A Variable-Coefficient ODE Solver](https://computing.llnl.gov/sites/default/files/ODEPACK_pub4_207532.pdf), June 1988.
+ * [ODEPACK](https://computing.llnl.gov/projects/odepack): Fortran ODE Solvers [LLNL]
