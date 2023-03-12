@@ -2989,13 +2989,12 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 !```
 
       subroutine dvnlsd(me,y,yh,ldyh,vsav,savf,ewt,acor,iwm,wm,nflag)
+
       implicit none
 
       class(dvode_t),intent(inout) :: me
-      real(wp) y , yh , vsav , savf , ewt , acor , wm
-      integer ldyh , iwm , nflag
-      dimension y(*) , yh(ldyh,*) , vsav(*) , savf(*) , ewt(*) , acor(*)&
-                , iwm(*) , wm(*)
+      real(wp) :: y(*) , yh(ldyh,*) , vsav(*) , savf(*) , ewt(*) , acor(*) , wm(*)
+      integer :: ldyh , iwm(*) , nflag
 
 !
 ! type declarations for local variables --------------------------------
@@ -3005,7 +3004,6 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 
       integer,parameter :: maxcor = 3
       integer,parameter :: msbp = 20
-
       real(wp),parameter :: ccmax = 0.3_wp
       real(wp),parameter :: crdown = 0.3_wp
       real(wp),parameter :: rdiv = 2.0_wp
@@ -3207,24 +3205,19 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
       implicit none
 
       class(dvode_t),intent(inout) :: me
-      real(wp) y(*) , yh(ldyh,*) , ewt(*) , ftem(*) , savf(*) , wm(*)
-      integer ldyh , iwm(*) , ierpj
+      real(wp) :: y(*) , yh(ldyh,*) , ewt(*) , ftem(*) , savf(*) , wm(*)
+      integer :: ldyh , iwm(*) , ierpj
 !
 ! type declarations for local variables --------------------------------
 !
-      real(wp) con , di , fac , hrl1 , one , pt1 , r , r0 ,     &
-                       srur , thou , yi , yj , yjj , zero
-      integer i , i1 , i2 , ier , ii , j , j1 , jj , jok , lenp , mba , &
-              mband , meb1 , meband , ml , ml3 , mu , np1
-!
-!-----------------------------------------------------------------------
-! the following fortran-77 declaration is to cause the values of the
-! listed (local) variables to be saved between calls to this subroutine.
-!-----------------------------------------------------------------------
-      save one , pt1 , thou , zero
-!-----------------------------------------------------------------------
-!
-      data one/1.0d0/ , thou/1000.0d0/ , zero/0.0d0/ , pt1/0.1d0/
+      real(wp) :: con , di , fac , hrl1 , r , r0 ,     &
+                  srur , yi , yj , yjj
+      integer :: i , i1 , i2 , ier , ii , j , j1 , jj , jok , lenp , mba , &
+                 mband , meb1 , meband , ml , ml3 , mu , np1
+
+      real(wp),parameter :: one = 1.0_wp
+      real(wp),parameter :: thou = 1000.0_wp
+      real(wp),parameter :: pt1 = 0.1_wp
 !
       ierpj = 0
       hrl1 = me%h*me%rl1
@@ -3417,11 +3410,13 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 !```
 
       subroutine dacopy(nrow,ncol,a,nrowa,b,nrowb)
+
       implicit none
-      real(wp) a , b
-      integer nrow , ncol , nrowa , nrowb
-      dimension a(nrowa,ncol) , b(nrowb,ncol)
-      integer ic
+
+      real(wp) :: a , b
+      integer :: nrow , ncol , nrowa , nrowb
+      dimension :: a(nrowa,ncol) , b(nrowb,ncol)
+      integer :: ic
 
       do ic = 1 , ncol
          call dcopy(nrow,a(1,ic),1,b(1,ic),1)
@@ -3469,21 +3464,15 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
       implicit none
 
       class(dvode_t),intent(inout) :: me
-      real(wp) wm , x
-      integer iwm , iersl
-      dimension wm(*) , iwm(*) , x(*)
+      real(wp) :: wm(*) , x(*)
+      integer :: iwm(*) , iersl
 !
 ! type declarations for local variables --------------------------------
 !
       integer i , meband , ml , mu
-      real(wp) di , hrl1 , one , phrl1 , r , zero
-!-----------------------------------------------------------------------
-! the following fortran-77 declaration is to cause the values of the
-! listed (local) variables to be saved between calls to this integrator.
-!-----------------------------------------------------------------------
-      save one , zero
-!
-      data one/1.0d0/ , zero/0.0d0/
+      real(wp) di , hrl1 , phrl1 , r
+
+      real(wp),parameter :: one = 1.0_wp
 !
       iersl = 0
       select case (me%miter)
@@ -3616,7 +3605,6 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
       integer i
       real(wp) rtol , atol , ycur , ewt
       dimension rtol(*) , atol(*) , ycur(n) , ewt(n)
-!
 
       select case (itol)
       case (2)
@@ -3661,11 +3649,10 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 
       real(wp) function dvnorm(n,v,w)
       implicit none
-      integer n , i
-      real(wp) v , w , sum
-      dimension v(n) , w(n)
+      integer :: n , i
+      real(wp) :: v(n) , w(n) , sum
 
-      sum = 0.0d0
+      sum = zero
       do i = 1 , n
          sum = sum + (v(i)*w(i))**2
       enddo
