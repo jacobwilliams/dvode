@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 3.5% of total for procedures.">68 statements</a>
+               title=" 3.5% of total for procedures.">69 statements</a>
           </li>
 
             <li id="source-file">
@@ -150,7 +150,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine dvhin(me, n, t0, y0, ydot, f, tout, uround, ewt, itol, atol, y, temp, h0, niter, ier)  
+    <h2>private  subroutine dvhin(me, n, t0, y0, ydot, tout, uround, ewt, itol, atol, y, temp, h0, niter, ier)  
 </h2>
     
 
@@ -272,21 +272,6 @@
             </td>
             <td>::</td>
             <td><strong>ydot</strong>(*)</td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-f~3"></span>
-              procedure(<a href='../interface/f_func.html'>f_func</a>)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>f</strong></td>
             <td>
                 
             </td>
@@ -590,34 +575,28 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre><span></span><span class="k">subroutine </span><span class="n">dvhin</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">y0</span><span class="p">,</span><span class="n">ydot</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">tout</span><span class="p">,</span><span class="n">uround</span><span class="p">,</span><span class="n">ewt</span><span class="p">,</span><span class="n">itol</span><span class="p">,</span><span class="w">   </span><span class="p">&amp;</span><span class="w"></span>
+    <div class="highlight"><pre><span></span><span class="k">subroutine </span><span class="n">dvhin</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">t0</span><span class="p">,</span><span class="n">y0</span><span class="p">,</span><span class="n">ydot</span><span class="p">,</span><span class="n">tout</span><span class="p">,</span><span class="n">uround</span><span class="p">,</span><span class="n">ewt</span><span class="p">,</span><span class="n">itol</span><span class="p">,</span><span class="w">   </span><span class="p">&amp;</span><span class="w"></span>
 <span class="w">                 </span><span class="n">atol</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">temp</span><span class="p">,</span><span class="n">h0</span><span class="p">,</span><span class="n">niter</span><span class="p">,</span><span class="n">ier</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">      </span><span class="k">implicit none</span>
 
 <span class="k">      class</span><span class="p">(</span><span class="n">dvode_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span><span class="w"></span>
-<span class="w">      </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_func</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">f</span><span class="w"></span>
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t0</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">y0</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ydot</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">tout</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">uround</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ewt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
 <span class="w">                  </span><span class="n">atol</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">temp</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">h0</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">itol</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">niter</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ier</span><span class="w"></span>
 
 <span class="c">! type declarations for local variables --------------------------------</span>
 <span class="c">!</span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">afi</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">atoli</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">delyi</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">half</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hg</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hlb</span><span class="w"> </span><span class="p">,</span><span class="w">      </span><span class="p">&amp;</span><span class="w"></span>
-<span class="w">                       </span><span class="n">hnew</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hrat</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hub</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hun</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">pt1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">t1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">tdist</span><span class="w"> </span><span class="p">,</span><span class="w">     </span><span class="p">&amp;</span><span class="w"></span>
-<span class="w">                       </span><span class="n">tround</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">yddnrm</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">afi</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">atoli</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">delyi</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hg</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hlb</span><span class="w"> </span><span class="p">,</span><span class="w">      </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                       </span><span class="n">hnew</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hrat</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hub</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">t1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">tdist</span><span class="w"> </span><span class="p">,</span><span class="w">     </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                       </span><span class="n">tround</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">yddnrm</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer </span><span class="n">i</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">iter</span><span class="w"></span>
-<span class="c">!</span>
-<span class="c">! type declaration for function subroutines called ---------------------</span>
-<span class="c">!</span>
-<span class="c">!      real(wp) dvnorm</span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="c">! the following fortran-77 declaration is to cause the values of the</span>
-<span class="c">! listed (local) variables to be saved between calls to this integrator.</span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="w">      </span><span class="k">save </span><span class="n">half</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hun</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">pt1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">two</span><span class="w"></span>
-<span class="w">      </span><span class="k">data </span><span class="n">half</span><span class="o">/</span><span class="mf">0.5d0</span><span class="o">/</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hun</span><span class="o">/</span><span class="mi">10</span><span class="mf">0.0d0</span><span class="o">/</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">pt1</span><span class="o">/</span><span class="mf">0.1d0</span><span class="o">/</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">two</span><span class="o">/</span><span class="mf">2.0d0</span><span class="o">/</span><span class="w"></span>
-<span class="c">!</span>
+
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">half</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5_wp</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="mf">0.0_wp</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pt1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1_wp</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0_wp</span><span class="w"></span>
+
 <span class="w">      </span><span class="n">niter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
 <span class="w">      </span><span class="n">tdist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">tout</span><span class="o">-</span><span class="n">t0</span><span class="p">)</span><span class="w"></span>
 <span class="w">      </span><span class="n">tround</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uround</span><span class="o">*</span><span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span><span class="nb">abs</span><span class="p">(</span><span class="n">tout</span><span class="p">))</span><span class="w"></span>

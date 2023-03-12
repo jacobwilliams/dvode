@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>100.0% of total for derived types.</p>Including implementation: 1483 statements, 100.0% of total for derived types.">79 statements</a>
+               title="<p>100.0% of total for derived types.</p>Including implementation: 1511 statements, 100.0% of total for derived types.">81 statements</a>
           </li>
 
             <li id="source-file">
@@ -189,6 +189,8 @@
             <a class="list-group-item" href="../type/dvode_t.html#variable-nni">nni</a>
             <a class="list-group-item" href="../type/dvode_t.html#variable-nqu">nqu</a>
             <a class="list-group-item" href="../type/dvode_t.html#variable-nst">nst</a>
+            <a class="list-group-item" href="../type/dvode_t.html#variable-etaq">etaq</a>
+            <a class="list-group-item" href="../type/dvode_t.html#variable-etaqm1">etaqm1</a>
             <a class="list-group-item" href="../type/dvode_t.html#variable-f">f</a>
             <a class="list-group-item" href="../type/dvode_t.html#variable-jac">jac</a>
         </div>
@@ -323,6 +325,8 @@
             <a class="list-group-item" href="../type/dvode_t.html#variable-nni">nni</a>
             <a class="list-group-item" href="../type/dvode_t.html#variable-nqu">nqu</a>
             <a class="list-group-item" href="../type/dvode_t.html#variable-nst">nst</a>
+            <a class="list-group-item" href="../type/dvode_t.html#variable-etaq">etaq</a>
+            <a class="list-group-item" href="../type/dvode_t.html#variable-etaqm1">etaqm1</a>
             <a class="list-group-item" href="../type/dvode_t.html#variable-f">f</a>
             <a class="list-group-item" href="../type/dvode_t.html#variable-jac">jac</a>
         </div>
@@ -1440,6 +1444,40 @@
             <td><strong>nst</strong></td>
 <td> =</td>
                 <td>0</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-etaq"></span>
+              real(kind=wp),
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>etaq</strong></td>
+<td> =</td>
+                <td>zero</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-etaqm1"></span>
+              real(kind=wp),
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>etaqm1</strong></td>
+<td> =</td>
+                <td>zero</td>
             <td>
                 
             </td>
@@ -2830,7 +2868,7 @@
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
-    private  subroutine <a href='../proc/dvhin.html'>dvhin</a>(me, n, t0, y0, ydot, f, tout, uround, ewt, itol, atol, y, temp, h0, niter, ier)  
+    private  subroutine <a href='../proc/dvhin.html'>dvhin</a>(me, n, t0, y0, ydot, tout, uround, ewt, itol, atol, y, temp, h0, niter, ier)  
 </h3>
     
   <p>this routine computes the step size, h0, to be attempted on the
@@ -2951,21 +2989,6 @@
             </td>
             <td>::</td>
             <td><strong>ydot</strong>(*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              procedure(<a href='../interface/f_func.html'>f_func</a>)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>f</strong></td>
             <td>
 
             </td>
@@ -3690,7 +3713,7 @@
               
             </td>
             <td>::</td>
-            <td><strong>yh</strong></td>
+            <td><strong>yh</strong>(ldyh,*)</td>
             <td>
 
             </td>
@@ -4517,6 +4540,10 @@
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nni</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nqu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+
+<span class="w">      </span><span class="c">! formerly save variables</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">etaq</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">etaqm1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
 
 <span class="w">      </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_func</span><span class="p">),</span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_jac</span><span class="p">),</span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">jac</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w"></span>

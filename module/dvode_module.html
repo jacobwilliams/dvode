@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="79.6% of total for modules and submodules.">1657 statements</a>
+               title="79.9% of total for modules and submodules.">1685 statements</a>
           </li>
 
             <li id="source-file">
@@ -1945,6 +1945,40 @@ parameter,               dimension(2)
         </tr>
         <tr>
             <td>
+              <span class="anchor" id="variable-etaq"></span>
+              real(kind=wp),
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>etaq</strong></td>
+<td> =</td>
+                <td>zero</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-etaqm1"></span>
+              real(kind=wp),
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>etaqm1</strong></td>
+<td> =</td>
+                <td>zero</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
               <span class="anchor" id="variable-f"></span>
               procedure(<a href='../interface/f_func.html'>f_func</a>),
             </td>
@@ -2572,7 +2606,7 @@ parameter,               dimension(2)
   </div>
 
       <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-dvhin"></span><h3>private  subroutine <a href='../proc/dvhin.html'>dvhin</a>(me, n, t0, y0, ydot, f, tout, uround, ewt, itol, atol, y, temp, h0, niter, ier)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-dvhin"></span><h3>private  subroutine <a href='../proc/dvhin.html'>dvhin</a>(me, n, t0, y0, ydot, tout, uround, ewt, itol, atol, y, temp, h0, niter, ier)  
 </h3></div>
     <div class="panel-body">
           
@@ -2661,21 +2695,6 @@ parameter,               dimension(2)
             </td>
             <td>::</td>
             <td><strong>ydot</strong>(*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              procedure(<a href='../interface/f_func.html'>f_func</a>)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>f</strong></td>
             <td>
 
             </td>
@@ -3255,7 +3274,7 @@ parameter,               dimension(2)
               
             </td>
             <td>::</td>
-            <td><strong>yh</strong></td>
+            <td><strong>yh</strong>(ldyh,*)</td>
             <td>
 
             </td>

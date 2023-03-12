@@ -182,6 +182,10 @@ module dvode_module
       integer :: nqu = 0
       integer :: nst = 0
 
+      ! formerly save variables
+      real(wp) :: etaq   = zero
+      real(wp) :: etaqm1 = zero
+
       procedure(f_func),pointer :: f => null()
       procedure(f_jac),pointer :: jac => null()
 
@@ -1275,25 +1279,24 @@ integer :: mf
 !
 ! type declarations for local variables --------------------------------
 !
-      logical ihit
-      real(wp) atoli , big , ewti , four , h0 , hmax , hmx ,    &
-                       hun , one , pt2 , rh , rtoli , size , tcrit ,    &
-                       tnext , tolsf , tp , two , zero
-      integer i , ier , iflag , imxer , jco , kgo , leniw , lenj ,      &
-              lenp , lenrw , lenwm , lf0 , mband , mfa , ml ,    &
-              mu , mxhnl0 , mxstp0 , niter , nslast
-      character(len=80) msg
+      logical :: ihit
+      real(wp) :: atoli , big , ewti , h0 , hmax , hmx , &
+                  rh , rtoli , size , tcrit , &
+                  tnext , tolsf , tp
+      integer :: i , ier , iflag , imxer , jco , kgo , leniw , lenj , &
+                 lenp , lenrw , lenwm , lf0 , mband , mfa , ml , &
+                 mu , niter , nslast
+      character(len=80) :: msg
 
-!-----------------------------------------------------------------------
-! the following fortran-77 declaration is to cause the values of the
-! listed (local) variables to be saved between calls to dvode.
-!-----------------------------------------------------------------------
-      save mxhnl0 , mxstp0
-      save zero , one , two , four , pt2 , hun
-!
-      data mxstp0/500/ , mxhnl0/10/
-      data zero/0.0d0/ , one/1.0d0/ , two/2.0d0/ , four/4.0d0/ ,        &
-           pt2/0.2d0/ , hun/100.0d0/
+      integer,parameter :: mxhnl0 = 10
+      integer,parameter :: mxstp0 = 500
+      real(wp),parameter :: zero = 0.0_wp
+      real(wp),parameter :: one  = 1.0_wp
+      real(wp),parameter :: two  = 2.0_wp
+      real(wp),parameter :: four = 4.0_wp
+      real(wp),parameter :: pt2  = 0.2_wp
+      real(wp),parameter :: hun  = 100.0_wp
+
 !-----------------------------------------------------------------------
 ! block a.
 ! this code block is executed on every call.
@@ -1557,7 +1560,7 @@ integer :: mf
                         enddo
                         if ( h0==zero ) then
 ! call dvhin to set initial step size h0 to be attempted. --------------
-                           call me%dvhin(me%n,t,rwork(me%lyh),rwork(lf0),me%f, &
+                           call me%dvhin(me%n,t,rwork(me%lyh),rwork(lf0), &
                                          tout,me%uround,rwork(me%lewt),itol,&
                                          atol,y,rwork(me%lacor),h0,niter,ier)
                            me%nfe = me%nfe + niter
@@ -1814,12 +1817,14 @@ integer :: mf
       iwork(21) = me%ncfn
       iwork(22) = me%netf
       return
+
 ! ewt(i) <= 0.0 for some i (not at start of problem). ----------------
  500  ewti = rwork(me%lewt+i-1)
       msg = 'dvode--  at t (=r1), ewt(i1) has become r2 <= 0.'
       call xerrwd(msg,50,202,1,1,i,0,2,me%tn,ewti)
       istate = -6
       goto 700
+
 ! compute imxer if relevant. -------------------------------------------
  600  big = zero
       imxer = 1
@@ -1846,7 +1851,9 @@ integer :: mf
       iwork(20) = me%nni
       iwork(21) = me%ncfn
       iwork(22) = me%netf
+
       return
+
  800  msg = 'dvode--  mf (=i1) illegal     '
       call xerrwd(msg,30,8,1,1,mf,0,0,zero,zero)
       goto 1500
@@ -1871,9 +1878,8 @@ integer :: mf
  1400 msg = &
           'dvode--  trouble from dvindy.  itask = i1, tout = r1.       '
       call xerrwd(msg,60,27,1,1,itask,0,1,tout,zero)
-!
+
  1500 istate = -3
-      return
 
    end subroutine dvode
 
@@ -1918,34 +1924,28 @@ integer :: mf
 !          ier = -1 if tout and t0 are considered too close to proceed.
 !```
 
-subroutine dvhin(me,n,t0,y0,ydot,f,tout,uround,ewt,itol,   &
+subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
                  atol,y,temp,h0,niter,ier)
 
       implicit none
 
       class(dvode_t),intent(inout) :: me
-      procedure(f_func) :: f
       real(wp) :: t0 , y0(*) , ydot(*) , tout , uround , ewt(*) , &
                   atol(*) , y(n) , temp(n) , h0
       integer :: n , itol , niter , ier
 
 ! type declarations for local variables --------------------------------
 !
-      real(wp) afi , atoli , delyi , h , half , hg , hlb ,      &
-                       hnew , hrat , hub , hun , pt1 , t1 , tdist ,     &
-                       tround , two , yddnrm
+      real(wp) afi , atoli , delyi , h , hg , hlb ,      &
+                       hnew , hrat , hub , t1 , tdist ,     &
+                       tround , yddnrm
       integer i , iter
-!
-! type declaration for function subroutines called ---------------------
-!
-!      real(wp) dvnorm
-!-----------------------------------------------------------------------
-! the following fortran-77 declaration is to cause the values of the
-! listed (local) variables to be saved between calls to this integrator.
-!-----------------------------------------------------------------------
-      save half , hun , pt1 , two
-      data half/0.5d0/ , hun/100.0d0/ , pt1/0.1d0/ , two/2.0d0/
-!
+
+      real(wp),parameter :: half = 0.5_wp
+      real(wp),parameter :: hun = 100.0_wp
+      real(wp),parameter :: pt1 = 0.1_wp
+      real(wp),parameter :: two = 2.0_wp
+
       niter = 0
       tdist = abs(tout-t0)
       tround = uround*max(abs(t0),abs(tout))
@@ -2071,20 +2071,15 @@ subroutine dvhin(me,n,t0,y0,ydot,f,tout,uround,ewt,itol,   &
 !
 ! type declarations for local variables --------------------------------
 !
-      real(wp) c , hun , r , s , tfuzz , tn1 , tp , zero
-      integer i , ic , j , jb , jb2 , jj , jj1 , jp1
-      character(len=80) msg
-!-----------------------------------------------------------------------
-! the following fortran-77 declaration is to cause the values of the
-! listed (local) variables to be saved between calls to this integrator.
-!-----------------------------------------------------------------------
-      save hun , zero
+      real(wp) :: c , r , s , tfuzz , tn1 , tp
+      integer :: i , ic , j , jb , jb2 , jj , jj1 , jp1
+      character(len=80) :: msg
 
-      data hun/100.0d0/ , zero/0.0d0/
+      real(wp),parameter :: hun = 100.0_wp
+      real(wp),parameter :: zero = 0.0_wp
 
       iflag = 0
       if ( k<0 .or. k>me%nq ) then
-!
          msg = 'dvindy-- k (=i1) illegal      '
          call xerrwd(msg,30,51,1,1,k,0,0,zero,zero)
          iflag = -1
@@ -2206,35 +2201,39 @@ subroutine dvhin(me,n,t0,y0,ydot,f,tout,uround,ewt,itol,   &
 
       class(dvode_t),intent(inout) :: me
       integer :: ldyh
-      real(wp) :: y(*) , yh(ldyh,*) , yh1(*) , ewt(*) , &
-                  savf(*) , vsav(*) , acor(*) , wm(*)
+      real(wp) :: y(*)
+      real(wp) :: yh(ldyh,*)
+      real(wp) :: yh1(*)
+      real(wp) :: ewt(*)
+      real(wp) :: savf(*)
+      real(wp) :: vsav(*)
+      real(wp) :: acor(*)
+      real(wp) :: wm(*)
       integer :: iwm(*)
 
-!
 ! type declarations for local variables --------------------------------
 !
-      real(wp) addon , bias1 , bias2 , bias3 , cnquot , ddn ,   &
-                       dsm , dup , etacf , etamin , etamx1 , etamx2 ,   &
-                       etamx3 , etamxf , etaq , etaqm1 , etaqp1 ,       &
-                       flotl , one , onepsm , r , thresh , told , zero
-      integer i , i1 , i2 , iback , j , jb , kfc , kfh , mxncf , ncf ,  &
-              nflag
+      real(wp) :: cnquot , ddn , dsm , dup , etaqp1 , &
+                  flotl , r , told
+      integer :: i , i1 , i2 , iback , j , jb , ncf , nflag
 
-!-----------------------------------------------------------------------
-! the following fortran-77 declaration is to cause the values of the
-! listed (local) variables to be saved between calls to this integrator.
-!-----------------------------------------------------------------------
-      save addon , bias1 , bias2 , bias3 , etacf , etamin , etamx1 ,    &
-         etamx2 , etamx3 , etamxf , etaq , etaqm1 , kfc , kfh , mxncf , &
-         onepsm , thresh , one , zero
-!
-      data kfc/ - 3/ , kfh/ - 7/ , mxncf/10/
-      data addon/1.0d-6/ , bias1/6.0d0/ , bias2/6.0d0/ , bias3/10.0d0/ ,&
-           etacf/0.25d0/ , etamin/0.1d0/ , etamxf/0.2d0/ ,              &
-           etamx1/1.0d4/ , etamx2/10.0d0/ , etamx3/10.0d0/ ,            &
-           onepsm/1.00001d0/ , thresh/1.5d0/
-      data one/1.0d0/ , zero/0.0d0/
-!
+      integer,parameter :: kfc = -3
+      integer,parameter :: kfh = -7
+      integer,parameter :: mxncf = 10
+      real(wp),parameter :: one = 1.0_wp
+      real(wp),parameter :: addon = 1.0e-6_wp
+      real(wp),parameter :: bias1 = 6.0_wp
+      real(wp),parameter :: bias2 = 6.0_wp
+      real(wp),parameter :: bias3 = 10.0_wp
+      real(wp),parameter :: etacf = 0.25_wp
+      real(wp),parameter :: etamin = 0.1_wp
+      real(wp),parameter :: etamxf = 0.2_wp
+      real(wp),parameter :: etamx1 = 10000.0_wp
+      real(wp),parameter :: etamx2 = 10.0_wp
+      real(wp),parameter :: etamx3 = 10.0_wp
+      real(wp),parameter :: onepsm = 1.00001_wp
+      real(wp),parameter :: thresh = 1.5_wp
+
       me%kflag = 0
       told = me%tn
       ncf = 0
@@ -2318,9 +2317,9 @@ subroutine dvhin(me,n,t0,y0,ydot,f,tout,uround,ewt,itol,   &
             ddn = dvnorm(me%n,savf,ewt)/me%tq(1)
             me%eta = one/((bias1*ddn)**(one/flotl)+addon)
          endif
-         if ( me%maxord==me%nq .and. me%newq==me%nq+1 ) me%eta = etaq
+         if ( me%maxord==me%nq .and. me%newq==me%nq+1 ) me%eta = me%etaq
          if ( me%maxord==me%nq-1 .and. me%newq==me%nq+1 ) then
-            me%eta = etaqm1
+            me%eta = me%etaqm1
             call me%dvjust(yh,ldyh,-1)
          endif
          if ( me%maxord==me%nq-1 .and. me%newq==me%nq ) then
@@ -2481,14 +2480,14 @@ subroutine dvhin(me,n,t0,y0,ydot,f,tout,uround,ewt,itol,   &
 !-----------------------------------------------------------------------
 ! compute ratio of new h to current h at the current order. ------------
                flotl = real(me%l,wp)
-               etaq = one/((bias2*dsm)**(one/flotl)+addon)
+               me%etaq = one/((bias2*dsm)**(one/flotl)+addon)
                if ( me%nqwait==0 ) then
                   me%nqwait = 2
-                  etaqm1 = zero
+                  me%etaqm1 = zero
                   if ( me%nq/=1 ) then
 ! compute ratio of new h to current h at the current order less one. ---
                      ddn = dvnorm(me%n,yh(1,me%l),ewt)/me%tq(1)
-                     etaqm1 = one/((bias1*ddn)**(one/(flotl-one))+addon)
+                     me%etaqm1 = one/((bias1*ddn)**(one/(flotl-one))+addon)
                   endif
                   etaqp1 = zero
                   if ( me%l/=me%lmax ) then
@@ -2500,17 +2499,17 @@ subroutine dvhin(me,n,t0,y0,ydot,f,tout,uround,ewt,itol,   &
                      dup = dvnorm(me%n,savf,ewt)/me%tq(3)
                      etaqp1 = one/((bias3*dup)**(one/(flotl+one))+addon)
                   endif
-                  if ( etaq<etaqp1 ) then
-                     if ( etaqp1<=etaqm1 ) goto 420
+                  if ( me%etaq<etaqp1 ) then
+                     if ( etaqp1<=me%etaqm1 ) goto 420
                      me%eta = etaqp1
                      me%newq = me%nq + 1
                      call dcopy(me%n,acor,1,yh(1,me%lmax),1)
                      goto 450
-                  elseif ( etaq<etaqm1 ) then
+                  elseif ( me%etaq<me%etaqm1 ) then
                      goto 420
                   endif
                endif
-               me%eta = etaq
+               me%eta = me%etaq
                me%newq = me%nq
                goto 450
             else
@@ -2521,7 +2520,7 @@ subroutine dvhin(me,n,t0,y0,ydot,f,tout,uround,ewt,itol,   &
                me%hnew = me%h
                goto 500
             endif
- 420        me%eta = etaqm1
+ 420        me%eta = me%etaqm1
             me%newq = me%nq - 1
          endif
 ! test tentative new h against thresh, etamax, and hmxi, then exit. ----
@@ -2635,22 +2634,19 @@ subroutine dvhin(me,n,t0,y0,ydot,f,tout,uround,ewt,itol,   &
 !
 ! type declarations for local variables --------------------------------
 !
-      real(wp) ahatn0 , alph0 , cnqm1 , cortes , csum , elp ,   &
-                       em , em0 , floti , flotl , flotnq , hsum , one , &
-                       rxi , rxis , s , six , t1 , t2 , t3 , t4 , t5 ,  &
-                       t6 , two , xi , zero
-      integer i , iback , j , jp1 , nqm1 , nqm2
+      real(wp) :: ahatn0 , alph0 , cnqm1 , csum , elp ,   &
+                       em , em0 , floti , flotl , flotnq , hsum , &
+                       rxi , rxis , s , t1 , t2 , t3 , t4 , t5 ,  &
+                       t6 , xi
+      integer :: i , iback , j , jp1 , nqm1 , nqm2
 !
       dimension em(13)
-!-----------------------------------------------------------------------
-! the following fortran-77 declaration is to cause the values of the
-! listed (local) variables to be saved between calls to this integrator.
-!-----------------------------------------------------------------------
-      save cortes , one , six , two , zero
-!
-      data cortes/0.1d0/
-      data one/1.0d0/ , six/6.0d0/ , two/2.0d0/ , zero/0.0d0/
-!
+
+      real(wp),parameter :: cortes = 0.1_wp
+      real(wp),parameter :: one = 1.0_wp
+      real(wp),parameter :: six = 6.0_wp
+      real(wp),parameter :: two = 2.0_wp
+
       flotl = real(me%l,wp)
       nqm1 = me%nq - 1
       nqm2 = me%nq - 2
@@ -2803,26 +2799,21 @@ subroutine dvhin(me,n,t0,y0,ydot,f,tout,uround,ewt,itol,   &
 !```
 
       subroutine dvjust(me,yh,ldyh,iord)
+
       implicit none
 
       class(dvode_t),intent(inout) :: me
-      real(wp) yh
-      integer ldyh , iord
-      dimension yh(ldyh,*)
+      integer :: ldyh , iord
+      real(wp) :: yh(ldyh,*)
 !
 ! type declarations for local variables --------------------------------
 !
-      real(wp) alph0 , alph1 , hsum , one , prod , t1 , xi ,    &
-                       xiold , zero
+      real(wp) alph0 , alph1 , hsum , prod , t1 , xi ,    &
+                       xiold
       integer i , iback , j , jp1 , lp1 , nqm1 , nqm2 , nqp1
-!-----------------------------------------------------------------------
-! the following fortran-77 declaration is to cause the values of the
-! listed (local) variables to be saved between calls to this integrator.
-!-----------------------------------------------------------------------
-      save one , zero
-!
-      data one/1.0d0/ , zero/0.0d0/
-!
+
+      real(wp),parameter :: one = 1.0_wp
+
       if ( (me%nq==2) .and. (iord/=1) ) return
       nqm1 = me%nq - 1
       nqm2 = me%nq - 2
@@ -3009,19 +3000,17 @@ subroutine dvhin(me,n,t0,y0,ydot,f,tout,uround,ewt,itol,   &
 !
 ! type declarations for local variables --------------------------------
 !
-      real(wp) ccmax , crdown , cscale , dcon , del , delp ,    &
-                       one , rdiv , two , zero
-      integer i , ierpj , iersl , m , maxcor , msbp
+      real(wp) :: cscale , dcon , del , delp
+      integer :: i , ierpj , iersl , m
 
-!-----------------------------------------------------------------------
-! the following fortran-77 declaration is to cause the values of the
-! listed (local) variables to be saved between calls to this integrator.
-!-----------------------------------------------------------------------
-      save ccmax , crdown , maxcor , msbp , rdiv , one , two , zero
-!
-      data ccmax/0.3d0/ , crdown/0.3d0/ , maxcor/3/ , msbp/20/ ,        &
-           rdiv/2.0d0/
-      data one/1.0d0/ , two/2.0d0/ , zero/0.0d0/
+      integer,parameter :: maxcor = 3
+      integer,parameter :: msbp = 20
+
+      real(wp),parameter :: ccmax = 0.3_wp
+      real(wp),parameter :: crdown = 0.3_wp
+      real(wp),parameter :: rdiv = 2.0_wp
+      real(wp),parameter :: one = 1.0_wp
+      real(wp),parameter :: two = 2.0_wp
 
 !-----------------------------------------------------------------------
 ! on the first step, on a change of method order, or after a
