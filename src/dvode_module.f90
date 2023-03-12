@@ -1,16 +1,228 @@
 module dvode_module
 
+   ! TODO: replace EXTERNAL, GOTO
+
     use dvode_blas_module
     use dvode_linpack_module
-    use dvode_kinds_module, wp => dvode_wp
+    use dvode_kinds_module, only: wp => dvode_wp
     use iso_fortran_env,    only: output_unit
 
     implicit none
 
     private
 
+    real(wp),parameter :: zero = 0.0_wp
     real(wp),parameter :: epmach = epsilon(1.0_wp) !! machine epsilon
     integer,parameter :: iumach  = output_unit     !! standard output unit number
+    integer,dimension(2),parameter :: mord = [12,5]
+
+    type,public :: dvode_t
+
+      private
+
+      !-----------------------------------------------------------------------
+      ! the following internal common blocks contain variables which are
+      ! communicated between subroutines in the dvode package, or which are
+      ! to be saved between calls to dvode.
+      ! in each block, real variables precede integers.
+      ! the block /dvod01/ appears in subroutines dvode, dvindy, dvstep,
+      ! dvset, dvnlsd, dvjac, dvsol, dvjust and dvsrco.
+      ! the block /dvod02/ appears in subroutines dvode, dvindy, dvstep,
+      ! dvnlsd, dvjac, and dvsrco.
+      !
+      ! the variables stored in the internal common blocks are as follows:
+      !
+      ! acnrm  = weighted r.m.s. norm of accumulated correction vectors.
+      ! ccmxj  = threshhold on drc for updating the jacobian. (see drc.)
+      ! conp   = the saved value of tq(5).
+      ! crate  = estimated corrector convergence rate constant.
+      ! drc    = relative change in h*rl1 since last dvjac call.
+      ! el     = real array of integration coefficients.  see dvset.
+      ! eta    = saved tentative ratio of new to old h.
+      ! etamax = saved maximum value of eta to be allowed.
+      ! h      = the step size.
+      ! hmin   = the minimum absolute value of the step size h to be used.
+      ! hmxi   = inverse of the maximum absolute value of h to be used.
+      !          hmxi = 0.0 is allowed and corresponds to an infinite hmax.
+      ! hnew   = the step size to be attempted on the next step.
+      ! hscal  = stepsize in scaling of yh array.
+      ! prl1   = the saved value of rl1.
+      ! rc     = ratio of current h*rl1 to value on last dvjac call.
+      ! rl1    = the reciprocal of the coefficient el(1).
+      ! tau    = real vector of past nq step sizes, length 13.
+      ! tq     = a real vector of length 5 in which dvset stores constants
+      !          used for the convergence test, the error test, and the
+      !          selection of h at a new order.
+      ! tn     = the independent variable, updated on each step taken.
+      ! uround = the machine unit roundoff.  the smallest positive real number
+      !          such that  1.0 + uround /= 1.0
+      ! icf    = integer flag for convergence failure in dvnlsd:
+      !            0 means no failures.
+      !            1 means convergence failure with out of date jacobian
+      !                   (recoverable error).
+      !            2 means convergence failure with current jacobian or
+      !                   singular matrix (unrecoverable error).
+      ! init   = saved integer flag indicating whether initialization of the
+      !          problem has been done (init = 1) or not.
+      ! ipup   = saved flag to signal updating of newton matrix.
+      ! jcur   = output flag from dvjac showing jacobian status:
+      !            jcur = 0 means j is not current.
+      !            jcur = 1 means j is current.
+      ! jstart = integer flag used as input to dvstep:
+      !            0  means perform the first step.
+      !            1  means take a new step continuing from the last.
+      !            -1 means take the next step with a new value of maxord,
+      !                  hmin, hmxi, n, meth, miter, and/or matrix parameters.
+      !          on return, dvstep sets jstart = 1.
+      ! jsv    = integer flag for jacobian saving, = sign(mf).
+      ! kflag  = a completion code from dvstep with the following meanings:
+      !               0      the step was succesful.
+      !              -1      the requested error could not be achieved.
+      !              -2      corrector convergence could not be achieved.
+      !              -3, -4  fatal error in vnls (can not occur here).
+      ! kuth   = input flag to dvstep showing whether h was reduced by the
+      !          driver.  kuth = 1 if h was reduced, = 0 otherwise.
+      ! l      = integer variable, nq + 1, current order plus one.
+      ! lmax   = maxord + 1 (used for dimensioning).
+      ! locjs  = a pointer to the saved jacobian, whose storage starts at
+      !          wm(locjs), if jsv = 1.
+      ! lyh, lewt, lacor, lsavf, lwm, liwm = saved integer pointers
+      !          to segments of rwork and iwork.
+      ! maxord = the maximum order of integration method to be allowed.
+      ! meth/miter = the method flags.  see mf.
+      ! msbj   = the maximum number of steps between j evaluations, = 50.
+      ! mxhnil = saved value of optional input mxhnil.
+      ! mxstep = saved value of optional input mxstep.
+      ! n      = the number of first-order odes, = neq.
+      ! newh   = saved integer to flag change of h.
+      ! newq   = the method order to be used on the next step.
+      ! nhnil  = saved counter for occurrences of t + h = t.
+      ! nq     = integer variable, the current integration method order.
+      ! nqnyh  = saved value of nq*nyh.
+      ! nqwait = a counter controlling the frequency of order changes.
+      !          an order change is about to be considered if nqwait = 1.
+      ! nslj   = the number of steps taken as of the last jacobian update.
+      ! nslp   = saved value of nst as of last newton matrix update.
+      ! nyh    = saved value of the initial value of neq.
+      !
+      ! hu     = the step size in t last used.
+      ! ncfn   = number of nonlinear convergence failures so far.
+      ! netf   = the number of error test failures of the integrator so far.
+      ! nfe    = the number of f evaluations for the problem so far.
+      ! nje    = the number of jacobian evaluations so far.
+      ! nlu    = the number of matrix lu decompositions so far.
+      ! nni    = number of nonlinear iterations so far.
+      ! nqu    = the method order last used.
+      ! nst    = the number of steps taken for the problem so far.
+      !-----------------------------------------------------------------------
+
+      ! type declarations for labeled common block dvod01
+      real(wp) :: acnrm = zero
+      real(wp) :: ccmxj = zero
+      real(wp) :: conp = zero
+      real(wp) :: crate = zero
+      real(wp) :: drc = zero
+      real(wp) :: el(13) = zero
+      real(wp) :: eta = zero
+      real(wp) :: etamax = zero
+      real(wp) :: h = zero
+      real(wp) :: hmin = zero
+      real(wp) :: hmxi = zero
+      real(wp) :: hnew = zero
+      real(wp) :: hscal = zero
+      real(wp) :: prl1 = zero
+      real(wp) :: rc = zero
+      real(wp) :: rl1 = zero
+      real(wp) :: tau(13) = zero
+      real(wp) :: tq(5) = zero
+      real(wp) :: tn = zero
+      real(wp) :: uround = zero
+      integer :: icf = 0
+      integer :: init = 0
+      integer :: ipup = 0
+      integer :: jcur = 0
+      integer :: jstart = 0
+      integer :: jsv = 0
+      integer :: kflag = 0
+      integer :: kuth = 0
+      integer :: l = 0
+      integer :: lmax = 0
+      integer :: lyh = 0
+      integer :: lewt = 0
+      integer :: lacor = 0
+      integer :: lsavf = 0
+      integer :: lwm = 0
+      integer :: liwm = 0
+      integer :: locjs = 0
+      integer :: maxord = 0
+      integer :: meth = 0
+      integer :: miter = 0
+      integer :: msbj = 0
+      integer :: mxhnil = 0
+      integer :: mxstep = 0
+      integer :: n = 0
+      integer :: newh = 0
+      integer :: newq = 0
+      integer :: nhnil = 0
+      integer :: nq = 0
+      integer :: nqnyh = 0
+      integer :: nqwait = 0
+      integer :: nslj = 0
+      integer :: nslp = 0
+      integer :: nyh = 0
+
+      ! type declarations for labeled common block dvod02
+      real(wp) :: hu = zero
+      integer :: ncfn = 0
+      integer :: netf = 0
+      integer :: nfe = 0
+      integer :: nje = 0
+      integer :: nlu = 0
+      integer :: nni = 0
+      integer :: nqu = 0
+      integer :: nst = 0
+
+      procedure(f_func),pointer :: f => null()
+      procedure(f_jac),pointer :: jac => null()
+
+      contains
+
+      private
+
+      procedure,public :: initialize
+      procedure,public :: solve => dvode
+
+      procedure :: dvhin
+      procedure :: dvindy
+      procedure :: dvstep
+      procedure :: dvset
+      procedure :: dvjust
+      procedure :: dvnlsd
+      procedure :: dvjac
+      procedure :: dvsol
+
+    end type dvode_t
+
+    abstract interface
+      subroutine f_func (me, neq, t, y, ydot)
+         import :: dvode_t, wp
+         implicit none
+         class(dvode_t),intent(inout) :: me
+         integer :: neq
+         real(wp) :: t
+         real(wp) :: y(neq)
+         real(wp) :: ydot(neq)
+      end subroutine f_func
+      subroutine f_jac (me, neq, t, y, ml, mu, pd, nrowpd)
+         import :: dvode_t, wp
+         implicit none
+         class(dvode_t),intent(inout) :: me
+         integer :: neq
+         integer :: nrowpd
+         real(wp) :: t, y(neq), pd(nrowpd,neq)
+         integer :: ml, mu
+      end subroutine f_jac
+   end interface
 
     public :: dvode
 
@@ -18,9 +230,32 @@ contains
 
 !*****************************************************************************************
 !>
+!  Set the function pointers.
+
+   subroutine initialize(me,f,jac)
+
+   implicit none
+
+   class(dvode_t),intent(inout) :: me
+   procedure(f_func) :: f
+   procedure(f_jac),optional :: jac
+
+   me%f => f
+
+   if (present(jac)) then
+      me%jac => jac
+   else
+      me%jac => null()
+   end if
+
+   end subroutine initialize
+!*****************************************************************************************
+
+!*****************************************************************************************
+!>
 !  dvode: variable-coefficient ordinary differential equation solver,
 !  with fixed-leading-coefficient implementation.
-!  this version is in double precision.
+!  this version is in real(wp).
 !
 !```
 !
@@ -73,8 +308,8 @@ contains
 ! problem (with program and output) following this summary.
 !
 ! a. first provide a subroutine of the form:
-!           subroutine f (neq, t, y, ydot, rpar, ipar)
-!           double precision t, y(neq), ydot(neq), rpar
+!           subroutine f (neq, t, y, ydot)
+!           real(wp) t, y(neq), ydot(neq)
 ! which supplies the vector function f by loading ydot(i) with f(i).
 !
 ! b. next determine (or guess) whether or not the problem is stiff.
@@ -83,7 +318,7 @@ contains
 ! reciprocal of the t span of interest.  if the problem is nonstiff,
 ! use a method flag mf = 10.  if it is stiff, there are four standard
 ! choices for mf (21, 22, 24, 25), and dvode requires the jacobian
-! matrix in some form.  in these cases (mf .gt. 0), dvode will use a
+! matrix in some form.  in these cases (mf > 0), dvode will use a
 ! saved copy of the jacobian matrix.  if this is undesirable because of
 ! storage limitations, set mf to the corresponding negative value
 ! (-21, -22, -24, -25).  (see full description of mf below.)
@@ -92,14 +327,14 @@ contains
 ! half-bandwidth parameters ml and mu.  these are, respectively, the
 ! widths of the lower and upper parts of the band, excluding the main
 ! diagonal.  thus the band consists of the locations (i,j) with
-! i-ml .le. j .le. i+mu, and the full bandwidth is ml+mu+1.
+! i-ml <= j <= i+mu, and the full bandwidth is ml+mu+1.
 !
 ! c. if the problem is stiff, you are encouraged to supply the jacobian
 ! directly (mf = 21 or 24), but if this is not feasible, dvode will
 ! compute it internally by difference quotients (mf = 22 or 25).
 ! if you are supplying the jacobian, provide a subroutine of the form:
-!           subroutine jac (neq, t, y, ml, mu, pd, nrowpd, rpar, ipar)
-!           double precision t, y(neq), pd(nrowpd,neq), rpar
+!           subroutine jac (neq, t, y, ml, mu, pd, nrowpd)
+!           real(wp) t, y(neq), pd(nrowpd,neq)
 ! which supplies df/dy by loading pd as follows:
 !     for a full jacobian (mf = 21), load pd(i,j) with df(i)/dy(j),
 ! the partial derivative of f(i) with respect to y(j).  (ignore the
@@ -118,7 +353,7 @@ contains
 ! neq    = number of first order odes.
 ! y      = array of initial values, of length neq.
 ! t      = the initial value of the independent variable.
-! tout   = first point where output is desired (.ne. t).
+! tout   = first point where output is desired (/= t).
 ! itol   = 1 or 2 according as atol (below) is a scalar or array.
 ! rtol   = relative tolerance parameter (scalar).
 ! atol   = absolute tolerance parameter (scalar or array).
@@ -156,9 +391,9 @@ contains
 !          22 for stiff method, internally generated full jacobian.
 !          24 for stiff method, user-supplied banded jacobian.
 !          25 for stiff method, internally generated banded jacobian.
-! rpar,ipar = user-defined real and integer arrays passed to f and jac.
+!
 ! note that the main program must declare arrays y, rwork, iwork,
-! and possibly atol, rpar, and ipar.
+! and possibly atol.
 !
 ! e. the output from the first call (or any call) is:
 !      y = array of computed values of y(t) vector.
@@ -198,7 +433,7 @@ contains
 ! in the coding below.
 !
 !     external fex, jex
-!     double precision atol, rpar, rtol, rwork, t, tout, y
+!     real(wp) atol, rtol, rwork, t, tout, y
 !     dimension y(3), atol(3), rwork(67), iwork(33)
 !     neq = 3
 !     y(1) = 1.0d0
@@ -219,10 +454,10 @@ contains
 !     mf = 21
 !     do 40 iout = 1,12
 !       call dvode(fex,neq,y,t,tout,itol,rtol,atol,itask,istate,
-!    1            iopt,rwork,lrw,iwork,liw,jex,mf,rpar,ipar)
+!    1            iopt,rwork,lrw,iwork,liw,jex,mf)
 !       write(6,20)t,y(1),y(2),y(3)
 ! 20    format(' at t =',d12.4,'   y =',3d14.6)
-!       if (istate .lt. 0) go to 80
+!       if (istate < 0) go to 80
 ! 40    tout = tout*10.
 !     write(6,60) iwork(11),iwork(12),iwork(13),iwork(19),
 !    1            iwork(20),iwork(21),iwork(22)
@@ -237,8 +472,8 @@ contains
 !     stop
 !     end
 !
-!     subroutine fex (neq, t, y, ydot, rpar, ipar)
-!     double precision rpar, t, y, ydot
+!     subroutine fex (neq, t, y, ydot)
+!     real(wp) t, y, ydot
 !     dimension y(neq), ydot(neq)
 !     ydot(1) = -.04d0*y(1) + 1.d4*y(2)*y(3)
 !     ydot(3) = 3.d7*y(2)*y(2)
@@ -246,8 +481,8 @@ contains
 !     return
 !     end
 !
-!     subroutine jex (neq, t, y, ml, mu, pd, nrpd, rpar, ipar)
-!     double precision pd, rpar, t, y
+!     subroutine jex (neq, t, y, ml, mu, pd, nrpd)
+!     real(wp) pd, t, y
 !     dimension y(neq), pd(nrpd,neq)
 !     pd(1,1) = -.04d0
 !     pd(1,2) = 1.d4*y(3)
@@ -327,16 +562,12 @@ contains
 !          form dy/dt = f(t,y), where f is a vector-valued function
 !          of the scalar t and the vector y.  subroutine f is to
 !          compute the function f.  it is to have the form
-!               subroutine f (neq, t, y, ydot, rpar, ipar)
-!               double precision t, y(neq), ydot(neq), rpar
+!               subroutine f (neq, t, y, ydot)
+!               real(wp) t, y(neq), ydot(neq)
 !          where neq, t, and y are input, and the array ydot = f(t,y)
 !          is output.  y and ydot are arrays of length neq.
 !          subroutine f should not alter y(1),...,y(neq).
 !          f must be declared external in the calling program.
-!
-!          subroutine f may access user-defined real and integer
-!          work arrays rpar and ipar, which are to be dimensioned
-!          in the main program.
 !
 !          if quantities computed in the f routine are needed
 !          externally to dvode, an extra call to f should be made
@@ -369,15 +600,15 @@ contains
 !          used only for input.
 !
 !          when starting the problem (istate = 1), tout may be equal
-!          to t for one call, then should .ne. t for the next call.
-!          for the initial t, an input value of tout .ne. t is used
+!          to t for one call, then should /= t for the next call.
+!          for the initial t, an input value of tout /= t is used
 !          in order to determine the direction of the integration
 !          (i.e. the algebraic sign of the step sizes) and the rough
 !          scale of the problem.  integration in either direction
 !          (forward or backward in t) is permitted.
 !
 !          if itask = 2 or 5 (one-step modes), tout is ignored after
-!          the first call (i.e. the first call with tout .ne. t).
+!          the first call (i.e. the first call with tout /= t).
 !          otherwise, tout is required on every call.
 !
 !          if itask = 1, 3, or 4, the values of tout need not be
@@ -400,7 +631,7 @@ contains
 !          the error control performed by the solver.  the solver will
 !          control the vector e = (e(i)) of estimated local errors
 !          in y, according to an inequality of the form
-!                      rms-norm of ( e(i)/ewt(i) )   .le.   1,
+!                      rms-norm of ( e(i)/ewt(i) )   <=   1,
 !          where       ewt(i) = rtol(i)*abs(y(i)) + atol(i),
 !          and the rms-norm (root-mean-square norm) here is
 !          rms-norm(v) = sqrt(sum v(i)**2 / neq).  here ewt = (ewt(i))
@@ -473,7 +704,7 @@ contains
 !          as a first call here, as no initialization or checking of
 !          input is done.  (such a call is sometimes useful to include
 !          the initial conditions in the output.)
-!          thus the first call for which tout .ne. t requires
+!          thus the first call for which tout /= t requires
 !          istate = 1 in the input.
 !
 !          in the output, istate has the following values and meanings.
@@ -485,7 +716,7 @@ contains
 !              requested task, but the integration was otherwise
 !              successful as far as t.  (mxstep is an optional input
 !              and is normally 500.)  to continue, the user may
-!              simply reset istate to a value .gt. 1 and call again.
+!              simply reset istate to a value > 1 and call again.
 !              (the excess work step counter will be reset to 0.)
 !              in addition, the user may increase mxstep to avoid
 !              this error return.  (see optional input below.)
@@ -532,7 +763,7 @@ contains
 !                   default values will be used in all cases.
 !          iopt = 1 means optional input is being used.
 !
-! rwork  = a real working array (double precision).
+! rwork  = a real working array (real(wp)).
 !          the length of rwork must be at least
 !             20 + nyh*(maxord + 1) + 3*neq + lwm    where
 !          nyh    = the initial value of neq,
@@ -540,11 +771,11 @@ contains
 !                   smaller value is given as an optional input),
 !          lwm = length of work space for matrix-related data:
 !          lwm = 0             if miter = 0,
-!          lwm = 2*neq**2 + 2  if miter = 1 or 2, and mf.gt.0,
-!          lwm = neq**2 + 2    if miter = 1 or 2, and mf.lt.0,
+!          lwm = 2*neq**2 + 2  if miter = 1 or 2, and mf>0,
+!          lwm = neq**2 + 2    if miter = 1 or 2, and mf<0,
 !          lwm = neq + 2       if miter = 3,
-!          lwm = (3*ml+2*mu+2)*neq + 2 if miter = 4 or 5, and mf.gt.0,
-!          lwm = (2*ml+mu+1)*neq + 2   if miter = 4 or 5, and mf.lt.0.
+!          lwm = (3*ml+2*mu+2)*neq + 2 if miter = 4 or 5, and mf>0,
+!          lwm = (2*ml+mu+1)*neq + 2   if miter = 4 or 5, and mf<0.
 !          (see the mf description for meth and miter.)
 !          thus if maxord has its default value and neq is constant,
 !          this length is:
@@ -582,8 +813,8 @@ contains
 !            iwork(2) = mu     half-bandwidths, respectively, of the
 !                       banded jacobian, excluding the main diagonal.
 !                       the band is defined by the matrix locations
-!                       (i,j) with i-ml .le. j .le. i+mu.  ml and mu
-!                       must satisfy  0 .le.  ml,mu  .le. neq-1.
+!                       (i,j) with i-ml <= j <= i+mu.  ml and mu
+!                       must satisfy  0 <=  ml,mu  <= neq-1.
 !                       these are required if miter is 4 or 5, and
 !                       ignored otherwise.  ml and mu may in fact be
 !                       the band parameters for a matrix to which
@@ -602,9 +833,8 @@ contains
 ! jac    = the name of the user-supplied routine (miter = 1 or 4) to
 !          compute the jacobian matrix, df/dy, as a function of
 !          the scalar t and the vector y.  it is to have the form
-!               subroutine jac (neq, t, y, ml, mu, pd, nrowpd,
-!                               rpar, ipar)
-!               double precision t, y(neq), pd(nrowpd,neq), rpar
+!               subroutine jac (neq, t, y, ml, mu, pd, nrowpd)
+!               real(wp) t, y(neq), pd(nrowpd,neq)
 !          where neq, t, y, ml, mu, and nrowpd are input and the array
 !          pd is to be loaded with partial derivatives (elements of the
 !          jacobian matrix) in the output.  pd must be given a first
@@ -631,9 +861,6 @@ contains
 !          saved in a user common block by f and not recomputed by jac,
 !          if desired.  also, jac may alter the y array, if desired.
 !          jac must be declared external in the calling program.
-!               subroutine jac may access user-defined real and integer
-!          work arrays, rpar and ipar, whose dimensions are set by the
-!          user in the main program.
 !
 ! mf     = the method flag.  used only for input.  the legal values of
 !          mf are 10, 11, 12, 13, 14, 15, 20, 21, 22, 23, 24, 25,
@@ -668,15 +895,6 @@ contains
 !          (the name is arbitrary) as described above under jac.
 !          for other values of miter, a dummy argument can be used.
 !
-! rpar     user-specified array used to communicate real parameters
-!          to user-supplied subroutines.  if rpar is a vector, then
-!          it must be dimensioned in the user's main program.  if it
-!          is unused or it is a scalar, then it need not be
-!          dimensioned.
-!
-! ipar     user-specified array used to communicate integer parameter
-!          to user-supplied subroutines.  the comments on dimensioning
-!          rpar apply to ipar.
 !-----------------------------------------------------------------------
 ! optional input.
 !
@@ -865,7 +1083,7 @@ contains
 !                             later, or alternating between two or
 !                             more problems solved with dvode.
 !
-!  call dvindy(,,,,,)         provide derivatives of y, of various
+!  call me%dvindy(,,,,,)         provide derivatives of y, of various
 !        (see below.)         orders, at a specified point t, if
 !                             desired.  it may be called only after
 !                             a successful return from dvode.
@@ -873,7 +1091,7 @@ contains
 ! the detailed instructions for using dvindy are as follows.
 ! the form of the call is:
 !
-!  call dvindy (t, k, rwork(21), nyh, dky, iflag)
+!  call me%dvindy (t, k, rwork(21), nyh, dky, iflag)
 !
 ! the input parameters are:
 !
@@ -882,10 +1100,10 @@ contains
 !             for valid results, t must lie between tcur - hu and tcur.
 !             (see optional output for tcur and hu.)
 ! k         = integer order of the derivative desired.  k must satisfy
-!             0 .le. k .le. nqcur, where nqcur is the current order
+!             0 <= k <= nqcur, where nqcur is the current order
 !             (see optional output).  the capability corresponding
 !             to k = 0, i.e. computing y(t), is already provided
-!             by dvode directly.  since nqcur .ge. 1, the first
+!             by dvode directly.  since nqcur >= 1, the first
 !             derivative dy/dt is always available with dvindy.
 ! rwork(21) = the base address of the history array yh.
 ! nyh       = column length of yh, equal to the initial value of neq.
@@ -903,9 +1121,9 @@ contains
 ! must declare, in the primary overlay, the variables in:
 !   (1) the call sequence to dvode,
 !   (2) the two internal common blocks
-!         /dvod01/  of length  81  (48 double precision words
+!         /dvod01/  of length  81  (48 real(wp) words
 !                         followed by 33 integer words),
-!         /dvod02/  of length  9  (1 double precision word
+!         /dvod02/  of length  9  (1 real(wp) word
 !                         followed by 8 integer words),
 !
 ! if dvode is used on a system in which the contents of internal
@@ -949,7 +1167,7 @@ contains
 ! given by nst = 0, nq is 1 and h is temporarily set to 1.0.
 ! nyh is the initial value of neq.  the quantities nq, h, and nst
 ! can be obtained by including in dewset the statements:
-!     double precision rvod, h, hu
+!     real(wp) rvod, h, hu
 !     common /dvod01/ rvod(48), ivod(33)
 !     common /dvod02/ hu, ncfn, netf, nfe, nje, nlu, nni, nqu, nst
 !     nq = ivod(28)
@@ -987,9 +1205,9 @@ contains
 !            (2) changed intrinsic names to generic in comments.
 !            (3) added *deck lines before each routine.
 !  19920721  names of routines and labeled common blocks changed, so as
-!            to be unique in combined single/double precision code (ach).
+!            to be unique in combined single/real(wp) code (ach).
 !  19920722  minor revisions to prologue (ach).
-!  19920831  conversion to double precision done (ach).
+!  19920831  conversion to real(wp) done (ach).
 !  19921106  fixed minor bug: etaq,etaqm1 in dvstep save statement (ach).
 !  19921118  changed lunsav/mflgsv to ixsav (ach).
 !  19941222  removed mf overwrite; attached sign to h in estimated second
@@ -1032,169 +1250,55 @@ contains
 !
 !```
 
-subroutine dvode(f,neq,y,t,tout,itol,rtol,atol,itask,istate,iopt, &
-                 rwork,lrw,iwork,liw,jac,mf,rpar,ipar)
-implicit none
-external f , jac
-double precision y , t , tout , rtol , atol , rwork , rpar
-integer neq , itol , itask , istate , iopt , lrw , iwork , liw ,  &
-        mf , ipar
-dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
-          rpar(*) , ipar(*)
+subroutine dvode(me,neq,y,t,tout,itol,rtol,atol,itask,istate,iopt, &
+                 rwork,lrw,iwork,liw,mf)
 
-!
-! type declarations for labeled common block dvod01 --------------------
-!
-      double precision acnrm , ccmxj , conp , crate , drc , el , eta ,  &
-                       etamax , h , hmin , hmxi , hnew , hscal , prl1 , &
-                       rc , rl1 , tau , tq , tn , uround
-      integer icf , init , ipup , jcur , jstart , jsv , kflag , kuth ,  &
-              l , lmax , lyh , lewt , lacor , lsavf , lwm , liwm ,      &
-              locjs , maxord , meth , miter , msbj , mxhnil , mxstep ,  &
-              n , newh , newq , nhnil , nq , nqnyh , nqwait , nslj ,    &
-              nslp , nyh
-!
-! type declarations for labeled common block dvod02 --------------------
-!
-      double precision hu
-      integer ncfn , netf , nfe , nje , nlu , nni , nqu , nst
+implicit none
+
+class(dvode_t),intent(inout) :: me
+real(wp) :: y(*)
+real(wp) :: t
+real(wp) :: tout
+real(wp) :: rtol(*)
+real(wp) :: atol(*)
+real(wp) :: rwork(lrw)
+integer :: neq
+integer :: itol
+integer :: itask
+integer :: istate
+integer :: iopt
+integer :: lrw
+integer :: iwork(liw)
+integer :: liw
+integer :: mf
+
 !
 ! type declarations for local variables --------------------------------
 !
-!      external dvnlsd
       logical ihit
-      double precision atoli , big , ewti , four , h0 , hmax , hmx ,    &
+      real(wp) atoli , big , ewti , four , h0 , hmax , hmx ,    &
                        hun , one , pt2 , rh , rtoli , size , tcrit ,    &
                        tnext , tolsf , tp , two , zero
       integer i , ier , iflag , imxer , jco , kgo , leniw , lenj ,      &
-              lenp , lenrw , lenwm , lf0 , mband , mfa , ml , mord ,    &
+              lenp , lenrw , lenwm , lf0 , mband , mfa , ml ,    &
               mu , mxhnl0 , mxstp0 , niter , nslast
       character(len=80) msg
-!
-! type declaration for function subroutines called ---------------------
-!
-!      double precision dumach , dvnorm
-!
-      dimension mord(2)
+
 !-----------------------------------------------------------------------
 ! the following fortran-77 declaration is to cause the values of the
 ! listed (local) variables to be saved between calls to dvode.
 !-----------------------------------------------------------------------
-      save mord , mxhnl0 , mxstp0
+      save mxhnl0 , mxstp0
       save zero , one , two , four , pt2 , hun
-!-----------------------------------------------------------------------
-! the following internal common blocks contain variables which are
-! communicated between subroutines in the dvode package, or which are
-! to be saved between calls to dvode.
-! in each block, real variables precede integers.
-! the block /dvod01/ appears in subroutines dvode, dvindy, dvstep,
-! dvset, dvnlsd, dvjac, dvsol, dvjust and dvsrco.
-! the block /dvod02/ appears in subroutines dvode, dvindy, dvstep,
-! dvnlsd, dvjac, and dvsrco.
 !
-! the variables stored in the internal common blocks are as follows:
-!
-! acnrm  = weighted r.m.s. norm of accumulated correction vectors.
-! ccmxj  = threshhold on drc for updating the jacobian. (see drc.)
-! conp   = the saved value of tq(5).
-! crate  = estimated corrector convergence rate constant.
-! drc    = relative change in h*rl1 since last dvjac call.
-! el     = real array of integration coefficients.  see dvset.
-! eta    = saved tentative ratio of new to old h.
-! etamax = saved maximum value of eta to be allowed.
-! h      = the step size.
-! hmin   = the minimum absolute value of the step size h to be used.
-! hmxi   = inverse of the maximum absolute value of h to be used.
-!          hmxi = 0.0 is allowed and corresponds to an infinite hmax.
-! hnew   = the step size to be attempted on the next step.
-! hscal  = stepsize in scaling of yh array.
-! prl1   = the saved value of rl1.
-! rc     = ratio of current h*rl1 to value on last dvjac call.
-! rl1    = the reciprocal of the coefficient el(1).
-! tau    = real vector of past nq step sizes, length 13.
-! tq     = a real vector of length 5 in which dvset stores constants
-!          used for the convergence test, the error test, and the
-!          selection of h at a new order.
-! tn     = the independent variable, updated on each step taken.
-! uround = the machine unit roundoff.  the smallest positive real number
-!          such that  1.0 + uround .ne. 1.0
-! icf    = integer flag for convergence failure in dvnlsd:
-!            0 means no failures.
-!            1 means convergence failure with out of date jacobian
-!                   (recoverable error).
-!            2 means convergence failure with current jacobian or
-!                   singular matrix (unrecoverable error).
-! init   = saved integer flag indicating whether initialization of the
-!          problem has been done (init = 1) or not.
-! ipup   = saved flag to signal updating of newton matrix.
-! jcur   = output flag from dvjac showing jacobian status:
-!            jcur = 0 means j is not current.
-!            jcur = 1 means j is current.
-! jstart = integer flag used as input to dvstep:
-!            0  means perform the first step.
-!            1  means take a new step continuing from the last.
-!            -1 means take the next step with a new value of maxord,
-!                  hmin, hmxi, n, meth, miter, and/or matrix parameters.
-!          on return, dvstep sets jstart = 1.
-! jsv    = integer flag for jacobian saving, = sign(mf).
-! kflag  = a completion code from dvstep with the following meanings:
-!               0      the step was succesful.
-!              -1      the requested error could not be achieved.
-!              -2      corrector convergence could not be achieved.
-!              -3, -4  fatal error in vnls (can not occur here).
-! kuth   = input flag to dvstep showing whether h was reduced by the
-!          driver.  kuth = 1 if h was reduced, = 0 otherwise.
-! l      = integer variable, nq + 1, current order plus one.
-! lmax   = maxord + 1 (used for dimensioning).
-! locjs  = a pointer to the saved jacobian, whose storage starts at
-!          wm(locjs), if jsv = 1.
-! lyh, lewt, lacor, lsavf, lwm, liwm = saved integer pointers
-!          to segments of rwork and iwork.
-! maxord = the maximum order of integration method to be allowed.
-! meth/miter = the method flags.  see mf.
-! msbj   = the maximum number of steps between j evaluations, = 50.
-! mxhnil = saved value of optional input mxhnil.
-! mxstep = saved value of optional input mxstep.
-! n      = the number of first-order odes, = neq.
-! newh   = saved integer to flag change of h.
-! newq   = the method order to be used on the next step.
-! nhnil  = saved counter for occurrences of t + h = t.
-! nq     = integer variable, the current integration method order.
-! nqnyh  = saved value of nq*nyh.
-! nqwait = a counter controlling the frequency of order changes.
-!          an order change is about to be considered if nqwait = 1.
-! nslj   = the number of steps taken as of the last jacobian update.
-! nslp   = saved value of nst as of last newton matrix update.
-! nyh    = saved value of the initial value of neq.
-! hu     = the step size in t last used.
-! ncfn   = number of nonlinear convergence failures so far.
-! netf   = the number of error test failures of the integrator so far.
-! nfe    = the number of f evaluations for the problem so far.
-! nje    = the number of jacobian evaluations so far.
-! nlu    = the number of matrix lu decompositions so far.
-! nni    = number of nonlinear iterations so far.
-! nqu    = the method order last used.
-! nst    = the number of steps taken for the problem so far.
-!-----------------------------------------------------------------------
-      common /dvod01/ acnrm , ccmxj , conp , crate , drc , el(13) ,     &
-                      eta , etamax , h , hmin , hmxi , hnew , hscal ,   &
-                      prl1 , rc , rl1 , tau(13) , tq(5) , tn , uround , &
-                      icf , init , ipup , jcur , jstart , jsv , kflag , &
-                      kuth , l , lmax , lyh , lewt , lacor , lsavf ,    &
-                      lwm , liwm , locjs , maxord , meth , miter ,      &
-                      msbj , mxhnil , mxstep , n , newh , newq , nhnil ,&
-                      nq , nqnyh , nqwait , nslj , nslp , nyh
-      common /dvod02/ hu , ncfn , netf , nfe , nje , nlu , nni , nqu ,  &
-                      nst
-!
-      data mord(1)/12/ , mord(2)/5/ , mxstp0/500/ , mxhnl0/10/
+      data mxstp0/500/ , mxhnl0/10/
       data zero/0.0d0/ , one/1.0d0/ , two/2.0d0/ , four/4.0d0/ ,        &
            pt2/0.2d0/ , hun/100.0d0/
 !-----------------------------------------------------------------------
 ! block a.
 ! this code block is executed on every call.
 ! it tests istate and itask for legality and branches appropriately.
-! if istate .gt. 1 but the flag init shows that initialization has
+! if istate > 1 but the flag init shows that initialization has
 ! not yet been done, an error return occurs.
 ! if istate = 1 and tout = t, return immediately.
 !-----------------------------------------------------------------------
@@ -1212,7 +1316,7 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !
          msg = 'dvode--  run aborted:  apparent infinite loop     '
          call xerrwd(msg,50,303,2,0,0,0,0,zero,zero)
-         goto 99999
+         return
       else
          if ( itask<1 .or. itask>5 ) then
             msg = 'dvode--  itask (=i1) illegal  '
@@ -1220,11 +1324,11 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
             goto 1500
          else
             if ( istate==1 ) then
-               init = 0
+               me%init = 0
                if ( tout==t ) return
-            elseif ( init/=1 ) then
+            elseif ( me%init/=1 ) then
                msg =                                                    &
-          'dvode--  istate (=i1) .gt. 1 but dvode not initialized      '
+          'dvode--  istate (=i1) > 1 but dvode not initialized      '
                call xerrwd(msg,60,3,1,1,istate,0,0,zero,zero)
                goto 1500
             elseif ( istate==2 ) then
@@ -1240,19 +1344,19 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! mf, ml, and mu.
 !-----------------------------------------------------------------------
             if ( neq<=0 ) then
-               msg = 'dvode--  neq (=i1) .lt. 1     '
+               msg = 'dvode--  neq (=i1) < 1     '
                call xerrwd(msg,30,4,1,1,neq,0,0,zero,zero)
                goto 1500
             else
                if ( istate/=1 ) then
-                  if ( neq>n ) then
+                  if ( neq>me%n ) then
                      msg =                                              &
                     'dvode--  istate = 3 and neq increased (i1 to i2)  '
-                     call xerrwd(msg,50,5,1,2,n,neq,0,zero,zero)
+                     call xerrwd(msg,50,5,1,2,me%n,neq,0,zero,zero)
                      goto 1500
                   endif
                endif
-               n = neq
+               me%n = neq
                if ( itol<1 .or. itol>4 ) then
                   msg = 'dvode--  itol (=i1) illegal   '
                   call xerrwd(msg,30,6,1,1,itol,0,0,zero,zero)
@@ -1262,53 +1366,53 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
                   call xerrwd(msg,30,7,1,1,iopt,0,0,zero,zero)
                   goto 1500
                else
-                  jsv = sign(1,mf)
+                  me%jsv = sign(1,mf)
                   mfa = abs(mf)
-                  meth = mfa/10
-                  miter = mfa - 10*meth
-                  if ( meth<1 .or. meth>2 ) goto 800
-                  if ( miter<0 .or. miter>5 ) goto 800
-                  if ( miter>3 ) then
+                  me%meth = mfa/10
+                  me%miter = mfa - 10*me%meth
+                  if ( me%meth<1 .or. me%meth>2 ) goto 800
+                  if ( me%miter<0 .or. me%miter>5 ) goto 800
+                  if ( me%miter>3 ) then
                      ml = iwork(1)
                      mu = iwork(2)
-                     if ( ml<0 .or. ml>=n ) then
+                     if ( ml<0 .or. ml>=me%n ) then
                         msg =                                           &
-                    'dvode--  ml (=i1) illegal:  .lt.0 or .ge.neq (=i2)'
+                    'dvode--  ml (=i1) illegal:  <0 or >=neq (=i2)'
                         call xerrwd(msg,50,9,1,2,ml,neq,0,zero,zero)
                         goto 1500
-                     elseif ( mu<0 .or. mu>=n ) then
+                     elseif ( mu<0 .or. mu>=me%n ) then
                         msg =                                           &
-                    'dvode--  mu (=i1) illegal:  .lt.0 or .ge.neq (=i2)'
+                    'dvode--  mu (=i1) illegal:  <0 or >=neq (=i2)'
                         call xerrwd(msg,50,10,1,2,mu,neq,0,zero,zero)
                         goto 1500
                      endif
                   endif
 ! next process and check the optional input. ---------------------------
                   if ( iopt==1 ) then
-                     maxord = iwork(5)
-                     if ( maxord<0 ) then
-                        msg = 'dvode--  maxord (=i1) .lt. 0  '
-                        call xerrwd(msg,30,11,1,1,maxord,0,0,zero,zero)
+                     me%maxord = iwork(5)
+                     if ( me%maxord<0 ) then
+                        msg = 'dvode--  maxord (=i1) < 0  '
+                        call xerrwd(msg,30,11,1,1,me%maxord,0,0,zero,zero)
                         goto 1500
                      else
-                        if ( maxord==0 ) maxord = 100
-                        maxord = min(maxord,mord(meth))
-                        mxstep = iwork(6)
-                        if ( mxstep<0 ) then
-                           msg = 'dvode--  mxstep (=i1) .lt. 0  '
-                           call xerrwd(msg,30,12,1,1,mxstep,0,0,zero,   &
+                        if ( me%maxord==0 ) me%maxord = 100
+                        me%maxord = min(me%maxord,mord(me%meth))
+                        me%mxstep = iwork(6)
+                        if ( me%mxstep<0 ) then
+                           msg = 'dvode--  mxstep (=i1) < 0  '
+                           call xerrwd(msg,30,12,1,1,me%mxstep,0,0,zero,   &
                                        zero)
                            goto 1500
                         else
-                           if ( mxstep==0 ) mxstep = mxstp0
-                           mxhnil = iwork(7)
-                           if ( mxhnil<0 ) then
-                              msg = 'dvode--  mxhnil (=i1) .lt. 0  '
-                              call xerrwd(msg,30,13,1,1,mxhnil,0,0,zero,&
+                           if ( me%mxstep==0 ) me%mxstep = mxstp0
+                           me%mxhnil = iwork(7)
+                           if ( me%mxhnil<0 ) then
+                              msg = 'dvode--  mxhnil (=i1) < 0  '
+                              call xerrwd(msg,30,13,1,1,me%mxhnil,0,0,zero,&
                                  zero)
                               goto 1500
                            else
-                              if ( mxhnil==0 ) mxhnil = mxhnl0
+                              if ( me%mxhnil==0 ) me%mxhnil = mxhnl0
                               if ( istate==1 ) then
                                  h0 = rwork(5)
                                  if ( (tout-t)*h0<zero ) then
@@ -1325,19 +1429,19 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
                               endif
                               hmax = rwork(6)
                               if ( hmax<zero ) then
-                                 msg = 'dvode--  hmax (=r1) .lt. 0.0  '
+                                 msg = 'dvode--  hmax (=r1) < 0.0  '
                                  call xerrwd(msg,30,15,1,0,0,0,1,hmax,  &
                                     zero)
                                  goto 1500
                               else
-                                 hmxi = zero
-                                 if ( hmax>zero ) hmxi = one/hmax
-                                 hmin = rwork(7)
-                                 if ( hmin<zero ) then
+                                 me%hmxi = zero
+                                 if ( hmax>zero ) me%hmxi = one/hmax
+                                 me%hmin = rwork(7)
+                                 if ( me%hmin<zero ) then
                                     msg =                               &
-                                       'dvode--  hmin (=r1) .lt. 0.0  '
+                                       'dvode--  hmin (=r1) < 0.0  '
                                     call xerrwd(msg,30,16,1,0,0,0,1,    &
-                                       hmin,zero)
+                                       me%hmin,zero)
                                     goto 1500
                                  endif
                               endif
@@ -1345,45 +1449,45 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
                         endif
                      endif
                   else
-                     maxord = mord(meth)
-                     mxstep = mxstp0
-                     mxhnil = mxhnl0
+                     me%maxord = mord(me%meth)
+                     me%mxstep = mxstp0
+                     me%mxhnil = mxhnl0
                      if ( istate==1 ) h0 = zero
-                     hmxi = zero
-                     hmin = zero
+                     me%hmxi = zero
+                     me%hmin = zero
                   endif
 !-----------------------------------------------------------------------
 ! set work array pointers and check lengths lrw and liw.
 ! pointers to segments of rwork and iwork are named by prefixing l to
 ! the name of the segment.  e.g., the segment yh starts at rwork(lyh).
 ! segments of rwork (in order) are denoted  yh, wm, ewt, savf, acor.
-! within wm, locjs is the location of the saved jacobian (jsv .gt. 0).
+! within wm, locjs is the location of the saved jacobian (jsv > 0).
 !-----------------------------------------------------------------------
-                  lyh = 21
-                  if ( istate==1 ) nyh = n
-                  lwm = lyh + (maxord+1)*nyh
-                  jco = max(0,jsv)
-                  if ( miter==0 ) lenwm = 0
-                  if ( miter==1 .or. miter==2 ) then
-                     lenwm = 2 + (1+jco)*n*n
-                     locjs = n*n + 3
+                  me%lyh = 21
+                  if ( istate==1 ) me%nyh = me%n
+                  me%lwm = me%lyh + (me%maxord+1)*me%nyh
+                  jco = max(0,me%jsv)
+                  if ( me%miter==0 ) lenwm = 0
+                  if ( me%miter==1 .or. me%miter==2 ) then
+                     lenwm = 2 + (1+jco)*me%n*me%n
+                     me%locjs = me%n*me%n + 3
                   endif
-                  if ( miter==3 ) lenwm = 2 + n
-                  if ( miter==4 .or. miter==5 ) then
+                  if ( me%miter==3 ) lenwm = 2 + me%n
+                  if ( me%miter==4 .or. me%miter==5 ) then
                      mband = ml + mu + 1
-                     lenp = (mband+ml)*n
-                     lenj = mband*n
+                     lenp = (mband+ml)*me%n
+                     lenj = mband*me%n
                      lenwm = 2 + lenp + jco*lenj
-                     locjs = lenp + 3
+                     me%locjs = lenp + 3
                   endif
-                  lewt = lwm + lenwm
-                  lsavf = lewt + n
-                  lacor = lsavf + n
-                  lenrw = lacor + n - 1
+                  me%lewt = me%lwm + lenwm
+                  me%lsavf = me%lewt + me%n
+                  me%lacor = me%lsavf + me%n
+                  lenrw = me%lacor + me%n - 1
                   iwork(17) = lenrw
-                  liwm = 1
-                  leniw = 30 + n
-                  if ( miter==0 .or. miter==3 ) leniw = 30
+                  me%liwm = 1
+                  leniw = 30 + me%n
+                  if ( me%miter==0 .or. me%miter==3 ) leniw = 30
                   iwork(18) = leniw
                   if ( lenrw>lrw ) then
                      msg =                                              &
@@ -1399,7 +1503,7 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! check rtol and atol for legality. ------------------------------------
                      rtoli = rtol(1)
                      atoli = atol(1)
-                     do i = 1 , n
+                     do i = 1 , me%n
                         if ( itol>=3 ) rtoli = rtol(i)
                         if ( itol==2 .or. itol==4 ) atoli = atol(i)
                         if ( rtoli<zero ) goto 900
@@ -1413,72 +1517,72 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! and the calculation of the initial step size.
 ! the error weights in ewt are inverted after being loaded.
 !-----------------------------------------------------------------------
-                        uround = epmach
-                        tn = t
+                        me%uround = epmach
+                        me%tn = t
                         if ( itask==4 .or. itask==5 ) then
                            tcrit = rwork(1)
                            if ( (tcrit-tout)*(tout-t)<zero ) goto 1300
-                           if ( h0/=zero .and. (t+h0-tcrit)*h0>zero )   &
+                           if ( h0/=zero .and. (t+h0-tcrit)*h0>zero ) &
                                 h0 = tcrit - t
                         endif
-                        jstart = 0
-                        if ( miter>0 ) rwork(lwm) = sqrt(uround)
-                        ccmxj = pt2
-                        msbj = 50
-                        nhnil = 0
-                        nst = 0
-                        nje = 0
-                        nni = 0
-                        ncfn = 0
-                        netf = 0
-                        nlu = 0
-                        nslj = 0
+                        me%jstart = 0
+                        if ( me%miter>0 ) rwork(me%lwm) = sqrt(me%uround)
+                        me%ccmxj = pt2
+                        me%msbj = 50
+                        me%nhnil = 0
+                        me%nst = 0
+                        me%nje = 0
+                        me%nni = 0
+                        me%ncfn = 0
+                        me%netf = 0
+                        me%nlu = 0
+                        me%nslj = 0
                         nslast = 0
-                        hu = zero
-                        nqu = 0
+                        me%hu = zero
+                        me%nqu = 0
 ! initial call to f.  (lf0 points to yh(*,2).) -------------------------
-                        lf0 = lyh + nyh
-                        call f(n,t,y,rwork(lf0),rpar,ipar)
-                        nfe = 1
+                        lf0 = me%lyh + me%nyh
+                        call me%f(me%n,t,y(1:me%n),rwork(lf0))
+                        me%nfe = 1
 ! load the initial value vector in yh. ---------------------------------
-                        call dcopy(n,y,1,rwork(lyh),1)
+                        call dcopy(me%n,y,1,rwork(me%lyh),1)
 ! load and invert the ewt array.  (h is temporarily set to 1.0.) -------
-                        nq = 1
-                        h = one
-                        call dewset(n,itol,rtol,atol,rwork(lyh),        &
-                                    rwork(lewt))
-                        do i = 1 , n
-                           if ( rwork(i+lewt-1)<=zero ) goto 1100
-                           rwork(i+lewt-1) = one/rwork(i+lewt-1)
+                        me%nq = 1
+                        me%h = one
+                        call dewset(me%n,itol,rtol,atol,rwork(me%lyh), &
+                                    rwork(me%lewt))
+                        do i = 1 , me%n
+                           if ( rwork(i+me%lewt-1)<=zero ) goto 1100
+                           rwork(i+me%lewt-1) = one/rwork(i+me%lewt-1)
                         enddo
                         if ( h0==zero ) then
 ! call dvhin to set initial step size h0 to be attempted. --------------
-                           call dvhin(n,t,rwork(lyh),rwork(lf0),f,rpar, &
-                                      ipar,tout,uround,rwork(lewt),itol,&
-                                      atol,y,rwork(lacor),h0,niter,ier)
-                           nfe = nfe + niter
+                           call me%dvhin(me%n,t,rwork(me%lyh),rwork(lf0),me%f, &
+                                         tout,me%uround,rwork(me%lewt),itol,&
+                                         atol,y,rwork(me%lacor),h0,niter,ier)
+                           me%nfe = me%nfe + niter
                            if ( ier/=0 ) then
-                              msg =                                     &
-          'dvode--  tout (=r1) too close to t(=r2) to start integration'
+                              msg = &
+                              'dvode--  tout (=r1) too close to t(=r2) to start integration'
                               call xerrwd(msg,60,22,1,0,0,0,2,tout,t)
                               goto 1500
                            endif
                         endif
 ! adjust h0 if necessary to meet hmax bound. ---------------------------
-                        rh = abs(h0)*hmxi
+                        rh = abs(h0)*me%hmxi
                         if ( rh>one ) h0 = h0/rh
 ! load h with h0 and scale yh(*,2) by h0. ------------------------------
-                        h = h0
-                        call dscal(n,h0,rwork(lf0),1)
+                        me%h = h0
+                        call dscal(me%n,h0,rwork(lf0),1)
                         goto 200
                      else
 ! if istate = 3, set flag to signal parameter changes to dvstep. -------
-                        jstart = -1
+                        me%jstart = -1
 ! maxord was reduced below nq.  copy yh(*,maxord+2) into savf. ---------
-                        if ( nq>maxord )                                &
-                             call dcopy(n,rwork(lwm),1,rwork(lsavf),1)
+                        if ( me%nq>me%maxord ) &
+                             call dcopy(me%n,rwork(me%lwm),1,rwork(me%lsavf),1)
 ! reload wm(1) = rwork(lwm), since lwm may have changed. ---------------
-                        if ( miter>0 ) rwork(lwm) = sqrt(uround)
+                        if ( me%miter>0 ) rwork(me%lwm) = sqrt(me%uround)
                      endif
                   endif
                endif
@@ -1489,49 +1593,49 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! the next code block is for continuation calls only (istate = 2 or 3)
 ! and is to check stop conditions before taking a step.
 !-----------------------------------------------------------------------
- 50      nslast = nst
-         kuth = 0
+ 50      nslast = me%nst
+         me%kuth = 0
          select case (itask)
          case (2)
             goto 100
          case (3)
-            tp = tn - hu*(one+hun*uround)
-            if ( (tp-tout)*h>zero ) then
-               msg =                                                    &
-          'dvode--  itask = i1 and tout (=r1) behind tcur - hu (= r2)  '
+            tp = me%tn - me%hu*(one+hun*me%uround)
+            if ( (tp-tout)*me%h>zero ) then
+               msg = &
+               'dvode--  itask = i1 and tout (=r1) behind tcur - hu (= r2)  '
                call xerrwd(msg,60,23,1,1,itask,0,2,tout,tp)
                goto 1500
             else
-               if ( (tn-tout)*h>=zero ) goto 300
+               if ( (me%tn-tout)*me%h>=zero ) goto 300
                goto 100
             endif
          case (4)
             tcrit = rwork(1)
-            if ( (tn-tcrit)*h>zero ) goto 1200
-            if ( (tcrit-tout)*h<zero ) goto 1300
-            if ( (tn-tout)*h>=zero ) then
-               call dvindy(tout,0,rwork(lyh),nyh,y,iflag)
+            if ( (me%tn-tcrit)*me%h>zero ) goto 1200
+            if ( (tcrit-tout)*me%h<zero ) goto 1300
+            if ( (me%tn-tout)*me%h>=zero ) then
+               call me%dvindy(tout,0,rwork(me%lyh),me%nyh,y,iflag)
                if ( iflag/=0 ) goto 1400
                t = tout
                goto 400
             endif
          case (5)
             tcrit = rwork(1)
-            if ( (tn-tcrit)*h>zero ) goto 1200
+            if ( (me%tn-tcrit)*me%h>zero ) goto 1200
          case default
-            if ( (tn-tout)*h<zero ) goto 100
-            call dvindy(tout,0,rwork(lyh),nyh,y,iflag)
+            if ( (me%tn-tout)*me%h<zero ) goto 100
+            call me%dvindy(tout,0,rwork(me%lyh),me%nyh,y,iflag)
             if ( iflag/=0 ) goto 1400
             t = tout
             goto 400
          end select
-         hmx = abs(tn) + abs(h)
-         ihit = abs(tn-tcrit)<=hun*uround*hmx
+         hmx = abs(me%tn) + abs(me%h)
+         ihit = abs(me%tn-tcrit)<=hun*me%uround*hmx
          if ( ihit ) goto 300
-         tnext = tn + hnew*(one+four*uround)
-         if ( (tnext-tcrit)*h>zero ) then
-            h = (tcrit-tn)*(one-four*uround)
-            kuth = 1
+         tnext = me%tn + me%hnew*(one+four*me%uround)
+         if ( (tnext-tcrit)*me%h>zero ) then
+            me%h = (tcrit-me%tn)*(one-four*me%uround)
+            me%kuth = 1
          endif
       endif
 !-----------------------------------------------------------------------
@@ -1545,7 +1649,7 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! start of problem), check for too much accuracy being requested, and
 ! check for h below the roundoff level in t.
 !-----------------------------------------------------------------------
- 100  if ( (nst-nslast)>=mxstep ) then
+ 100  if ( (me%nst-nslast)>=me%mxstep ) then
 !-----------------------------------------------------------------------
 ! block h.
 ! the following block handles all unsuccessful returns other than
@@ -1558,57 +1662,56 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
          msg = 'dvode--  at current t (=r1), mxstep (=i1) steps   '
          call xerrwd(msg,50,201,1,0,0,0,0,zero,zero)
          msg = '      taken on this call before reaching tout     '
-         call xerrwd(msg,50,201,1,1,mxstep,0,1,tn,zero)
+         call xerrwd(msg,50,201,1,1,me%mxstep,0,1,me%tn,zero)
          istate = -1
          goto 700
       else
-         call dewset(n,itol,rtol,atol,rwork(lyh),rwork(lewt))
-         do i = 1 , n
-            if ( rwork(i+lewt-1)<=zero ) goto 500
-            rwork(i+lewt-1) = one/rwork(i+lewt-1)
+         call dewset(me%n,itol,rtol,atol,rwork(me%lyh),rwork(me%lewt))
+         do i = 1 , me%n
+            if ( rwork(i+me%lewt-1)<=zero ) goto 500
+            rwork(i+me%lewt-1) = one/rwork(i+me%lewt-1)
          enddo
       endif
- 200  tolsf = uround*dvnorm(n,rwork(lyh),rwork(lewt))
+ 200  tolsf = me%uround*dvnorm(me%n,rwork(me%lyh),rwork(me%lewt))
       if ( tolsf<=one ) then
-         if ( (tn+h)==tn ) then
-            nhnil = nhnil + 1
-            if ( nhnil<=mxhnil ) then
-               msg =                                                    &
+         if ( (me%tn+me%h)==me%tn ) then
+            me%nhnil = me%nhnil + 1
+            if ( me%nhnil<=me%mxhnil ) then
+               msg = &
                     'dvode--  warning: internal t (=r1) and h (=r2) are'
                call xerrwd(msg,50,101,1,0,0,0,0,zero,zero)
-               msg =                                                    &
-          '      such that in the machine, t + h = t on the next step  '
+               msg = &
+                    '      such that in the machine, t + h = t on the next step  '
                call xerrwd(msg,60,101,1,0,0,0,0,zero,zero)
-               msg =                                                    &
+               msg = &
                     '      (h = step size). solver will continue anyway'
-               call xerrwd(msg,50,101,1,0,0,0,2,tn,h)
-               if ( nhnil>=mxhnil ) then
-                  msg =                                                 &
+               call xerrwd(msg,50,101,1,0,0,0,2,me%tn,me%h)
+               if ( me%nhnil>=me%mxhnil ) then
+                  msg = &
                     'dvode--  above warning has been issued i1 times.  '
                   call xerrwd(msg,50,102,1,0,0,0,0,zero,zero)
-                  msg =                                                 &
+                  msg = &
                     '      it will not be issued again for this problem'
-                  call xerrwd(msg,50,102,1,1,mxhnil,0,0,zero,zero)
+                  call xerrwd(msg,50,102,1,1,me%mxhnil,0,0,zero,zero)
                endif
             endif
          endif
 !-----------------------------------------------------------------------
-! call dvstep (y, yh, nyh, yh, ewt, savf, vsav, acor,
-!              wm, iwm, f, jac, f, dvnlsd, rpar, ipar)
+! call me%dvstep (y, yh, nyh, yh, ewt, savf, vsav, acor,
+!              wm, iwm, f, jac, f, dvnlsd)
 !-----------------------------------------------------------------------
-         call dvstep(y,rwork(lyh),nyh,rwork(lyh),rwork(lewt),           &
-                     rwork(lsavf),y,rwork(lacor),rwork(lwm),iwork(liwm),&
-                     f,jac,f,dvnlsd,rpar,ipar)
-         kgo = 1 - kflag
+         call me%dvstep(y,rwork(me%lyh),me%nyh,rwork(me%lyh),rwork(me%lewt), &
+                        rwork(me%lsavf),y,rwork(me%lacor),rwork(me%lwm),iwork(me%liwm))
+         kgo = 1 - me%kflag
 ! branch on kflag.  note: in this version, kflag can not be set to -3.
-!  kflag .eq. 0,   -1,  -2
+!  kflag == 0,   -1,  -2
          select case (kgo)
          case (2)
 ! kflag = -1.  error test failed repeatedly or with abs(h) = hmin. -----
             msg = 'dvode--  at t(=r1) and step size h(=r2), the error'
             call xerrwd(msg,50,204,1,0,0,0,0,zero,zero)
             msg = '      test failed repeatedly or with abs(h) = hmin'
-            call xerrwd(msg,50,204,1,0,0,0,2,tn,h)
+            call xerrwd(msg,50,204,1,0,0,0,2,me%tn,me%h)
             istate = -4
             goto 600
          case (3)
@@ -1618,7 +1721,7 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
             msg = '      corrector convergence failed repeatedly     '
             call xerrwd(msg,50,205,1,0,0,0,0,zero,zero)
             msg = '      or with abs(h) = hmin   '
-            call xerrwd(msg,30,205,1,0,0,0,2,tn,h)
+            call xerrwd(msg,30,205,1,0,0,0,2,me%tn,me%h)
             istate = -5
             goto 600
          case default
@@ -1627,50 +1730,50 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! the following block handles the case of a successful return from the
 ! core integrator (kflag = 0).  test for stop conditions.
 !-----------------------------------------------------------------------
-            init = 1
-            kuth = 0
+            me%init = 1
+            me%kuth = 0
             select case (itask)
             case (2)
             case (3)
 ! itask = 3.  jump to exit if tout was reached. ------------------------
-               if ( (tn-tout)*h<zero ) goto 100
+               if ( (me%tn-tout)*me%h<zero ) goto 100
             case (4)
 ! itask = 4.  see if tout or tcrit was reached.  adjust h if necessary.
-               if ( (tn-tout)*h<zero ) then
-                  hmx = abs(tn) + abs(h)
-                  ihit = abs(tn-tcrit)<=hun*uround*hmx
+               if ( (me%tn-tout)*me%h<zero ) then
+                  hmx = abs(me%tn) + abs(me%h)
+                  ihit = abs(me%tn-tcrit)<=hun*me%uround*hmx
                   if ( .not.(ihit) ) then
-                     tnext = tn + hnew*(one+four*uround)
-                     if ( (tnext-tcrit)*h>zero ) then
-                        h = (tcrit-tn)*(one-four*uround)
-                        kuth = 1
+                     tnext = me%tn + me%hnew*(one+four*me%uround)
+                     if ( (tnext-tcrit)*me%h>zero ) then
+                        me%h = (tcrit-me%tn)*(one-four*me%uround)
+                        me%kuth = 1
                      endif
                      goto 100
                   endif
                else
-                  call dvindy(tout,0,rwork(lyh),nyh,y,iflag)
+                  call me%dvindy(tout,0,rwork(me%lyh),me%nyh,y,iflag)
                   t = tout
                   goto 400
                endif
             case (5)
 ! itask = 5.  see if tcrit was reached and jump to exit. ---------------
-               hmx = abs(tn) + abs(h)
-               ihit = abs(tn-tcrit)<=hun*uround*hmx
+               hmx = abs(me%tn) + abs(me%h)
+               ihit = abs(me%tn-tcrit)<=hun*me%uround*hmx
             case default
 ! itask = 1.  if tout has been reached, interpolate. -------------------
-               if ( (tn-tout)*h<zero ) goto 100
-               call dvindy(tout,0,rwork(lyh),nyh,y,iflag)
+               if ( (me%tn-tout)*me%h<zero ) goto 100
+               call me%dvindy(tout,0,rwork(me%lyh),me%nyh,y,iflag)
                t = tout
                goto 400
             end select
          end select
       else
          tolsf = tolsf*two
-         if ( nst==0 ) then
+         if ( me%nst==0 ) then
             msg = 'dvode--  at start of problem, too much accuracy   '
             call xerrwd(msg,50,26,1,0,0,0,0,zero,zero)
-            msg =                                                       &
-          '      requested for precision of machine:   see tolsf (=r1) '
+            msg = &
+                  '      requested for precision of machine:   see tolsf (=r1) '
             call xerrwd(msg,60,26,1,0,0,0,1,tolsf,zero)
             rwork(14) = tolsf
             goto 1500
@@ -1679,7 +1782,7 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
             msg = 'dvode--  at t (=r1), too much accuracy requested  '
             call xerrwd(msg,50,203,1,0,0,0,0,zero,zero)
             msg = '      for precision of machine:   see tolsf (=r2) '
-            call xerrwd(msg,50,203,1,0,0,0,2,tn,tolsf)
+            call xerrwd(msg,50,203,1,0,0,0,2,me%tn,tolsf)
             rwork(14) = tolsf
             istate = -2
             goto 700
@@ -1688,40 +1791,40 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !-----------------------------------------------------------------------
 ! block g.
 ! the following block handles all successful returns from dvode.
-! if itask .ne. 1, y is loaded from yh and t is set accordingly.
+! if itask /= 1, y is loaded from yh and t is set accordingly.
 ! istate is set to 2, and the optional output is loaded into the work
 ! arrays before returning.
 !-----------------------------------------------------------------------
- 300  call dcopy(n,rwork(lyh),1,y,1)
-      t = tn
+ 300  call dcopy(me%n,rwork(me%lyh),1,y,1)
+      t = me%tn
       if ( itask==4 .or. itask==5 ) then
          if ( ihit ) t = tcrit
       endif
  400  istate = 2
-      rwork(11) = hu
-      rwork(12) = hnew
-      rwork(13) = tn
-      iwork(11) = nst
-      iwork(12) = nfe
-      iwork(13) = nje
-      iwork(14) = nqu
-      iwork(15) = newq
-      iwork(19) = nlu
-      iwork(20) = nni
-      iwork(21) = ncfn
-      iwork(22) = netf
+      rwork(11) = me%hu
+      rwork(12) = me%hnew
+      rwork(13) = me%tn
+      iwork(11) = me%nst
+      iwork(12) = me%nfe
+      iwork(13) = me%nje
+      iwork(14) = me%nqu
+      iwork(15) = me%newq
+      iwork(19) = me%nlu
+      iwork(20) = me%nni
+      iwork(21) = me%ncfn
+      iwork(22) = me%netf
       return
-! ewt(i) .le. 0.0 for some i (not at start of problem). ----------------
- 500  ewti = rwork(lewt+i-1)
-      msg = 'dvode--  at t (=r1), ewt(i1) has become r2 .le. 0.'
-      call xerrwd(msg,50,202,1,1,i,0,2,tn,ewti)
+! ewt(i) <= 0.0 for some i (not at start of problem). ----------------
+ 500  ewti = rwork(me%lewt+i-1)
+      msg = 'dvode--  at t (=r1), ewt(i1) has become r2 <= 0.'
+      call xerrwd(msg,50,202,1,1,i,0,2,me%tn,ewti)
       istate = -6
       goto 700
 ! compute imxer if relevant. -------------------------------------------
  600  big = zero
       imxer = 1
-      do i = 1 , n
-         size = abs(rwork(i+lacor-1)*rwork(i+lewt-1))
+      do i = 1 , me%n
+         size = abs(rwork(i+me%lacor-1)*rwork(i+me%lewt-1))
          if ( big<size ) then
             big = size
             imxer = i
@@ -1729,50 +1832,50 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
       enddo
       iwork(16) = imxer
 ! set y vector, t, and optional output. --------------------------------
- 700  call dcopy(n,rwork(lyh),1,y,1)
-      t = tn
-      rwork(11) = hu
-      rwork(12) = h
-      rwork(13) = tn
-      iwork(11) = nst
-      iwork(12) = nfe
-      iwork(13) = nje
-      iwork(14) = nqu
-      iwork(15) = nq
-      iwork(19) = nlu
-      iwork(20) = nni
-      iwork(21) = ncfn
-      iwork(22) = netf
+ 700  call dcopy(me%n,rwork(me%lyh),1,y,1)
+      t = me%tn
+      rwork(11) = me%hu
+      rwork(12) = me%h
+      rwork(13) = me%tn
+      iwork(11) = me%nst
+      iwork(12) = me%nfe
+      iwork(13) = me%nje
+      iwork(14) = me%nqu
+      iwork(15) = me%nq
+      iwork(19) = me%nlu
+      iwork(20) = me%nni
+      iwork(21) = me%ncfn
+      iwork(22) = me%netf
       return
  800  msg = 'dvode--  mf (=i1) illegal     '
       call xerrwd(msg,30,8,1,1,mf,0,0,zero,zero)
       goto 1500
- 900  msg = 'dvode--  rtol(i1) is r1 .lt. 0.0        '
+ 900  msg = 'dvode--  rtol(i1) is r1 < 0.0        '
       call xerrwd(msg,40,19,1,1,i,0,1,rtoli,zero)
       goto 1500
- 1000 msg = 'dvode--  atol(i1) is r1 .lt. 0.0        '
+ 1000 msg = 'dvode--  atol(i1) is r1 < 0.0        '
       call xerrwd(msg,40,20,1,1,i,0,1,atoli,zero)
       goto 1500
- 1100 ewti = rwork(lewt+i-1)
-      msg = 'dvode--  ewt(i1) is r1 .le. 0.0         '
+ 1100 ewti = rwork(me%lewt+i-1)
+      msg = 'dvode--  ewt(i1) is r1 <= 0.0         '
       call xerrwd(msg,40,21,1,1,i,0,1,ewti,zero)
       goto 1500
- 1200 msg =                                                             &
+ 1200 msg = &
           'dvode--  itask = 4 or 5 and tcrit (=r1) behind tcur (=r2)   '
-      call xerrwd(msg,60,24,1,0,0,0,2,tcrit,tn)
+      call xerrwd(msg,60,24,1,0,0,0,2,tcrit,me%tn)
       goto 1500
- 1300 msg =                                                             &
+ 1300 msg = &
           'dvode--  itask = 4 or 5 and tcrit (=r1) behind tout (=r2)   '
       call xerrwd(msg,60,25,1,0,0,0,2,tcrit,tout)
       goto 1500
- 1400 msg =                                                             &
+ 1400 msg = &
           'dvode--  trouble from dvindy.  itask = i1, tout = r1.       '
       call xerrwd(msg,60,27,1,1,itask,0,1,tout,zero)
 !
  1500 istate = -3
       return
 
-99999 end subroutine dvode
+   end subroutine dvode
 
 !*****************************************************************************************
 !>
@@ -1786,7 +1889,7 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !  the sign of h0 is inferred from the initial values of tout and t0.
 !
 !```
-! call sequence input -- n, t0, y0, ydot, f, rpar, ipar, tout, uround,
+! call sequence input -- n, t0, y0, ydot, f, tout, uround,
 !                        ewt, itol, atol, y, temp
 ! call sequence output -- h0, niter, ier
 ! common block variables accessed -- none
@@ -1802,7 +1905,6 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 ! y0     = vector of initial conditions, input.
 ! ydot   = vector of initial first derivatives, input.
 ! f      = name of subroutine for right-hand side f(t,y), input.
-! rpar, ipar = dummy names for user's real and integer work arrays.
 ! tout   = first output value of independent variable
 ! uround = machine unit roundoff
 ! ewt, itol, atol = error weights and tolerance parameters
@@ -1816,26 +1918,27 @@ dimension y(*) , rtol(*) , atol(*) , rwork(lrw) , iwork(liw) ,    &
 !          ier = -1 if tout and t0 are considered too close to proceed.
 !```
 
-subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
-                       atol,y,temp,h0,niter,ier)
+subroutine dvhin(me,n,t0,y0,ydot,f,tout,uround,ewt,itol,   &
+                 atol,y,temp,h0,niter,ier)
+
       implicit none
-      external f
-      double precision t0 , y0 , ydot , rpar , tout , uround , ewt ,    &
-                       atol , y , temp , h0
-      integer n , ipar , itol , niter , ier
-      dimension y0(*) , ydot(*) , ewt(*) , atol(*) , y(*) , temp(*) ,   &
-                rpar(*) , ipar(*)
-!
+
+      class(dvode_t),intent(inout) :: me
+      procedure(f_func) :: f
+      real(wp) :: t0 , y0(*) , ydot(*) , tout , uround , ewt(*) , &
+                  atol(*) , y(n) , temp(n) , h0
+      integer :: n , itol , niter , ier
+
 ! type declarations for local variables --------------------------------
 !
-      double precision afi , atoli , delyi , h , half , hg , hlb ,      &
+      real(wp) afi , atoli , delyi , h , half , hg , hlb ,      &
                        hnew , hrat , hub , hun , pt1 , t1 , tdist ,     &
                        tround , two , yddnrm
       integer i , iter
 !
 ! type declaration for function subroutines called ---------------------
 !
-!      double precision dvnorm
+!      real(wp) dvnorm
 !-----------------------------------------------------------------------
 ! the following fortran-77 declaration is to cause the values of the
 ! listed (local) variables to be saved between calls to this integrator.
@@ -1849,7 +1952,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
       if ( tdist<two*tround ) then
 ! error return for tout - t0 too small. --------------------------------
          ier = -1
-         goto 99999
+         return
       else
 !
 ! set a lower bound on h based on the roundoff level in t0 and tout. ---
@@ -1880,7 +1983,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
          do i = 1 , n
             y(i) = y0(i) + h*ydot(i)
          enddo
-         call f(n,t1,y,temp,rpar,ipar)
+         call me%f(n,t1,y,temp)
          do i = 1 , n
             temp(i) = (temp(i)-ydot(i))/h
          enddo
@@ -1894,9 +1997,9 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
          iter = iter + 1
 !-----------------------------------------------------------------------
 ! test the stopping conditions.
-! stop if the new and previous h values differ by a factor of .lt. 2.
+! stop if the new and previous h values differ by a factor of < 2.
 ! stop if four iterations have been done.  also, stop with previous h
-! if hnew/hg .gt. 2 after first iteration, as this probably means that
+! if hnew/hg > 2 after first iteration, as this probably means that
 ! the second derivative value is bad because of cancellation error.
 !-----------------------------------------------------------------------
          if ( iter<4 ) then
@@ -1921,7 +2024,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
       ier = 0
       return
 
-99999 end subroutine dvhin
+   end subroutine dvhin
 
 !*****************************************************************************************
 !>
@@ -1957,31 +2060,18 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! discussion above and comments in driver explain all variables.
 !```
 
-      subroutine dvindy(t,k,yh,ldyh,dky,iflag)
+      subroutine dvindy(me,t,k,yh,ldyh,dky,iflag)
+
       implicit none
-      double precision t , yh , dky
-      integer k , ldyh , iflag
-      dimension yh(ldyh,*) , dky(*)
-!
-! type declarations for labeled common block dvod01 --------------------
-!
-      double precision acnrm , ccmxj , conp , crate , drc , el , eta ,  &
-                       etamax , h , hmin , hmxi , hnew , hscal , prl1 , &
-                       rc , rl1 , tau , tq , tn , uround
-      integer icf , init , ipup , jcur , jstart , jsv , kflag , kuth ,  &
-              l , lmax , lyh , lewt , lacor , lsavf , lwm , liwm ,      &
-              locjs , maxord , meth , miter , msbj , mxhnil , mxstep ,  &
-              n , newh , newq , nhnil , nq , nqnyh , nqwait , nslj ,    &
-              nslp , nyh
-!
-! type declarations for labeled common block dvod02 --------------------
-!
-      double precision hu
-      integer ncfn , netf , nfe , nje , nlu , nni , nqu , nst
+
+      class(dvode_t),intent(in) :: me
+      real(wp) :: t , yh(ldyh,*) , dky(*)
+      integer :: k , ldyh , iflag
+
 !
 ! type declarations for local variables --------------------------------
 !
-      double precision c , hun , r , s , tfuzz , tn1 , tp , zero
+      real(wp) c , hun , r , s , tfuzz , tn1 , tp , zero
       integer i , ic , j , jb , jb2 , jj , jj1 , jp1
       character(len=80) msg
 !-----------------------------------------------------------------------
@@ -1989,57 +2079,46 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! listed (local) variables to be saved between calls to this integrator.
 !-----------------------------------------------------------------------
       save hun , zero
-!
-      common /dvod01/ acnrm , ccmxj , conp , crate , drc , el(13) ,     &
-                      eta , etamax , h , hmin , hmxi , hnew , hscal ,   &
-                      prl1 , rc , rl1 , tau(13) , tq(5) , tn , uround , &
-                      icf , init , ipup , jcur , jstart , jsv , kflag , &
-                      kuth , l , lmax , lyh , lewt , lacor , lsavf ,    &
-                      lwm , liwm , locjs , maxord , meth , miter ,      &
-                      msbj , mxhnil , mxstep , n , newh , newq , nhnil ,&
-                      nq , nqnyh , nqwait , nslj , nslp , nyh
-      common /dvod02/ hu , ncfn , netf , nfe , nje , nlu , nni , nqu ,  &
-                      nst
-!
+
       data hun/100.0d0/ , zero/0.0d0/
-!
+
       iflag = 0
-      if ( k<0 .or. k>nq ) then
+      if ( k<0 .or. k>me%nq ) then
 !
          msg = 'dvindy-- k (=i1) illegal      '
          call xerrwd(msg,30,51,1,1,k,0,0,zero,zero)
          iflag = -1
          return
       else
-         tfuzz = hun*uround*sign(abs(tn)+abs(hu),hu)
-         tp = tn - hu - tfuzz
-         tn1 = tn + tfuzz
+         tfuzz = hun*me%uround*sign(abs(me%tn)+abs(me%hu),me%hu)
+         tp = me%tn - me%hu - tfuzz
+         tn1 = me%tn + tfuzz
          if ( (t-tp)*(t-tn1)>zero ) then
             msg = 'dvindy-- t (=r1) illegal      '
             call xerrwd(msg,30,52,1,0,0,0,1,t,zero)
-            msg =                                                       &
-          '      t not in interval tcur - hu (= r1) to tcur (=r2)      '
-            call xerrwd(msg,60,52,1,0,0,0,2,tp,tn)
+            msg = &
+                  '      t not in interval tcur - hu (= r1) to tcur (=r2)      '
+            call xerrwd(msg,60,52,1,0,0,0,2,tp,me%tn)
             iflag = -2
-            goto 99999
+            return
          else
 !
-            s = (t-tn)/h
+            s = (t-me%tn)/me%h
             ic = 1
             if ( k/=0 ) then
-               jj1 = l - k
-               do jj = jj1 , nq
+               jj1 = me%l - k
+               do jj = jj1 , me%nq
                   ic = ic*jj
                enddo
             endif
-            c = real(ic)
-            do i = 1 , n
-               dky(i) = c*yh(i,l)
+            c = real(ic,wp)
+            do i = 1 , me%n
+               dky(i) = c*yh(i,me%l)
             enddo
-            if ( k/=nq ) then
-               jb2 = nq - k
+            if ( k/=me%nq ) then
+               jb2 = me%nq - k
                do jb = 1 , jb2
-                  j = nq - jb
+                  j = me%nq - jb
                   jp1 = j + 1
                   ic = 1
                   if ( k/=0 ) then
@@ -2048,8 +2127,8 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
                         ic = ic*jj
                      enddo
                   endif
-                  c = real(ic)
-                  do i = 1 , n
+                  c = real(ic,wp)
+                  do i = 1 , me%n
                      dky(i) = c*yh(i,jp1) + s*dky(i)
                   enddo
                enddo
@@ -2057,11 +2136,10 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
             endif
          endif
       endif
-      r = h**(-k)
-      call dscal(n,r,dky,1)
-      return
+      r = me%h**(-k)
+      call dscal(me%n,r,dky,1)
 
-99999 end subroutine dvindy
+   end subroutine dvindy
 
 !*****************************************************************************************
 !>
@@ -2078,7 +2156,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !
 !```
 ! call sequence input -- y, yh, ldyh, yh1, ewt, savf, vsav,
-!                        acor, wm, iwm, f, jac, psol, vnls, rpar, ipar
+!                        acor, wm, iwm, f, jac, psol, vnls
 ! call sequence output -- yh, acor, wm, iwm
 ! common block variables accessed:
 !     /dvod01/  acnrm, el(13), h, hmin, hmxi, hnew, hscal, rc, tau(13),
@@ -2099,7 +2177,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !          j-th derivative of y(i), scaled by h**j/factorial(j)
 !          (j = 0,1,...,nq).  on entry for the first step, the first
 !          two columns of yh must be set from the initial values.
-! ldyh   = a constant integer .ge. n, the first dimension of yh.
+! ldyh   = a constant integer >= n, the first dimension of yh.
 !          n is the number of odes in the system.
 ! yh1    = a one-dimensional array occupying the same space as yh.
 ! ewt    = an array of length n containing multiplicative weights
@@ -2107,7 +2185,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !          compared to 1.0/ewt(i) in various error tests.
 ! savf   = an array of working storage, of length n.
 !          also used for input of yh(*,maxord+2) when jstart = -1
-!          and maxord .lt. the current order nq.
+!          and maxord < the current order nq.
 ! vsav   = a work array of length n passed to subroutine vnls.
 ! acor   = a work array of length n, used for the accumulated
 !          corrections.  on a successful return, acor(i) contains
@@ -2120,47 +2198,28 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !          possible use there.
 ! vnls   = dummy name for the nonlinear system solving subroutine,
 !          whose real name is dependent on the method used.
-! rpar, ipar = dummy names for user's real and integer work arrays.
 !```
 
-      subroutine dvstep(y,yh,ldyh,yh1,ewt,savf,vsav,acor,wm,iwm,f,jac,  &
-                        psol,vnls,rpar,ipar)
+      subroutine dvstep(me,y,yh,ldyh,yh1,ewt,savf,vsav,acor,wm,iwm)
+
       implicit none
-      external f , jac , psol , vnls
-      double precision y , yh , yh1 , ewt , savf , vsav , acor , wm ,   &
-                       rpar
-      integer ldyh , iwm , ipar
-      dimension y(*) , yh(ldyh,*) , yh1(*) , ewt(*) , savf(*) , vsav(*) &
-                , acor(*) , wm(*) , iwm(*) , rpar(*) , ipar(*)
-!
-! type declarations for labeled common block dvod01 --------------------
-!
-      double precision acnrm , ccmxj , conp , crate , drc , el , eta ,  &
-                       etamax , h , hmin , hmxi , hnew , hscal , prl1 , &
-                       rc , rl1 , tau , tq , tn , uround
-      integer icf , init , ipup , jcur , jstart , jsv , kflag , kuth ,  &
-              l , lmax , lyh , lewt , lacor , lsavf , lwm , liwm ,      &
-              locjs , maxord , meth , miter , msbj , mxhnil , mxstep ,  &
-              n , newh , newq , nhnil , nq , nqnyh , nqwait , nslj ,    &
-              nslp , nyh
-!
-! type declarations for labeled common block dvod02 --------------------
-!
-      double precision hu
-      integer ncfn , netf , nfe , nje , nlu , nni , nqu , nst
+
+      class(dvode_t),intent(inout) :: me
+      integer :: ldyh
+      real(wp) :: y(*) , yh(ldyh,*) , yh1(*) , ewt(*) , &
+                  savf(*) , vsav(*) , acor(*) , wm(*)
+      integer :: iwm(*)
+
 !
 ! type declarations for local variables --------------------------------
 !
-      double precision addon , bias1 , bias2 , bias3 , cnquot , ddn ,   &
+      real(wp) addon , bias1 , bias2 , bias3 , cnquot , ddn ,   &
                        dsm , dup , etacf , etamin , etamx1 , etamx2 ,   &
                        etamx3 , etamxf , etaq , etaqm1 , etaqp1 ,       &
                        flotl , one , onepsm , r , thresh , told , zero
       integer i , i1 , i2 , iback , j , jb , kfc , kfh , mxncf , ncf ,  &
               nflag
-!
-! type declaration for function subroutines called ---------------------
-!
-!      double precision dvnorm
+
 !-----------------------------------------------------------------------
 ! the following fortran-77 declaration is to cause the values of the
 ! listed (local) variables to be saved between calls to this integrator.
@@ -2168,17 +2227,6 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
       save addon , bias1 , bias2 , bias3 , etacf , etamin , etamx1 ,    &
          etamx2 , etamx3 , etamxf , etaq , etaqm1 , kfc , kfh , mxncf , &
          onepsm , thresh , one , zero
-!-----------------------------------------------------------------------
-      common /dvod01/ acnrm , ccmxj , conp , crate , drc , el(13) ,     &
-                      eta , etamax , h , hmin , hmxi , hnew , hscal ,   &
-                      prl1 , rc , rl1 , tau(13) , tq(5) , tn , uround , &
-                      icf , init , ipup , jcur , jstart , jsv , kflag , &
-                      kuth , l , lmax , lyh , lewt , lacor , lsavf ,    &
-                      lwm , liwm , locjs , maxord , meth , miter ,      &
-                      msbj , mxhnil , mxstep , n , newh , newq , nhnil ,&
-                      nq , nqnyh , nqwait , nslj , nslp , nyh
-      common /dvod02/ hu , ncfn , netf , nfe , nje , nlu , nni , nqu ,  &
-                      nst
 !
       data kfc/ - 3/ , kfh/ - 7/ , mxncf/10/
       data addon/1.0d-6/ , bias1/6.0d0/ , bias2/6.0d0/ , bias3/10.0d0/ ,&
@@ -2187,13 +2235,13 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
            onepsm/1.00001d0/ , thresh/1.5d0/
       data one/1.0d0/ , zero/0.0d0/
 !
-      kflag = 0
-      told = tn
+      me%kflag = 0
+      told = me%tn
       ncf = 0
-      jcur = 0
+      me%jcur = 0
       nflag = 0
-      if ( jstart<=0 ) then
-         if ( jstart==-1 ) goto 200
+      if ( me%jstart<=0 ) then
+         if ( me%jstart==-1 ) goto 200
 !-----------------------------------------------------------------------
 ! on the first call, the order is set to 1, and other variables are
 ! initialized.  etamax is the maximum ratio by which h can be increased
@@ -2202,19 +2250,19 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! occurs (in corrector convergence or error test), etamax is set to 1
 ! for the next increase.
 !-----------------------------------------------------------------------
-         lmax = maxord + 1
-         nq = 1
-         l = 2
-         nqnyh = nq*ldyh
-         tau(1) = h
-         prl1 = one
-         rc = zero
-         etamax = etamx1
-         nqwait = 2
-         hscal = h
+         me%lmax = me%maxord + 1
+         me%nq = 1
+         me%l = 2
+         me%nqnyh = me%nq*ldyh
+         me%tau(1) = me%h
+         me%prl1 = one
+         me%rc = zero
+         me%etamax = etamx1
+         me%nqwait = 2
+         me%hscal = me%h
          goto 400
 !-----------------------------------------------------------------------
-! take preliminary actions on a normal continuation step (jstart.gt.0).
+! take preliminary actions on a normal continuation step (jstart>0).
 ! if the driver changed h, then eta must be reset and newh set to 1.
 ! if a change of order was dictated on the previous step, then
 ! it is done here and appropriate adjustments in the history are made.
@@ -2222,24 +2270,24 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! on an order increase, the history array is augmented by a column.
 ! on a change of step size h, the history array yh is rescaled.
 !-----------------------------------------------------------------------
-      elseif ( kuth==1 ) then
-         eta = min(eta,h/hscal)
-         newh = 1
+      elseif ( me%kuth==1 ) then
+         me%eta = min(me%eta,me%h/me%hscal)
+         me%newh = 1
       endif
- 100  if ( newh==0 ) goto 400
-      if ( newq==nq ) goto 300
-      if ( newq<nq ) then
-         call dvjust(yh,ldyh,-1)
-         nq = newq
-         l = nq + 1
-         nqwait = l
+ 100  if ( me%newh==0 ) goto 400
+      if ( me%newq==me%nq ) goto 300
+      if ( me%newq<me%nq ) then
+         call me%dvjust(yh,ldyh,-1)
+         me%nq = me%newq
+         me%l = me%nq + 1
+         me%nqwait = me%l
          goto 300
       endif
-      if ( newq>nq ) then
-         call dvjust(yh,ldyh,1)
-         nq = newq
-         l = nq + 1
-         nqwait = l
+      if ( me%newq>me%nq ) then
+         call me%dvjust(yh,ldyh,1)
+         me%nq = me%newq
+         me%l = me%nq + 1
+         me%nqwait = me%l
          goto 300
       endif
 !-----------------------------------------------------------------------
@@ -2247,89 +2295,88 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! if n was reduced, zero out part of yh to avoid undefined references.
 ! if maxord was reduced to a value less than the tentative order newq,
 ! then nq is set to maxord, and a new h ratio eta is chosen.
-! otherwise, we take the same preliminary actions as for jstart .gt. 0.
+! otherwise, we take the same preliminary actions as for jstart > 0.
 ! in any case, nqwait is reset to l = nq + 1 to prevent further
 ! changes in order for that many steps.
 ! the new h ratio eta is limited by the input h if kuth = 1,
 ! by hmin if kuth = 0, and by hmxi in any case.
 ! finally, the history array yh is rescaled.
 !-----------------------------------------------------------------------
- 200  lmax = maxord + 1
-      if ( n/=ldyh ) then
-         i1 = 1 + (newq+1)*ldyh
-         i2 = (maxord+1)*ldyh
+ 200  me%lmax = me%maxord + 1
+      if ( me%n/=ldyh ) then
+         i1 = 1 + (me%newq+1)*ldyh
+         i2 = (me%maxord+1)*ldyh
          if ( i1<=i2 ) then
             do i = i1 , i2
                yh1(i) = zero
             enddo
          endif
       endif
-      if ( newq>maxord ) then
-         flotl = real(lmax)
-         if ( maxord<nq-1 ) then
-            ddn = dvnorm(n,savf,ewt)/tq(1)
-            eta = one/((bias1*ddn)**(one/flotl)+addon)
+      if ( me%newq>me%maxord ) then
+         flotl = real(me%lmax,wp)
+         if ( me%maxord<me%nq-1 ) then
+            ddn = dvnorm(me%n,savf,ewt)/me%tq(1)
+            me%eta = one/((bias1*ddn)**(one/flotl)+addon)
          endif
-         if ( maxord==nq .and. newq==nq+1 ) eta = etaq
-         if ( maxord==nq-1 .and. newq==nq+1 ) then
-            eta = etaqm1
-            call dvjust(yh,ldyh,-1)
+         if ( me%maxord==me%nq .and. me%newq==me%nq+1 ) me%eta = etaq
+         if ( me%maxord==me%nq-1 .and. me%newq==me%nq+1 ) then
+            me%eta = etaqm1
+            call me%dvjust(yh,ldyh,-1)
          endif
-         if ( maxord==nq-1 .and. newq==nq ) then
-            ddn = dvnorm(n,savf,ewt)/tq(1)
-            eta = one/((bias1*ddn)**(one/flotl)+addon)
-            call dvjust(yh,ldyh,-1)
+         if ( me%maxord==me%nq-1 .and. me%newq==me%nq ) then
+            ddn = dvnorm(me%n,savf,ewt)/me%tq(1)
+            me%eta = one/((bias1*ddn)**(one/flotl)+addon)
+            call me%dvjust(yh,ldyh,-1)
          endif
-         eta = min(eta,one)
-         nq = maxord
-         l = lmax
+         me%eta = min(me%eta,one)
+         me%nq = me%maxord
+         me%l = me%lmax
       endif
-      if ( kuth==1 ) eta = min(eta,abs(h/hscal))
-      if ( kuth==0 ) eta = max(eta,hmin/abs(hscal))
-      eta = eta/max(one,abs(hscal)*hmxi*eta)
-      newh = 1
-      nqwait = l
-      if ( newq<=maxord ) goto 100
+      if ( me%kuth==1 ) me%eta = min(me%eta,abs(me%h/me%hscal))
+      if ( me%kuth==0 ) me%eta = max(me%eta,me%hmin/abs(me%hscal))
+      me%eta = me%eta/max(one,abs(me%hscal)*me%hmxi*me%eta)
+      me%newh = 1
+      me%nqwait = me%l
+      if ( me%newq<=me%maxord ) goto 100
 ! rescale the history array for a change in h by a factor of eta. ------
  300  r = one
-      do j = 2 , l
-         r = r*eta
-         call dscal(n,r,yh(1,j),1)
+      do j = 2 , me%l
+         r = r*me%eta
+         call dscal(me%n,r,yh(1,j),1)
       enddo
-      h = hscal*eta
-      hscal = h
-      rc = rc*eta
-      nqnyh = nq*ldyh
+      me%h = me%hscal*me%eta
+      me%hscal = me%h
+      me%rc = me%rc*me%eta
+      me%nqnyh = me%nq*ldyh
 !-----------------------------------------------------------------------
 ! this section computes the predicted values by effectively
 ! multiplying the yh array by the pascal triangle matrix.
 ! dvset is called to calculate all integration coefficients.
 ! rc is the ratio of new to old values of the coefficient h/el(2)=h/l1.
 !-----------------------------------------------------------------------
- 400  tn = tn + h
-      i1 = nqnyh + 1
-      do jb = 1 , nq
+ 400  me%tn = me%tn + me%h
+      i1 = me%nqnyh + 1
+      do jb = 1 , me%nq
          i1 = i1 - ldyh
-         do i = i1 , nqnyh
+         do i = i1 , me%nqnyh
             yh1(i) = yh1(i) + yh1(i+ldyh)
          enddo
       enddo
-      call dvset
-      rl1 = one/el(2)
-      rc = rc*(rl1/prl1)
-      prl1 = rl1
+      call me%dvset()
+      me%rl1 = one/me%el(2)
+      me%rc = me%rc*(me%rl1/me%prl1)
+      me%prl1 = me%rl1
 !
 ! call the nonlinear system solver. ------------------------------------
 !
-      call vnls(y,yh,ldyh,vsav,savf,ewt,acor,iwm,wm,f,jac,psol,nflag,   &
-                rpar,ipar)
+      call me%dvnlsd(y,yh,ldyh,vsav,savf,ewt,acor,iwm,wm,nflag)
 !
       if ( nflag==0 ) then
 !-----------------------------------------------------------------------
 ! the corrector has converged (nflag = 0).  the local error test is
 ! made and control passes to statement 500 if it fails.
 !-----------------------------------------------------------------------
-         dsm = acnrm/tq(2)
+         dsm = me%acnrm/me%tq(2)
          if ( dsm>one ) then
 !-----------------------------------------------------------------------
 ! the error test failed.  kflag keeps track of multiple failures.
@@ -2338,32 +2385,32 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! same order.  after repeated failures, h is forced to decrease
 ! more rapidly.
 !-----------------------------------------------------------------------
-            kflag = kflag - 1
-            netf = netf + 1
+            me%kflag = me%kflag - 1
+            me%netf = me%netf + 1
             nflag = -2
-            tn = told
-            i1 = nqnyh + 1
-            do jb = 1 , nq
+            me%tn = told
+            i1 = me%nqnyh + 1
+            do jb = 1 , me%nq
                i1 = i1 - ldyh
-               do i = i1 , nqnyh
+               do i = i1 , me%nqnyh
                   yh1(i) = yh1(i) - yh1(i+ldyh)
                enddo
             enddo
-            if ( abs(h)<=hmin*onepsm ) then
+            if ( abs(me%h)<=me%hmin*onepsm ) then
 !-----------------------------------------------------------------------
 ! all returns are made through this section.
 ! on a successful return, etamax is reset and acor is scaled.
 !-----------------------------------------------------------------------
-               kflag = -1
+               me%kflag = -1
                goto 600
             else
-               etamax = one
-               if ( kflag>kfc ) then
+               me%etamax = one
+               if ( me%kflag>kfc ) then
 ! compute ratio of new h to current h at the current order. ------------
-                  flotl = real(l)
-                  eta = one/((bias2*dsm)**(one/flotl)+addon)
-                  eta = max(eta,hmin/abs(h),etamin)
-                  if ( (kflag<=-2) .and. (eta>etamxf) ) eta = etamxf
+                  flotl = real(me%l,wp)
+                  me%eta = one/((bias2*dsm)**(one/flotl)+addon)
+                  me%eta = max(me%eta,me%hmin/abs(me%h),etamin)
+                  if ( (me%kflag<=-2) .and. (me%eta>etamxf) ) me%eta = etamxf
                   goto 300
 !-----------------------------------------------------------------------
 ! control reaches this section if 3 or more consecutive failures
@@ -2373,55 +2420,55 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! the step is retried.  after a total of 7 consecutive failures,
 ! an exit is taken with kflag = -1.
 !-----------------------------------------------------------------------
-               elseif ( kflag==kfh ) then
-                  kflag = -1
+               elseif ( me%kflag==kfh ) then
+                  me%kflag = -1
                   goto 600
-               elseif ( nq==1 ) then
-                  eta = max(etamin,hmin/abs(h))
-                  h = h*eta
-                  hscal = h
-                  tau(1) = h
-                  call f(n,tn,y,savf,rpar,ipar)
-                  nfe = nfe + 1
-                  do i = 1 , n
-                     yh(i,2) = h*savf(i)
+               elseif ( me%nq==1 ) then
+                  me%eta = max(etamin,me%hmin/abs(me%h))
+                  me%h = me%h*me%eta
+                  me%hscal = me%h
+                  me%tau(1) = me%h
+                  call me%f(me%n,me%tn,y(1:me%n),savf(1:me%n))
+                  me%nfe = me%nfe + 1
+                  do i = 1 , me%n
+                     yh(i,2) = me%h*savf(i)
                   enddo
-                  nqwait = 10
+                  me%nqwait = 10
                   goto 400
                else
-                  eta = max(etamin,hmin/abs(h))
-                  call dvjust(yh,ldyh,-1)
-                  l = nq
-                  nq = nq - 1
-                  nqwait = l
+                  me%eta = max(etamin,me%hmin/abs(me%h))
+                  call me%dvjust(yh,ldyh,-1)
+                  me%l = me%nq
+                  me%nq = me%nq - 1
+                  me%nqwait = me%l
                   goto 300
                endif
             endif
          else
 !-----------------------------------------------------------------------
 ! after a successful step, update the yh and tau arrays and decrement
-! nqwait.  if nqwait is then 1 and nq .lt. maxord, then acor is saved
+! nqwait.  if nqwait is then 1 and nq < maxord, then acor is saved
 ! for use in a possible order increase on the next step.
-! if etamax = 1 (a failure occurred this step), keep nqwait .ge. 2.
+! if etamax = 1 (a failure occurred this step), keep nqwait >= 2.
 !-----------------------------------------------------------------------
-            kflag = 0
-            nst = nst + 1
-            hu = h
-            nqu = nq
-            do iback = 1 , nq
-               i = l - iback
-               tau(i+1) = tau(i)
+            me%kflag = 0
+            me%nst = me%nst + 1
+            me%hu = me%h
+            me%nqu = me%nq
+            do iback = 1 , me%nq
+               i = me%l - iback
+               me%tau(i+1) = me%tau(i)
             enddo
-            tau(1) = h
-            do j = 1 , l
-               call daxpy(n,el(j),acor,1,yh(1,j),1)
+            me%tau(1) = me%h
+            do j = 1 , me%l
+               call daxpy(me%n,me%el(j),acor,1,yh(1,j),1)
             enddo
-            nqwait = nqwait - 1
-            if ( (l/=lmax) .and. (nqwait==1) ) then
-               call dcopy(n,acor,1,yh(1,lmax),1)
-               conp = tq(5)
+            me%nqwait = me%nqwait - 1
+            if ( (me%l/=me%lmax) .and. (me%nqwait==1) ) then
+               call dcopy(me%n,acor,1,yh(1,me%lmax),1)
+               me%conp = me%tq(5)
             endif
-            if ( etamax/=one ) then
+            if ( me%etamax/=one ) then
 !-----------------------------------------------------------------------
 ! if nqwait = 0, an increase or decrease in order by one is considered.
 ! factors etaq, etaqm1, etaqp1 are computed by which h could
@@ -2433,102 +2480,102 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! then nqwait is set to 2 (reconsider it after 2 steps).
 !-----------------------------------------------------------------------
 ! compute ratio of new h to current h at the current order. ------------
-               flotl = real(l)
+               flotl = real(me%l,wp)
                etaq = one/((bias2*dsm)**(one/flotl)+addon)
-               if ( nqwait==0 ) then
-                  nqwait = 2
+               if ( me%nqwait==0 ) then
+                  me%nqwait = 2
                   etaqm1 = zero
-                  if ( nq/=1 ) then
+                  if ( me%nq/=1 ) then
 ! compute ratio of new h to current h at the current order less one. ---
-                     ddn = dvnorm(n,yh(1,l),ewt)/tq(1)
+                     ddn = dvnorm(me%n,yh(1,me%l),ewt)/me%tq(1)
                      etaqm1 = one/((bias1*ddn)**(one/(flotl-one))+addon)
                   endif
                   etaqp1 = zero
-                  if ( l/=lmax ) then
+                  if ( me%l/=me%lmax ) then
 ! compute ratio of new h to current h at current order plus one. -------
-                     cnquot = (tq(5)/conp)*(h/tau(2))**l
-                     do i = 1 , n
-                        savf(i) = acor(i) - cnquot*yh(i,lmax)
+                     cnquot = (me%tq(5)/me%conp)*(me%h/me%tau(2))**me%l
+                     do i = 1 , me%n
+                        savf(i) = acor(i) - cnquot*yh(i,me%lmax)
                      enddo
-                     dup = dvnorm(n,savf,ewt)/tq(3)
+                     dup = dvnorm(me%n,savf,ewt)/me%tq(3)
                      etaqp1 = one/((bias3*dup)**(one/(flotl+one))+addon)
                   endif
                   if ( etaq<etaqp1 ) then
                      if ( etaqp1<=etaqm1 ) goto 420
-                     eta = etaqp1
-                     newq = nq + 1
-                     call dcopy(n,acor,1,yh(1,lmax),1)
+                     me%eta = etaqp1
+                     me%newq = me%nq + 1
+                     call dcopy(me%n,acor,1,yh(1,me%lmax),1)
                      goto 450
                   elseif ( etaq<etaqm1 ) then
                      goto 420
                   endif
                endif
-               eta = etaq
-               newq = nq
+               me%eta = etaq
+               me%newq = me%nq
                goto 450
             else
-               if ( nqwait<2 ) nqwait = 2
-               newq = nq
-               newh = 0
-               eta = one
-               hnew = h
+               if ( me%nqwait<2 ) me%nqwait = 2
+               me%newq = me%nq
+               me%newh = 0
+               me%eta = one
+               me%hnew = me%h
                goto 500
             endif
- 420        eta = etaqm1
-            newq = nq - 1
+ 420        me%eta = etaqm1
+            me%newq = me%nq - 1
          endif
 ! test tentative new h against thresh, etamax, and hmxi, then exit. ----
- 450     if ( eta<thresh .or. etamax==one ) then
-            newq = nq
-            newh = 0
-            eta = one
-            hnew = h
+ 450     if ( me%eta<thresh .or. me%etamax==one ) then
+            me%newq = me%nq
+            me%newh = 0
+            me%eta = one
+            me%hnew = me%h
          else
-            eta = min(eta,etamax)
-            eta = eta/max(one,abs(h)*hmxi*eta)
-            newh = 1
-            hnew = h*eta
+            me%eta = min(me%eta,me%etamax)
+            me%eta = me%eta/max(one,abs(me%h)*me%hmxi*me%eta)
+            me%newh = 1
+            me%hnew = me%h*me%eta
          endif
       else
 !-----------------------------------------------------------------------
-! the vnls routine failed to achieve convergence (nflag .ne. 0).
+! the vnls routine failed to achieve convergence (nflag /= 0).
 ! the yh array is retracted to its values before prediction.
 ! the step size h is reduced and the step is retried, if possible.
 ! otherwise, an error exit is taken.
 !-----------------------------------------------------------------------
          ncf = ncf + 1
-         ncfn = ncfn + 1
-         etamax = one
-         tn = told
-         i1 = nqnyh + 1
-         do jb = 1 , nq
+         me%ncfn = me%ncfn + 1
+         me%etamax = one
+         me%tn = told
+         i1 = me%nqnyh + 1
+         do jb = 1 , me%nq
             i1 = i1 - ldyh
-            do i = i1 , nqnyh
+            do i = i1 , me%nqnyh
                yh1(i) = yh1(i) - yh1(i+ldyh)
             enddo
          enddo
          if ( nflag<-1 ) then
-            if ( nflag==-2 ) kflag = -3
-            if ( nflag==-3 ) kflag = -4
+            if ( nflag==-2 ) me%kflag = -3
+            if ( nflag==-3 ) me%kflag = -4
             goto 600
-         elseif ( abs(h)<=hmin*onepsm ) then
-            kflag = -2
+         elseif ( abs(me%h)<=me%hmin*onepsm ) then
+            me%kflag = -2
             goto 600
          elseif ( ncf==mxncf ) then
-            kflag = -2
+            me%kflag = -2
             goto 600
          else
-            eta = etacf
-            eta = max(eta,hmin/abs(h))
+            me%eta = etacf
+            me%eta = max(me%eta,me%hmin/abs(me%h))
             nflag = -1
             goto 300
          endif
       endif
- 500  etamax = etamx3
-      if ( nst<=10 ) etamax = etamx2
-      r = one/tq(2)
-      call dscal(n,r,acor,1)
- 600  jstart = 1
+ 500  me%etamax = etamx3
+      if ( me%nst<=10 ) me%etamax = etamx2
+      r = one/me%tq(2)
+      call dscal(me%n,r,acor,1)
+ 600  me%jstart = 1
 
       end subroutine dvstep
 
@@ -2581,23 +2628,14 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !            an order change is about to be considered if nqwait = 1.
 !```
 
-      subroutine dvset()
+      subroutine dvset(me)
       implicit none
-!
-! type declarations for labeled common block dvod01 --------------------
-!
-      double precision acnrm , ccmxj , conp , crate , drc , el , eta ,  &
-                       etamax , h , hmin , hmxi , hnew , hscal , prl1 , &
-                       rc , rl1 , tau , tq , tn , uround
-      integer icf , init , ipup , jcur , jstart , jsv , kflag , kuth ,  &
-              l , lmax , lyh , lewt , lacor , lsavf , lwm , liwm ,      &
-              locjs , maxord , meth , miter , msbj , mxhnil , mxstep ,  &
-              n , newh , newq , nhnil , nq , nqnyh , nqwait , nslj ,    &
-              nslp , nyh
+
+      class(dvode_t),intent(inout) :: me
 !
 ! type declarations for local variables --------------------------------
 !
-      double precision ahatn0 , alph0 , cnqm1 , cortes , csum , elp ,   &
+      real(wp) ahatn0 , alph0 , cnqm1 , cortes , csum , elp ,   &
                        em , em0 , floti , flotl , flotnq , hsum , one , &
                        rxi , rxis , s , six , t1 , t2 , t3 , t4 , t5 ,  &
                        t6 , two , xi , zero
@@ -2610,143 +2648,134 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !-----------------------------------------------------------------------
       save cortes , one , six , two , zero
 !
-      common /dvod01/ acnrm , ccmxj , conp , crate , drc , el(13) ,     &
-                      eta , etamax , h , hmin , hmxi , hnew , hscal ,   &
-                      prl1 , rc , rl1 , tau(13) , tq(5) , tn , uround , &
-                      icf , init , ipup , jcur , jstart , jsv , kflag , &
-                      kuth , l , lmax , lyh , lewt , lacor , lsavf ,    &
-                      lwm , liwm , locjs , maxord , meth , miter ,      &
-                      msbj , mxhnil , mxstep , n , newh , newq , nhnil ,&
-                      nq , nqnyh , nqwait , nslj , nslp , nyh
-!
       data cortes/0.1d0/
       data one/1.0d0/ , six/6.0d0/ , two/2.0d0/ , zero/0.0d0/
 !
-      flotl = real(l)
-      nqm1 = nq - 1
-      nqm2 = nq - 2
-      if ( meth==2 ) then
+      flotl = real(me%l,wp)
+      nqm1 = me%nq - 1
+      nqm2 = me%nq - 2
+      if ( me%meth==2 ) then
 !
 ! set coefficients for bdf methods. ------------------------------------
-         do i = 3 , l
-            el(i) = zero
+         do i = 3 , me%l
+            me%el(i) = zero
          enddo
-         el(1) = one
-         el(2) = one
+         me%el(1) = one
+         me%el(2) = one
          alph0 = -one
          ahatn0 = -one
-         hsum = h
+         hsum = me%h
          rxi = one
          rxis = one
-         if ( nq/=1 ) then
+         if ( me%nq/=1 ) then
             do j = 1 , nqm2
 ! in el, construct coefficients of (1+x/xi(1))*...*(1+x/xi(j+1)). ------
-               hsum = hsum + tau(j)
-               rxi = h/hsum
+               hsum = hsum + me%tau(j)
+               rxi = me%h/hsum
                jp1 = j + 1
-               alph0 = alph0 - one/real(jp1)
+               alph0 = alph0 - one/real(jp1,wp)
                do iback = 1 , jp1
                   i = (j+3) - iback
-                  el(i) = el(i) + el(i-1)*rxi
+                  me%el(i) = me%el(i) + me%el(i-1)*rxi
                enddo
             enddo
-            alph0 = alph0 - one/real(nq)
-            rxis = -el(2) - alph0
-            hsum = hsum + tau(nqm1)
-            rxi = h/hsum
-            ahatn0 = -el(2) - rxi
-            do iback = 1 , nq
-               i = (nq+2) - iback
-               el(i) = el(i) + el(i-1)*rxis
+            alph0 = alph0 - one/real(me%nq,wp)
+            rxis = -me%el(2) - alph0
+            hsum = hsum + me%tau(nqm1)
+            rxi = me%h/hsum
+            ahatn0 = -me%el(2) - rxi
+            do iback = 1 , me%nq
+               i = (me%nq+2) - iback
+               me%el(i) = me%el(i) + me%el(i-1)*rxis
             enddo
          endif
          t1 = one - ahatn0 + alph0
-         t2 = one + real(nq)*t1
-         tq(2) = abs(alph0*t2/t1)
-         tq(5) = abs(t2/(el(l)*rxi/rxis))
-         if ( nqwait==1 ) then
-            cnqm1 = rxis/el(l)
-            t3 = alph0 + one/real(nq)
+         t2 = one + real(me%nq,wp)*t1
+         me%tq(2) = abs(alph0*t2/t1)
+         me%tq(5) = abs(t2/(me%el(me%l)*rxi/rxis))
+         if ( me%nqwait==1 ) then
+            cnqm1 = rxis/me%el(me%l)
+            t3 = alph0 + one/real(me%nq,wp)
             t4 = ahatn0 + rxi
             elp = t3/(one-t4+t3)
-            tq(1) = abs(elp/cnqm1)
-            hsum = hsum + tau(nq)
-            rxi = h/hsum
-            t5 = alph0 - one/real(nq+1)
+            me%tq(1) = abs(elp/cnqm1)
+            hsum = hsum + me%tau(me%nq)
+            rxi = me%h/hsum
+            t5 = alph0 - one/real(me%nq+1,wp)
             t6 = ahatn0 - rxi
             elp = t2/(one-t6+t5)
-            tq(3) = abs(elp*rxi*(flotl+one)*t5)
+            me%tq(3) = abs(elp*rxi*(flotl+one)*t5)
          endif
 !
 ! set coefficients for adams methods. ----------------------------------
-      elseif ( nq/=1 ) then
-         hsum = h
+      elseif ( me%nq/=1 ) then
+         hsum = me%h
          em(1) = one
          flotnq = flotl - one
-         do i = 2 , l
+         do i = 2 , me%l
             em(i) = zero
          enddo
          do j = 1 , nqm1
-            if ( (j==nqm1) .and. (nqwait==1) ) then
+            if ( (j==nqm1) .and. (me%nqwait==1) ) then
                s = one
                csum = zero
                do i = 1 , nqm1
-                  csum = csum + s*em(i)/real(i+1)
+                  csum = csum + s*em(i)/real(i+1,wp)
                   s = -s
                enddo
-               tq(1) = em(nqm1)/(flotnq*csum)
+               me%tq(1) = em(nqm1)/(flotnq*csum)
             endif
-            rxi = h/hsum
+            rxi = me%h/hsum
             do iback = 1 , j
                i = (j+2) - iback
                em(i) = em(i) + em(i-1)*rxi
             enddo
-            hsum = hsum + tau(j)
+            hsum = hsum + me%tau(j)
          enddo
 ! compute integral from -1 to 0 of polynomial and of x times it. -------
          s = one
          em0 = zero
          csum = zero
-         do i = 1 , nq
-            floti = real(i)
+         do i = 1 , me%nq
+            floti = real(i,wp)
             em0 = em0 + s*em(i)/floti
             csum = csum + s*em(i)/(floti+one)
             s = -s
          enddo
 ! in el, form coefficients of normalized integrated polynomial. --------
          s = one/em0
-         el(1) = one
-         do i = 1 , nq
-            el(i+1) = s*em(i)/real(i)
+         me%el(1) = one
+         do i = 1 , me%nq
+            me%el(i+1) = s*em(i)/real(i,wp)
          enddo
-         xi = hsum/h
-         tq(2) = xi*em0/csum
-         tq(5) = xi/el(l)
-         if ( nqwait==1 ) then
+         xi = hsum/me%h
+         me%tq(2) = xi*em0/csum
+         me%tq(5) = xi/me%el(me%l)
+         if ( me%nqwait==1 ) then
 ! for higher order control constant, multiply polynomial by 1+x/xi(q). -
             rxi = one/xi
-            do iback = 1 , nq
-               i = (l+1) - iback
+            do iback = 1 , me%nq
+               i = (me%l+1) - iback
                em(i) = em(i) + em(i-1)*rxi
             enddo
 ! compute integral of polynomial. --------------------------------------
             s = one
             csum = zero
-            do i = 1 , l
-               csum = csum + s*em(i)/real(i+1)
+            do i = 1 , me%l
+               csum = csum + s*em(i)/real(i+1,wp)
                s = -s
             enddo
-            tq(3) = flotl*em0/csum
+            me%tq(3) = flotl*em0/csum
          endif
       else
-         el(1) = one
-         el(2) = one
-         tq(1) = one
-         tq(2) = two
-         tq(3) = six*tq(2)
-         tq(5) = one
+         me%el(1) = one
+         me%el(2) = one
+         me%tq(1) = one
+         me%tq(2) = two
+         me%tq(3) = six*me%tq(2)
+         me%tq(5) = one
       endif
-      tq(4) = cortes*tq(2)
+      me%tq(4) = cortes*me%tq(2)
 
       end subroutine dvset
 
@@ -2773,26 +2802,17 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! function routines called by dvjust: none
 !```
 
-      subroutine dvjust(yh,ldyh,iord)
+      subroutine dvjust(me,yh,ldyh,iord)
       implicit none
-      double precision yh
+
+      class(dvode_t),intent(inout) :: me
+      real(wp) yh
       integer ldyh , iord
       dimension yh(ldyh,*)
 !
-! type declarations for labeled common block dvod01 --------------------
-!
-      double precision acnrm , ccmxj , conp , crate , drc , el , eta ,  &
-                       etamax , h , hmin , hmxi , hnew , hscal , prl1 , &
-                       rc , rl1 , tau , tq , tn , uround
-      integer icf , init , ipup , jcur , jstart , jsv , kflag , kuth ,  &
-              l , lmax , lyh , lewt , lacor , lsavf , lwm , liwm ,      &
-              locjs , maxord , meth , miter , msbj , mxhnil , mxstep ,  &
-              n , newh , newq , nhnil , nq , nqnyh , nqwait , nslj ,    &
-              nslp , nyh
-!
 ! type declarations for local variables --------------------------------
 !
-      double precision alph0 , alph1 , hsum , one , prod , t1 , xi ,    &
+      real(wp) alph0 , alph1 , hsum , one , prod , t1 , xi ,    &
                        xiold , zero
       integer i , iback , j , jp1 , lp1 , nqm1 , nqm2 , nqp1
 !-----------------------------------------------------------------------
@@ -2801,84 +2821,75 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !-----------------------------------------------------------------------
       save one , zero
 !
-      common /dvod01/ acnrm , ccmxj , conp , crate , drc , el(13) ,     &
-                      eta , etamax , h , hmin , hmxi , hnew , hscal ,   &
-                      prl1 , rc , rl1 , tau(13) , tq(5) , tn , uround , &
-                      icf , init , ipup , jcur , jstart , jsv , kflag , &
-                      kuth , l , lmax , lyh , lewt , lacor , lsavf ,    &
-                      lwm , liwm , locjs , maxord , meth , miter ,      &
-                      msbj , mxhnil , mxstep , n , newh , newq , nhnil ,&
-                      nq , nqnyh , nqwait , nslj , nslp , nyh
-!
       data one/1.0d0/ , zero/0.0d0/
 !
-      if ( (nq==2) .and. (iord/=1) ) return
-      nqm1 = nq - 1
-      nqm2 = nq - 2
-      if ( meth==2 ) then
+      if ( (me%nq==2) .and. (iord/=1) ) return
+      nqm1 = me%nq - 1
+      nqm2 = me%nq - 2
+      if ( me%meth==2 ) then
 !-----------------------------------------------------------------------
 ! stiff option...
 ! check to see if the order is being increased or decreased.
 !-----------------------------------------------------------------------
          if ( iord==1 ) then
 ! order increase. ------------------------------------------------------
-            do j = 1 , lmax
-               el(j) = zero
+            do j = 1 , me%lmax
+               me%el(j) = zero
             enddo
-            el(3) = one
+            me%el(3) = one
             alph0 = -one
             alph1 = one
             prod = one
             xiold = one
-            hsum = hscal
-            if ( nq/=1 ) then
+            hsum = me%hscal
+            if ( me%nq/=1 ) then
                do j = 1 , nqm1
 ! construct coefficients of x*x*(x+xi(1))*...*(x+xi(j)). ---------------
                   jp1 = j + 1
-                  hsum = hsum + tau(jp1)
-                  xi = hsum/hscal
+                  hsum = hsum + me%tau(jp1)
+                  xi = hsum/me%hscal
                   prod = prod*xi
-                  alph0 = alph0 - one/real(jp1)
+                  alph0 = alph0 - one/real(jp1,wp)
                   alph1 = alph1 + one/xi
                   do iback = 1 , jp1
                      i = (j+4) - iback
-                     el(i) = el(i)*xiold + el(i-1)
+                     me%el(i) = me%el(i)*xiold + me%el(i-1)
                   enddo
                   xiold = xi
                enddo
             endif
             t1 = (-alph0-alph1)/prod
 ! load column l + 1 in yh array. ---------------------------------------
-            lp1 = l + 1
-            do i = 1 , n
-               yh(i,lp1) = t1*yh(i,lmax)
+            lp1 = me%l + 1
+            do i = 1 , me%n
+               yh(i,lp1) = t1*yh(i,me%lmax)
             enddo
 ! add correction terms to yh array. ------------------------------------
-            nqp1 = nq + 1
+            nqp1 = me%nq + 1
             do j = 3 , nqp1
-               call daxpy(n,el(j),yh(1,lp1),1,yh(1,j),1)
+               call daxpy(me%n,me%el(j),yh(1,lp1),1,yh(1,j),1)
             enddo
          else
 ! order decrease. ------------------------------------------------------
-            do j = 1 , lmax
-               el(j) = zero
+            do j = 1 , me%lmax
+               me%el(j) = zero
             enddo
-            el(3) = one
+            me%el(3) = one
             hsum = zero
             do j = 1 , nqm2
 ! construct coefficients of x*x*(x+xi(1))*...*(x+xi(j)). ---------------
-               hsum = hsum + tau(j)
-               xi = hsum/hscal
+               hsum = hsum + me%tau(j)
+               xi = hsum/me%hscal
                jp1 = j + 1
                do iback = 1 , jp1
                   i = (j+4) - iback
-                  el(i) = el(i)*xi + el(i-1)
+                  me%el(i) = me%el(i)*xi + me%el(i-1)
                enddo
             enddo
 ! subtract correction terms from yh array. -----------------------------
-            do j = 3 , nq
-               do i = 1 , n
-                  yh(i,j) = yh(i,j) - yh(i,l)*el(j)
+            do j = 3 , me%nq
+               do i = 1 , me%n
+                  yh(i,j) = yh(i,j) - yh(i,me%l)*me%el(j)
                enddo
             enddo
             return
@@ -2890,36 +2901,36 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
       elseif ( iord==1 ) then
 ! order increase. ------------------------------------------------------
 ! zero out next column in yh array. ------------------------------------
-         lp1 = l + 1
-         do i = 1 , n
+         lp1 = me%l + 1
+         do i = 1 , me%n
             yh(i,lp1) = zero
          enddo
          return
       else
 ! order decrease. ------------------------------------------------------
-         do j = 1 , lmax
-            el(j) = zero
+         do j = 1 , me%lmax
+            me%el(j) = zero
          enddo
-         el(2) = one
+         me%el(2) = one
          hsum = zero
          do j = 1 , nqm2
 ! construct coefficients of x*(x+xi(1))*...*(x+xi(j)). -----------------
-            hsum = hsum + tau(j)
-            xi = hsum/hscal
+            hsum = hsum + me%tau(j)
+            xi = hsum/me%hscal
             jp1 = j + 1
             do iback = 1 , jp1
                i = (j+3) - iback
-               el(i) = el(i)*xi + el(i-1)
+               me%el(i) = me%el(i)*xi + me%el(i-1)
             enddo
          enddo
 ! construct coefficients of integrated polynomial. ---------------------
          do j = 2 , nqm1
-            el(j+1) = real(nq)*el(j)/real(j)
+            me%el(j+1) = real(me%nq,wp)*me%el(j)/real(j,wp)
          enddo
 ! subtract correction terms from yh array. -----------------------------
-         do j = 3 , nq
-            do i = 1 , n
-               yh(i,j) = yh(i,j) - yh(i,l)*el(j)
+         do j = 3 , me%nq
+            do i = 1 , me%n
+               yh(i,j) = yh(i,j) - yh(i,me%l)*me%el(j)
             enddo
          enddo
          return
@@ -2936,7 +2947,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !
 !```
 ! call sequence input -- y, yh, ldyh, savf, ewt, acor, iwm, wm,
-!                        f, jac, nflag, rpar, ipar
+!                        f, jac, nflag
 ! call sequence output -- yh, acor, wm, iwm, nflag
 ! common block variables accessed:
 !     /dvod01/ acnrm, crate, drc, h, rc, rl1, tq(5), tn, icf,
@@ -2953,18 +2964,16 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! y          = the dependent variable, a vector of length n, input.
 ! yh         = the nordsieck (taylor) array, ldyh by lmax, input
 !              and output.  on input, it contains predicted values.
-! ldyh       = a constant .ge. n, the first dimension of yh, input.
+! ldyh       = a constant >= n, the first dimension of yh, input.
 ! vsav       = unused work array.
 ! savf       = a work array of length n.
 ! ewt        = an error weight vector of length n, input.
 ! acor       = a work array of length n, used for the accumulated
 !              corrections to the predicted y vector.
 ! wm,iwm     = real and integer work arrays associated with matrix
-!              operations in chord iteration (miter .ne. 0).
+!              operations in chord iteration (miter /= 0).
 ! f          = dummy name for user supplied routine for f.
 ! jac        = dummy name for user supplied jacobian routine.
-! pdum       = unused dummy subroutine name.  included for uniformity
-!              over collection of integrators.
 ! nflag      = input/output flag, with values and meanings as follows:
 !              input
 !                  0 first call for this time step.
@@ -2977,11 +2986,10 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !                    (cannot occur here).
 !                 -3 unrecoverable error in solution (cannot occur
 !                    here).
-! rpar, ipar = dummy names for user's real and integer work arrays.
 !
 ! ipup       = own variable flag with values and meanings as follows:
 !              0,            do not update the newton matrix.
-!              miter .ne. 0, update newton matrix, because it is the
+!              miter /= 0, update newton matrix, because it is the
 !                            initial step, order was changed, the error
 !                            test failed, or an update is indicated by
 !                            the scalar rc or step counter nst.
@@ -2989,71 +2997,44 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! for more details, see comments in driver subroutine.
 !```
 
-      subroutine dvnlsd(y,yh,ldyh,vsav,savf,ewt,acor,iwm,wm,f,jac,pdum, &
-                        nflag,rpar,ipar)
+      subroutine dvnlsd(me,y,yh,ldyh,vsav,savf,ewt,acor,iwm,wm,nflag)
       implicit none
-      external f , jac , pdum
-      double precision y , yh , vsav , savf , ewt , acor , wm , rpar
-      integer ldyh , iwm , nflag , ipar
+
+      class(dvode_t),intent(inout) :: me
+      real(wp) y , yh , vsav , savf , ewt , acor , wm
+      integer ldyh , iwm , nflag
       dimension y(*) , yh(ldyh,*) , vsav(*) , savf(*) , ewt(*) , acor(*)&
-                , iwm(*) , wm(*) , rpar(*) , ipar(*)
-! type declarations for labeled common block dvod01 --------------------
-!
-      double precision acnrm , ccmxj , conp , crate , drc , el , eta ,  &
-                       etamax , h , hmin , hmxi , hnew , hscal , prl1 , &
-                       rc , rl1 , tau , tq , tn , uround
-      integer icf , init , ipup , jcur , jstart , jsv , kflag , kuth ,  &
-              l , lmax , lyh , lewt , lacor , lsavf , lwm , liwm ,      &
-              locjs , maxord , meth , miter , msbj , mxhnil , mxstep ,  &
-              n , newh , newq , nhnil , nq , nqnyh , nqwait , nslj ,    &
-              nslp , nyh
-!
-! type declarations for labeled common block dvod02 --------------------
-!
-      double precision hu
-      integer ncfn , netf , nfe , nje , nlu , nni , nqu , nst
+                , iwm(*) , wm(*)
+
 !
 ! type declarations for local variables --------------------------------
 !
-      double precision ccmax , crdown , cscale , dcon , del , delp ,    &
+      real(wp) ccmax , crdown , cscale , dcon , del , delp ,    &
                        one , rdiv , two , zero
       integer i , ierpj , iersl , m , maxcor , msbp
-!
-! type declaration for function subroutines called ---------------------
-!
-!      double precision dvnorm
+
 !-----------------------------------------------------------------------
 ! the following fortran-77 declaration is to cause the values of the
 ! listed (local) variables to be saved between calls to this integrator.
 !-----------------------------------------------------------------------
       save ccmax , crdown , maxcor , msbp , rdiv , one , two , zero
 !
-      common /dvod01/ acnrm , ccmxj , conp , crate , drc , el(13) ,     &
-                      eta , etamax , h , hmin , hmxi , hnew , hscal ,   &
-                      prl1 , rc , rl1 , tau(13) , tq(5) , tn , uround , &
-                      icf , init , ipup , jcur , jstart , jsv , kflag , &
-                      kuth , l , lmax , lyh , lewt , lacor , lsavf ,    &
-                      lwm , liwm , locjs , maxord , meth , miter ,      &
-                      msbj , mxhnil , mxstep , n , newh , newq , nhnil ,&
-                      nq , nqnyh , nqwait , nslj , nslp , nyh
-      common /dvod02/ hu , ncfn , netf , nfe , nje , nlu , nni , nqu ,  &
-                      nst
-!
       data ccmax/0.3d0/ , crdown/0.3d0/ , maxcor/3/ , msbp/20/ ,        &
            rdiv/2.0d0/
       data one/1.0d0/ , two/2.0d0/ , zero/0.0d0/
+
 !-----------------------------------------------------------------------
 ! on the first step, on a change of method order, or after a
 ! nonlinear convergence failure with nflag = -2, set ipup = miter
-! to force a jacobian update when miter .ne. 0.
+! to force a jacobian update when miter /= 0.
 !-----------------------------------------------------------------------
-      if ( jstart==0 ) nslp = 0
-      if ( nflag==0 ) icf = 0
-      if ( nflag==-2 ) ipup = miter
-      if ( (jstart==0) .or. (jstart==-1) ) ipup = miter
-! if this is functional iteration, set crate .eq. 1 and drop to 220
-      if ( miter==0 ) then
-         crate = one
+      if ( me%jstart==0 ) me%nslp = 0
+      if ( nflag==0 ) me%icf = 0
+      if ( nflag==-2 ) me%ipup = me%miter
+      if ( (me%jstart==0) .or. (me%jstart==-1) ) me%ipup = me%miter
+      ! if this is functional iteration, set crate == 1 and drop to 220
+      if ( me%miter==0 ) then
+         me%crate = one
          goto 100
       endif
 !-----------------------------------------------------------------------
@@ -3062,8 +3043,8 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! to force dvjac to be called, if a jacobian is involved.
 ! in any case, dvjac is called at least every msbp steps.
 !-----------------------------------------------------------------------
-      drc = abs(rc-one)
-      if ( drc>ccmax .or. nst>=nslp+msbp ) ipup = miter
+      me%drc = abs(me%rc-one)
+      if ( me%drc>ccmax .or. me%nst>=me%nslp+msbp ) me%ipup = me%miter
 !-----------------------------------------------------------------------
 ! up to maxcor corrector iterations are taken.  a convergence test is
 ! made on the r.m.s. norm of each correction, weighted by the error
@@ -3072,49 +3053,48 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !-----------------------------------------------------------------------
  100  m = 0
       delp = zero
-      call dcopy(n,yh(1,1),1,y,1)
-      call f(n,tn,y,savf,rpar,ipar)
-      nfe = nfe + 1
-      if ( ipup>0 ) then
+      call dcopy(me%n,yh(1,1),1,y,1)
+      call me%f(me%n,me%tn,y(1:me%n),savf(1:me%n))
+      me%nfe = me%nfe + 1
+      if ( me%ipup>0 ) then
 !-----------------------------------------------------------------------
 ! if indicated, the matrix p = i - h*rl1*j is reevaluated and
 ! preprocessed before starting the corrector iteration.  ipup is set
 ! to 0 as an indicator that this has been done.
 !-----------------------------------------------------------------------
-         call dvjac(y,yh,ldyh,ewt,acor,savf,wm,iwm,f,jac,ierpj,rpar,    &
-                    ipar)
-         ipup = 0
-         rc = one
-         drc = zero
-         crate = one
-         nslp = nst
+         call me%dvjac(y,yh,ldyh,ewt,acor,savf,wm,iwm,ierpj)
+         me%ipup = 0
+         me%rc = one
+         me%drc = zero
+         me%crate = one
+         me%nslp = me%nst
 ! if matrix is singular, take error return to force cut in step size. --
          if ( ierpj/=0 ) goto 400
       endif
-      do i = 1 , n
+      do i = 1 , me%n
          acor(i) = zero
       enddo
 ! this is a looping point for the corrector iteration. -----------------
- 200  if ( miter/=0 ) then
+ 200  if ( me%miter/=0 ) then
 !-----------------------------------------------------------------------
 ! in the case of the chord method, compute the corrector error,
 ! and solve the linear system with that as right-hand side and
 ! p as coefficient matrix.  the correction is scaled by the factor
 ! 2/(1+rc) to account for changes in h*rl1 since the last dvjac call.
 !-----------------------------------------------------------------------
-         do i = 1 , n
-            y(i) = (rl1*h)*savf(i) - (rl1*yh(i,2)+acor(i))
+         do i = 1 , me%n
+            y(i) = (me%rl1*me%h)*savf(i) - (me%rl1*yh(i,2)+acor(i))
          enddo
-         call dvsol(wm,iwm,y,iersl)
-         nni = nni + 1
+         call me%dvsol(wm,iwm,y,iersl)
+         me%nni = me%nni + 1
          if ( iersl>0 ) goto 300
-         if ( meth==2 .and. rc/=one ) then
-            cscale = two/(one+rc)
-            call dscal(n,cscale,y,1)
+         if ( me%meth==2 .and. me%rc/=one ) then
+            cscale = two/(one+me%rc)
+            call dscal(me%n,cscale,y,1)
          endif
-         del = dvnorm(n,y,ewt)
-         call daxpy(n,one,y,1,acor,1)
-         do i = 1 , n
+         del = dvnorm(me%n,y,ewt)
+         call daxpy(me%n,one,y,1,acor,1)
+         do i = 1 , me%n
             y(i) = yh(i,1) + acor(i)
          enddo
       else
@@ -3122,57 +3102,57 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! in the case of functional iteration, update y directly from
 ! the result of the last function evaluation.
 !-----------------------------------------------------------------------
-         do i = 1 , n
-            savf(i) = rl1*(h*savf(i)-yh(i,2))
+         do i = 1 , me%n
+            savf(i) = me%rl1*(me%h*savf(i)-yh(i,2))
          enddo
-         do i = 1 , n
+         do i = 1 , me%n
             y(i) = savf(i) - acor(i)
          enddo
-         del = dvnorm(n,y,ewt)
-         do i = 1 , n
+         del = dvnorm(me%n,y,ewt)
+         do i = 1 , me%n
             y(i) = yh(i,1) + savf(i)
          enddo
-         call dcopy(n,savf,1,acor,1)
+         call dcopy(me%n,savf,1,acor,1)
       endif
 !-----------------------------------------------------------------------
-! test for convergence.  if m .gt. 0, an estimate of the convergence
+! test for convergence.  if m > 0, an estimate of the convergence
 ! rate constant is stored in crate, and this is used in the test.
 !-----------------------------------------------------------------------
-      if ( m/=0 ) crate = max(crdown*crate,del/delp)
-      dcon = del*min(one,crate)/tq(4)
+      if ( m/=0 ) me%crate = max(crdown*me%crate,del/delp)
+      dcon = del*min(one,me%crate)/me%tq(4)
       if ( dcon<=one ) then
 !
 ! return for successful step. ------------------------------------------
          nflag = 0
-         jcur = 0
-         icf = 0
-         if ( m==0 ) acnrm = del
-         if ( m>0 ) acnrm = dvnorm(n,acor,ewt)
-         goto 99999
+         me%jcur = 0
+         me%icf = 0
+         if ( m==0 ) me%acnrm = del
+         if ( m>0 ) me%acnrm = dvnorm(me%n,acor,ewt)
+         return
       else
          m = m + 1
          if ( m/=maxcor ) then
             if ( m<2 .or. del<=rdiv*delp ) then
                delp = del
-               call f(n,tn,y,savf,rpar,ipar)
-               nfe = nfe + 1
+               call me%f(me%n,me%tn,y(1:me%n),savf(1:me%n))
+               me%nfe = me%nfe + 1
                goto 200
             endif
          endif
       endif
 !
- 300  if ( miter/=0 .and. jcur/=1 ) then
-         icf = 1
-         ipup = miter
+ 300  if ( me%miter/=0 .and. me%jcur/=1 ) then
+         me%icf = 1
+         me%ipup = me%miter
          goto 100
       endif
 !
  400  nflag = -1
-      icf = 2
-      ipup = miter
+      me%icf = 2
+      me%ipup = me%miter
       return
 
-99999 end subroutine dvnlsd
+   end subroutine dvnlsd
 
 !*****************************************************************************************
 !>
@@ -3184,14 +3164,14 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !  if jsv = -1, j is computed from scratch in all cases.
 !  if jsv = 1 and miter = 1, 2, 4, or 5, and if the saved value of j is
 !  considered acceptable, then p is constructed from the saved j.
-!  j is stored in wm and replaced by p.  if miter .ne. 3, p is then
+!  j is stored in wm and replaced by p.  if miter /= 3, p is then
 !  subjected to lu decomposition in preparation for later solution
 !  of linear systems with p as coefficient matrix. this is done
 !  by dgefa if miter = 1 or 2, and by dgbfa if miter = 4 or 5.
 !
 !```
 ! call sequence input -- y, yh, ldyh, ewt, ftem, savf, wm, iwm,
-!                        f, jac, rpar, ipar
+!                        f, jac
 ! call sequence output -- wm, iwm, ierpj
 ! common block variables accessed:
 !     /dvod01/  ccmxj, drc, h, rl1, tn, uround, icf, jcur, locjs,
@@ -3207,7 +3187,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 ! more details, please see the comments in the driver subroutine.)
 ! y          = vector containing predicted values on entry.
 ! yh         = the nordsieck array, an ldyh by lmax array, input.
-! ldyh       = a constant .ge. n, the first dimension of yh, input.
+! ldyh       = a constant >= n, the first dimension of yh, input.
 ! ewt        = an error weight vector of length n.
 ! savf       = array containing f evaluated at predicted y, input.
 ! wm         = real work space for matrices.  in the output, it contains
@@ -3224,7 +3204,6 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !              mu = iwm(2) if miter is 4 or 5.
 ! f          = dummy name for the user supplied subroutine for f.
 ! jac        = dummy name for the user supplied jacobian subroutine.
-! rpar, ipar = dummy names for user's real and integer work arrays.
 ! rl1        = 1/el(2) (input).
 ! ierpj      = output error flag,  = 0 if no trouble, 1 if the p
 !              matrix is found to be singular.
@@ -3234,150 +3213,120 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !              jcur = 1 means j is current.
 !```
 
-      subroutine dvjac(y,yh,ldyh,ewt,ftem,savf,wm,iwm,f,jac,ierpj,rpar, &
-                       ipar)
+      subroutine dvjac(me,y,yh,ldyh,ewt,ftem,savf,wm,iwm,ierpj)
+
       implicit none
-      external f , jac
-      double precision y , yh , ewt , ftem , savf , wm , rpar
-      integer ldyh , iwm , ierpj , ipar
-      dimension y(*) , yh(ldyh,*) , ewt(*) , ftem(*) , savf(*) , wm(*) ,&
-                iwm(*) , rpar(*) , ipar(*)
-!
-! type declarations for labeled common block dvod01 --------------------
-!
-      double precision acnrm , ccmxj , conp , crate , drc , el , eta ,  &
-                       etamax , h , hmin , hmxi , hnew , hscal , prl1 , &
-                       rc , rl1 , tau , tq , tn , uround
-      integer icf , init , ipup , jcur , jstart , jsv , kflag , kuth ,  &
-              l , lmax , lyh , lewt , lacor , lsavf , lwm , liwm ,      &
-              locjs , maxord , meth , miter , msbj , mxhnil , mxstep ,  &
-              n , newh , newq , nhnil , nq , nqnyh , nqwait , nslj ,    &
-              nslp , nyh
-!
-! type declarations for labeled common block dvod02 --------------------
-!
-      double precision hu
-      integer ncfn , netf , nfe , nje , nlu , nni , nqu , nst
+
+      class(dvode_t),intent(inout) :: me
+      real(wp) y(*) , yh(ldyh,*) , ewt(*) , ftem(*) , savf(*) , wm(*)
+      integer ldyh , iwm(*) , ierpj
 !
 ! type declarations for local variables --------------------------------
 !
-      double precision con , di , fac , hrl1 , one , pt1 , r , r0 ,     &
+      real(wp) con , di , fac , hrl1 , one , pt1 , r , r0 ,     &
                        srur , thou , yi , yj , yjj , zero
       integer i , i1 , i2 , ier , ii , j , j1 , jj , jok , lenp , mba , &
               mband , meb1 , meband , ml , ml3 , mu , np1
 !
-! type declaration for function subroutines called ---------------------
-!
-!      double precision dvnorm
 !-----------------------------------------------------------------------
 ! the following fortran-77 declaration is to cause the values of the
 ! listed (local) variables to be saved between calls to this subroutine.
 !-----------------------------------------------------------------------
       save one , pt1 , thou , zero
 !-----------------------------------------------------------------------
-      common /dvod01/ acnrm , ccmxj , conp , crate , drc , el(13) ,     &
-                      eta , etamax , h , hmin , hmxi , hnew , hscal ,   &
-                      prl1 , rc , rl1 , tau(13) , tq(5) , tn , uround , &
-                      icf , init , ipup , jcur , jstart , jsv , kflag , &
-                      kuth , l , lmax , lyh , lewt , lacor , lsavf ,    &
-                      lwm , liwm , locjs , maxord , meth , miter ,      &
-                      msbj , mxhnil , mxstep , n , newh , newq , nhnil ,&
-                      nq , nqnyh , nqwait , nslj , nslp , nyh
-      common /dvod02/ hu , ncfn , netf , nfe , nje , nlu , nni , nqu ,  &
-                      nst
 !
       data one/1.0d0/ , thou/1000.0d0/ , zero/0.0d0/ , pt1/0.1d0/
 !
       ierpj = 0
-      hrl1 = h*rl1
+      hrl1 = me%h*me%rl1
 ! see whether j should be evaluated (jok = -1) or not (jok = 1). -------
-      jok = jsv
-      if ( jsv==1 ) then
-         if ( nst==0 .or. nst>nslj+msbj ) jok = -1
-         if ( icf==1 .and. drc<ccmxj ) jok = -1
-         if ( icf==2 ) jok = -1
+      jok = me%jsv
+      if ( me%jsv==1 ) then
+         if ( me%nst==0 .or. me%nst>me%nslj+me%msbj ) jok = -1
+         if ( me%icf==1 .and. me%drc<me%ccmxj ) jok = -1
+         if ( me%icf==2 ) jok = -1
       endif
 ! end of setting jok. --------------------------------------------------
 !
-      if ( jok==-1 .and. miter==1 ) then
-! if jok = -1 and miter = 1, call jac to evaluate jacobian. ------------
-         nje = nje + 1
-         nslj = nst
-         jcur = 1
-         lenp = n*n
+      if ( jok==-1 .and. me%miter==1 ) then
+! if jok = -1 and miter = 1, call me%jac to evaluate jacobian. ------------
+         me%nje = me%nje + 1
+         me%nslj = me%nst
+         me%jcur = 1
+         lenp = me%n*me%n
          do i = 1 , lenp
             wm(i+2) = zero
          enddo
-         call jac(n,tn,y,0,0,wm(3),n,rpar,ipar)
-         if ( jsv==1 ) call dcopy(lenp,wm(3),1,wm(locjs),1)
+         call me%jac(me%n,me%tn,y(1:me%n),0,0,wm(3),me%n)
+         if ( me%jsv==1 ) call dcopy(lenp,wm(3),1,wm(me%locjs),1)
       endif
 !
-      if ( jok==-1 .and. miter==2 ) then
+      if ( jok==-1 .and. me%miter==2 ) then
 ! if miter = 2, make n calls to f to approximate the jacobian. ---------
-         nje = nje + 1
-         nslj = nst
-         jcur = 1
-         fac = dvnorm(n,savf,ewt)
-         r0 = thou*abs(h)*uround*real(n)*fac
+         me%nje = me%nje + 1
+         me%nslj = me%nst
+         me%jcur = 1
+         fac = dvnorm(me%n,savf,ewt)
+         r0 = thou*abs(me%h)*me%uround*real(me%n,wp)*fac
          if ( r0==zero ) r0 = one
          srur = wm(1)
          j1 = 2
-         do j = 1 , n
+         do j = 1 , me%n
             yj = y(j)
             r = max(srur*abs(yj),r0/ewt(j))
             y(j) = y(j) + r
             fac = one/r
-            call f(n,tn,y,ftem,rpar,ipar)
-            do i = 1 , n
+            call me%f(me%n,me%tn,y(1:me%n),ftem(1:me%n))
+            do i = 1 , me%n
                wm(i+j1) = (ftem(i)-savf(i))*fac
             enddo
             y(j) = yj
-            j1 = j1 + n
+            j1 = j1 + me%n
          enddo
-         nfe = nfe + n
-         lenp = n*n
-         if ( jsv==1 ) call dcopy(lenp,wm(3),1,wm(locjs),1)
+         me%nfe = me%nfe + me%n
+         lenp = me%n*me%n
+         if ( me%jsv==1 ) call dcopy(lenp,wm(3),1,wm(me%locjs),1)
       endif
 !
-      if ( jok==1 .and. (miter==1 .or. miter==2) ) then
-         jcur = 0
-         lenp = n*n
-         call dcopy(lenp,wm(locjs),1,wm(3),1)
+      if ( jok==1 .and. (me%miter==1 .or. me%miter==2) ) then
+         me%jcur = 0
+         lenp = me%n*me%n
+         call dcopy(lenp,wm(me%locjs),1,wm(3),1)
       endif
 !
-      if ( miter==1 .or. miter==2 ) then
+      if ( me%miter==1 .or. me%miter==2 ) then
 ! multiply jacobian by scalar, add identity, and do lu decomposition. --
          con = -hrl1
          call dscal(lenp,con,wm(3),1)
          j = 3
-         np1 = n + 1
-         do i = 1 , n
+         np1 = me%n + 1
+         do i = 1 , me%n
             wm(j) = wm(j) + one
             j = j + np1
          enddo
-         nlu = nlu + 1
-         call dgefa(wm(3),n,n,iwm(31),ier)
+         me%nlu = me%nlu + 1
+         call dgefa(wm(3),me%n,me%n,iwm(31),ier)
          if ( ier/=0 ) ierpj = 1
          return
       endif
 ! end of code block for miter = 1 or 2. --------------------------------
 !
-      if ( miter==3 ) then
+      if ( me%miter==3 ) then
 ! if miter = 3, construct a diagonal approximation to j and p. ---------
-         nje = nje + 1
-         jcur = 1
+         me%nje = me%nje + 1
+         me%jcur = 1
          wm(2) = hrl1
-         r = rl1*pt1
-         do i = 1 , n
-            y(i) = y(i) + r*(h*savf(i)-yh(i,2))
+         r = me%rl1*pt1
+         do i = 1 , me%n
+            y(i) = y(i) + r*(me%h*savf(i)-yh(i,2))
          enddo
-         call f(n,tn,y,wm(3),rpar,ipar)
-         nfe = nfe + 1
-         do i = 1 , n
-            r0 = h*savf(i) - yh(i,2)
-            di = pt1*r0 - h*(wm(i+2)-savf(i))
+         call me%f(me%n,me%tn,y(1:me%n),wm(3))
+         me%nfe = me%nfe + 1
+         do i = 1 , me%n
+            r0 = me%h*savf(i) - yh(i,2)
+            di = pt1*r0 - me%h*(wm(i+2)-savf(i))
             wm(i+2) = one
-            if ( abs(r0)>=uround/ewt(i) ) then
+            if ( abs(r0)>=me%uround/ewt(i) ) then
                if ( abs(di)==zero ) goto 50
                wm(i+2) = pt1*r0/di
             endif
@@ -3394,75 +3343,72 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
       ml3 = ml + 3
       mband = ml + mu + 1
       meband = mband + ml
-      lenp = meband*n
+      lenp = meband*me%n
 !
-      if ( jok==-1 .and. miter==4 ) then
-! if jok = -1 and miter = 4, call jac to evaluate jacobian. ------------
-         nje = nje + 1
-         nslj = nst
-         jcur = 1
+      if ( jok==-1 .and. me%miter==4 ) then
+! if jok = -1 and miter = 4, call me%jac to evaluate jacobian. ------------
+         me%nje = me%nje + 1
+         me%nslj = me%nst
+         me%jcur = 1
          do i = 1 , lenp
             wm(i+2) = zero
          enddo
-         call jac(n,tn,y,ml,mu,wm(ml3),meband,rpar,ipar)
-         if ( jsv==1 ) call dacopy(mband,n,wm(ml3),meband,wm(locjs),    &
-                                   mband)
+         call me%jac(me%n,me%tn,y(1:me%n),ml,mu,wm(ml3),meband)
+         if ( me%jsv==1 ) call dacopy(mband,me%n,wm(ml3),meband,wm(me%locjs),mband)
       endif
 !
-      if ( jok==-1 .and. miter==5 ) then
+      if ( jok==-1 .and. me%miter==5 ) then
 ! if miter = 5, make ml+mu+1 calls to f to approximate the jacobian. ---
-         nje = nje + 1
-         nslj = nst
-         jcur = 1
-         mba = min(mband,n)
+         me%nje = me%nje + 1
+         me%nslj = me%nst
+         me%jcur = 1
+         mba = min(mband,me%n)
          meb1 = meband - 1
          srur = wm(1)
-         fac = dvnorm(n,savf,ewt)
-         r0 = thou*abs(h)*uround*real(n)*fac
+         fac = dvnorm(me%n,savf,ewt)
+         r0 = thou*abs(me%h)*me%uround*real(me%n,wp)*fac
          if ( r0==zero ) r0 = one
          do j = 1 , mba
-            do i = j , n , mband
+            do i = j , me%n , mband
                yi = y(i)
                r = max(srur*abs(yi),r0/ewt(i))
                y(i) = y(i) + r
             enddo
-            call f(n,tn,y,ftem,rpar,ipar)
-            do jj = j , n , mband
+            call me%f(me%n,me%tn,y(1:me%n),ftem(1:me%n))
+            do jj = j , me%n , mband
                y(jj) = yh(jj,1)
                yjj = y(jj)
                r = max(srur*abs(yjj),r0/ewt(jj))
                fac = one/r
                i1 = max(jj-mu,1)
-               i2 = min(jj+ml,n)
+               i2 = min(jj+ml,me%n)
                ii = jj*meb1 - ml + 2
                do i = i1 , i2
                   wm(ii+i) = (ftem(i)-savf(i))*fac
                enddo
             enddo
          enddo
-         nfe = nfe + mba
-         if ( jsv==1 ) call dacopy(mband,n,wm(ml3),meband,wm(locjs),    &
-                                   mband)
+         me%nfe = me%nfe + mba
+         if ( me%jsv==1 ) call dacopy(mband,me%n,wm(ml3),meband,wm(me%locjs),mband)
       endif
 !
       if ( jok==1 ) then
-         jcur = 0
-         call dacopy(mband,n,wm(locjs),mband,wm(ml3),meband)
+         me%jcur = 0
+         call dacopy(mband,me%n,wm(me%locjs),mband,wm(ml3),meband)
       endif
 !
 ! multiply jacobian by scalar, add identity, and do lu decomposition.
       con = -hrl1
       call dscal(lenp,con,wm(3),1)
       ii = mband + 2
-      do i = 1 , n
+      do i = 1 , me%n
          wm(ii) = wm(ii) + one
          ii = ii + meband
       enddo
-      nlu = nlu + 1
-      call dgbfa(wm(3),meband,n,ml,mu,iwm(31),ier)
+      me%nlu = me%nlu + 1
+      call dgbfa(wm(3),meband,me%n,ml,mu,iwm(31),ier)
       if ( ier/=0 ) ierpj = 1
 ! end of code block for miter = 4 or 5. --------------------------------
-!
 
       end subroutine dvjac
 
@@ -3483,22 +3429,21 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 
       subroutine dacopy(nrow,ncol,a,nrowa,b,nrowb)
       implicit none
-      double precision a , b
+      real(wp) a , b
       integer nrow , ncol , nrowa , nrowb
       dimension a(nrowa,ncol) , b(nrowb,ncol)
       integer ic
-!
+
       do ic = 1 , ncol
          call dcopy(nrow,a(1,ic),1,b(1,ic),1)
       enddo
-!
 
       end subroutine dacopy
 
 !*****************************************************************************************
 !>
 !  this routine manages the solution of the linear system arising from
-!  a chord iteration.  it is called if miter .ne. 0.
+!  a chord iteration.  it is called if miter /= 0.
 !  if miter is 1 or 2, it calls dgesl to accomplish this.
 !  if miter = 3 it updates the coefficient h*rl1 in the diagonal
 !  matrix, and then computes the solution.
@@ -3530,61 +3475,44 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !         iersl = 1 if a singular matrix arose with miter = 3.
 !```
 
-      subroutine dvsol(wm,iwm,x,iersl)
+      subroutine dvsol(me,wm,iwm,x,iersl)
+
       implicit none
-      double precision wm , x
+
+      class(dvode_t),intent(inout) :: me
+      real(wp) wm , x
       integer iwm , iersl
       dimension wm(*) , iwm(*) , x(*)
-!
-! type declarations for labeled common block dvod01 --------------------
-!
-      double precision acnrm , ccmxj , conp , crate , drc , el , eta ,  &
-                       etamax , h , hmin , hmxi , hnew , hscal , prl1 , &
-                       rc , rl1 , tau , tq , tn , uround
-      integer icf , init , ipup , jcur , jstart , jsv , kflag , kuth ,  &
-              l , lmax , lyh , lewt , lacor , lsavf , lwm , liwm ,      &
-              locjs , maxord , meth , miter , msbj , mxhnil , mxstep ,  &
-              n , newh , newq , nhnil , nq , nqnyh , nqwait , nslj ,    &
-              nslp , nyh
 !
 ! type declarations for local variables --------------------------------
 !
       integer i , meband , ml , mu
-      double precision di , hrl1 , one , phrl1 , r , zero
+      real(wp) di , hrl1 , one , phrl1 , r , zero
 !-----------------------------------------------------------------------
 ! the following fortran-77 declaration is to cause the values of the
 ! listed (local) variables to be saved between calls to this integrator.
 !-----------------------------------------------------------------------
       save one , zero
 !
-      common /dvod01/ acnrm , ccmxj , conp , crate , drc , el(13) ,     &
-                      eta , etamax , h , hmin , hmxi , hnew , hscal ,   &
-                      prl1 , rc , rl1 , tau(13) , tq(5) , tn , uround , &
-                      icf , init , ipup , jcur , jstart , jsv , kflag , &
-                      kuth , l , lmax , lyh , lewt , lacor , lsavf ,    &
-                      lwm , liwm , locjs , maxord , meth , miter ,      &
-                      msbj , mxhnil , mxstep , n , newh , newq , nhnil ,&
-                      nq , nqnyh , nqwait , nslj , nslp , nyh
-!
       data one/1.0d0/ , zero/0.0d0/
 !
       iersl = 0
-      select case (miter)
+      select case (me%miter)
       case (3)
 !
          phrl1 = wm(2)
-         hrl1 = h*rl1
+         hrl1 = me%h*me%rl1
          wm(2) = hrl1
          if ( hrl1/=phrl1 ) then
             r = hrl1/phrl1
-            do i = 1 , n
+            do i = 1 , me%n
                di = one - r*(one-one/wm(i+2))
                if ( abs(di)==zero ) goto 100
                wm(i+2) = one/di
             enddo
          endif
 !
-         do i = 1 , n
+         do i = 1 , me%n
             x(i) = wm(i+2)*x(i)
          enddo
          return
@@ -3593,16 +3521,16 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
          ml = iwm(1)
          mu = iwm(2)
          meband = 2*ml + mu + 1
-         call dgbsl(wm(3),meband,n,ml,mu,iwm(31),x,0)
-         goto 99999
+         call dgbsl(wm(3),meband,me%n,ml,mu,iwm(31),x,0)
+         return
       case default
-         call dgesl(wm(3),n,n,iwm(31),x,0)
+         call dgesl(wm(3),me%n,me%n,iwm(31),x,0)
          return
       end select
  100  iersl = 1
       return
 
-99999 end subroutine dvsol
+   end subroutine dvsol
 
 !*****************************************************************************************
 !>
@@ -3626,11 +3554,12 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !```
 
       subroutine dvsrco(rsav,isav,job)
+         !! TODO: have to rewrite this to use the class variables !
       implicit none
-      double precision rsav
+      real(wp) rsav
       integer isav , job
       dimension rsav(*) , isav(*)
-      double precision rvod1 , rvod2
+      real(wp) rvod1 , rvod2
       integer ivod1 , ivod2
       integer i , leniv1 , leniv2 , lenrv1 , lenrv2
 !-----------------------------------------------------------------------
@@ -3658,7 +3587,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
          do i = 1 , leniv2
             ivod2(i) = isav(leniv1+i)
          enddo
-         goto 99999
+         return
       endif
       do i = 1 , lenrv1
          rsav(i) = rvod1(i)
@@ -3673,11 +3602,8 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
       do i = 1 , leniv2
          isav(leniv1+i) = ivod2(i)
       enddo
-!
-      return
-!
 
-99999 end subroutine dvsrco
+   end subroutine dvsrco
 
 !*****************************************************************************************
 !>
@@ -3693,13 +3619,13 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !   791129  date written
 !   890501  modified prologue to slatec/ldoc format.  (fnf)
 !   890503  minor cosmetic changes.  (fnf)
-!   930809  renamed to allow single/double precision versions. (ach)
+!   930809  renamed to allow single/real(wp) versions. (ach)
 
       subroutine dewset(n,itol,rtol,atol,ycur,ewt)
       implicit none
       integer n , itol
       integer i
-      double precision rtol , atol , ycur , ewt
+      real(wp) rtol , atol , ycur , ewt
       dimension rtol(*) , atol(*) , ycur(n) , ewt(n)
 !
 
@@ -3718,7 +3644,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
          do i = 1 , n
             ewt(i) = rtol(i)*abs(ycur(i)) + atol(i)
          enddo
-         goto 99999
+         return
       case default
       end select
       do i = 1 , n
@@ -3726,7 +3652,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
       enddo
       return
 
-99999 end subroutine dewset
+   end subroutine dewset
 
 !*****************************************************************************************
 !>
@@ -3742,12 +3668,12 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !   791129  date written
 !   890501  modified prologue to slatec/ldoc format.  (fnf)
 !   890503  minor cosmetic changes.  (fnf)
-!   930809  renamed to allow single/double precision versions. (ach)
+!   930809  renamed to allow single/real(wp) versions. (ach)
 
-      double precision function dvnorm(n,v,w)
+      real(wp) function dvnorm(n,v,w)
       implicit none
       integer n , i
-      double precision v , w , sum
+      real(wp) v , w , sum
       dimension v(n) , w(n)
 
       sum = 0.0d0
@@ -3787,7 +3713,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !     multi-line messages are generated by repeated calls.
 !  3. if level = 2, control passes to the statement   stop
 !     to abort the run.  this statement may be machine-dependent.
-!  4. r1 and r2 are assumed to be in double precision and are printed
+!  4. r1 and r2 are assumed to be in real(wp) and are printed
 !     in d21.13 format.
 !
 !***author  hindmarsh, alan c., (llnl)
@@ -3814,7 +3740,7 @@ subroutine dvhin(n,t0,y0,ydot,f,rpar,ipar,tout,uround,ewt,itol,   &
 !
 !  declare arguments.
 !
-      double precision r1 , r2
+      real(wp) r1 , r2
       integer nmes , nerr , level , ni , i1 , i2 , nr
       character*(*) msg
 !

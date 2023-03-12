@@ -52,14 +52,18 @@
             <li><a href="../lists/files.html">Source Files</a></li>
             <li><a href="../lists/modules.html">Modules</a></li>
             <li><a href="../lists/procedures.html">Procedures</a></li>
-              
+            <li><a href="../lists/absint.html">Abstract Interfaces</a></li>
+                   <li><a href="../lists/types.html">Derived Types</a></li>
+       
             </ul>
         
             </li>
 <li class="visible-xs hidden-sm visible-lg"><a href="../lists/files.html">Source Files</a></li>
 <li class="visible-xs hidden-sm visible-lg"><a href="../lists/modules.html">Modules</a></li>
 <li class="visible-xs hidden-sm visible-lg"><a href="../lists/procedures.html">Procedures</a></li>
-                                       </ul>
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/absint.html">Abstract Interfaces</a></li>
+                             <li class="visible-xs hidden-sm visible-lg"><a href="../lists/types.html">Derived Types</a></li>
+          </ul>
         <form action="../search.html" class="navbar-form navbar-right" role="search">
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
@@ -205,7 +209,7 @@
         <tr>
             <td>
               <span class="anchor" id="variable-a"></span>
-              double precision
+              real(kind=wp)
             </td>
 <td></td>
               <td></td>            <td>
@@ -235,7 +239,7 @@
         <tr>
             <td>
               <span class="anchor" id="variable-b"></span>
-              double precision
+              real(kind=wp)
             </td>
 <td></td>
               <td></td>            <td>
@@ -388,18 +392,18 @@
 <polygon fill="none" stroke="black" points="144,-24 90,-24 90,0 144,0 144,-24"/>
 <text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">dacopy</text>
 </g>
-<!-- proc~dvnlsd -->
+<!-- proc~dvjac -->
 <g id="proc~~dacopy~~CalledByGraph_node2" class="node">
-<title>proc~dvnlsd</title>
-<g id="a_proc~~dacopy~~CalledByGraph_node2"><a xlink:href=".././proc/dvnlsd.html" xlink:title="dvnlsd">
+<title>proc~dvjac</title>
+<g id="a_proc~~dacopy~~CalledByGraph_node2"><a xlink:href=".././proc/dvjac.html" xlink:title="dvjac">
 <polygon fill="#d9534f" stroke="#d9534f" points="54,-24 0,-24 0,0 54,0 54,-24"/>
-<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvnlsd</text>
+<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvjac</text>
 </a>
 </g>
 </g>
-<!-- proc~dvnlsd&#45;&gt;proc~dacopy -->
+<!-- proc~dvjac&#45;&gt;proc~dacopy -->
 <g id="proc~~dacopy~~CalledByGraph_edge1" class="edge">
-<title>proc~dvnlsd&#45;&gt;proc~dacopy</title>
+<title>proc~dvjac&#45;&gt;proc~dacopy</title>
 <path fill="none" stroke="#000000" d="M54.4,-12C62.39,-12 71.31,-12 79.82,-12"/>
 <polygon fill="#000000" stroke="#000000" points="79.92,-15.5 89.92,-12 79.92,-8.5 79.92,-15.5"/>
 </g>
@@ -513,17 +517,16 @@
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">      </span><span class="k">subroutine </span><span class="n">dacopy</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span><span class="n">ncol</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">nrowa</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">nrowb</span><span class="p">)</span><span class="w"></span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      </span><span class="kt">double precision </span><span class="n">a</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
+<span class="k">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer </span><span class="n">nrow</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ncol</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nrowa</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nrowb</span><span class="w"></span>
 <span class="w">      </span><span class="k">dimension </span><span class="n">a</span><span class="p">(</span><span class="n">nrowa</span><span class="p">,</span><span class="n">ncol</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">(</span><span class="n">nrowb</span><span class="p">,</span><span class="n">ncol</span><span class="p">)</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer </span><span class="n">ic</span><span class="w"></span>
-<span class="c">!</span>
+
 <span class="w">      </span><span class="k">do </span><span class="n">ic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ncol</span><span class="w"></span>
 <span class="w">         </span><span class="k">call </span><span class="n">dcopy</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span><span class="n">a</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">ic</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">b</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">ic</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">enddo</span><span class="w"></span>
-<span class="c">!</span>
+<span class="w">      </span><span class="k">enddo</span>
 
-<span class="w">      </span><span class="k">end subroutine </span><span class="n">dacopy</span><span class="w"></span>
+<span class="k">      end subroutine </span><span class="n">dacopy</span><span class="w"></span>
 </pre></div>
 
     </section>
