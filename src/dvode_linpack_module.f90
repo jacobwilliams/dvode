@@ -6,7 +6,7 @@
 
     module dvode_linpack_module
 
-    use dvode_kinds_module, wp => dvode_wp
+    use dvode_kinds_module, only: wp => dvode_wp
     use dvode_blas_module
 
     implicit none

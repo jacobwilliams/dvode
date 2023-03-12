@@ -1,31 +1,34 @@
-!DECK DVDEMO
-      PROGRAM DVDEMO
-      USE DVODE_MODULE
-      IMPLICIT NONE
-!-----------------------------------------------------------------------
-! Demonstration program for the DVODE package.
-! This is the version of 30 April 2002.
+!*****************************************************************************************
+!>
+!  Demonstration program for the DVODE package.
+!  This is the version of 30 April 2002.
 !
-! This version is in double precision, suitable for short wordlength
-! computers, PCs, work-stations, etc.
+!  This version is in double precision, suitable for short wordlength
+!  computers, PCs, work-stations, etc.
 !
-! The package is used to solve two simple problems,
-! one with a full Jacobian, the other with a banded Jacobian,
-! with all 12 of the appropriate values of MF in each case.
-! If the errors are too large, or other difficulty occurs,
-! a warning message is printed.  All output is on unit LOUT = 6.
-!-----------------------------------------------------------------------
-!
-      EXTERNAL F1 , JAC1 , F2 , JAC2
-      INTEGER i , iopar , iopt , iout , ipar(1) , istate , itask ,      &
+!  The package is used to solve two simple problems,
+!  one with a full Jacobian, the other with a banded Jacobian,
+!  with all 12 of the appropriate values of MF in each case.
+!  If the errors are too large, or other difficulty occurs,
+!  a warning message is printed.  All output is on unit LOUT = 6.
+
+      program dvdemo
+      use dvode_module
+
+      implicit none
+
+      type(dvode_t) :: solver
+      INTEGER i , iopar , iopt , iout , istate , itask ,      &
             & itol , iwork , jsv , leniw , lenrw , liw , lout , lrw ,   &
             & mband , meth , mf , miter , ml , mu , ncfn , neq , nerr , &
             & netf , nfe , nfea , nje , nlu , nni , nout , nqu , nst
-      DOUBLE PRECISION atol , dtout , er , erm , ero , hu , rpar(1) ,   &
-                     & rtol , rwork , t , tout , tout1 , y
+      DOUBLE PRECISION atol(1) , dtout , er , erm , ero , hu ,   &
+                     & rtol(1) , rwork , t , tout , tout1 , y
       DIMENSION y(25) , rwork(847) , iwork(55)
       DATA lout/6/ , tout1/1.39283880203D0/ , dtout/2.214773875D0/
 !
+      rwork = 0
+      iwork = 0
       nerr = 0
       itol = 1
       rtol = 0.0D0
@@ -38,6 +41,7 @@
 !
       neq = 2
       nout = 4
+      call solver%initialize(f=f1, jac=jac1)
       WRITE (lout,99001) neq , itol , rtol , atol
 99001 FORMAT (' Demonstration program for DVODE package'//              &
              &' Problem 1:   Van der Pol oscillator:'/                  &
@@ -62,9 +66,9 @@
                      tout = tout1
                      ero = 0.0D0
                      DO iout = 1 , nout
-                        CALL DVODE(F1,neq,y,t,tout,itol,[rtol],[atol],  &
+                        CALL solver%solve(neq,y,t,tout,itol,rtol,atol,  &
                                  & itask,istate,iopt,rwork,lrw,iwork,   &
-                                 & liw,JAC1,mf,rpar,ipar)
+                                 & liw,mf)
                         hu = rwork(11)
                         nqu = iwork(14)
                         WRITE (lout,99003) t , y(1) , y(2) , nqu , hu
@@ -72,7 +76,7 @@
                         IF ( istate<0 ) GOTO 2
                         iopar = iout - 2*(iout/2)
                         IF ( iopar==0 ) THEN
-                           er = ABS(y(1))/atol
+                           er = ABS(y(1))/atol(1)
                            ero = MAX(ero,er)
                            IF ( er>=10000.0D0 ) THEN
                               WRITE (lout,99008)
@@ -104,7 +108,8 @@
       ENDDO
 !
 ! Second problem
-!
+
+      call solver%initialize(f=f2, jac=jac2)
       neq = 25
       ml = 5
       mu = 0
@@ -140,16 +145,16 @@
                         tout = 0.01D0
                         ero = 0.0D0
                         DO iout = 1 , nout
-                           CALL DVODE(F2,neq,y,t,tout,itol,[rtol],      &
-                                    & [atol],itask,istate,iopt,rwork,   &
-                                    & lrw,iwork,liw,JAC2,mf,rpar,ipar)
+                           CALL solver%solve(neq,y,t,tout,itol,rtol, &
+                                    & atol,itask,istate,iopt,rwork,  &
+                                    & lrw,iwork,liw,mf)
                            CALL EDIT2(y,t,erm)
                            hu = rwork(11)
                            nqu = iwork(14)
                            WRITE (lout,99006) t , erm , nqu , hu
 99006                      FORMAT (1X,D15.5,D14.3,I5,D14.3)
                            IF ( istate<0 ) GOTO 4
-                           er = erm/atol
+                           er = erm/atol(1)
                            ero = MAX(ero,er)
                            IF ( er>1000.0D0 ) THEN
                               WRITE (lout,99008)
@@ -191,85 +196,102 @@
              &I5/' Number of nonlinear convergence failures =',         &
              &I5/' Number of error test failures =',                    &
              &I5/' Error overrun =',D10.2)
-      END PROGRAM DVDEMO
 
-      SUBROUTINE F1(Neq,T,Y,Ydot,Rpar,Ipar)
-      IMPLICIT NONE
-      INTEGER Neq , Ipar
-      DOUBLE PRECISION T , Y , Ydot , Rpar
-      DIMENSION Y(2) , Ydot(2) , Rpar(*) , Ipar(*)
-      Ydot(1) = Y(2)
-      Ydot(2) = 3.0D0*(1.0D0-Y(1)*Y(1))*Y(2) - Y(1)
-      END SUBROUTINE F1
+      contains
 
-      SUBROUTINE JAC1(Neq,T,Y,Ml,Mu,Pd,Nrowpd,Rpar,Ipar)
-      IMPLICIT NONE
-      INTEGER Neq , Ml , Mu , Nrowpd , Ipar
-      DOUBLE PRECISION T , Y , Pd , Rpar
-      DIMENSION Y(2) , Pd(Nrowpd,2) , Rpar(*) , Ipar(*)
-      Pd(1,1) = 0.0D0
-      Pd(1,2) = 1.0D0
-      Pd(2,1) = -6.0D0*Y(1)*Y(2) - 1.0D0
-      Pd(2,2) = 3.0D0*(1.0D0-Y(1)*Y(1))
-      END SUBROUTINE JAC1
+      subroutine f1(me,neq,t,y,ydot)
 
-      SUBROUTINE F2(Neq,T,Y,Ydot,Rpar,Ipar)
-      IMPLICIT NONE
-      INTEGER Neq , i , Ipar , j , k , ng
-      DOUBLE PRECISION T , Y , Ydot , Rpar , alph1 , alph2 , d
-      DIMENSION Y(Neq) , Ydot(Neq) , Rpar(*) , Ipar(*)
-      DATA alph1/1.0D0/ , alph2/1.0D0/ , ng/5/
-      DO j = 1 , ng
-         DO i = 1 , ng
+      class(dvode_t),intent(inout) :: me
+      integer neq
+      double precision t , y , ydot
+      dimension y(neq) , ydot(neq)
+
+      ydot(1) = y(2)
+      ydot(2) = 3.0d0*(1.0d0-y(1)*y(1))*y(2) - y(1)
+
+      end subroutine f1
+
+      subroutine jac1(me,neq,t,y,ml,mu,pd,nrowpd)
+
+      class(dvode_t),intent(inout) :: me
+      integer neq , ml , mu , nrowpd
+      double precision t , y , pd
+      dimension y(neq) , pd(nrowpd,neq)
+
+      pd(1,1) = 0.0d0
+      pd(1,2) = 1.0d0
+      pd(2,1) = -6.0d0*y(1)*y(2) - 1.0d0
+      pd(2,2) = 3.0d0*(1.0d0-y(1)*y(1))
+
+      end subroutine jac1
+
+      subroutine f2(me,neq,t,y,ydot)
+
+      class(dvode_t),intent(inout) :: me
+      integer neq , i , j , k , ng
+      double precision t , y , ydot , alph1 , alph2 , d
+      dimension y(neq) , ydot(neq)
+
+      data alph1/1.0d0/ , alph2/1.0d0/ , ng/5/
+
+      do j = 1 , ng
+         do i = 1 , ng
             k = i + (j-1)*ng
-            d = -2.0D0*Y(k)
-            IF ( i/=1 ) d = d + Y(k-1)*alph1
-            IF ( j/=1 ) d = d + Y(k-ng)*alph2
-            Ydot(k) = d
-         ENDDO
-      ENDDO
-      END SUBROUTINE F2
+            d = -2.0d0*y(k)
+            if ( i/=1 ) d = d + y(k-1)*alph1
+            if ( j/=1 ) d = d + y(k-ng)*alph2
+            ydot(k) = d
+         enddo
+      enddo
 
-      SUBROUTINE JAC2(Neq,T,Y,Ml,Mu,Pd,Nrowpd,Rpar,Ipar)
-      IMPLICIT NONE
-      INTEGER Neq , Ml , Mu , Nrowpd , Ipar , j , mband , mu1 , mu2 , ng
-      DOUBLE PRECISION T , Y , Pd , Rpar , alph1 , alph2
-      DIMENSION Y(Neq) , Pd(Nrowpd,Neq) , Rpar(*) , Ipar(*)
-      DATA alph1/1.0D0/ , alph2/1.0D0/ , ng/5/
-      mband = Ml + Mu + 1
-      mu1 = Mu + 1
-      mu2 = Mu + 2
-      DO j = 1 , Neq
-         Pd(mu1,j) = -2.0D0
-         Pd(mu2,j) = alph1
-         Pd(mband,j) = alph2
-      ENDDO
-      DO j = ng , Neq , ng
-         Pd(mu2,j) = 0.0D0
-      ENDDO
-      END SUBROUTINE JAC2
+      end subroutine f2
 
-      SUBROUTINE EDIT2(Y,T,Erm)
-      IMPLICIT NONE
-      INTEGER i , j , k , ng
-      DOUBLE PRECISION Y , T , Erm , alph1 , alph2 , a1 , a2 , er , ex ,&
+      subroutine jac2(me,neq,t,y,ml,mu,pd,nrowpd)
+
+      class(dvode_t),intent(inout) :: me
+      integer neq , ml , mu , nrowpd , j , mband , mu1 , mu2 , ng
+      double precision t , y , pd , alph1 , alph2
+      dimension y(neq) , pd(nrowpd,neq)
+
+      data alph1/1.0d0/ , alph2/1.0d0/ , ng/5/
+
+      mband = ml + mu + 1
+      mu1 = mu + 1
+      mu2 = mu + 2
+      do j = 1 , neq
+         pd(mu1,j) = -2.0d0
+         pd(mu2,j) = alph1
+         pd(mband,j) = alph2
+      enddo
+      do j = ng , neq , ng
+         pd(mu2,j) = 0.0d0
+      enddo
+
+      end subroutine jac2
+
+      subroutine edit2(y,t,erm)
+      implicit none
+      integer i , j , k , ng
+      double precision y , t , erm , alph1 , alph2 , a1 , a2 , er , ex ,&
                      & yt
-      DIMENSION Y(25)
-      DATA alph1/1.0D0/ , alph2/1.0D0/ , ng/5/
-      Erm = 0.0D0
-      IF ( T==0.0D0 ) RETURN
-      ex = 0.0D0
-      IF ( T<=30.0D0 ) ex = EXP(-2.0D0*T)
-      a2 = 1.0D0
-      DO j = 1 , ng
-         a1 = 1.0D0
-         DO i = 1 , ng
+      dimension y(25)
+      data alph1/1.0d0/ , alph2/1.0d0/ , ng/5/
+      erm = 0.0d0
+      if ( t==0.0d0 ) return
+      ex = 0.0d0
+      if ( t<=30.0d0 ) ex = exp(-2.0d0*t)
+      a2 = 1.0d0
+      do j = 1 , ng
+         a1 = 1.0d0
+         do i = 1 , ng
             k = i + (j-1)*ng
-            yt = T**(i+j-2)*ex*a1*a2
-            er = ABS(Y(k)-yt)
-            Erm = MAX(Erm,er)
+            yt = t**(i+j-2)*ex*a1*a2
+            er = abs(y(k)-yt)
+            erm = max(erm,er)
             a1 = a1*alph1/i
-         ENDDO
+         enddo
          a2 = a2*alph2/j
-      ENDDO
-      END SUBROUTINE EDIT2
+      enddo
+      end subroutine edit2
+
+   end program dvdemo

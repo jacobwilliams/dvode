@@ -6,18 +6,18 @@
 
     module dvode_blas_module
 
-    use dvode_kinds_module, wp => dvode_wp
+    use dvode_kinds_module, only: wp => dvode_wp
 
     implicit none
 
     private
 
-    real(wp),parameter,public :: zero   = 0.0_wp
-    real(wp),parameter,public :: one    = 1.0_wp
-    real(wp),parameter,public :: two    = 2.0_wp
-    real(wp),parameter,public :: four   = 4.0_wp
-    real(wp),parameter,public :: ten    = 10.0_wp
-    real(wp),parameter,public :: hun    = 100.0_wp
+    real(wp),parameter :: zero   = 0.0_wp
+    real(wp),parameter :: one    = 1.0_wp
+    real(wp),parameter :: two    = 2.0_wp
+    real(wp),parameter :: four   = 4.0_wp
+    real(wp),parameter :: ten    = 10.0_wp
+    real(wp),parameter :: hun    = 100.0_wp
 
     public :: daxpy,dcopy,ddot,dnrm2,dscal,idamax
 
