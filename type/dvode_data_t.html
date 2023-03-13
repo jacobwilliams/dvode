@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>70.3% of total for derived types.</p>Including implementation: 64 statements,  4.0% of total for derived types.">64 statements</a>
+               title="<p>70.7% of total for derived types.</p>Including implementation: 65 statements,  4.0% of total for derived types.">65 statements</a>
           </li>
 
             <li id="source-file">
@@ -146,7 +146,7 @@
             <a class="list-group-item" href="../type/dvode_data_t.html#variable-tau">tau</a>
             <a class="list-group-item" href="../type/dvode_data_t.html#variable-tq">tq</a>
             <a class="list-group-item" href="../type/dvode_data_t.html#variable-tn">tn</a>
-            <a class="list-group-item" href="../type/dvode_data_t.html#variable-uround">uround</a>
+            <a class="list-group-item" href="../type/dvode_data_t.html#variable-uround~2">uround</a>
             <a class="list-group-item" href="../type/dvode_data_t.html#variable-icf">icf</a>
             <a class="list-group-item" href="../type/dvode_data_t.html#variable-init">init</a>
             <a class="list-group-item" href="../type/dvode_data_t.html#variable-ipup">ipup</a>
@@ -224,14 +224,9 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public :: dvode_data_t</h2>
-    <p>the following internal common blocks contain variables which are
-communicated between subroutines in the dvode package, or which are
-to be saved between calls to dvode.
-in each block, real variables precede integers.
-the block /dvod01/ appears in subroutines dvode, dvindy, dvstep,
-dvset, dvnlsd, dvjac, dvsol, dvjust and dvsrco.
-the block /dvod02/ appears in subroutines dvode, dvindy, dvstep,
-dvnlsd, dvjac, and dvsrco.</p>
+    <p>Internal variables for DVODE.
+variables which are communicated between subroutines in the
+dvode package, or which are to be saved between calls to dvode.</p>
 <br>    <div class="panel panel-default">
       <div class="panel-heading">
   <h3 class="panel-title">Inherited by</h3>
@@ -341,7 +336,7 @@ dvnlsd, dvjac, and dvsrco.</p>
             <a class="list-group-item" href="../type/dvode_data_t.html#variable-tau">tau</a>
             <a class="list-group-item" href="../type/dvode_data_t.html#variable-tq">tq</a>
             <a class="list-group-item" href="../type/dvode_data_t.html#variable-tn">tn</a>
-            <a class="list-group-item" href="../type/dvode_data_t.html#variable-uround">uround</a>
+            <a class="list-group-item" href="../type/dvode_data_t.html#variable-uround~2">uround</a>
             <a class="list-group-item" href="../type/dvode_data_t.html#variable-icf">icf</a>
             <a class="list-group-item" href="../type/dvode_data_t.html#variable-init">init</a>
             <a class="list-group-item" href="../type/dvode_data_t.html#variable-ipup">ipup</a>
@@ -433,7 +428,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-acnrm"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -442,7 +437,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>weighted r.m.s. norm of accumulated correction vectors.</p>
             </td>
         </tr>
         <tr>
@@ -450,7 +445,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-ccmxj"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -459,7 +454,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>threshhold on drc for updating the jacobian. (see drc.)</p>
             </td>
         </tr>
         <tr>
@@ -467,7 +462,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-conp"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -476,7 +471,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>the saved value of tq(5).</p>
             </td>
         </tr>
         <tr>
@@ -484,7 +479,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-crate"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -493,7 +488,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>estimated corrector convergence rate constant.</p>
             </td>
         </tr>
         <tr>
@@ -501,7 +496,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-drc"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -510,7 +505,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>relative change in h*rl1 since last dvjac call.</p>
             </td>
         </tr>
         <tr>
@@ -518,7 +513,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-el"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -527,7 +522,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>real array of integration coefficients.  see dvset.</p>
             </td>
         </tr>
         <tr>
@@ -535,7 +530,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-eta"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -544,7 +539,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>saved tentative ratio of new to old h.</p>
             </td>
         </tr>
         <tr>
@@ -552,7 +547,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-etamax"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -561,7 +556,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>saved maximum value of eta to be allowed.</p>
             </td>
         </tr>
         <tr>
@@ -569,7 +564,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-h"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -578,7 +573,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>the step size.</p>
             </td>
         </tr>
         <tr>
@@ -586,7 +581,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-hmin"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -595,7 +590,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>the minimum absolute value of the step size h to be used.</p>
             </td>
         </tr>
         <tr>
@@ -603,7 +598,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-hmxi"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -612,7 +607,8 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>inverse of the maximum absolute value of h to be used.
+hmxi = 0.0 is allowed and corresponds to an infinite hmax.</p>
             </td>
         </tr>
         <tr>
@@ -620,7 +616,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-hnew"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -629,7 +625,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>the step size to be attempted on the next step.</p>
             </td>
         </tr>
         <tr>
@@ -637,7 +633,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-hscal"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -646,7 +642,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>stepsize in scaling of yh array.</p>
             </td>
         </tr>
         <tr>
@@ -654,7 +650,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-prl1"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -663,7 +659,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>the saved value of rl1.</p>
             </td>
         </tr>
         <tr>
@@ -671,7 +667,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-rc"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -680,7 +676,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>ratio of current h*rl1 to value on last dvjac call.</p>
             </td>
         </tr>
         <tr>
@@ -688,7 +684,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-rl1"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -697,7 +693,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>the reciprocal of the coefficient el(1).</p>
             </td>
         </tr>
         <tr>
@@ -705,7 +701,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-tau"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -714,7 +710,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>real vector of past nq step sizes, length 13.</p>
             </td>
         </tr>
         <tr>
@@ -722,7 +718,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-tq"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -731,7 +727,9 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>a real vector of length 5 in which dvset stores constants
+used for the convergence test, the error test, and the
+selection of h at a new order.</p>
             </td>
         </tr>
         <tr>
@@ -739,7 +737,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-tn"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -748,15 +746,15 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>the independent variable, updated on each step taken.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uround"></span>
+              <span class="anchor" id="variable-uround~2"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -765,7 +763,8 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>the machine unit roundoff.  the smallest positive real number
+such that  1.0 + uround /= 1.0</p>
             </td>
         </tr>
         <tr>
@@ -773,7 +772,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-icf"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -782,7 +781,14 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>integer flag for convergence failure in dvnlsd:</p>
+<ul>
+<li>0 means no failures.</li>
+<li>1 means convergence failure with out of date jacobian
+   (recoverable error).</li>
+<li>2 means convergence failure with current jacobian or
+   singular matrix (unrecoverable error).</li>
+</ul>
             </td>
         </tr>
         <tr>
@@ -790,7 +796,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-init"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -799,7 +805,8 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved integer flag indicating whether initialization of the
+problem has been done (init = 1) or not.</p>
             </td>
         </tr>
         <tr>
@@ -807,7 +814,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-ipup"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -816,7 +823,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved flag to signal updating of newton matrix.</p>
             </td>
         </tr>
         <tr>
@@ -824,7 +831,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-jcur"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -833,7 +840,11 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>output flag from <a href="../proc/dvjac.html">dvjac</a> showing jacobian status:</p>
+<ul>
+<li>jcur = 0 means j is not current.</li>
+<li>jcur = 1 means j is current.</li>
+</ul>
             </td>
         </tr>
         <tr>
@@ -841,7 +852,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-jstart"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -850,7 +861,14 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>integer flag used as input to dvstep:</p>
+<ul>
+<li>0  means perform the first step.</li>
+<li>1  means take a new step continuing from the last.</li>
+<li>-1 means take the next step with a new value of maxord,
+   hmin, hmxi, n, meth, miter, and/or matrix parameters.</li>
+</ul>
+<p>on return, dvstep sets jstart = 1.</p>
             </td>
         </tr>
         <tr>
@@ -858,7 +876,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-jsv"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -867,7 +885,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>integer flag for jacobian saving, = sign(mf).</p>
             </td>
         </tr>
         <tr>
@@ -875,7 +893,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-kflag"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -884,7 +902,13 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>a completion code from dvstep with the following meanings:</p>
+<ul>
+<li>0      the step was succesful.</li>
+<li>-1      the requested error could not be achieved.</li>
+<li>-2      corrector convergence could not be achieved.</li>
+<li>-3, -4  fatal error in vnls (can not occur here).</li>
+</ul>
             </td>
         </tr>
         <tr>
@@ -892,7 +916,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-kuth"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -901,7 +925,8 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>input flag to dvstep showing whether h was reduced by the
+driver.  kuth = 1 if h was reduced, = 0 otherwise.</p>
             </td>
         </tr>
         <tr>
@@ -909,7 +934,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-l"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -918,7 +943,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>integer variable, nq + 1, current order plus one.</p>
             </td>
         </tr>
         <tr>
@@ -926,7 +951,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-lmax"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -935,7 +960,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>maxord + 1 (used for dimensioning).</p>
             </td>
         </tr>
         <tr>
@@ -943,7 +968,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-lyh"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -952,7 +977,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved integer pointers to segments of rwork and iwork.</p>
             </td>
         </tr>
         <tr>
@@ -960,7 +985,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-lewt"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -969,7 +994,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved integer pointers to segments of rwork and iwork.</p>
             </td>
         </tr>
         <tr>
@@ -977,7 +1002,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-lacor"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -986,7 +1011,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved integer pointers to segments of rwork and iwork.</p>
             </td>
         </tr>
         <tr>
@@ -994,7 +1019,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-lsavf"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1003,7 +1028,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved integer pointers to segments of rwork and iwork.</p>
             </td>
         </tr>
         <tr>
@@ -1011,7 +1036,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-lwm"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1020,7 +1045,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved integer pointers to segments of rwork and iwork.</p>
             </td>
         </tr>
         <tr>
@@ -1028,7 +1053,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-liwm"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1037,7 +1062,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved integer pointers to segments of rwork and iwork.</p>
             </td>
         </tr>
         <tr>
@@ -1045,7 +1070,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-locjs"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1054,7 +1079,8 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>a pointer to the saved jacobian, whose storage starts at
+wm(locjs), if jsv = 1.</p>
             </td>
         </tr>
         <tr>
@@ -1062,7 +1088,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-maxord"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1071,7 +1097,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the maximum order of integration method to be allowed.</p>
             </td>
         </tr>
         <tr>
@@ -1079,7 +1105,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-meth"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1088,7 +1114,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the method flags.  see mf.</p>
             </td>
         </tr>
         <tr>
@@ -1096,7 +1122,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-miter"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1105,7 +1131,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the method flags.  see mf.</p>
             </td>
         </tr>
         <tr>
@@ -1113,7 +1139,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-msbj"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1122,7 +1148,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the maximum number of steps between j evaluations, = 50.</p>
             </td>
         </tr>
         <tr>
@@ -1130,7 +1156,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-mxhnil"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1139,7 +1165,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved value of optional input mxhnil.</p>
             </td>
         </tr>
         <tr>
@@ -1147,7 +1173,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-mxstep"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1156,7 +1182,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved value of optional input mxstep.</p>
             </td>
         </tr>
         <tr>
@@ -1164,7 +1190,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-n~2"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1173,7 +1199,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the number of first-order odes, = neq.</p>
             </td>
         </tr>
         <tr>
@@ -1181,7 +1207,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-newh"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1190,7 +1216,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved integer to flag change of h.</p>
             </td>
         </tr>
         <tr>
@@ -1198,7 +1224,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-newq"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1207,7 +1233,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the method order to be used on the next step.</p>
             </td>
         </tr>
         <tr>
@@ -1215,7 +1241,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nhnil"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1224,7 +1250,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved counter for occurrences of t + h = t.</p>
             </td>
         </tr>
         <tr>
@@ -1232,7 +1258,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nq"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1241,7 +1267,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>integer variable, the current integration method order.</p>
             </td>
         </tr>
         <tr>
@@ -1249,7 +1275,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nqnyh"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1258,7 +1284,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved value of nq*nyh.</p>
             </td>
         </tr>
         <tr>
@@ -1266,7 +1292,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nqwait"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1275,7 +1301,8 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>a counter controlling the frequency of order changes.
+an order change is about to be considered if nqwait = 1.</p>
             </td>
         </tr>
         <tr>
@@ -1283,7 +1310,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nslj"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1292,7 +1319,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the number of steps taken as of the last jacobian update.</p>
             </td>
         </tr>
         <tr>
@@ -1300,7 +1327,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nslp"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1309,7 +1336,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved value of nst as of last newton matrix update.</p>
             </td>
         </tr>
         <tr>
@@ -1317,7 +1344,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nyh"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1326,7 +1353,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>saved value of the initial value of neq.</p>
             </td>
         </tr>
         <tr>
@@ -1334,7 +1361,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-hu"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1343,7 +1370,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>zero</td>
             <td>
-                
+                <p>the step size in t last used.</p>
             </td>
         </tr>
         <tr>
@@ -1351,7 +1378,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-ncfn"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1360,7 +1387,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>number of nonlinear convergence failures so far.</p>
             </td>
         </tr>
         <tr>
@@ -1368,7 +1395,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-netf"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1377,7 +1404,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the number of error test failures of the integrator so far.</p>
             </td>
         </tr>
         <tr>
@@ -1385,7 +1412,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nfe"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1394,7 +1421,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the number of f evaluations for the problem so far.</p>
             </td>
         </tr>
         <tr>
@@ -1402,7 +1429,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nje"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1411,7 +1438,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the number of jacobian evaluations so far.</p>
             </td>
         </tr>
         <tr>
@@ -1419,7 +1446,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nlu"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1428,7 +1455,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the number of matrix lu decompositions so far.</p>
             </td>
         </tr>
         <tr>
@@ -1436,7 +1463,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nni"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1445,7 +1472,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>number of nonlinear iterations so far.</p>
             </td>
         </tr>
         <tr>
@@ -1453,7 +1480,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nqu"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1462,7 +1489,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the method order last used.</p>
             </td>
         </tr>
         <tr>
@@ -1470,7 +1497,7 @@ dvnlsd, dvjac, and dvsrco.</p>
               <span class="anchor" id="variable-nst"></span>
               integer,
             </td>
-              <td>public</td>
+              <td>private</td>
             <td>
               
             </td>
@@ -1479,7 +1506,7 @@ dvnlsd, dvjac, and dvsrco.</p>
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>the number of steps taken for the problem so far.</p>
             </td>
         </tr>
     </tbody>
@@ -1495,166 +1522,106 @@ dvnlsd, dvjac, and dvsrco.</p>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
     <div class="highlight"><pre><span></span><span class="w">   </span><span class="k">type</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvode_data_t</span><span class="w"></span>
 
-<span class="w">      </span><span class="c">!! the following internal common blocks contain variables which are</span>
-<span class="w">      </span><span class="c">!! communicated between subroutines in the dvode package, or which are</span>
-<span class="w">      </span><span class="c">!! to be saved between calls to dvode.</span>
-<span class="w">      </span><span class="c">!! in each block, real variables precede integers.</span>
-<span class="w">      </span><span class="c">!! the block /dvod01/ appears in subroutines dvode, dvindy, dvstep,</span>
-<span class="w">      </span><span class="c">!! dvset, dvnlsd, dvjac, dvsol, dvjust and dvsrco.</span>
-<span class="w">      </span><span class="c">!! the block /dvod02/ appears in subroutines dvode, dvindy, dvstep,</span>
-<span class="w">      </span><span class="c">!! dvnlsd, dvjac, and dvsrco.</span>
+<span class="w">      </span><span class="c">!! Internal variables for DVODE.</span>
+<span class="w">      </span><span class="c">!! variables which are communicated between subroutines in the</span>
+<span class="w">      </span><span class="c">!! dvode package, or which are to be saved between calls to dvode.</span>
 
-<span class="w">      </span><span class="c">! the variables stored in the internal common blocks are as follows:</span>
-<span class="w">      </span><span class="c">!</span>
-<span class="w">      </span><span class="c">! acnrm  = weighted r.m.s. norm of accumulated correction vectors.</span>
-<span class="w">      </span><span class="c">! ccmxj  = threshhold on drc for updating the jacobian. (see drc.)</span>
-<span class="w">      </span><span class="c">! conp   = the saved value of tq(5).</span>
-<span class="w">      </span><span class="c">! crate  = estimated corrector convergence rate constant.</span>
-<span class="w">      </span><span class="c">! drc    = relative change in h*rl1 since last dvjac call.</span>
-<span class="w">      </span><span class="c">! el     = real array of integration coefficients.  see dvset.</span>
-<span class="w">      </span><span class="c">! eta    = saved tentative ratio of new to old h.</span>
-<span class="w">      </span><span class="c">! etamax = saved maximum value of eta to be allowed.</span>
-<span class="w">      </span><span class="c">! h      = the step size.</span>
-<span class="w">      </span><span class="c">! hmin   = the minimum absolute value of the step size h to be used.</span>
-<span class="w">      </span><span class="c">! hmxi   = inverse of the maximum absolute value of h to be used.</span>
-<span class="w">      </span><span class="c">!          hmxi = 0.0 is allowed and corresponds to an infinite hmax.</span>
-<span class="w">      </span><span class="c">! hnew   = the step size to be attempted on the next step.</span>
-<span class="w">      </span><span class="c">! hscal  = stepsize in scaling of yh array.</span>
-<span class="w">      </span><span class="c">! prl1   = the saved value of rl1.</span>
-<span class="w">      </span><span class="c">! rc     = ratio of current h*rl1 to value on last dvjac call.</span>
-<span class="w">      </span><span class="c">! rl1    = the reciprocal of the coefficient el(1).</span>
-<span class="w">      </span><span class="c">! tau    = real vector of past nq step sizes, length 13.</span>
-<span class="w">      </span><span class="c">! tq     = a real vector of length 5 in which dvset stores constants</span>
-<span class="w">      </span><span class="c">!          used for the convergence test, the error test, and the</span>
-<span class="w">      </span><span class="c">!          selection of h at a new order.</span>
-<span class="w">      </span><span class="c">! tn     = the independent variable, updated on each step taken.</span>
-<span class="w">      </span><span class="c">! uround = the machine unit roundoff.  the smallest positive real number</span>
-<span class="w">      </span><span class="c">!          such that  1.0 + uround /= 1.0</span>
-<span class="w">      </span><span class="c">! icf    = integer flag for convergence failure in dvnlsd:</span>
-<span class="w">      </span><span class="c">!            0 means no failures.</span>
-<span class="w">      </span><span class="c">!            1 means convergence failure with out of date jacobian</span>
-<span class="w">      </span><span class="c">!                   (recoverable error).</span>
-<span class="w">      </span><span class="c">!            2 means convergence failure with current jacobian or</span>
-<span class="w">      </span><span class="c">!                   singular matrix (unrecoverable error).</span>
-<span class="w">      </span><span class="c">! init   = saved integer flag indicating whether initialization of the</span>
-<span class="w">      </span><span class="c">!          problem has been done (init = 1) or not.</span>
-<span class="w">      </span><span class="c">! ipup   = saved flag to signal updating of newton matrix.</span>
-<span class="w">      </span><span class="c">! jcur   = output flag from [[dvjac]] showing jacobian status:</span>
-<span class="w">      </span><span class="c">!            jcur = 0 means j is not current.</span>
-<span class="w">      </span><span class="c">!            jcur = 1 means j is current.</span>
-<span class="w">      </span><span class="c">! jstart = integer flag used as input to dvstep:</span>
-<span class="w">      </span><span class="c">!            0  means perform the first step.</span>
-<span class="w">      </span><span class="c">!            1  means take a new step continuing from the last.</span>
-<span class="w">      </span><span class="c">!            -1 means take the next step with a new value of maxord,</span>
-<span class="w">      </span><span class="c">!                  hmin, hmxi, n, meth, miter, and/or matrix parameters.</span>
-<span class="w">      </span><span class="c">!          on return, dvstep sets jstart = 1.</span>
-<span class="w">      </span><span class="c">! jsv    = integer flag for jacobian saving, = sign(mf).</span>
-<span class="w">      </span><span class="c">! kflag  = a completion code from dvstep with the following meanings:</span>
-<span class="w">      </span><span class="c">!               0      the step was succesful.</span>
-<span class="w">      </span><span class="c">!              -1      the requested error could not be achieved.</span>
-<span class="w">      </span><span class="c">!              -2      corrector convergence could not be achieved.</span>
-<span class="w">      </span><span class="c">!              -3, -4  fatal error in vnls (can not occur here).</span>
-<span class="w">      </span><span class="c">! kuth   = input flag to dvstep showing whether h was reduced by the</span>
-<span class="w">      </span><span class="c">!          driver.  kuth = 1 if h was reduced, = 0 otherwise.</span>
-<span class="w">      </span><span class="c">! l      = integer variable, nq + 1, current order plus one.</span>
-<span class="w">      </span><span class="c">! lmax   = maxord + 1 (used for dimensioning).</span>
-<span class="w">      </span><span class="c">! locjs  = a pointer to the saved jacobian, whose storage starts at</span>
-<span class="w">      </span><span class="c">!          wm(locjs), if jsv = 1.</span>
-<span class="w">      </span><span class="c">! lyh, lewt, lacor, lsavf, lwm, liwm = saved integer pointers</span>
-<span class="w">      </span><span class="c">!          to segments of rwork and iwork.</span>
-<span class="w">      </span><span class="c">! maxord = the maximum order of integration method to be allowed.</span>
-<span class="w">      </span><span class="c">! meth/miter = the method flags.  see mf.</span>
-<span class="w">      </span><span class="c">! msbj   = the maximum number of steps between j evaluations, = 50.</span>
-<span class="w">      </span><span class="c">! mxhnil = saved value of optional input mxhnil.</span>
-<span class="w">      </span><span class="c">! mxstep = saved value of optional input mxstep.</span>
-<span class="w">      </span><span class="c">! n      = the number of first-order odes, = neq.</span>
-<span class="w">      </span><span class="c">! newh   = saved integer to flag change of h.</span>
-<span class="w">      </span><span class="c">! newq   = the method order to be used on the next step.</span>
-<span class="w">      </span><span class="c">! nhnil  = saved counter for occurrences of t + h = t.</span>
-<span class="w">      </span><span class="c">! nq     = integer variable, the current integration method order.</span>
-<span class="w">      </span><span class="c">! nqnyh  = saved value of nq*nyh.</span>
-<span class="w">      </span><span class="c">! nqwait = a counter controlling the frequency of order changes.</span>
-<span class="w">      </span><span class="c">!          an order change is about to be considered if nqwait = 1.</span>
-<span class="w">      </span><span class="c">! nslj   = the number of steps taken as of the last jacobian update.</span>
-<span class="w">      </span><span class="c">! nslp   = saved value of nst as of last newton matrix update.</span>
-<span class="w">      </span><span class="c">! nyh    = saved value of the initial value of neq.</span>
-<span class="w">      </span><span class="c">!</span>
-<span class="w">      </span><span class="c">! hu     = the step size in t last used.</span>
-<span class="w">      </span><span class="c">! ncfn   = number of nonlinear convergence failures so far.</span>
-<span class="w">      </span><span class="c">! netf   = the number of error test failures of the integrator so far.</span>
-<span class="w">      </span><span class="c">! nfe    = the number of f evaluations for the problem so far.</span>
-<span class="w">      </span><span class="c">! nje    = the number of jacobian evaluations so far.</span>
-<span class="w">      </span><span class="c">! nlu    = the number of matrix lu decompositions so far.</span>
-<span class="w">      </span><span class="c">! nni    = number of nonlinear iterations so far.</span>
-<span class="w">      </span><span class="c">! nqu    = the method order last used.</span>
-<span class="w">      </span><span class="c">! nst    = the number of steps taken for the problem so far.</span>
-<span class="w">      </span><span class="c">!-----------------------------------------------------------------------</span>
+<span class="w">      </span><span class="k">private</span><span class="w"></span>
 
-<span class="w">      </span><span class="c">! type declarations for labeled common block dvod01</span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">acnrm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ccmxj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">conp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">crate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">drc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">el</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">eta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">etamax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hmin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hmxi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hnew</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hscal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">prl1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rl1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tq</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">uround</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">icf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ipup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">jstart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">jsv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">kflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">kuth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lmax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lyh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lewt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lacor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lsavf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lwm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">liwm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">locjs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">maxord</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">meth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">msbj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mxhnil</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mxstep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">newh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">newq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nhnil</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nqnyh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nqwait</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nslj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nslp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nyh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">      </span><span class="c">! type declarations formerly in common block dvod01</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">acnrm</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! weighted r.m.s. norm of accumulated correction vectors.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ccmxj</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! threshhold on drc for updating the jacobian. (see drc.)</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">conp</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! the saved value of tq(5).</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">crate</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! estimated corrector convergence rate constant.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">drc</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! relative change in h*rl1 since last dvjac call.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">el</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! real array of integration coefficients.  see dvset.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">eta</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! saved tentative ratio of new to old h.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">etamax</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! saved maximum value of eta to be allowed.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">h</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! the step size.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hmin</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! the minimum absolute value of the step size h to be used.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hmxi</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! inverse of the maximum absolute value of h to be used.</span>
+<span class="w">                                 </span><span class="c">!! hmxi = 0.0 is allowed and corresponds to an infinite hmax.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hnew</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! the step size to be attempted on the next step.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hscal</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! stepsize in scaling of yh array.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">prl1</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! the saved value of rl1.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rc</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! ratio of current h*rl1 to value on last dvjac call.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rl1</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! the reciprocal of the coefficient el(1).</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! real vector of past nq step sizes, length 13.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tq</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! a real vector of length 5 in which dvset stores constants</span>
+<span class="w">                                 </span><span class="c">!! used for the convergence test, the error test, and the</span>
+<span class="w">                                 </span><span class="c">!! selection of h at a new order.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tn</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! the independent variable, updated on each step taken.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">uround</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! the machine unit roundoff.  the smallest positive real number</span>
+<span class="w">                                 </span><span class="c">!! such that  1.0 + uround /= 1.0</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">icf</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! integer flag for convergence failure in dvnlsd:</span>
+<span class="w">                              </span><span class="c">!!</span>
+<span class="w">                              </span><span class="c">!!  * 0 means no failures.</span>
+<span class="w">                              </span><span class="c">!!  * 1 means convergence failure with out of date jacobian</span>
+<span class="w">                              </span><span class="c">!!    (recoverable error).</span>
+<span class="w">                              </span><span class="c">!!  * 2 means convergence failure with current jacobian or</span>
+<span class="w">                              </span><span class="c">!!    singular matrix (unrecoverable error).</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">init</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved integer flag indicating whether initialization of the</span>
+<span class="w">                              </span><span class="c">!! problem has been done (init = 1) or not.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ipup</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved flag to signal updating of newton matrix.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">jcur</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! output flag from [[dvjac]] showing jacobian status:</span>
+<span class="w">                              </span><span class="c">!!</span>
+<span class="w">                              </span><span class="c">!!  * jcur = 0 means j is not current.</span>
+<span class="w">                              </span><span class="c">!!  * jcur = 1 means j is current.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">jstart</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! integer flag used as input to dvstep:</span>
+<span class="w">                              </span><span class="c">!!</span>
+<span class="w">                              </span><span class="c">!!  * 0  means perform the first step.</span>
+<span class="w">                              </span><span class="c">!!  * 1  means take a new step continuing from the last.</span>
+<span class="w">                              </span><span class="c">!!  * -1 means take the next step with a new value of maxord,</span>
+<span class="w">                              </span><span class="c">!!    hmin, hmxi, n, meth, miter, and/or matrix parameters.</span>
+<span class="w">                              </span><span class="c">!!</span>
+<span class="w">                              </span><span class="c">!! on return, dvstep sets jstart = 1.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">jsv</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! integer flag for jacobian saving, = sign(mf).</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">kflag</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! a completion code from dvstep with the following meanings:</span>
+<span class="w">                              </span><span class="c">!!</span>
+<span class="w">                              </span><span class="c">!!  *  0      the step was succesful.</span>
+<span class="w">                              </span><span class="c">!!  * -1      the requested error could not be achieved.</span>
+<span class="w">                              </span><span class="c">!!  * -2      corrector convergence could not be achieved.</span>
+<span class="w">                              </span><span class="c">!!  * -3, -4  fatal error in vnls (can not occur here).</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">kuth</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! input flag to dvstep showing whether h was reduced by the</span>
+<span class="w">                              </span><span class="c">!! driver.  kuth = 1 if h was reduced, = 0 otherwise.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">l</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! integer variable, nq + 1, current order plus one.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lmax</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! maxord + 1 (used for dimensioning).</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lyh</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved integer pointers to segments of rwork and iwork.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lewt</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved integer pointers to segments of rwork and iwork.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lacor</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved integer pointers to segments of rwork and iwork.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lsavf</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved integer pointers to segments of rwork and iwork.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lwm</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved integer pointers to segments of rwork and iwork.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">liwm</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved integer pointers to segments of rwork and iwork.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">locjs</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! a pointer to the saved jacobian, whose storage starts at</span>
+<span class="w">                              </span><span class="c">!! wm(locjs), if jsv = 1.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">maxord</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the maximum order of integration method to be allowed.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">meth</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the method flags.  see mf.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">miter</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the method flags.  see mf.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">msbj</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the maximum number of steps between j evaluations, = 50.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mxhnil</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved value of optional input mxhnil.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mxstep</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved value of optional input mxstep.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the number of first-order odes, = neq.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">newh</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved integer to flag change of h.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">newq</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the method order to be used on the next step.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nhnil</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved counter for occurrences of t + h = t.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nq</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! integer variable, the current integration method order.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nqnyh</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved value of nq*nyh.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nqwait</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! a counter controlling the frequency of order changes.</span>
+<span class="w">                              </span><span class="c">!! an order change is about to be considered if nqwait = 1.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nslj</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the number of steps taken as of the last jacobian update.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nslp</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved value of nst as of last newton matrix update.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nyh</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! saved value of the initial value of neq.</span>
 
-<span class="w">      </span><span class="c">! type declarations for labeled common block dvod02</span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ncfn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">netf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nje</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nlu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nni</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nqu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">      </span><span class="c">! type declarations formerly in common block dvod02</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hu</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="c">!! the step size in t last used.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ncfn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! number of nonlinear convergence failures so far.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">netf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the number of error test failures of the integrator so far.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nfe</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the number of f evaluations for the problem so far.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nje</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the number of jacobian evaluations so far.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nlu</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the number of matrix lu decompositions so far.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nni</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! number of nonlinear iterations so far.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nqu</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the method order last used.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nst</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!! the number of steps taken for the problem so far.</span>
 
 <span class="w">   </span><span class="k">end type  </span><span class="n">dvode_data_t</span><span class="w"></span>
 </pre></div>

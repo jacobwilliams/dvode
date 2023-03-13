@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>29.7% of total for derived types.</p>Including implementation: 1535 statements, 96.0% of total for derived types.">27 statements</a>
+               title="<p>29.3% of total for derived types.</p>Including implementation: 1549 statements, 96.0% of total for derived types.">27 statements</a>
           </li>
 
             <li id="source-file">
@@ -163,18 +163,18 @@
         <div class="list-group">
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-initialize">initialize</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-solve">solve</a>
-            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvhin">dvhin</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xsetun">xsetun</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xsetf">xsetf</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvsrco">dvsrco</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvindy">dvindy</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvhin">dvhin</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvstep">dvstep</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvset">dvset</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvjust">dvjust</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvnlsd">dvnlsd</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvjac">dvjac</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvsol">dvsol</a>
-            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvsrco">dvsrco</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-ixsav">ixsav</a>
-            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xsetun">xsetun</a>
-            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xsetf">xsetf</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xerrwd">xerrwd</a>
         </div>
       </div>
@@ -195,7 +195,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public :: dvode_t</h2>
-    
+    <p>Main DVODE class.</p>
 <br>    <div class="panel panel-default">
       <div class="panel-heading">
   <h3 class="panel-title">Inherits</h3>
@@ -322,18 +322,18 @@
         <div class="list-group">
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-initialize">initialize</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-solve">solve</a>
-            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvhin">dvhin</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xsetun">xsetun</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xsetf">xsetf</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvsrco">dvsrco</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvindy">dvindy</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvhin">dvhin</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvstep">dvstep</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvset">dvset</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvjust">dvjust</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvnlsd">dvnlsd</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvjac">dvjac</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvsol">dvsol</a>
-            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvsrco">dvsrco</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-ixsav">ixsav</a>
-            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xsetun">xsetun</a>
-            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xsetf">xsetf</a>
             <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xerrwd">xerrwd</a>
         </div>
       </div>
@@ -377,7 +377,7 @@
                 <td></td>
                 <td></td>
             <td>
-                <p>internal data</p>
+                <p>internal data (formerly in common blocks)</p>
             </td>
         </tr>
         <tr>
@@ -577,47 +577,48 @@
 </h3>
     
   <p>dvode: variable-coefficient ordinary differential equation solver,
-  with fixed-leading-coefficient implementation.
-  this version is in real(wp).</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="n">solves</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">initial</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">problem</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">stiff</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">nonstiff</span><span class="w"></span>
-<span class="w"> </span><span class="n">systems</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="n">odes</span><span class="p">,</span><span class="w"></span>
-<span class="w">     </span><span class="n">dy</span><span class="o">/</span><span class="n">dt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w">  </span><span class="ow">or</span><span class="p">,</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">component</span><span class="w"> </span><span class="n">form</span><span class="p">,</span><span class="w"></span>
-<span class="w">     </span><span class="n">dy</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">/</span><span class="n">dt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">y</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="o">...</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="n">neq</span><span class="p">))</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="n">neq</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">package</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">episode</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">episodeb</span><span class="w"> </span><span class="n">packages</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"></span>
-<span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">odepack</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">interface</span><span class="w"> </span><span class="n">standard</span><span class="p">,</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="n">modifications</span><span class="o">.</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-<span class="w"> </span><span class="n">authors</span><span class="p">:</span><span class="w"></span>
-<span class="w">               </span><span class="n">peter</span><span class="w"> </span><span class="n">n</span><span class="o">.</span><span class="w"> </span><span class="n">brown</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">alan</span><span class="w"> </span><span class="n">c</span><span class="o">.</span><span class="w"> </span><span class="n">hindmarsh</span><span class="w"></span>
-<span class="w">               </span><span class="n">center</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">applied</span><span class="w"> </span><span class="n">scientific</span><span class="w"> </span><span class="n">computing</span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="o">-</span><span class="mi">561</span><span class="w"></span>
-<span class="w">               </span><span class="n">lawrence</span><span class="w"> </span><span class="n">livermore</span><span class="w"> </span><span class="n">national</span><span class="w"> </span><span class="n">laboratory</span><span class="w"></span>
-<span class="w">               </span><span class="n">livermore</span><span class="p">,</span><span class="w"> </span><span class="n">ca</span><span class="w"> </span><span class="mi">94551</span><span class="w"></span>
-<span class="w"> </span><span class="ow">and</span><span class="w"></span>
-<span class="w">               </span><span class="n">george</span><span class="w"> </span><span class="n">d</span><span class="o">.</span><span class="w"> </span><span class="n">byrne</span><span class="w"></span>
-<span class="w">               </span><span class="n">illinois</span><span class="w"> </span><span class="n">institute</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">technology</span><span class="w"></span>
-<span class="w">               </span><span class="n">chicago</span><span class="p">,</span><span class="w"> </span><span class="n">il</span><span class="w"> </span><span class="mi">60616</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-<span class="w"> </span><span class="n">references</span><span class="p">:</span><span class="w"></span>
+  with fixed-leading-coefficient implementation.</p>
+<p>dvode solves the initial value problem for stiff or nonstiff
+  systems of first order odes,</p>
+<div class="codehilite"><pre><span></span><code>  dy/dt = f(t,y) ,  or, in component form,
+  dy(i)/dt = f(i) = f(i,t,y(1),y(2),...,y(neq)) (i = 1,...,neq).
+</code></pre></div>
 
-<span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="w"> </span><span class="n">n</span><span class="o">.</span><span class="w"> </span><span class="n">brown</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="o">.</span><span class="w"> </span><span class="n">d</span><span class="o">.</span><span class="w"> </span><span class="n">byrne</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">a</span><span class="o">.</span><span class="w"> </span><span class="n">c</span><span class="o">.</span><span class="w"> </span><span class="n">hindmarsh</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;vode: a variable</span>
-<span class="w">    </span><span class="n">coefficient</span><span class="w"> </span><span class="n">ode</span><span class="w"> </span><span class="n">solver</span><span class="p">,</span><span class="s2">&quot; siam j. sci. stat. comput., 10 (1989),</span>
-<span class="w">    </span><span class="n">pp</span><span class="o">.</span><span class="w"> </span><span class="mi">1038</span><span class="o">-</span><span class="mf">1051.</span><span class="w">  </span><span class="n">also</span><span class="p">,</span><span class="w"> </span><span class="n">llnl</span><span class="w"> </span><span class="n">report</span><span class="w"> </span><span class="n">ucrl</span><span class="o">-</span><span class="mi">98412</span><span class="p">,</span><span class="w"> </span><span class="n">june</span><span class="w"> </span><span class="mf">1988.</span><span class="w"></span>
-<span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="n">g</span><span class="o">.</span><span class="w"> </span><span class="n">d</span><span class="o">.</span><span class="w"> </span><span class="n">byrne</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">a</span><span class="o">.</span><span class="w"> </span><span class="n">c</span><span class="o">.</span><span class="w"> </span><span class="n">hindmarsh</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;a polyalgorithm for the</span>
-<span class="w">    </span><span class="n">numerical</span><span class="w"> </span><span class="n">solution</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">ordinary</span><span class="w"> </span><span class="n">differential</span><span class="w"> </span><span class="n">equations</span><span class="p">,</span><span class="s2">&quot;</span>
-<span class="w">    </span><span class="n">acm</span><span class="w"> </span><span class="n">trans</span><span class="o">.</span><span class="w"> </span><span class="n">math</span><span class="o">.</span><span class="w"> </span><span class="n">software</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">(</span><span class="mi">1975</span><span class="p">),</span><span class="w"> </span><span class="n">pp</span><span class="o">.</span><span class="w"> </span><span class="mi">71</span><span class="o">-</span><span class="mf">96.</span><span class="w"></span>
-<span class="w"> </span><span class="mf">3.</span><span class="w"> </span><span class="n">a</span><span class="o">.</span><span class="w"> </span><span class="n">c</span><span class="o">.</span><span class="w"> </span><span class="n">hindmarsh</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">g</span><span class="o">.</span><span class="w"> </span><span class="n">d</span><span class="o">.</span><span class="w"> </span><span class="n">byrne</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;episode: an effective package</span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">integration</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">systems</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">ordinary</span><span class="w"> </span><span class="n">differential</span><span class="w"></span>
-<span class="w">    </span><span class="n">equations</span><span class="p">,</span><span class="s2">&quot; llnl report ucid-30112, rev. 1, april 1977.</span>
-<span class="w"> </span><span class="mf">4.</span><span class="w"> </span><span class="n">g</span><span class="o">.</span><span class="w"> </span><span class="n">d</span><span class="o">.</span><span class="w"> </span><span class="n">byrne</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">a</span><span class="o">.</span><span class="w"> </span><span class="n">c</span><span class="o">.</span><span class="w"> </span><span class="n">hindmarsh</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;episodeb: an experimental</span>
-<span class="w">    </span><span class="n">package</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">integration</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">systems</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">ordinary</span><span class="w"> </span><span class="n">differential</span><span class="w"></span>
-<span class="w">    </span><span class="n">equations</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">banded</span><span class="w"> </span><span class="n">jacobians</span><span class="p">,</span><span class="s2">&quot; llnl report ucid-30132, april</span>
-<span class="w">    </span><span class="mf">1976.</span><span class="w"></span>
-<span class="w"> </span><span class="mf">5.</span><span class="w"> </span><span class="n">a</span><span class="o">.</span><span class="w"> </span><span class="n">c</span><span class="o">.</span><span class="w"> </span><span class="n">hindmarsh</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;odepack, a systematized collection of ode</span>
-<span class="w">    </span><span class="n">solvers</span><span class="p">,</span><span class="s2">&quot; in scientific computing, r. s. stepleman et al., eds.,</span>
-<span class="w">    </span><span class="n">north</span><span class="o">-</span><span class="n">holland</span><span class="p">,</span><span class="w"> </span><span class="n">amsterdam</span><span class="p">,</span><span class="w"> </span><span class="mi">1983</span><span class="p">,</span><span class="w"> </span><span class="n">pp</span><span class="o">.</span><span class="w"> </span><span class="mi">55</span><span class="o">-</span><span class="mf">64.</span><span class="w"></span>
-<span class="w"> </span><span class="mf">6.</span><span class="w"> </span><span class="n">k</span><span class="o">.</span><span class="w"> </span><span class="n">r</span><span class="o">.</span><span class="w"> </span><span class="n">jackson</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">r</span><span class="o">.</span><span class="w"> </span><span class="n">sacks</span><span class="o">-</span><span class="n">davis</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;an alternative implementation</span>
-<span class="w">    </span><span class="n">of</span><span class="w"> </span><span class="n">variable</span><span class="w"> </span><span class="n">step</span><span class="o">-</span><span class="n">size</span><span class="w"> </span><span class="n">multistep</span><span class="w"> </span><span class="n">formulas</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">stiff</span><span class="w"> </span><span class="n">odes</span><span class="p">,</span><span class="s2">&quot; acm</span>
-<span class="w">    </span><span class="n">trans</span><span class="o">.</span><span class="w"> </span><span class="n">math</span><span class="o">.</span><span class="w"> </span><span class="n">software</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">(</span><span class="mi">1980</span><span class="p">),</span><span class="w"> </span><span class="n">pp</span><span class="o">.</span><span class="w"> </span><span class="mi">295</span><span class="o">-</span><span class="mf">318.</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
+<p>dvode is a package based on the <code>episode</code> and <code>episodeb</code> packages, and
+  on the <code>odepack</code> user interface standard, with minor modifications.</p>
+<h3>Authors:</h3>
+<ul>
+<li>peter n. brown and alan c. hindmarsh,
+    center for applied scientific computing, l-561,
+    lawrence livermore national laboratory,
+    livermore, ca 94551</li>
+<li>george d. byrne,
+    illinois institute of technology,
+    chicago, il 60616</li>
+</ul>
+<h3>References</h3>
+<ol>
+<li>p. n. brown, g. d. byrne, and a. c. hindmarsh, "vode: a variable
+     coefficient ode solver," siam j. sci. stat. comput., 10 (1989),
+     pp. 1038-1051.  also, llnl report ucrl-98412, june 1988.</li>
+<li>g. d. byrne and a. c. hindmarsh, "a polyalgorithm for the
+     numerical solution of ordinary differential equations,"
+     acm trans. math. software, 1 (1975), pp. 71-96.</li>
+<li>a. c. hindmarsh and g. d. byrne, "episode: an effective package
+     for the integration of systems of ordinary differential
+     equations," llnl report ucid-30112, rev. 1, april 1977.</li>
+<li>g. d. byrne and a. c. hindmarsh, "episodeb: an experimental
+     package for the integration of systems of ordinary differential
+     equations with banded jacobians," llnl report ucid-30132, april
+     1976.</li>
+<li>a. c. hindmarsh, "odepack, a systematized collection of ode
+     solvers," in scientific computing, r. s. stepleman et al., eds.,
+     north-holland, amsterdam, 1983, pp. 55-64.</li>
+<li>k. r. jackson and r. sacks-davis, "an alternative implementation
+     of variable step-size multistep formulas for stiff odes," acm
+     trans. math. software, 6 (1980), pp. 295-318.</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
 <span class="w"> </span><span class="n">summary</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">usage</span><span class="o">.</span><span class="w"></span>
 
 <span class="w"> </span><span class="n">communication</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="n">package</span><span class="p">,</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">normal</span><span class="w"></span>
@@ -1537,36 +1538,6 @@
 <span class="w">  </span><span class="mi">20020430</span><span class="w">  </span><span class="n">various</span><span class="w"> </span><span class="n">upgrades</span><span class="w"> </span><span class="p">(</span><span class="n">ach</span><span class="p">):</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">odepack</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">handler</span><span class="w"> </span><span class="n">package</span><span class="o">.</span><span class="w"></span>
 <span class="w">            </span><span class="n">replaced</span><span class="w"> </span><span class="n">d1mach</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dumach</span><span class="o">.</span><span class="w">  </span><span class="n">various</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">main</span><span class="w"></span>
 <span class="w">            </span><span class="n">prologue</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="n">routine</span><span class="w"> </span><span class="n">prologues</span><span class="o">.</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-<span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="n">package</span><span class="o">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">addition</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="n">dvode</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="n">package</span><span class="w"> </span><span class="n">includes</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
-<span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="n">dvhin</span><span class="w">     </span><span class="n">computes</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">approximate</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">initial</span><span class="w"> </span><span class="n">step</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dvindy</span><span class="w">    </span><span class="n">computes</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">interpolated</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tout</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dvstep</span><span class="w">    </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">core</span><span class="w"> </span><span class="n">integrator</span><span class="p">,</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">does</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
-<span class="w">            </span><span class="n">integration</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">associated</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">control</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dvset</span><span class="w">     </span><span class="n">sets</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="n">coefficients</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="n">constants</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dvnlsd</span><span class="w">    </span><span class="n">solves</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">underlying</span><span class="w"> </span><span class="n">nonlinear</span><span class="w"> </span><span class="n">system</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">corrector</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dvjac</span><span class="w">     </span><span class="n">computes</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">preprocesses</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="o">/</span><span class="n">dy</span><span class="w"></span>
-<span class="w">            </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">newton</span><span class="w"> </span><span class="n">iteration</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">h</span><span class="o">/</span><span class="n">l1</span><span class="p">)</span><span class="o">*</span><span class="n">j</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dvsol</span><span class="w">     </span><span class="n">manages</span><span class="w"> </span><span class="n">solution</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">linear</span><span class="w"> </span><span class="n">system</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">chord</span><span class="w"> </span><span class="n">iteration</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dvjust</span><span class="w">    </span><span class="n">adjusts</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">history</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">change</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">order</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dewset</span><span class="w">    </span><span class="n">sets</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">weight</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">ewt</span><span class="w"> </span><span class="n">before</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="n">step</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dvnorm</span><span class="w">    </span><span class="n">computes</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">weighted</span><span class="w"> </span><span class="n">r</span><span class="o">.</span><span class="n">m</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="w"> </span><span class="n">norm</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">vector</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dvsrco</span><span class="w">    </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">user</span><span class="o">-</span><span class="n">callable</span><span class="w"> </span><span class="n">routine</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">save</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">restore</span><span class="w"></span>
-<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="n">contents</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">internal</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dacopy</span><span class="w">    </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">routine</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">copy</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="n">two</span><span class="o">-</span><span class="n">dimensional</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">another</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dgefa</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">dgesl</span><span class="w">   </span><span class="n">are</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">linpack</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">solving</span><span class="w"> </span><span class="n">full</span><span class="w"></span>
-<span class="w">            </span><span class="n">systems</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">linear</span><span class="w"> </span><span class="n">algebraic</span><span class="w"> </span><span class="n">equations</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dgbfa</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">dgbsl</span><span class="w">   </span><span class="n">are</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">linpack</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">solving</span><span class="w"> </span><span class="n">banded</span><span class="w"></span>
-<span class="w">            </span><span class="n">linear</span><span class="w"> </span><span class="n">systems</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">daxpy</span><span class="p">,</span><span class="w"> </span><span class="n">dscal</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">dcopy</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">basic</span><span class="w"> </span><span class="n">linear</span><span class="w"> </span><span class="n">algebra</span><span class="w"> </span><span class="n">modules</span><span class="w"> </span><span class="p">(</span><span class="n">blas</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">dumach</span><span class="w">    </span><span class="n">sets</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="n">roundoff</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">machine</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="n">xerrwd</span><span class="p">,</span><span class="w"> </span><span class="n">xsetun</span><span class="p">,</span><span class="w"> </span><span class="n">xsetf</span><span class="p">,</span><span class="w"> </span><span class="n">ixsav</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">iumach</span><span class="w"> </span><span class="n">handle</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">printing</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">all</span><span class="w"></span>
-<span class="w">            </span><span class="n">error</span><span class="w"> </span><span class="n">messages</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">warnings</span><span class="o">.</span><span class="w">  </span><span class="n">xerrwd</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">machine</span><span class="o">-</span><span class="n">dependent</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">note</span><span class="p">:</span><span class="w">  </span><span class="n">dvnorm</span><span class="p">,</span><span class="w"> </span><span class="n">dumach</span><span class="p">,</span><span class="w"> </span><span class="n">ixsav</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">iumach</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">others</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">subroutines</span><span class="o">.</span><span class="w"></span>
 </code></pre></div>
 
   <h4>Arguments</h4>
@@ -1829,49 +1800,22 @@
   </div>
 
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-dvhin"></span><h3>procedure, private :: <strong>dvhin</strong>          
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-xsetun"></span><h3>procedure, public :: <strong>xsetun</strong>          
     </h3></div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
-    private  subroutine <a href='../proc/dvhin.html'>dvhin</a>(me, n, t0, y0, ydot, tout, uround, ewt, itol, atol, y, temp, h0, niter, ier)  
+    private  subroutine <a href='../proc/xsetun.html'>xsetun</a>(me, lun)  
 </h3>
     
-  <p>this routine computes the step size, h0, to be attempted on the
-  first step, when the user has not supplied a value for this.</p>
-<p>first we check that tout - t0 differs significantly from zero.  then
-  an iteration is done to approximate the initial second derivative
-  and this is used to define h from w.r.m.s.norm(h**2 * yddot / 2) = 1.
-  a bias factor of 1/2 is applied to the resulting h.
-  the sign of h0 is inferred from the initial values of tout and t0.</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">t0</span><span class="p">,</span><span class="w"> </span><span class="n">y0</span><span class="p">,</span><span class="w"> </span><span class="n">ydot</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">tout</span><span class="p">,</span><span class="w"> </span><span class="n">uround</span><span class="p">,</span><span class="w"></span>
-<span class="w">                        </span><span class="n">ewt</span><span class="p">,</span><span class="w"> </span><span class="n">itol</span><span class="p">,</span><span class="w"> </span><span class="n">atol</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">temp</span><span class="w"></span>
-<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">h0</span><span class="p">,</span><span class="w"> </span><span class="n">niter</span><span class="p">,</span><span class="w"> </span><span class="n">ier</span><span class="w"></span>
-<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">none</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvhin</span><span class="p">:</span><span class="w">  </span><span class="n">f</span><span class="w"></span>
-<span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvhi</span><span class="p">:</span><span class="w"> </span><span class="n">dvnorm</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">communication</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvhin</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">variables</span><span class="p">:</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">n</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">ode</span><span class="w"> </span><span class="n">system</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">t0</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">initial</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">independent</span><span class="w"> </span><span class="n">variable</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">y0</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">initial</span><span class="w"> </span><span class="n">conditions</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">ydot</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">initial</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">derivatives</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">f</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">right</span><span class="o">-</span><span class="n">hand</span><span class="w"> </span><span class="n">side</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">tout</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">independent</span><span class="w"> </span><span class="n">variable</span><span class="w"></span>
-<span class="w"> </span><span class="n">uround</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">machine</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="n">roundoff</span><span class="w"></span>
-<span class="w"> </span><span class="n">ewt</span><span class="p">,</span><span class="w"> </span><span class="n">itol</span><span class="p">,</span><span class="w"> </span><span class="n">atol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">weights</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">tolerance</span><span class="w"> </span><span class="n">parameters</span><span class="w"></span>
-<span class="w">                   </span><span class="k">as</span><span class="w"> </span><span class="n">described</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">driver</span><span class="w"> </span><span class="n">routine</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">arrays</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">h0</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">attempted</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">niter</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">iterations</span><span class="w"> </span><span class="p">(</span><span class="ow">and</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">evaluations</span><span class="p">)</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">compute</span><span class="w"> </span><span class="n">h0</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="n">output</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">ier</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">flag</span><span class="p">,</span><span class="w"> </span><span class="n">returned</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">value</span><span class="w"></span>
-<span class="w">          </span><span class="n">ier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">trouble</span><span class="w"> </span><span class="n">occurred</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"></span>
-<span class="w">          </span><span class="n">ier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">tout</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">t0</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">considered</span><span class="w"> </span><span class="n">too</span><span class="w"> </span><span class="n">close</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">proceed</span><span class="o">.</span><span class="w"></span>
-</code></pre></div>
+  <p>reset the logical unit number for error messages.</p>
+<p>xsetun sets the logical unit number for error messages to lun.</p>
+<p><strong><em>author  hindmarsh, alan c., (llnl)
+</em></strong>revision history  (yymmdd)
+   921118  date written
+   930329  added slatec format prologue. (fnf)
+   930407  corrected see also section. (fnf)
+   930922  made user-callable, and other cosmetic changes. (fnf)</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1909,202 +1853,7 @@
               
             </td>
             <td>::</td>
-            <td><strong>n</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>t0</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>y0</strong>(*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ydot</strong>(*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>tout</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>uround</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ewt</strong>(*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>itol</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>atol</strong>(*)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>y</strong>(n)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>temp</strong>(n)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>h0</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>niter</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ier</strong></td>
+            <td><strong>lun</strong></td>
             <td>
 
             </td>
@@ -2118,7 +1867,152 @@
   </div>
 
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-dvindy"></span><h3>procedure, private :: <strong>dvindy</strong>          
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-xsetf"></span><h3>procedure, public :: <strong>xsetf</strong>          
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  subroutine <a href='../proc/xsetf.html'>xsetf</a>(me, mflag)  
+</h3>
+    
+  <p>reset the error print control flag.</p>
+<p>xsetf sets the error print control flag to mflag:
+      mflag=1 means print all messages (the default).
+      mflag=0 means no printing.</p>
+<p><strong><em>author  hindmarsh, alan c., (llnl)
+</em></strong>revision history  (yymmdd)
+   921118  date written
+   930329  added slatec format prologue. (fnf)
+   930407  corrected see also section. (fnf)
+   930922  made user-callable, and other cosmetic changes. (fnf)</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>mflag</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-dvsrco"></span><h3>procedure, public :: <strong>dvsrco</strong>          
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  subroutine <a href='../proc/dvsrco.html'>dvsrco</a>(me, sav, job)  
+</h3>
+    
+  <p>this routine saves or restores (depending on <code>job</code>) the contents of the
+dvode internal variables.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/dvode_data_t.html'>dvode_data_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sav</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>job</strong></td>
+            <td>
+<p>flag indicating to save or restore the data:</p><a href="../proc/dvsrco.html#variable-job" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-dvindy"></span><h3>procedure, public :: <strong>dvindy</strong>          
     </h3></div>
     <ul class="list-group">
         <li class="list-group-item">
@@ -2270,6 +2164,267 @@
             <td><strong>iflag</strong></td>
             <td>
 
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-dvhin"></span><h3>procedure, private :: <strong>dvhin</strong>          
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  subroutine <a href='../proc/dvhin.html'>dvhin</a>(me, n, t0, y0, ydot, tout, uround, ewt, itol, atol, y, temp, h0, niter, ier)  
+</h3>
+    
+  <p>this routine computes the step size, h0, to be attempted on the
+first step, when the user has not supplied a value for this.</p>
+<p>first we check that tout - t0 differs significantly from zero.  then
+an iteration is done to approximate the initial second derivative
+and this is used to define h from w.r.m.s.norm(h**2 * yddot / 2) = 1.
+a bias factor of 1/2 is applied to the resulting h.
+the sign of h0 is inferred from the initial values of tout and t0.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>n</strong></td>
+            <td>
+<p>size of ode system</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>t0</strong></td>
+            <td>
+<p>initial value of independent variable</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>y0</strong>(*)</td>
+            <td>
+<p>vector of initial conditions</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ydot</strong>(*)</td>
+            <td>
+<p>vector of initial first derivatives</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tout</strong></td>
+            <td>
+<p>first output value of independent variable</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>uround</strong></td>
+            <td>
+<p>machine unit roundoff</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ewt</strong>(*)</td>
+            <td>
+<p>error weights and tolerance parameters as described in the driver routine</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>itol</strong></td>
+            <td>
+<p>error weights and tolerance parameters as described in the driver routine</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>atol</strong>(*)</td>
+            <td>
+<p>error weights and tolerance parameters as described in the driver routine</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>y</strong>(n)</td>
+            <td>
+<p>work array of length n</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>temp</strong>(n)</td>
+            <td>
+<p>work array of length n</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>h0</strong></td>
+            <td>
+<p>step size to be attempted</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>niter</strong></td>
+            <td>
+<p>number of iterations (and of f evaluations) to compute h0</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ier</strong></td>
+            <td>
+<p>the error flag, returned with the value:</p><a href="../proc/dvhin.html#variable-ier" class="pull-right"><emph>Read more&hellip;</emph></a>
             </td>
         </tr>
     </tbody>
@@ -3301,82 +3456,6 @@ matrix is found to be singular.</p>
   </div>
 
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-dvsrco"></span><h3>procedure, private :: <strong>dvsrco</strong>          
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    private  subroutine <a href='../proc/dvsrco.html'>dvsrco</a>(me, sav, job)  
-</h3>
-    
-  <p>this routine saves or restores (depending on <code>job</code>) the contents of the
-dvode internal variables.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/dvode_t.html'>dvode_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>me</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(<a href='../type/dvode_data_t.html'>dvode_data_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>sav</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer,
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>job</strong></td>
-            <td>
-<p>flag indicating to save or restore the data:</p><a href="../proc/dvsrco.html#variable-job" class="pull-right"><emph>Read more&hellip;</emph></a>
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-ixsav"></span><h3>procedure, private :: <strong>ixsav</strong>          
     </h3></div>
     <ul class="list-group">
@@ -3493,142 +3572,6 @@ dvode internal variables.</p>
     <small>integer</small>
     </h4>
     
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-xsetun"></span><h3>procedure, private :: <strong>xsetun</strong>          
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    private  subroutine <a href='../proc/xsetun.html'>xsetun</a>(me, lun)  
-</h3>
-    
-  <p>reset the logical unit number for error messages.</p>
-<p>xsetun sets the logical unit number for error messages to lun.</p>
-<p><strong><em>author  hindmarsh, alan c., (llnl)
-</em></strong>revision history  (yymmdd)
-   921118  date written
-   930329  added slatec format prologue. (fnf)
-   930407  corrected see also section. (fnf)
-   930922  made user-callable, and other cosmetic changes. (fnf)</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/dvode_t.html'>dvode_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>me</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>lun</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-xsetf"></span><h3>procedure, private :: <strong>xsetf</strong>          
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    private  subroutine <a href='../proc/xsetf.html'>xsetf</a>(me, mflag)  
-</h3>
-    
-  <p>reset the error print control flag.</p>
-<p>xsetf sets the error print control flag to mflag:
-      mflag=1 means print all messages (the default).
-      mflag=0 means no printing.</p>
-<p><strong><em>author  hindmarsh, alan c., (llnl)
-</em></strong>revision history  (yymmdd)
-   921118  date written
-   930329  added slatec format prologue. (fnf)
-   930407  corrected see also section. (fnf)
-   930922  made user-callable, and other cosmetic changes. (fnf)</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/dvode_t.html'>dvode_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>me</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>mflag</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
 
         </li>
     </ul>
@@ -3871,9 +3814,11 @@ dvode internal variables.</p>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
     <div class="highlight"><pre><span></span><span class="w">   </span><span class="k">type</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvode_t</span><span class="w"></span>
 
+<span class="w">      </span><span class="c">!! Main DVODE class.</span>
+
 <span class="w">      </span><span class="k">private</span>
 
-<span class="k">      type</span><span class="p">(</span><span class="n">dvode_data_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="c">!! internal data</span>
+<span class="k">      type</span><span class="p">(</span><span class="n">dvode_data_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="c">!! internal data (formerly in common blocks)</span>
 
 <span class="w">      </span><span class="c">! formerly save variables</span>
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">etaq</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
@@ -3890,19 +3835,19 @@ dvode internal variables.</p>
 
 <span class="k">      procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">solve</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dvode</span><span class="w"></span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xsetun</span><span class="w"></span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xsetf</span><span class="w"></span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvsrco</span><span class="w"></span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvindy</span><span class="w"></span>
 
 <span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvhin</span><span class="w"></span>
-<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvindy</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvstep</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvset</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvjust</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvnlsd</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvjac</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvsol</span><span class="w"></span>
-<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvsrco</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ixsav</span><span class="w"></span>
-<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xsetun</span><span class="w"></span>
-<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xsetf</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xerrwd</span><span class="w"></span>
 
 <span class="w">    </span><span class="k">end type </span><span class="n">dvode_t</span><span class="w"></span>
