@@ -156,12 +156,17 @@
 
     <p>reset the logical unit number for error messages.</p>
 <p>xsetun sets the logical unit number for error messages to lun.</p>
-<p><strong><em>author  hindmarsh, alan c., (llnl)
-</em></strong>revision history  (yymmdd)
-   921118  date written
-   930329  added slatec format prologue. (fnf)
-   930407  corrected see also section. (fnf)
-   930922  made user-callable, and other cosmetic changes. (fnf)</p>
+<h3>Author</h3>
+<ul>
+<li>hindmarsh, alan c., (llnl)</li>
+</ul>
+<h3>Revision history</h3>
+<ul>
+<li>921118  date written</li>
+<li>930329  added slatec format prologue. (fnf)</li>
+<li>930407  corrected see also section. (fnf)</li>
+<li>930922  made user-callable, and other cosmetic changes. (fnf)</li>
+</ul>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -252,7 +257,7 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre><span></span><span class="w">      </span><span class="k">subroutine </span><span class="n">xsetun</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">lun</span><span class="p">)</span><span class="w"></span>
+    <div class="highlight"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">xsetun</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">lun</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">      </span><span class="k">class</span><span class="p">(</span><span class="n">dvode_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lun</span><span class="w"></span>
@@ -261,7 +266,7 @@
 
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">lun</span><span class="o">&gt;</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">junk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">ixsav</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">lun</span><span class="p">,.</span><span class="n">true</span><span class="p">.)</span><span class="w"></span>
 
-<span class="w">      </span><span class="k">end subroutine </span><span class="n">xsetun</span><span class="w"></span>
+<span class="w">   </span><span class="k">end subroutine </span><span class="n">xsetun</span><span class="w"></span>
 </pre></div>
 
     </section>

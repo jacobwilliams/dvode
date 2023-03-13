@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 1.4% of total for procedures.">27 statements</a>
+               title=" 1.5% of total for procedures.">30 statements</a>
           </li>
 
             <li id="source-file">
@@ -154,17 +154,24 @@
 </h2>
     
 
-    <p>set error weight vector.</p>
-<p>this subroutine sets the error weight vector ewt according to
-      ewt(i) = rtol(i)*abs(ycur(i)) + atol(i),  i = 1,...,n,
-  with the subscript on rtol and/or atol possibly replaced by 1 above,
+    <p>Set error weight vector.</p>
+<p>this subroutine sets the error weight vector ewt according to</p>
+<div class="codehilite"><pre><span></span><code>      ewt(i) = rtol(i)*abs(ycur(i)) + atol(i),  i = 1,...,n,
+</code></pre></div>
+
+<p>with the subscript on rtol and/or atol possibly replaced by 1 above,
   depending on the value of itol.</p>
-<p><strong><em>author  hindmarsh, alan c., (llnl)
-</em></strong>revision history  (yymmdd)
-   791129  date written
-   890501  modified prologue to slatec/ldoc format.  (fnf)
-   890503  minor cosmetic changes.  (fnf)
-   930809  renamed to allow single/real(wp) versions. (ach)</p>
+<h3>Author</h3>
+<ul>
+<li>hindmarsh, alan c., (llnl)</li>
+</ul>
+<h3>Revision history</h3>
+<ul>
+<li>791129  date written</li>
+<li>890501  modified prologue to slatec/ldoc format.  (fnf)</li>
+<li>890503  minor cosmetic changes.  (fnf)</li>
+<li>930809  renamed to allow single/real(wp) versions. (ach)</li>
+</ul>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -179,7 +186,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-n~5"></span>
+              <span class="anchor" id="variable-n~9"></span>
               integer
             </td>
 <td></td>
@@ -416,11 +423,15 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre><span></span><span class="w">      </span><span class="k">subroutine </span><span class="n">dewset</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">itol</span><span class="p">,</span><span class="n">rtol</span><span class="p">,</span><span class="n">atol</span><span class="p">,</span><span class="n">ycur</span><span class="p">,</span><span class="n">ewt</span><span class="p">)</span><span class="w"></span>
+    <div class="highlight"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">dewset</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">itol</span><span class="p">,</span><span class="n">rtol</span><span class="p">,</span><span class="n">atol</span><span class="p">,</span><span class="n">ycur</span><span class="p">,</span><span class="n">ewt</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">itol</span><span class="w"></span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">itol</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rtol</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">atol</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ycur</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ewt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rtol</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">atol</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ycur</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ewt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">      </span><span class="k">select case</span><span class="w"> </span><span class="p">(</span><span class="n">itol</span><span class="p">)</span><span class="w"></span>
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
@@ -440,10 +451,10 @@
 <span class="k">         return</span>
 <span class="k">      case </span><span class="n">default</span><span class="w"></span>
 <span class="w">      </span><span class="k">end select</span>
+
 <span class="k">      do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
 <span class="w">         </span><span class="n">ewt</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rtol</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">ycur</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">atol</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 <span class="w">      </span><span class="k">enddo</span>
-<span class="k">      return</span>
 
 <span class="k">   end subroutine </span><span class="n">dewset</span><span class="w"></span>
 </pre></div>

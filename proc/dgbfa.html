@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 3.3% of total for procedures.">65 statements</a>
+               title=" 3.5% of total for procedures.">69 statements</a>
           </li>
 
             <li id="source-file">
@@ -155,93 +155,44 @@
     
 
     <p>factor a band matrix using gaussian elimination.</p>
-<p><strong><em>author  moler, c. b., (u. of new mexico)
-</em></strong>description</p>
-<div class="codehilite"><pre><span></span><code> <span class="nv">dgbfa</span> <span class="nv">factors</span> <span class="nv">a</span> <span class="nv">double</span> <span class="nv">precision</span> <span class="nv">band</span> <span class="nv">matrix</span> <span class="nv">by</span> <span class="nv">elimination</span>.
-
- <span class="nv">dgbfa</span> <span class="nv">is</span> <span class="nv">usually</span> <span class="nv">called</span> <span class="nv">by</span> <span class="nv">dgbco</span>, <span class="nv">but</span> <span class="nv">it</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">called</span>
- <span class="nv">directly</span> <span class="nv">with</span> <span class="nv">a</span> <span class="nv">saving</span> <span class="nv">in</span> <span class="nv">time</span> <span class="k">if</span>  <span class="nv">rcond</span>  <span class="nv">is</span> <span class="nv">not</span> <span class="nv">needed</span>.
-
- <span class="nv">on</span> <span class="nv">entry</span>
-
-    <span class="nv">abd</span>     <span class="nv">double</span> <span class="nv">precision</span><span class="ss">(</span><span class="nv">lda</span>, <span class="nv">n</span><span class="ss">)</span>
-            <span class="nv">contains</span> <span class="nv">the</span> <span class="nv">matrix</span> <span class="nv">in</span> <span class="nv">band</span> <span class="nv">storage</span>.  <span class="nv">the</span> <span class="nv">columns</span>
-            <span class="nv">of</span> <span class="nv">the</span> <span class="nv">matrix</span> <span class="nv">are</span> <span class="nv">stored</span> <span class="nv">in</span> <span class="nv">the</span> <span class="nv">columns</span> <span class="nv">of</span>  <span class="nv">abd</span>  <span class="nv">and</span>
-            <span class="nv">the</span> <span class="nv">diagonals</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">matrix</span> <span class="nv">are</span> <span class="nv">stored</span> <span class="nv">in</span> <span class="nv">rows</span>
-            <span class="nv">ml</span><span class="o">+</span><span class="mi">1</span> <span class="nv">through</span> <span class="mi">2</span><span class="o">*</span><span class="nv">ml</span><span class="o">+</span><span class="nv">mu</span><span class="o">+</span><span class="mi">1</span> <span class="nv">of</span>  <span class="nv">abd</span> .
-            <span class="nv">see</span> <span class="nv">the</span> <span class="nv">comments</span> <span class="nv">below</span> <span class="k">for</span> <span class="nv">details</span>.
-
-    <span class="nv">lda</span>     <span class="nv">integer</span>
-            <span class="nv">the</span> <span class="nv">leading</span> <span class="nv">dimension</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">array</span>  <span class="nv">abd</span> .
-            <span class="nv">lda</span> <span class="nv">must</span> <span class="nv">be</span> .<span class="nv">ge</span>. <span class="mi">2</span><span class="o">*</span><span class="nv">ml</span> <span class="o">+</span> <span class="nv">mu</span> <span class="o">+</span> <span class="mi">1</span> .
-
-    <span class="nv">n</span>       <span class="nv">integer</span>
-            <span class="nv">the</span> <span class="nv">order</span> <span class="nv">of</span> <span class="nv">the</span> <span class="nv">original</span> <span class="nv">matrix</span>.
-
-    <span class="nv">ml</span>      <span class="nv">integer</span>
-            <span class="nv">number</span> <span class="nv">of</span> <span class="nv">diagonals</span> <span class="nv">below</span> <span class="nv">the</span> <span class="nv">main</span> <span class="nv">diagonal</span>.
-            <span class="mi">0</span> .<span class="nv">le</span>. <span class="nv">ml</span> .<span class="nv">lt</span>.  <span class="nv">n</span> .
-
-    <span class="nv">mu</span>      <span class="nv">integer</span>
-            <span class="nv">number</span> <span class="nv">of</span> <span class="nv">diagonals</span> <span class="nv">above</span> <span class="nv">the</span> <span class="nv">main</span> <span class="nv">diagonal</span>.
-            <span class="mi">0</span> .<span class="nv">le</span>. <span class="nv">mu</span> .<span class="nv">lt</span>.  <span class="nv">n</span> .
-            <span class="nv">more</span> <span class="nv">efficient</span> <span class="k">if</span>  <span class="nv">ml</span> .<span class="nv">le</span>. <span class="nv">mu</span> .
- <span class="nv">on</span> <span class="k">return</span>
-
-    <span class="nv">abd</span>     <span class="nv">an</span> <span class="nv">upper</span> <span class="nv">triangular</span> <span class="nv">matrix</span> <span class="nv">in</span> <span class="nv">band</span> <span class="nv">storage</span> <span class="nv">and</span>
-            <span class="nv">the</span> <span class="nv">multipliers</span> <span class="nv">which</span> <span class="nv">were</span> <span class="nv">used</span> <span class="nv">to</span> <span class="nv">obtain</span> <span class="nv">it</span>.
-            <span class="nv">the</span> <span class="nv">factorization</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">written</span>  <span class="nv">a</span> <span class="o">=</span> <span class="nv">l</span><span class="o">*</span><span class="nv">u</span>  <span class="nv">where</span>
-            <span class="nv">l</span>  <span class="nv">is</span> <span class="nv">a</span> <span class="nv">product</span> <span class="nv">of</span> <span class="nv">permutation</span> <span class="nv">and</span> <span class="nv">unit</span> <span class="nv">lower</span>
-            <span class="nv">triangular</span> <span class="nv">matrices</span> <span class="nv">and</span>  <span class="nv">u</span>  <span class="nv">is</span> <span class="nv">upper</span> <span class="nv">triangular</span>.
-
-    <span class="nv">ipvt</span>    <span class="nv">integer</span><span class="ss">(</span><span class="nv">n</span><span class="ss">)</span>
-            <span class="nv">an</span> <span class="nv">integer</span> <span class="nv">vector</span> <span class="nv">of</span> <span class="nv">pivot</span> <span class="nv">indices</span>.
-
-    <span class="nv">info</span>    <span class="nv">integer</span>
-            <span class="o">=</span> <span class="mi">0</span>  <span class="nv">normal</span> <span class="nv">value</span>.
-            <span class="o">=</span> <span class="nv">k</span>  <span class="k">if</span>  <span class="nv">u</span><span class="ss">(</span><span class="nv">k</span>,<span class="nv">k</span><span class="ss">)</span> .<span class="nv">eq</span>. <span class="mi">0</span>.<span class="mi">0</span> .  <span class="nv">this</span> <span class="nv">is</span> <span class="nv">not</span> <span class="nv">an</span> <span class="nv">error</span>
-                 <span class="nv">condition</span> <span class="k">for</span> <span class="nv">this</span> <span class="nv">subroutine</span>, <span class="nv">but</span> <span class="nv">it</span> <span class="nv">does</span>
-                 <span class="nv">indicate</span> <span class="nv">that</span> <span class="nv">dgbsl</span> <span class="nv">will</span> <span class="nv">divide</span> <span class="nv">by</span> <span class="nv">zero</span> <span class="k">if</span>
-                 <span class="nv">called</span>.  <span class="nv">use</span>  <span class="nv">rcond</span>  <span class="nv">in</span> <span class="nv">dgbco</span> <span class="k">for</span> <span class="nv">a</span> <span class="nv">reliable</span>
-                 <span class="nv">indication</span> <span class="nv">of</span> <span class="nv">singularity</span>.
-
- <span class="nv">band</span> <span class="nv">storage</span>
-
-       <span class="k">if</span>  <span class="nv">a</span>  <span class="nv">is</span> <span class="nv">a</span> <span class="nv">band</span> <span class="nv">matrix</span>, <span class="nv">the</span> <span class="nv">following</span> <span class="nv">program</span> <span class="nv">segment</span>
-       <span class="nv">will</span> <span class="nv">set</span> <span class="nv">up</span> <span class="nv">the</span> <span class="nv">input</span>.
-
-               <span class="nv">ml</span> <span class="o">=</span> <span class="ss">(</span><span class="nv">band</span> <span class="nv">width</span> <span class="nv">below</span> <span class="nv">the</span> <span class="nv">diagonal</span><span class="ss">)</span>
-               <span class="nv">mu</span> <span class="o">=</span> <span class="ss">(</span><span class="nv">band</span> <span class="nv">width</span> <span class="nv">above</span> <span class="nv">the</span> <span class="nv">diagonal</span><span class="ss">)</span>
-               <span class="nv">m</span> <span class="o">=</span> <span class="nv">ml</span> <span class="o">+</span> <span class="nv">mu</span> <span class="o">+</span> <span class="mi">1</span>
-               <span class="k">do</span> <span class="mi">20</span> <span class="nv">j</span> <span class="o">=</span> <span class="mi">1</span>, <span class="nv">n</span>
-                  <span class="nv">i1</span> <span class="o">=</span> <span class="nv">max</span><span class="ss">(</span><span class="mi">1</span>, <span class="nv">j</span><span class="o">-</span><span class="nv">mu</span><span class="ss">)</span>
-                  <span class="nv">i2</span> <span class="o">=</span> <span class="nv">min</span><span class="ss">(</span><span class="nv">n</span>, <span class="nv">j</span><span class="o">+</span><span class="nv">ml</span><span class="ss">)</span>
-                  <span class="k">do</span> <span class="mi">10</span> <span class="nv">i</span> <span class="o">=</span> <span class="nv">i1</span>, <span class="nv">i2</span>
-                     <span class="nv">k</span> <span class="o">=</span> <span class="nv">i</span> <span class="o">-</span> <span class="nv">j</span> <span class="o">+</span> <span class="nv">m</span>
-                     <span class="nv">abd</span><span class="ss">(</span><span class="nv">k</span>,<span class="nv">j</span><span class="ss">)</span> <span class="o">=</span> <span class="nv">a</span><span class="ss">(</span><span class="nv">i</span>,<span class="nv">j</span><span class="ss">)</span>
-            <span class="mi">10</span>    <span class="k">continue</span>
-            <span class="mi">20</span> <span class="k">continue</span>
-
-       <span class="nv">this</span> <span class="nv">uses</span> <span class="nv">rows</span>  <span class="nv">ml</span><span class="o">+</span><span class="mi">1</span>  <span class="nv">through</span>  <span class="mi">2</span><span class="o">*</span><span class="nv">ml</span><span class="o">+</span><span class="nv">mu</span><span class="o">+</span><span class="mi">1</span>  <span class="nv">of</span>  <span class="nv">abd</span> .
-       <span class="nv">in</span> <span class="nv">addition</span>, <span class="nv">the</span> <span class="nv">first</span>  <span class="nv">ml</span>  <span class="nv">rows</span> <span class="nv">in</span>  <span class="nv">abd</span>  <span class="nv">are</span> <span class="nv">used</span> <span class="k">for</span>
-       <span class="nv">elements</span> <span class="nv">generated</span> <span class="nv">during</span> <span class="nv">the</span> <span class="nv">triangularization</span>.
-       <span class="nv">the</span> <span class="nv">total</span> <span class="nv">number</span> <span class="nv">of</span> <span class="nv">rows</span> <span class="nv">needed</span> <span class="nv">in</span>  <span class="nv">abd</span>  <span class="nv">is</span>  <span class="mi">2</span><span class="o">*</span><span class="nv">ml</span><span class="o">+</span><span class="nv">mu</span><span class="o">+</span><span class="mi">1</span> .
-       <span class="nv">the</span>  <span class="nv">ml</span><span class="o">+</span><span class="nv">mu</span> <span class="nv">by</span> <span class="nv">ml</span><span class="o">+</span><span class="nv">mu</span>  <span class="nv">upper</span> <span class="nv">left</span> <span class="nv">triangle</span> <span class="nv">and</span> <span class="nv">the</span>
-       <span class="nv">ml</span> <span class="nv">by</span> <span class="nv">ml</span>  <span class="nv">lower</span> <span class="nv">right</span> <span class="nv">triangle</span> <span class="nv">are</span> <span class="nv">not</span> <span class="nv">referenced</span>.
+<p><a href="../proc/dgbfa.html">dgbfa</a> is usually called by <a>dgbco</a>, but it can be called
+  directly with a saving in time if <code>rcond</code> is not needed.</p>
+<h3>Band storage</h3>
+<p>if  <code>a</code>  is a band matrix, the following program segment
+  will set up the input.</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="n">ml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">band</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="n">below</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">diagonal</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">mu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">band</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="n">above</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">diagonal</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">  </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
+<span class="w">     </span><span class="n">i1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="w"></span>
+<span class="w">     </span><span class="n">i2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="o">+</span><span class="n">ml</span><span class="p">)</span><span class="w"></span>
+<span class="w">     </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="w"></span>
+<span class="w">        </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m</span><span class="w"></span>
+<span class="w">        </span><span class="n">abd</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">)</span><span class="w"></span>
+<span class="w">     </span><span class="k">end do</span>
+<span class="k">  end do</span><span class="w"></span>
 </code></pre></div>
 
-<p><strong><em>references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
-                 stewart, linpack users' guide, siam, 1979.
-</em></strong>routines called  daxpy, dscal, idamax
-***revision history  (yymmdd)
-   780814  date written
-   890531  changed all specific intrinsics to generic.  (wrb)
-   890831  modified array declarations.  (wrb)
-   890831  revision date from version 3.2
-   891214  prologue converted to version 4.0 format.  (bab)
-   900326  removed duplicate information from description section.
-           (wrb)
-   920501  reformatted the references section.  (wrb)</p>
+<p>this uses rows  <code>ml+1</code>  through  <code>2*ml+mu+1</code>  of  <code>abd</code> .
+  in addition, the first  <code>ml</code> rows in  <code>abd</code>  are used for
+  elements generated during the triangularization.
+  the total number of rows needed in  <code>abd</code>  is  <code>2*ml+mu+1</code>.
+  the  <code>ml+mu</code> by <code>ml+mu</code>  upper left triangle and the
+  <code>ml</code> by <code>ml</code>  lower right triangle are not referenced.</p>
+<h3>Author</h3>
+<ul>
+<li>moler, c. b., (u. of new mexico)</li>
+</ul>
+<h3>Revision history</h3>
+<ul>
+<li>780814  date written</li>
+<li>890531  changed all specific intrinsics to generic.  (wrb)</li>
+<li>890831  modified array declarations.  (wrb)</li>
+<li>890831  revision date from version 3.2</li>
+<li>891214  prologue converted to version 4.0 format.  (bab)</li>
+<li>900326  removed duplicate information from description section. (wrb)</li>
+<li>920501  reformatted the references section.  (wrb)</li>
+</ul>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -257,106 +208,128 @@
         <tr>
             <td>
               <span class="anchor" id="variable-abd"></span>
-              double precision
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>abd</strong>(lda,*)</td>
             <td>
-                
+                <ul>
+<li><strong>input:</strong> contains the matrix in band storage.  the columns
+  of the matrix are stored in the columns of  <code>abd</code>  and
+  the diagonals of the matrix are stored in rows
+  <code>ml+1</code> through <code>2*ml+mu+1</code> of  <code>abd</code> .
+  see the comments below for details.</li>
+<li><strong>output:</strong> an upper triangular matrix in band storage and
+  the multipliers which were used to obtain it.
+  the factorization can be written  <code>a = l*u</code>  where
+  <code>l</code>  is a product of permutation and unit lower
+  triangular matrices and  <code>u</code>  is upper triangular.</li>
+</ul>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-lda~3"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>lda</strong></td>
             <td>
-                
+                <p>the leading dimension of the array  <code>abd</code> .
+<code>lda</code> must be <code>&gt;= 2*ml + mu + 1</code> .</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-n~13"></span>
-              integer
+              <span class="anchor" id="variable-n~6"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>n</strong></td>
             <td>
-                
+                <p>the order of the original matrix.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ml~2"></span>
-              integer
+              <span class="anchor" id="variable-ml"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ml</strong></td>
             <td>
-                
+                <p>number of diagonals below the main diagonal.
+<code>0 &lt;= ml &lt; n</code> .</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-mu~2"></span>
-              integer
+              <span class="anchor" id="variable-mu"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>mu</strong></td>
             <td>
-                
+                <p>number of diagonals above the main diagonal.
+<code>0 &lt;= mu &lt; n</code> .
+more efficient if  <code>ml &lt;= mu</code> .</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-ipvt~3"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ipvt</strong>(*)</td>
             <td>
-                
+                <p>an integer vector of pivot indices.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-info~2"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>info</strong></td>
             <td>
-                
+                <ul>
+<li>0  normal value.</li>
+<li>k  if  <code>u(k,k) == 0.0</code> .  this is not an error
+  condition for this subroutine, but it does
+  indicate that <a href="../proc/dgbsl.html">dgbsl</a> will divide by zero if
+  called.  use  rcond  in <a>dgbco</a> for a reliable
+  indication of singularity.</li>
+</ul>
             </td>
         </tr>
     </tbody>
@@ -400,33 +373,33 @@
 <path fill="none" stroke="#000000" d="M53.45,-66.15C62.21,-70.33 72.17,-75.08 81.52,-79.54"/>
 <polygon fill="#000000" stroke="#000000" points="80.07,-82.73 90.6,-83.88 83.09,-76.41 80.07,-82.73"/>
 </g>
-<!-- proc~daxpy -->
-<g id="proc~~dgbfa~~CallsGraph_node3" class="node">
-<title>proc~daxpy</title>
-<g id="a_proc~~dgbfa~~CallsGraph_node3"><a xlink:href=".././proc/daxpy.html" xlink:title="daxpy">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
-<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">daxpy</text>
-</a>
-</g>
-</g>
-<!-- proc~dgbfa&#45;&gt;proc~daxpy -->
-<g id="proc~~dgbfa~~CallsGraph_edge2" class="edge">
-<title>proc~dgbfa&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M54.4,-54C62.39,-54 71.31,-54 79.82,-54"/>
-<polygon fill="#000000" stroke="#000000" points="79.92,-57.5 89.92,-54 79.92,-50.5 79.92,-57.5"/>
-</g>
 <!-- proc~dscal -->
-<g id="proc~~dgbfa~~CallsGraph_node4" class="node">
+<g id="proc~~dgbfa~~CallsGraph_node3" class="node">
 <title>proc~dscal</title>
-<g id="a_proc~~dgbfa~~CallsGraph_node4"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
-<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
+<g id="a_proc~~dgbfa~~CallsGraph_node3"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
+<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
 </a>
 </g>
 </g>
 <!-- proc~dgbfa&#45;&gt;proc~dscal -->
-<g id="proc~~dgbfa~~CallsGraph_edge3" class="edge">
+<g id="proc~~dgbfa~~CallsGraph_edge2" class="edge">
 <title>proc~dgbfa&#45;&gt;proc~dscal</title>
+<path fill="none" stroke="#000000" d="M54.4,-54C62.39,-54 71.31,-54 79.82,-54"/>
+<polygon fill="#000000" stroke="#000000" points="79.92,-57.5 89.92,-54 79.92,-50.5 79.92,-57.5"/>
+</g>
+<!-- proc~daxpy -->
+<g id="proc~~dgbfa~~CallsGraph_node4" class="node">
+<title>proc~daxpy</title>
+<g id="a_proc~~dgbfa~~CallsGraph_node4"><a xlink:href=".././proc/daxpy.html" xlink:title="daxpy">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
+<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">daxpy</text>
+</a>
+</g>
+</g>
+<!-- proc~dgbfa&#45;&gt;proc~daxpy -->
+<g id="proc~~dgbfa~~CallsGraph_edge3" class="edge">
+<title>proc~dgbfa&#45;&gt;proc~daxpy</title>
 <path fill="none" stroke="#000000" d="M53.45,-41.85C62.21,-37.67 72.17,-32.92 81.52,-28.46"/>
 <polygon fill="#000000" stroke="#000000" points="83.09,-31.59 90.6,-24.12 80.07,-25.27 83.09,-31.59"/>
 </g>
@@ -638,22 +611,44 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre><span></span><span class="w">       </span><span class="k">subroutine </span><span class="n">dgbfa</span><span class="p">(</span><span class="n">abd</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ml</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">info</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">implicit none</span>
+    <div class="highlight"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">dgbfa</span><span class="p">(</span><span class="n">abd</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ml</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">info</span><span class="p">)</span><span class="w"></span>
 
-<span class="k">       </span><span class="kt">integer </span><span class="n">lda</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ipvt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="w"></span>
-<span class="w">       </span><span class="kt">double precision </span><span class="n">abd</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w">       </span><span class="kt">double precision </span><span class="n">t</span><span class="w"></span>
-<span class="w">       </span><span class="kt">integer </span><span class="n">i</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">i0</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ju</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">jz</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">j0</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">j1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">kp1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="p">,</span><span class="w">   </span><span class="p">&amp;</span><span class="w"></span>
-<span class="w">               </span><span class="n">lm</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mm</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nm1</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!***first executable statement  dgbfa</span>
+<span class="w">       </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lda</span><span class="w"> </span><span class="c">!! the leading dimension of the array  `abd` .</span>
+<span class="w">                                 </span><span class="c">!! `lda` must be `&gt;= 2*ml + mu + 1` .</span>
+<span class="w">       </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="c">!! the order of the original matrix.</span>
+<span class="w">       </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="c">!! number of diagonals below the main diagonal.</span>
+<span class="w">                                </span><span class="c">!! `0 &lt;= ml &lt; n` .</span>
+<span class="w">       </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="c">!! number of diagonals above the main diagonal.</span>
+<span class="w">                                </span><span class="c">!! `0 &lt;= mu &lt; n` .</span>
+<span class="w">                                </span><span class="c">!! more efficient if  `ml &lt;= mu` .</span>
+<span class="w">       </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ipvt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! an integer vector of pivot indices.</span>
+<span class="w">       </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">info</span><span class="w"> </span><span class="c">!! * 0  normal value.</span>
+<span class="w">                                   </span><span class="c">!! * k  if  `u(k,k) == 0.0` .  this is not an error</span>
+<span class="w">                                   </span><span class="c">!!   condition for this subroutine, but it does</span>
+<span class="w">                                   </span><span class="c">!!   indicate that [[dgbsl]] will divide by zero if</span>
+<span class="w">                                   </span><span class="c">!!   called.  use  rcond  in [[dgbco]] for a reliable</span>
+<span class="w">                                   </span><span class="c">!!   indication of singularity.</span>
+<span class="w">       </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">abd</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! * **input:** contains the matrix in band storage.  the columns</span>
+<span class="w">                                            </span><span class="c">!!   of the matrix are stored in the columns of  `abd`  and</span>
+<span class="w">                                            </span><span class="c">!!   the diagonals of the matrix are stored in rows</span>
+<span class="w">                                            </span><span class="c">!!   `ml+1` through `2*ml+mu+1` of  `abd` .</span>
+<span class="w">                                            </span><span class="c">!!   see the comments below for details.</span>
+<span class="w">                                            </span><span class="c">!! * **output:** an upper triangular matrix in band storage and</span>
+<span class="w">                                            </span><span class="c">!!   the multipliers which were used to obtain it.</span>
+<span class="w">                                            </span><span class="c">!!   the factorization can be written  `a = l*u`  where</span>
+<span class="w">                                            </span><span class="c">!!   `l`  is a product of permutation and unit lower</span>
+<span class="w">                                            </span><span class="c">!!   triangular matrices and  `u`  is upper triangular.</span>
+
+
+<span class="w">       </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t</span><span class="w"></span>
+<span class="w">       </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">i0</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ju</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">jz</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">j0</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">j1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">kp1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                  </span><span class="n">lm</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mm</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nm1</span><span class="w"></span>
+
 <span class="w">       </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">       </span><span class="n">info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     zero initial fill-in columns</span>
-<span class="w"> </span><span class="c">!</span>
+
+<span class="w">      </span><span class="c">! zero initial fill-in columns</span>
+
 <span class="w">       </span><span class="n">j0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
 <span class="w">       </span><span class="n">j1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">j1</span><span class="o">&gt;=</span><span class="n">j0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
@@ -666,16 +661,16 @@
 <span class="k">       endif</span>
 <span class="k">       </span><span class="n">jz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j1</span><span class="w"></span>
 <span class="w">       </span><span class="n">ju</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!     gaussian elimination with partial pivoting</span>
-<span class="w"> </span><span class="c">!</span>
+
+<span class="w">      </span><span class="c">! gaussian elimination with partial pivoting</span>
+
 <span class="w">       </span><span class="n">nm1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">nm1</span><span class="o">&gt;=</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">          do </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nm1</span><span class="w"></span>
 <span class="w">             </span><span class="n">kp1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        zero next fill-in column</span>
-<span class="w"> </span><span class="c">!</span>
+
+<span class="w">            </span><span class="c">! zero next fill-in column</span>
+
 <span class="w">             </span><span class="n">jz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jz</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">             </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jz</span><span class="o">&lt;=</span><span class="n">n</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">                if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ml</span><span class="o">&gt;=</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
@@ -684,34 +679,34 @@
 <span class="w">                   </span><span class="k">enddo</span>
 <span class="k">                endif</span>
 <span class="k">             endif</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        find l = pivot index</span>
-<span class="w"> </span><span class="c">!</span>
+
+<span class="w">            </span><span class="c">! find l = pivot index</span>
+
 <span class="w">             </span><span class="n">lm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
 <span class="w">             </span><span class="n">l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idamax</span><span class="p">(</span><span class="n">lm</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">abd</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">k</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">             </span><span class="n">ipvt</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">m</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        zero pivot implies this column already triangularized</span>
-<span class="w"> </span><span class="c">!</span>
+
+<span class="w">            </span><span class="c">! zero pivot implies this column already triangularized</span>
+
 <span class="w">             </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">abd</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">k</span><span class="p">)</span><span class="o">==</span><span class="mf">0.0d0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">                </span><span class="n">info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="w"></span>
 <span class="w">             </span><span class="k">else</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!           interchange if necessary</span>
-<span class="w"> </span><span class="c">!</span>
+
+<span class="w">               </span><span class="c">! interchange if necessary</span>
+
 <span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">l</span><span class="o">/=</span><span class="n">m</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">                   </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abd</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
 <span class="w">                   </span><span class="n">abd</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abd</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
 <span class="w">                   </span><span class="n">abd</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"></span>
 <span class="w">                </span><span class="k">endif</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!           compute multipliers</span>
-<span class="w"> </span><span class="c">!</span>
+
+<span class="w">               </span><span class="c">! compute multipliers</span>
+
 <span class="w">                </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mf">1.0d0</span><span class="o">/</span><span class="n">abd</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="k">call </span><span class="n">dscal</span><span class="p">(</span><span class="n">lm</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">abd</span><span class="p">(</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">k</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!           row elimination with column indexing</span>
-<span class="w"> </span><span class="c">!</span>
+
+<span class="w">               </span><span class="c">! row elimination with column indexing</span>
+
 <span class="w">                </span><span class="n">ju</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">ju</span><span class="p">,</span><span class="n">mu</span><span class="o">+</span><span class="n">ipvt</span><span class="p">(</span><span class="n">k</span><span class="p">)),</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="n">mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="w"></span>
 <span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ju</span><span class="o">&gt;=</span><span class="n">kp1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
@@ -731,7 +726,8 @@
 <span class="k">       endif</span>
 <span class="k">       </span><span class="n">ipvt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
 <span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">abd</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">n</span><span class="p">)</span><span class="o">==</span><span class="mf">0.0d0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
-<span class="w">       </span><span class="k">end subroutine </span><span class="n">dgbfa</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">end subroutine </span><span class="n">dgbfa</span><span class="w"></span>
 </pre></div>
 
     </section>

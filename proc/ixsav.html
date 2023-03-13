@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.7% of total for procedures.">14 statements</a>
+               title=" 0.8% of total for procedures.">15 statements</a>
           </li>
 
             <li id="source-file">
@@ -155,33 +155,33 @@
     
 
     <p>save and recall error message control parameters.</p>
-<p>ixsav saves and recalls one of two error message parameters:
-    lunit, the logical unit number to which messages are printed, and
-    mesflg, the message print flag.
-  this is a modification of the slatec library routine j4save.</p>
-<p>saved local variables..
-   lunit  = logical unit number for messages.  the default is obtained
-            by a call to iumach (may be machine-dependent).
-   mesflg = print control flag..
-            1 means print all messages (the default).
-            0 means no printing.</p>
-<p>on input..
-    ipar   = parameter indicator (1 for lunit, 2 for mesflg).
-    ivalue = the value to be set for the parameter, if iset = .true.
-    iset   = logical flag to indicate whether to read or write.
-             if iset = .true., the parameter will be given
-             the value ivalue.  if iset = .false., the parameter
-             will be unchanged, and ivalue is a dummy argument.</p>
-<p>on return..
-    ixsav = the (old) value of the parameter.</p>
-<p><strong><em>see also  xerrwd, xerrwv
-</em></strong>author  hindmarsh, alan c., (llnl)
-***revision history  (yymmdd)
-   921118  date written
-   930329  modified prologue to slatec format. (fnf)
-   930915  added iumach call to get default output unit.  (ach)
-   930922  minor cosmetic changes. (fnf)
-   010425  type declaration for iumach added. (ach)</p>
+<p><a href="../proc/ixsav.html">ixsav</a> saves and recalls one of two error message parameters:</p>
+<ul>
+<li><code>lunit</code>, the logical unit number to which messages are printed, and</li>
+<li><code>mesflg</code>, the message print flag.</li>
+</ul>
+<p>this is a modification of the slatec library routine <code>j4save</code>.</p>
+<p>on return:</p>
+<ul>
+<li><code>ixsav</code> = the (old) value of the parameter.</li>
+</ul>
+<h3>See also</h3>
+<ul>
+<li><a href="../proc/xerrwd.html">xerrwd</a></li>
+<li><a>xerrwv</a></li>
+</ul>
+<h3>Author</h3>
+<ul>
+<li>hindmarsh, alan c., (llnl)</li>
+</ul>
+<h3>Revision history</h3>
+<ul>
+<li>921118  date written</li>
+<li>930329  modified prologue to slatec format. (fnf)</li>
+<li>930915  added iumach call to get default output unit.  (ach)</li>
+<li>930922  minor cosmetic changes. (fnf)</li>
+<li>010425  type declaration for iumach added. (ach)</li>
+</ul>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -212,16 +212,16 @@
         <tr>
             <td>
               <span class="anchor" id="variable-ipar"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ipar</strong></td>
             <td>
-                
+                <p>parameter indicator (1 for <code>lunit</code>, 2 for <code>mesflg</code>).</p>
             </td>
         </tr>
         <tr>
@@ -236,22 +236,25 @@
             <td>::</td>
             <td><strong>ivalue</strong></td>
             <td>
-                
+                <p>the value to be set for the parameter, if iset = .true.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-iset"></span>
-              logical
+              logical,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>iset</strong></td>
             <td>
-                
+                <p>logical flag to indicate whether to read or write.
+if <code>iset = .true.</code>, the parameter will be given
+the value <code>ivalue</code>.  if <code>iset = .false.</code>, the parameter
+will be unchanged, and <code>ivalue</code> is a dummy argument.</p>
             </td>
         </tr>
     </tbody>
@@ -309,24 +312,27 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre><span></span><span class="w">      </span><span class="kt">integer </span><span class="k">function </span><span class="n">ixsav</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">ipar</span><span class="p">,</span><span class="n">ivalue</span><span class="p">,</span><span class="n">iset</span><span class="p">)</span><span class="w"></span>
+    <div class="highlight"><pre><span></span><span class="w">   </span><span class="kt">integer </span><span class="k">function </span><span class="n">ixsav</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">ipar</span><span class="p">,</span><span class="n">ivalue</span><span class="p">,</span><span class="n">iset</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">      </span><span class="k">class</span><span class="p">(</span><span class="n">dvode_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span><span class="w"></span>
-<span class="w">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iset</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ipar</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ivalue</span><span class="w"></span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ipar</span><span class="w"> </span><span class="c">!! parameter indicator (1 for `lunit`, 2 for `mesflg`).</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ivalue</span><span class="w"> </span><span class="c">!! the value to be set for the parameter, if iset = .true.</span>
+<span class="w">      </span><span class="kt">logical</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iset</span><span class="w"> </span><span class="c">!! logical flag to indicate whether to read or write.</span>
+<span class="w">                                 </span><span class="c">!! if `iset = .true.`, the parameter will be given</span>
+<span class="w">                                 </span><span class="c">!! the value `ivalue`.  if `iset = .false.`, the parameter</span>
+<span class="w">                                 </span><span class="c">!! will be unchanged, and `ivalue` is a dummy argument.</span>
 
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ipar</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">lunit</span><span class="o">==-</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">lunit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iumach</span><span class="w"></span>
+<span class="w">      </span><span class="k">select case</span><span class="w"> </span><span class="p">(</span><span class="n">ipar</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">lunit</span><span class="o">==-</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">lunit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iumach</span><span class="w"></span>
 <span class="w">         </span><span class="n">ixsav</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">lunit</span><span class="w"></span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">iset</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">lunit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ivalue</span><span class="w"></span>
-<span class="w">      </span><span class="k">endif</span>
-
-<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ipar</span><span class="o">==</span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         </span><span class="n">ixsav</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">mesflg</span><span class="w"></span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="n">ixsav</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">mesflg</span><span class="w"></span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">iset</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">mesflg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ivalue</span><span class="w"></span>
-<span class="w">      </span><span class="k">endif</span>
+<span class="w">      </span><span class="k">end select</span>
 
-<span class="k">      end function </span><span class="n">ixsav</span><span class="w"></span>
+<span class="k">   end function </span><span class="n">ixsav</span><span class="w"></span>
 </pre></div>
 
     </section>

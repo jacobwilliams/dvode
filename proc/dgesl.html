@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 2.2% of total for procedures.">44 statements</a>
+               title=" 2.4% of total for procedures.">47 statements</a>
           </li>
 
             <li id="source-file">
@@ -154,69 +154,37 @@
 </h2>
     
 
-    <p>solve the real system a<em>x=b or trans(a)</em>x=b using the
-  factors computed by dgeco or dgefa.</p>
-<p><strong><em>author  moler, c. b., (u. of new mexico)
-</em></strong>description</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">dgesl</span><span class="w"> </span><span class="n">solves</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">double</span><span class="w"> </span><span class="k">precision</span><span class="w"> </span><span class="k">system</span><span class="w"></span>
-<span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w">  </span><span class="ow">or</span><span class="w">  </span><span class="n">trans</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
-<span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">factors</span><span class="w"> </span><span class="n">computed</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">dgeco</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">dgefa</span><span class="p">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">entry</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">a</span><span class="w">       </span><span class="k">double</span><span class="w"> </span><span class="k">precision</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="k">output</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">dgeco</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">dgefa</span><span class="p">.</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">lda</span><span class="w">     </span><span class="k">integer</span><span class="w"></span>
-<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="k">leading</span><span class="w"> </span><span class="n">dimension</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">array</span><span class="w">  </span><span class="n">a</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">n</span><span class="w">       </span><span class="k">integer</span><span class="w"></span>
-<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">matrix</span><span class="w">  </span><span class="n">a</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">ipvt</span><span class="w">    </span><span class="k">integer</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="k">pivot</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">dgeco</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">dgefa</span><span class="p">.</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">b</span><span class="w">       </span><span class="k">double</span><span class="w"> </span><span class="k">precision</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="nf">right</span><span class="w"> </span><span class="n">hand</span><span class="w"> </span><span class="n">side</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">job</span><span class="w">     </span><span class="k">integer</span><span class="w"></span>
-<span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">         </span><span class="k">to</span><span class="w"> </span><span class="n">solve</span><span class="w">  </span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">nonzero</span><span class="w">   </span><span class="k">to</span><span class="w"> </span><span class="n">solve</span><span class="w">  </span><span class="n">trans</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w">  </span><span class="k">where</span><span class="w"></span>
-<span class="w">                        </span><span class="n">trans</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w">  </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">transpose</span><span class="p">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="k">return</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">b</span><span class="w">       </span><span class="n">the</span><span class="w"> </span><span class="n">solution</span><span class="w"> </span><span class="n">vector</span><span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="k">condition</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="n">division</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">occur</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">input</span><span class="w"> </span><span class="n">factor</span><span class="w"> </span><span class="k">contains</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
-<span class="w">    </span><span class="n">zero</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">diagonal</span><span class="p">.</span><span class="w">  </span><span class="n">technically</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">indicates</span><span class="w"> </span><span class="n">singularity</span><span class="w"></span>
-<span class="w">    </span><span class="n">but</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">often</span><span class="w"> </span><span class="n">caused</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">improper</span><span class="w"> </span><span class="n">arguments</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">improper</span><span class="w"></span>
-<span class="w">    </span><span class="n">setting</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">lda</span><span class="w"> </span><span class="p">.</span><span class="w">  </span><span class="n">it</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">occur</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="k">are</span><span class="w"></span>
-<span class="w">    </span><span class="k">called</span><span class="w"> </span><span class="n">correctly</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">dgeco</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">rcond</span><span class="w"> </span><span class="p">.</span><span class="n">gt</span><span class="p">.</span><span class="w"> </span><span class="mf">0.0</span><span class="w"></span>
-<span class="w">    </span><span class="ow">or</span><span class="w"> </span><span class="n">dgefa</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">info</span><span class="w"> </span><span class="p">.</span><span class="n">eq</span><span class="p">.</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">compute</span><span class="w">  </span><span class="n">inverse</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w">  </span><span class="k">where</span><span class="w">  </span><span class="n">c</span><span class="w">  </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">matrix</span><span class="w"></span>
-<span class="w"> </span><span class="k">with</span><span class="w">  </span><span class="n">p</span><span class="w">  </span><span class="n">columns</span><span class="w"></span>
-<span class="w">       </span><span class="k">call</span><span class="w"> </span><span class="n">dgeco</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">rcond</span><span class="p">,</span><span class="n">z</span><span class="p">)</span><span class="w"></span>
-<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rcond</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">too</span><span class="w"> </span><span class="n">small</span><span class="p">)</span><span class="w"> </span><span class="k">go</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="p">...</span><span class="w"></span>
-<span class="w">       </span><span class="n">do</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="w"></span>
-<span class="w">          </span><span class="k">call</span><span class="w"> </span><span class="n">dgesl</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">c</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="mi">10</span><span class="w"> </span><span class="k">continue</span><span class="w"></span>
+    <p>solve the real system <code>a*x=b</code> or <code>trans(a)*x=b</code> using the
+  factors computed by <a>dgeco</a> or <a href="../proc/dgefa.html">dgefa</a>.</p>
+<p>to compute  <code>inverse(a) * c</code>  where  <code>c</code>  is a matrix
+  with  <code>p</code>  columns:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="k">call </span><span class="n">dgeco</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">rcond</span><span class="p">,</span><span class="n">z</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rcond</span><span class="w"> </span><span class="k">is </span><span class="n">too</span><span class="w"> </span><span class="n">small</span><span class="p">)</span><span class="w"> </span><span class="k">go</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="p">...</span><span class="w"></span>
+<span class="w">  </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="w"></span>
+<span class="w">     </span><span class="k">call </span><span class="n">dgesl</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">c</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="k">end do</span><span class="w"></span>
 </code></pre></div>
 
-<p><strong><em>references  j. j. dongarra, j. r. bunch, c. b. moler, and g. w.
-                 stewart, linpack users' guide, siam, 1979.
-</em></strong>routines called  daxpy, ddot
-***revision history  (yymmdd)
-   780814  date written
-   890831  modified array declarations.  (wrb)
-   890831  revision date from version 3.2
-   891214  prologue converted to version 4.0 format.  (bab)
-   900326  removed duplicate information from description section.
-           (wrb)
-   920501  reformatted the references section.  (wrb)</p>
+<h3>Error condition</h3>
+<p>a division by zero will occur if the input factor contains a
+  zero on the diagonal.  technically this indicates singularity
+  but it is often caused by improper arguments or improper
+  setting of lda .  it will not occur if the subroutines are
+  called correctly and if dgeco has set rcond &gt; 0.0
+  or dgefa has set info == 0 .</p>
+<h3>Author</h3>
+<ul>
+<li>moler, c. b., (u. of new mexico)</li>
+</ul>
+<h3>Revision history</h3>
+<ul>
+<li>780814  date written</li>
+<li>890831  modified array declarations.  (wrb)</li>
+<li>890831  revision date from version 3.2</li>
+<li>891214  prologue converted to version 4.0 format.  (bab)</li>
+<li>900326  removed duplicate information from description section. (wrb)</li>
+<li>920501  reformatted the references section.  (wrb)</li>
+</ul>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -231,92 +199,96 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~3"></span>
-              double precision
+              <span class="anchor" id="variable-a~2"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>a</strong>(lda,*)</td>
             <td>
-                
+                <p><code>(lda, n)</code> the output from <a>dgeco</a> or <a href="../proc/dgefa.html">dgefa</a>.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-lda~2"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>lda</strong></td>
             <td>
-                
+                <p>the leading dimension of the array <code>a</code>.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-n~12"></span>
-              integer
+              <span class="anchor" id="variable-n~5"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>n</strong></td>
             <td>
-                
+                <p>the order of the matrix <code>a</code>.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-ipvt~2"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ipvt</strong>(*)</td>
             <td>
-                
+                <p>the pivot vector from <a>dgeco</a> or <a href="../proc/dgefa.html">dgefa</a>.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~2"></span>
-              double precision
+              <span class="anchor" id="variable-b"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>b</strong>(*)</td>
             <td>
-                
+                <p>the solution vector <code>x</code>.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-job~2"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>job</strong></td>
             <td>
-                
+                <ul>
+<li>0         to solve  <code>a*x = b</code> ,</li>
+<li>nonzero   to solve  <code>trans(a)*x = b</code>  where
+  <code>trans(a)</code>  is the transpose.</li>
+</ul>
             </td>
         </tr>
     </tbody>
@@ -583,28 +555,33 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre><span></span><span class="w">       </span><span class="k">subroutine </span><span class="n">dgesl</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">job</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">implicit none</span>
+    <div class="highlight"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">dgesl</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">lda</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ipvt</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">job</span><span class="p">)</span><span class="w"></span>
 
-<span class="k">       </span><span class="kt">integer </span><span class="n">lda</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ipvt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="w"></span>
-<span class="w">       </span><span class="kt">double precision </span><span class="n">a</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w">       </span><span class="kt">double precision </span><span class="n">t</span><span class="w"></span>
-<span class="w">       </span><span class="kt">integer </span><span class="n">k</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">kb</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nm1</span><span class="w"></span>
-<span class="w"> </span><span class="c">!***first executable statement  dgesl</span>
+<span class="w">       </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lda</span><span class="w"> </span><span class="c">!! the leading dimension of the array `a`.</span>
+<span class="w">       </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="c">!! the order of the matrix `a`.</span>
+<span class="w">       </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ipvt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! the pivot vector from [[dgeco]] or [[dgefa]].</span>
+<span class="w">       </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="c">!! * 0         to solve  `a*x = b` ,</span>
+<span class="w">                                 </span><span class="c">!! * nonzero   to solve  `trans(a)*x = b`  where</span>
+<span class="w">                                 </span><span class="c">!!   `trans(a)`  is the transpose.</span>
+<span class="w">       </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! `(lda, n)` the output from [[dgeco]] or [[dgefa]].</span>
+<span class="w">       </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">b</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! the solution vector `x`.</span>
+
+<span class="w">       </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t</span><span class="w"></span>
+<span class="w">       </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">kb</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nm1</span><span class="w"></span>
+
 <span class="w">       </span><span class="n">nm1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">job</span><span class="o">/=</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        job = nonzero, solve  trans(a) * x = b</span>
-<span class="w"> </span><span class="c">!        first solve  trans(u)*y = b</span>
-<span class="w"> </span><span class="c">!</span>
+
+<span class="w">         </span><span class="c">! job = nonzero, solve  trans(a) * x = b</span>
+<span class="w">         </span><span class="c">! first solve  trans(u)*y = b</span>
+
 <span class="w">          </span><span class="k">do </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
 <span class="w">             </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ddot</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">a</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">k</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">b</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 <span class="w">             </span><span class="n">b</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">-</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="n">a</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
 <span class="w">          </span><span class="k">enddo</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        now solve trans(l)*x = y</span>
-<span class="w"> </span><span class="c">!</span>
+
+<span class="w">         </span><span class="c">! now solve trans(l)*x = y</span>
+
 <span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">nm1</span><span class="o">&gt;=</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">             do </span><span class="n">kb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nm1</span><span class="w"></span>
 <span class="w">                </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">kb</span><span class="w"></span>
@@ -618,10 +595,10 @@
 <span class="k">             enddo</span>
 <span class="k">          endif</span>
 <span class="k">       else</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        job = 0 , solve  a * x = b</span>
-<span class="w"> </span><span class="c">!        first solve  l*y = b</span>
-<span class="w"> </span><span class="c">!</span>
+
+<span class="w">         </span><span class="c">! job = 0 , solve  a * x = b</span>
+<span class="w">         </span><span class="c">! first solve  l*y = b</span>
+
 <span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">nm1</span><span class="o">&gt;=</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">             do </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nm1</span><span class="w"></span>
 <span class="w">                </span><span class="n">l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ipvt</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
@@ -633,9 +610,9 @@
 <span class="k">                call </span><span class="n">daxpy</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">k</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">a</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">k</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">b</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 <span class="w">             </span><span class="k">enddo</span>
 <span class="k">          endif</span><span class="w"></span>
-<span class="w"> </span><span class="c">!</span>
-<span class="w"> </span><span class="c">!        now solve  u*x = y</span>
-<span class="w"> </span><span class="c">!</span>
+
+<span class="w">         </span><span class="c">! now solve  u*x = y</span>
+
 <span class="w">          </span><span class="k">do </span><span class="n">kb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
 <span class="w">             </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">kb</span><span class="w"></span>
 <span class="w">             </span><span class="n">b</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">/</span><span class="n">a</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
@@ -643,7 +620,8 @@
 <span class="w">             </span><span class="k">call </span><span class="n">daxpy</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">a</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">k</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">b</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 <span class="w">          </span><span class="k">enddo</span>
 <span class="k">       endif</span>
-<span class="k">       end subroutine </span><span class="n">dgesl</span><span class="w"></span>
+
+<span class="k">   end subroutine </span><span class="n">dgesl</span><span class="w"></span>
 </pre></div>
 
     </section>

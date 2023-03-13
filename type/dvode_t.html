@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>29.3% of total for derived types.</p>Including implementation: 1549 statements, 96.0% of total for derived types.">27 statements</a>
+               title="<p>29.3% of total for derived types.</p>Including implementation: 1551 statements, 96.0% of total for derived types.">27 statements</a>
           </li>
 
             <li id="source-file">
@@ -428,7 +428,8 @@
 <td> =</td>
                 <td>-1</td>
             <td>
-                
+                <p>logical unit number for messages.  the default is obtained
+by a call to iumach (may be machine-dependent).</p>
             </td>
         </tr>
         <tr>
@@ -445,7 +446,11 @@
 <td> =</td>
                 <td>1</td>
             <td>
-                
+                <p>print control flag:</p>
+<ul>
+<li>1 means print all messages (the default).</li>
+<li>0 means no printing.</li>
+</ul>
             </td>
         </tr>
         <tr>
@@ -1810,12 +1815,17 @@
     
   <p>reset the logical unit number for error messages.</p>
 <p>xsetun sets the logical unit number for error messages to lun.</p>
-<p><strong><em>author  hindmarsh, alan c., (llnl)
-</em></strong>revision history  (yymmdd)
-   921118  date written
-   930329  added slatec format prologue. (fnf)
-   930407  corrected see also section. (fnf)
-   930922  made user-callable, and other cosmetic changes. (fnf)</p>
+<h3>Author</h3>
+<ul>
+<li>hindmarsh, alan c., (llnl)</li>
+</ul>
+<h3>Revision history</h3>
+<ul>
+<li>921118  date written</li>
+<li>930329  added slatec format prologue. (fnf)</li>
+<li>930407  corrected see also section. (fnf)</li>
+<li>930922  made user-callable, and other cosmetic changes. (fnf)</li>
+</ul>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1876,15 +1886,22 @@
 </h3>
     
   <p>reset the error print control flag.</p>
-<p>xsetf sets the error print control flag to mflag:
-      mflag=1 means print all messages (the default).
-      mflag=0 means no printing.</p>
-<p><strong><em>author  hindmarsh, alan c., (llnl)
-</em></strong>revision history  (yymmdd)
-   921118  date written
-   930329  added slatec format prologue. (fnf)
-   930407  corrected see also section. (fnf)
-   930922  made user-callable, and other cosmetic changes. (fnf)</p>
+<p>xsetf sets the error print control flag to mflag:</p>
+<ul>
+<li>mflag=1 means print all messages (the default).</li>
+<li>mflag=0 means no printing.</li>
+</ul>
+<h3>Author</h3>
+<ul>
+<li>hindmarsh, alan c., (llnl)</li>
+</ul>
+<h3>Revision history</h3>
+<ul>
+<li>921118  date written</li>
+<li>930329  added slatec format prologue. (fnf)</li>
+<li>930407  corrected see also section. (fnf)</li>
+<li>930922  made user-callable, and other cosmetic changes. (fnf)</li>
+</ul>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2457,15 +2474,6 @@ the sign of h0 is inferred from the initial values of tout and t0.</p>
 <div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="p">,</span><span class="w"> </span><span class="n">yh1</span><span class="p">,</span><span class="w"> </span><span class="n">ewt</span><span class="p">,</span><span class="w"> </span><span class="n">savf</span><span class="p">,</span><span class="w"> </span><span class="n">vsav</span><span class="p">,</span><span class="w"></span>
 <span class="w">                        </span><span class="n">acor</span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">jac</span><span class="p">,</span><span class="w"> </span><span class="n">psol</span><span class="p">,</span><span class="w"> </span><span class="n">vnls</span><span class="w"></span>
 <span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">acor</span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="w"></span>
-<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w">  </span><span class="n">acnrm</span><span class="p">,</span><span class="w"> </span><span class="n">el</span><span class="p">(</span><span class="mi">13</span><span class="p">),</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">hmin</span><span class="p">,</span><span class="w"> </span><span class="n">hmxi</span><span class="p">,</span><span class="w"> </span><span class="n">hnew</span><span class="p">,</span><span class="w"> </span><span class="n">hscal</span><span class="p">,</span><span class="w"> </span><span class="n">rc</span><span class="p">,</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="mi">13</span><span class="p">),</span><span class="w"></span>
-<span class="w">               </span><span class="n">tq</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="w"> </span><span class="n">tn</span><span class="p">,</span><span class="w"> </span><span class="n">jcur</span><span class="p">,</span><span class="w"> </span><span class="n">jstart</span><span class="p">,</span><span class="w"> </span><span class="n">kflag</span><span class="p">,</span><span class="w"> </span><span class="n">kuth</span><span class="p">,</span><span class="w"></span>
-<span class="w">               </span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="n">lmax</span><span class="p">,</span><span class="w"> </span><span class="n">maxord</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">newq</span><span class="p">,</span><span class="w"> </span><span class="n">nq</span><span class="p">,</span><span class="w"> </span><span class="n">nqwait</span><span class="w"></span>
-<span class="w">     </span><span class="o">/</span><span class="n">dvod02</span><span class="o">/</span><span class="w">  </span><span class="n">hu</span><span class="p">,</span><span class="w"> </span><span class="n">ncfn</span><span class="p">,</span><span class="w"> </span><span class="n">netf</span><span class="p">,</span><span class="w"> </span><span class="n">nfe</span><span class="p">,</span><span class="w"> </span><span class="n">nqu</span><span class="p">,</span><span class="w"> </span><span class="n">nst</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvstep</span><span class="p">:</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">daxpy</span><span class="p">,</span><span class="w"> </span><span class="n">dcopy</span><span class="p">,</span><span class="w"> </span><span class="n">dscal</span><span class="p">,</span><span class="w"></span>
-<span class="w">                               </span><span class="n">dvjust</span><span class="p">,</span><span class="w"> </span><span class="n">vnls</span><span class="p">,</span><span class="w"> </span><span class="n">dvset</span><span class="w"></span>
-<span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvstep</span><span class="p">:</span><span class="w"> </span><span class="n">dvnorm</span><span class="w"></span>
 <span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
 <span class="w"> </span><span class="n">communication</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvstep</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">variables</span><span class="p">:</span><span class="w"></span>
 
@@ -2693,16 +2701,7 @@ the sign of h0 is inferred from the initial values of tout and t0.</p>
 </h3>
     
   <p>dvset is called by dvstep and sets coefficients for use there.</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">communication</span><span class="p">:</span><span class="w"> </span><span class="n">none</span><span class="w"></span>
-<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">el</span><span class="p">(</span><span class="mi">13</span><span class="p">),</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="mi">13</span><span class="p">),</span><span class="w"> </span><span class="n">tq</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="w"> </span><span class="n">l</span><span class="p">(</span><span class="o">=</span><span class="w"> </span><span class="n">nq</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">meth</span><span class="p">,</span><span class="w"> </span><span class="n">nq</span><span class="p">,</span><span class="w"> </span><span class="n">nqwait</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvset</span><span class="p">:</span><span class="w"> </span><span class="n">none</span><span class="w"></span>
-<span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvset</span><span class="p">:</span><span class="w"> </span><span class="n">none</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-
-<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="n">nq</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">coefficients</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">calculated</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">of</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="n">nq</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">coefficients</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">calculated</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">of</span><span class="w"></span>
 <span class="w">  </span><span class="n">the</span><span class="w"> </span><span class="n">generating</span><span class="w"> </span><span class="n">polynomial</span><span class="w"> </span><span class="n">lambda</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">coefficients</span><span class="w"> </span><span class="n">el</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
 <span class="w">      </span><span class="n">lambda</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">el</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">el</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="o">...</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">el</span><span class="p">(</span><span class="n">nq</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="n">nq</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
 <span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">backward</span><span class="w"> </span><span class="n">differentiation</span><span class="w"> </span><span class="n">formulas</span><span class="p">,</span><span class="w"></span>
@@ -2718,7 +2717,6 @@ the sign of h0 is inferred from the initial values of tout and t0.</p>
 <span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">both</span><span class="w"> </span><span class="n">cases</span><span class="p">,</span><span class="w"> </span><span class="n">xi</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">defined</span><span class="w"> </span><span class="n">by</span><span class="w"></span>
 <span class="w">      </span><span class="n">h</span><span class="o">*</span><span class="n">xi</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">sub</span><span class="w"> </span><span class="n">n</span><span class="w">  </span><span class="o">-</span><span class="w">  </span><span class="n">t</span><span class="w"> </span><span class="n">sub</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
 <span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="o">...</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-
 
 <span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">addition</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">described</span><span class="w"> </span><span class="n">previously</span><span class="p">,</span><span class="w"> </span><span class="n">communication</span><span class="w"></span>
 <span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvset</span><span class="w"> </span><span class="n">uses</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="p">:</span><span class="w"></span>
@@ -3330,36 +3328,14 @@ matrix is found to be singular.</p>
     private  subroutine <a href='../proc/dvsol.html'>dvsol</a>(me, wm, iwm, x, iersl)  
 </h3>
     
-  <p>this routine manages the solution of the linear system arising from
-  a chord iteration.  it is called if miter /= 0.
-  if miter is 1 or 2, it calls dgesl to accomplish this.
-  if miter = 3 it updates the coefficient h*rl1 in the diagonal
-  matrix, and then computes the solution.
-  if miter is 4 or 5, it calls dgbsl.</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
-<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">iersl</span><span class="w"></span>
-<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">rl1</span><span class="p">,</span><span class="w"> </span><span class="n">miter</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvsol</span><span class="p">:</span><span class="w"> </span><span class="n">dgesl</span><span class="p">,</span><span class="w"> </span><span class="n">dgbsl</span><span class="w"></span>
-<span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvsol</span><span class="p">:</span><span class="w"> </span><span class="n">none</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">communication</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvsol</span><span class="w"> </span><span class="n">uses</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">variables</span><span class="p">:</span><span class="w"></span>
-<span class="w"> </span><span class="n">wm</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">space</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">inverse</span><span class="w"> </span><span class="n">diagonal</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="k">if</span><span class="w"></span>
-<span class="w">         </span><span class="n">miter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">lu</span><span class="w"> </span><span class="n">decomposition</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">otherwise</span><span class="o">.</span><span class="w"></span>
-<span class="w">         </span><span class="n">storage</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">elements</span><span class="w"> </span><span class="n">starts</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">         </span><span class="n">wm</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">matrix</span><span class="o">-</span><span class="n">related</span><span class="w"> </span><span class="n">data</span><span class="p">:</span><span class="w"></span>
-<span class="w">         </span><span class="n">wm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sqrt</span><span class="p">(</span><span class="n">uround</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="ow">not</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="n">here</span><span class="p">),</span><span class="w"></span>
-<span class="w">         </span><span class="n">wm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hrl1</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">previous</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">h</span><span class="o">*</span><span class="n">rl1</span><span class="p">,</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.</span><span class="w"></span>
-<span class="w"> </span><span class="n">iwm</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">space</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">pivot</span><span class="w"> </span><span class="n">information</span><span class="p">,</span><span class="w"> </span><span class="n">starting</span><span class="w"> </span><span class="n">at</span><span class="w"></span>
-<span class="w">         </span><span class="n">iwm</span><span class="p">(</span><span class="mi">31</span><span class="p">),</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="mf">5.</span><span class="w">  </span><span class="n">iwm</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">band</span><span class="w"></span>
-<span class="w">         </span><span class="n">parameters</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="mf">5.</span><span class="w"></span>
-<span class="w"> </span><span class="n">x</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">right</span><span class="o">-</span><span class="n">hand</span><span class="w"> </span><span class="n">side</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">solution</span><span class="w"> </span><span class="n">vector</span><span class="w"></span>
-<span class="w">         </span><span class="n">on</span><span class="w"> </span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">iersl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">flag</span><span class="o">.</span><span class="w">  </span><span class="n">iersl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">trouble</span><span class="w"> </span><span class="n">occurred</span><span class="o">.</span><span class="w"></span>
-<span class="w">         </span><span class="n">iersl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">singular</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">arose</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.</span><span class="w"></span>
-</code></pre></div>
+  <p>This routine manages the solution of the linear system arising from
+a chord iteration.  it is called if <code>miter /= 0</code>:</p>
+<ul>
+<li>if miter is 1 or 2, it calls <a href="../proc/dgesl.html">dgesl</a> to accomplish this.</li>
+<li>if miter = 3 it updates the coefficient <code>h*rl1</code> in the diagonal
+   matrix, and then computes the solution.</li>
+<li>if miter is 4 or 5, it calls <a href="../proc/dgbsl.html">dgbsl</a>.</li>
+</ul>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -3390,16 +3366,21 @@ matrix is found to be singular.</p>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>wm</strong>(*)</td>
             <td>
-
+<p>real work space containing the inverse diagonal matrix if
+miter = 3 and the lu decomposition of the matrix otherwise.
+storage of matrix elements starts at wm(3).
+wm also contains the following matrix-related data:
+wm(1) = sqrt(uround) (not used here),
+wm(2) = hrl1, the previous value of h*rl1, used if miter = 3.</p>
             </td>
         </tr>
         <tr>
@@ -3414,37 +3395,42 @@ matrix is found to be singular.</p>
             <td>::</td>
             <td><strong>iwm</strong>(*)</td>
             <td>
-
+<p>integer work space containing pivot information, starting at
+iwm(31), if miter is 1, 2, 4, or 5.  iwm also contains band
+parameters ml = iwm(1) and mu = iwm(2) if miter is 4 or 5.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>x</strong>(*)</td>
             <td>
-
+<p>the right-hand side vector on input,
+and the solution vector
+on output, of length n.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>iersl</strong></td>
             <td>
-
+<p>output flag.  iersl = 0 if no trouble occurred.
+iersl = 1 if a singular matrix arose with miter = 3.</p>
             </td>
         </tr>
     </tbody>
@@ -3465,33 +3451,33 @@ matrix is found to be singular.</p>
 </h3>
     
   <p>save and recall error message control parameters.</p>
-<p>ixsav saves and recalls one of two error message parameters:
-    lunit, the logical unit number to which messages are printed, and
-    mesflg, the message print flag.
-  this is a modification of the slatec library routine j4save.</p>
-<p>saved local variables..
-   lunit  = logical unit number for messages.  the default is obtained
-            by a call to iumach (may be machine-dependent).
-   mesflg = print control flag..
-            1 means print all messages (the default).
-            0 means no printing.</p>
-<p>on input..
-    ipar   = parameter indicator (1 for lunit, 2 for mesflg).
-    ivalue = the value to be set for the parameter, if iset = .true.
-    iset   = logical flag to indicate whether to read or write.
-             if iset = .true., the parameter will be given
-             the value ivalue.  if iset = .false., the parameter
-             will be unchanged, and ivalue is a dummy argument.</p>
-<p>on return..
-    ixsav = the (old) value of the parameter.</p>
-<p><strong><em>see also  xerrwd, xerrwv
-</em></strong>author  hindmarsh, alan c., (llnl)
-***revision history  (yymmdd)
-   921118  date written
-   930329  modified prologue to slatec format. (fnf)
-   930915  added iumach call to get default output unit.  (ach)
-   930922  minor cosmetic changes. (fnf)
-   010425  type declaration for iumach added. (ach)</p>
+<p><a href="../proc/ixsav.html">ixsav</a> saves and recalls one of two error message parameters:</p>
+<ul>
+<li><code>lunit</code>, the logical unit number to which messages are printed, and</li>
+<li><code>mesflg</code>, the message print flag.</li>
+</ul>
+<p>this is a modification of the slatec library routine <code>j4save</code>.</p>
+<p>on return:</p>
+<ul>
+<li><code>ixsav</code> = the (old) value of the parameter.</li>
+</ul>
+<h3>See also</h3>
+<ul>
+<li><a href="../proc/xerrwd.html">xerrwd</a></li>
+<li><a>xerrwv</a></li>
+</ul>
+<h3>Author</h3>
+<ul>
+<li>hindmarsh, alan c., (llnl)</li>
+</ul>
+<h3>Revision history</h3>
+<ul>
+<li>921118  date written</li>
+<li>930329  modified prologue to slatec format. (fnf)</li>
+<li>930915  added iumach call to get default output unit.  (ach)</li>
+<li>930922  minor cosmetic changes. (fnf)</li>
+<li>010425  type declaration for iumach added. (ach)</li>
+</ul>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -3522,16 +3508,16 @@ matrix is found to be singular.</p>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ipar</strong></td>
             <td>
-
+<p>parameter indicator (1 for <code>lunit</code>, 2 for <code>mesflg</code>).</p>
             </td>
         </tr>
         <tr>
@@ -3546,22 +3532,25 @@ matrix is found to be singular.</p>
             <td>::</td>
             <td><strong>ivalue</strong></td>
             <td>
-
+<p>the value to be set for the parameter, if iset = .true.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              logical
+              logical,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>iset</strong></td>
             <td>
-
+<p>logical flag to indicate whether to read or write.
+if <code>iset = .true.</code>, the parameter will be given
+the value <code>ivalue</code>.  if <code>iset = .false.</code>, the parameter
+will be unchanged, and <code>ivalue</code> is a dummy argument.</p>
             </td>
         </tr>
     </tbody>
@@ -3587,7 +3576,7 @@ matrix is found to be singular.</p>
 </h3>
     
   <p>write error message with values.</p>
-<p>subroutines xerrwd, xsetf, xsetun, and the function routine ixsav,
+<p>subroutines <a href="../proc/xerrwd.html">xerrwd</a>, <a href="../proc/xsetf.html">xsetf</a>, <a href="../proc/xsetun.html">xsetun</a>, and the function routine <a href="../proc/ixsav.html">ixsav</a>,
   as given here, constitute a simplified version of the slatec error
   handling package.</p>
 <p>all arguments are input arguments.</p>
@@ -3601,28 +3590,35 @@ matrix is found to be singular.</p>
   i1,i2  = integers to be printed, depending on ni.
   nr     = number of reals (0, 1, or 2) to be printed with message.
   r1,r2  = reals to be printed, depending on nr.</p>
-<p>note..  this routine is machine-dependent and specialized for use
-  in limited context, in the following ways..
-  1. the argument msg is assumed to be of type character, and
-     the message is printed with a format of (1x,a).
-  2. the message is assumed to take only one line.
-     multi-line messages are generated by repeated calls.
-  3. if level = 2, control passes to the statement   stop
-     to abort the run.  this statement may be machine-dependent.
-  4. r1 and r2 are assumed to be in real(wp) and are printed
-     in d21.13 format.</p>
-<p><strong><em>author  hindmarsh, alan c., (llnl)
-</em></strong>revision history  (yymmdd)
-   920831  date written
-   921118  replaced mflgsv/lunsav by ixsav. (ach)
-   930329  modified prologue to slatec format. (fnf)
-   930407  changed msg from character*1 array to variable. (fnf)
-   930922  minor cosmetic change. (fnf)</p>
-<p>*internal notes:</p>
-<p>for a different default logical unit number, ixsav (or a subsidiary
- routine that it calls) will need to be modified.
- for a different run-abort command, change the statement following
- statement 100 at the end.</p>
+<p>Note: this routine is machine-dependent and specialized for use
+  in limited context, in the following ways:</p>
+<ol>
+<li>the argument msg is assumed to be of type character, and
+      the message is printed with a format of (1x,a).</li>
+<li>the message is assumed to take only one line.
+      multi-line messages are generated by repeated calls.</li>
+<li>if level = 2, control passes to the statement   stop
+      to abort the run.  this statement may be machine-dependent.</li>
+<li>r1 and r2 are assumed to be in real(wp) and are printed
+      in d21.13 format.</li>
+</ol>
+<h3>Author</h3>
+<ul>
+<li>hindmarsh, alan c., (llnl)</li>
+</ul>
+<h3>Revision history</h3>
+<ul>
+<li>920831  date written</li>
+<li>921118  replaced mflgsv/lunsav by ixsav. (ach)</li>
+<li>930329  modified prologue to slatec format. (fnf)</li>
+<li>930407  changed msg from character*1 array to variable. (fnf)</li>
+<li>930922  minor cosmetic change. (fnf)</li>
+</ul>
+<h3>internal notes:</h3>
+<p>for a different default logical unit number, <a href="../proc/ixsav.html">ixsav</a> (or a subsidiary
+  routine that it calls) will need to be modified.
+  for a different run-abort command, change the statement following
+  statement 100 at the end.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -3823,8 +3819,12 @@ matrix is found to be singular.</p>
 <span class="w">      </span><span class="c">! formerly save variables</span>
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">etaq</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">etaqm1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lunit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mesflg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lunit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="c">!! logical unit number for messages.  the default is obtained</span>
+<span class="w">                            </span><span class="c">!! by a call to iumach (may be machine-dependent).</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mesflg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c">!! print control flag:</span>
+<span class="w">                            </span><span class="c">!!</span>
+<span class="w">                            </span><span class="c">!!  * 1 means print all messages (the default).</span>
+<span class="w">                            </span><span class="c">!!  * 0 means no printing.</span>
 
 <span class="w">      </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_func</span><span class="p">),</span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_jac</span><span class="p">),</span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">jac</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w"></span>

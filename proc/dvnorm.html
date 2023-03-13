@@ -157,14 +157,21 @@
     <p>weighted root-mean-square vector norm.</p>
 <p>this function routine computes the weighted root-mean-square norm
   of the vector of length n contained in the array v, with weights
-  contained in the array w of length n:
-    dvnorm = sqrt( (1/n) * sum( v(i)<em>w(i) )</em>*2 )</p>
-<p><strong><em>author  hindmarsh, alan c., (llnl)
-</em></strong>revision history  (yymmdd)
-   791129  date written
-   890501  modified prologue to slatec/ldoc format.  (fnf)
-   890503  minor cosmetic changes.  (fnf)
-   930809  renamed to allow single/real(wp) versions. (ach)</p>
+  contained in the array w of length n:</p>
+<div class="codehilite"><pre><span></span><code>    dvnorm = sqrt( (1/n) * sum( v(i)*w(i) )**2 )
+</code></pre></div>
+
+<h3>Author</h3>
+<ul>
+<li>hindmarsh, alan c., (llnl)</li>
+</ul>
+<h3>Revision history</h3>
+<ul>
+<li>791129  date written</li>
+<li>890501  modified prologue to slatec/ldoc format.  (fnf)</li>
+<li>890503  minor cosmetic changes.  (fnf)</li>
+<li>930809  renamed to allow single/real(wp) versions. (ach)</li>
+</ul>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -179,7 +186,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-n~4"></span>
+              <span class="anchor" id="variable-n~8"></span>
               integer
             </td>
 <td></td>
@@ -285,33 +292,33 @@
 <path fill="none" stroke="#000000" d="M53.45,-125.85C62.21,-121.67 72.17,-116.92 81.52,-112.46"/>
 <polygon fill="#000000" stroke="#000000" points="83.09,-115.59 90.6,-108.12 80.07,-109.27 83.09,-115.59"/>
 </g>
-<!-- proc~dvstep -->
-<g id="proc~~dvnorm~~CalledByGraph_node4" class="node">
-<title>proc~dvstep</title>
-<g id="a_proc~~dvnorm~~CalledByGraph_node4"><a xlink:href=".././proc/dvstep.html" xlink:title="dvstep">
-<polygon fill="#d9534f" stroke="#d9534f" points="54,-108 0,-108 0,-84 54,-84 54,-108"/>
-<text text-anchor="middle" x="27" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvstep</text>
-</a>
-</g>
-</g>
-<!-- proc~dvstep&#45;&gt;proc~dvnorm -->
-<g id="proc~~dvnorm~~CalledByGraph_edge3" class="edge">
-<title>proc~dvstep&#45;&gt;proc~dvnorm</title>
-<path fill="none" stroke="#000000" d="M54.4,-96C62.39,-96 71.31,-96 79.82,-96"/>
-<polygon fill="#000000" stroke="#000000" points="79.92,-99.5 89.92,-96 79.92,-92.5 79.92,-99.5"/>
-</g>
 <!-- proc~dvjac -->
-<g id="proc~~dvnorm~~CalledByGraph_node5" class="node">
+<g id="proc~~dvnorm~~CalledByGraph_node4" class="node">
 <title>proc~dvjac</title>
-<g id="a_proc~~dvnorm~~CalledByGraph_node5"><a xlink:href=".././proc/dvjac.html" xlink:title="dvjac">
-<polygon fill="#d9534f" stroke="#d9534f" points="54,-66 0,-66 0,-42 54,-42 54,-66"/>
-<text text-anchor="middle" x="27" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvjac</text>
+<g id="a_proc~~dvnorm~~CalledByGraph_node4"><a xlink:href=".././proc/dvjac.html" xlink:title="dvjac">
+<polygon fill="#d9534f" stroke="#d9534f" points="54,-108 0,-108 0,-84 54,-84 54,-108"/>
+<text text-anchor="middle" x="27" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvjac</text>
 </a>
 </g>
 </g>
 <!-- proc~dvjac&#45;&gt;proc~dvnorm -->
 <g id="proc~~dvnorm~~CalledByGraph_edge5" class="edge">
 <title>proc~dvjac&#45;&gt;proc~dvnorm</title>
+<path fill="none" stroke="#000000" d="M54.4,-96C62.39,-96 71.31,-96 79.82,-96"/>
+<polygon fill="#000000" stroke="#000000" points="79.92,-99.5 89.92,-96 79.92,-92.5 79.92,-99.5"/>
+</g>
+<!-- proc~dvstep -->
+<g id="proc~~dvnorm~~CalledByGraph_node5" class="node">
+<title>proc~dvstep</title>
+<g id="a_proc~~dvnorm~~CalledByGraph_node5"><a xlink:href=".././proc/dvstep.html" xlink:title="dvstep">
+<polygon fill="#d9534f" stroke="#d9534f" points="54,-66 0,-66 0,-42 54,-42 54,-66"/>
+<text text-anchor="middle" x="27" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvstep</text>
+</a>
+</g>
+</g>
+<!-- proc~dvstep&#45;&gt;proc~dvnorm -->
+<g id="proc~~dvnorm~~CalledByGraph_edge4" class="edge">
+<title>proc~dvstep&#45;&gt;proc~dvnorm</title>
 <path fill="none" stroke="#000000" d="M53.45,-66.15C62.21,-70.33 72.17,-75.08 81.52,-79.54"/>
 <polygon fill="#000000" stroke="#000000" points="80.07,-82.73 90.6,-83.88 83.09,-76.41 80.07,-82.73"/>
 </g>
@@ -325,7 +332,7 @@
 </g>
 </g>
 <!-- proc~dvode&#45;&gt;proc~dvnorm -->
-<g id="proc~~dvnorm~~CalledByGraph_edge4" class="edge">
+<g id="proc~~dvnorm~~CalledByGraph_edge3" class="edge">
 <title>proc~dvode&#45;&gt;proc~dvnorm</title>
 <path fill="none" stroke="#000000" d="M43.64,-24.15C47.11,-26.98 50.73,-30.04 54,-33 69.44,-47 85.95,-63.87 98.04,-76.64"/>
 <polygon fill="#000000" stroke="#000000" points="95.56,-79.1 104.96,-83.99 100.66,-74.3 95.56,-79.1"/>
