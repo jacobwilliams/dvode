@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>29.3% of total for derived types.</p>Including implementation: 1551 statements, 96.0% of total for derived types.">27 statements</a>
+               title="<p>29.3% of total for derived types.</p>Including implementation: 1557 statements, 96.0% of total for derived types.">27 statements</a>
           </li>
 
             <li id="source-file">
@@ -737,109 +737,6 @@ by a call to iumach (may be machine-dependent).</p>
 <span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="k">continue</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">integration</span><span class="w"> </span><span class="n">after</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">successful</span><span class="w"> </span><span class="k">return</span><span class="p">,</span><span class="w"> </span><span class="n">simply</span><span class="w"></span>
 <span class="w"> </span><span class="n">reset</span><span class="w"> </span><span class="n">tout</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="n">again</span><span class="o">.</span><span class="w">  </span><span class="n">no</span><span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="n">need</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">reset</span><span class="o">.</span><span class="w"></span>
 
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-<span class="w"> </span><span class="n">example</span><span class="w"> </span><span class="n">problem</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">simple</span><span class="w"> </span><span class="n">example</span><span class="w"> </span><span class="n">problem</span><span class="p">,</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">coding</span><span class="w"></span>
-<span class="w"> </span><span class="n">needed</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">its</span><span class="w"> </span><span class="n">solution</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvode</span><span class="o">.</span><span class="w">  </span><span class="n">the</span><span class="w"> </span><span class="n">problem</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">chemical</span><span class="w"></span>
-<span class="w"> </span><span class="n">kinetics</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">consists</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">three</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="n">equations</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="n">dy1</span><span class="o">/</span><span class="n">dt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-.</span><span class="mi">04</span><span class="o">*</span><span class="n">y1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.e4</span><span class="o">*</span><span class="n">y2</span><span class="o">*</span><span class="n">y3</span><span class="w"></span>
-<span class="w">     </span><span class="n">dy2</span><span class="o">/</span><span class="n">dt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">.</span><span class="mi">04</span><span class="o">*</span><span class="n">y1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.e4</span><span class="o">*</span><span class="n">y2</span><span class="o">*</span><span class="n">y3</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">3.e7</span><span class="o">*</span><span class="n">y2</span><span class="o">**</span><span class="mi">2</span><span class="w"></span>
-<span class="w">     </span><span class="n">dy3</span><span class="o">/</span><span class="n">dt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.e7</span><span class="o">*</span><span class="n">y2</span><span class="o">**</span><span class="mi">2</span><span class="w"></span>
-<span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">interval</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.e10</span><span class="p">,</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">initial</span><span class="w"> </span><span class="n">conditions</span><span class="w"></span>
-<span class="w"> </span><span class="n">y1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="n">y2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w">  </span><span class="n">the</span><span class="w"> </span><span class="n">problem</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">stiff</span><span class="o">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">coding</span><span class="w"> </span><span class="n">solves</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">problem</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvode</span><span class="p">,</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">mf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">21</span><span class="w"></span>
-<span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">printing</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">.</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mf">4.</span><span class="p">,</span><span class="w"> </span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="mf">4.e10</span><span class="o">.</span><span class="w">  </span><span class="n">it</span><span class="w"> </span><span class="n">uses</span><span class="w"></span>
-<span class="w"> </span><span class="n">itol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">atol</span><span class="w"> </span><span class="n">much</span><span class="w"> </span><span class="n">smaller</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">y2</span><span class="w"> </span><span class="n">than</span><span class="w"> </span><span class="n">y1</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">y3</span><span class="w"> </span><span class="n">because</span><span class="w"></span>
-<span class="w"> </span><span class="n">y2</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">much</span><span class="w"> </span><span class="n">smaller</span><span class="w"> </span><span class="n">values</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">run</span><span class="p">,</span><span class="w"> </span><span class="n">statistical</span><span class="w"> </span><span class="n">quantities</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">interest</span><span class="w"> </span><span class="n">are</span><span class="w"></span>
-<span class="w"> </span><span class="n">printed</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="n">see</span><span class="w"> </span><span class="n">optional</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">full</span><span class="w"> </span><span class="n">description</span><span class="w"> </span><span class="n">below</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">generate</span><span class="w"> </span><span class="n">fortran</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">code</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">blank</span><span class="w"></span>
-<span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">coding</span><span class="w"> </span><span class="n">below</span><span class="o">.</span><span class="w"></span>
-
-<span class="w">     </span><span class="n">external</span><span class="w"> </span><span class="n">fex</span><span class="p">,</span><span class="w"> </span><span class="n">jex</span><span class="w"></span>
-<span class="w">     </span><span class="n">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">atol</span><span class="p">,</span><span class="w"> </span><span class="n">rtol</span><span class="p">,</span><span class="w"> </span><span class="n">rwork</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">tout</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
-<span class="w">     </span><span class="n">dimension</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">atol</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">rwork</span><span class="p">(</span><span class="mi">67</span><span class="p">),</span><span class="w"> </span><span class="n">iwork</span><span class="p">(</span><span class="mi">33</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">neq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"></span>
-<span class="w">     </span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="n">d0</span><span class="w"></span>
-<span class="w">     </span><span class="n">y</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="n">d0</span><span class="w"></span>
-<span class="w">     </span><span class="n">y</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="n">d0</span><span class="w"></span>
-<span class="w">     </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="n">d0</span><span class="w"></span>
-<span class="w">     </span><span class="n">tout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="n">d0</span><span class="w"></span>
-<span class="w">     </span><span class="n">itol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
-<span class="w">     </span><span class="n">rtol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">d</span><span class="o">-</span><span class="mi">4</span><span class="w"></span>
-<span class="w">     </span><span class="n">atol</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">d</span><span class="o">-</span><span class="mi">8</span><span class="w"></span>
-<span class="w">     </span><span class="n">atol</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">d</span><span class="o">-</span><span class="mi">14</span><span class="w"></span>
-<span class="w">     </span><span class="n">atol</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">d</span><span class="o">-</span><span class="mi">6</span><span class="w"></span>
-<span class="w">     </span><span class="n">itask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">     </span><span class="n">istate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">     </span><span class="n">iopt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">     </span><span class="n">lrw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">67</span><span class="w"></span>
-<span class="w">     </span><span class="n">liw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">33</span><span class="w"></span>
-<span class="w">     </span><span class="n">mf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">21</span><span class="w"></span>
-<span class="w">     </span><span class="n">do</span><span class="w"> </span><span class="mi">40</span><span class="w"> </span><span class="n">iout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="mi">12</span><span class="w"></span>
-<span class="w">       </span><span class="n">call</span><span class="w"> </span><span class="n">dvode</span><span class="p">(</span><span class="n">fex</span><span class="p">,</span><span class="n">neq</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">tout</span><span class="p">,</span><span class="n">itol</span><span class="p">,</span><span class="n">rtol</span><span class="p">,</span><span class="n">atol</span><span class="p">,</span><span class="n">itask</span><span class="p">,</span><span class="n">istate</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="mi">1</span><span class="w">            </span><span class="n">iopt</span><span class="p">,</span><span class="n">rwork</span><span class="p">,</span><span class="n">lrw</span><span class="p">,</span><span class="n">iwork</span><span class="p">,</span><span class="n">liw</span><span class="p">,</span><span class="n">jex</span><span class="p">,</span><span class="n">mf</span><span class="p">)</span><span class="w"></span>
-<span class="w">       </span><span class="n">write</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span><span class="n">t</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">y</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">y</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span><span class="mi">20</span><span class="w">    </span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; at t =&#39;</span><span class="p">,</span><span class="n">d12</span><span class="o">.</span><span class="mi">4</span><span class="p">,</span><span class="s1">&#39;   y =&#39;</span><span class="p">,</span><span class="mi">3</span><span class="n">d14</span><span class="o">.</span><span class="mi">6</span><span class="p">)</span><span class="w"></span>
-<span class="w">       </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">istate</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="mi">80</span><span class="w"></span>
-<span class="w"> </span><span class="mi">40</span><span class="w">    </span><span class="n">tout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tout</span><span class="o">*</span><span class="mf">10.</span><span class="w"></span>
-<span class="w">     </span><span class="n">write</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">60</span><span class="p">)</span><span class="w"> </span><span class="n">iwork</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span><span class="n">iwork</span><span class="p">(</span><span class="mi">12</span><span class="p">),</span><span class="n">iwork</span><span class="p">(</span><span class="mi">13</span><span class="p">),</span><span class="n">iwork</span><span class="p">(</span><span class="mi">19</span><span class="p">),</span><span class="w"></span>
-<span class="w">    </span><span class="mi">1</span><span class="w">            </span><span class="n">iwork</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="n">iwork</span><span class="p">(</span><span class="mi">21</span><span class="p">),</span><span class="n">iwork</span><span class="p">(</span><span class="mi">22</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span><span class="mi">60</span><span class="w">  </span><span class="n">format</span><span class="p">(</span><span class="o">/</span><span class="s1">&#39; no. steps =&#39;</span><span class="p">,</span><span class="n">i4</span><span class="p">,</span><span class="s1">&#39;   no. f-s =&#39;</span><span class="p">,</span><span class="n">i4</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="mi">1</span><span class="w">       </span><span class="s1">&#39;   no. j-s =&#39;</span><span class="p">,</span><span class="n">i4</span><span class="p">,</span><span class="s1">&#39;   no. lu-s =&#39;</span><span class="p">,</span><span class="n">i4</span><span class="o">/</span><span class="w"></span>
-<span class="w">    </span><span class="mi">2</span><span class="w">       </span><span class="s1">&#39;  no. nonlinear iterations =&#39;</span><span class="p">,</span><span class="n">i4</span><span class="o">/</span><span class="w"></span>
-<span class="w">    </span><span class="mi">3</span><span class="w">       </span><span class="s1">&#39;  no. nonlinear convergence failures =&#39;</span><span class="p">,</span><span class="n">i4</span><span class="o">/</span><span class="w"></span>
-<span class="w">    </span><span class="mi">4</span><span class="w">       </span><span class="s1">&#39;  no. error test failures =&#39;</span><span class="p">,</span><span class="n">i4</span><span class="o">/</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">stop</span><span class="w"></span>
-<span class="w"> </span><span class="mi">80</span><span class="w">  </span><span class="n">write</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">90</span><span class="p">)</span><span class="n">istate</span><span class="w"></span>
-<span class="w"> </span><span class="mi">90</span><span class="w">  </span><span class="n">format</span><span class="p">(</span><span class="o">///</span><span class="s1">&#39; error halt: istate =&#39;</span><span class="p">,</span><span class="n">i3</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">stop</span><span class="w"></span>
-<span class="w">     </span><span class="n">end</span><span class="w"></span>
-
-<span class="w">     </span><span class="n">subroutine</span><span class="w"> </span><span class="n">fex</span><span class="w"> </span><span class="p">(</span><span class="n">neq</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">ydot</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">ydot</span><span class="w"></span>
-<span class="w">     </span><span class="n">dimension</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">neq</span><span class="p">),</span><span class="w"> </span><span class="n">ydot</span><span class="p">(</span><span class="n">neq</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">ydot</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-.</span><span class="mi">04</span><span class="n">d0</span><span class="o">*</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.</span><span class="n">d4</span><span class="o">*</span><span class="n">y</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">y</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">ydot</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.</span><span class="n">d7</span><span class="o">*</span><span class="n">y</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">y</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">ydot</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">ydot</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ydot</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="k">return</span><span class="w"></span>
-<span class="w">     </span><span class="n">end</span><span class="w"></span>
-
-<span class="w">     </span><span class="n">subroutine</span><span class="w"> </span><span class="n">jex</span><span class="w"> </span><span class="p">(</span><span class="n">neq</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">ml</span><span class="p">,</span><span class="w"> </span><span class="n">mu</span><span class="p">,</span><span class="w"> </span><span class="n">pd</span><span class="p">,</span><span class="w"> </span><span class="n">nrpd</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">pd</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
-<span class="w">     </span><span class="n">dimension</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">neq</span><span class="p">),</span><span class="w"> </span><span class="n">pd</span><span class="p">(</span><span class="n">nrpd</span><span class="p">,</span><span class="n">neq</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">pd</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-.</span><span class="mi">04</span><span class="n">d0</span><span class="w"></span>
-<span class="w">     </span><span class="n">pd</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">d4</span><span class="o">*</span><span class="n">y</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">pd</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">d4</span><span class="o">*</span><span class="n">y</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">pd</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">.</span><span class="mi">04</span><span class="n">d0</span><span class="w"></span>
-<span class="w">     </span><span class="n">pd</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">pd</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">pd</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">6.</span><span class="n">d7</span><span class="o">*</span><span class="n">y</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="n">pd</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">pd</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pd</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="w">     </span><span class="k">return</span><span class="w"></span>
-<span class="w">     </span><span class="n">end</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">obtained</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">above</span><span class="w"> </span><span class="n">program</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
-<span class="w"> </span><span class="n">cray</span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="n">computer</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">cft</span><span class="w"> </span><span class="n">compiler</span><span class="o">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.0000e-01</span><span class="w">   </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">9.851680e-01</span><span class="w">  </span><span class="mf">3.386314e-05</span><span class="w">  </span><span class="mf">1.479817e-02</span><span class="w"></span>
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.0000e+00</span><span class="w">   </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">9.055255e-01</span><span class="w">  </span><span class="mf">2.240539e-05</span><span class="w">  </span><span class="mf">9.445214e-02</span><span class="w"></span>
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.0000e+01</span><span class="w">   </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">7.158108e-01</span><span class="w">  </span><span class="mf">9.184883e-06</span><span class="w">  </span><span class="mf">2.841800e-01</span><span class="w"></span>
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.0000e+02</span><span class="w">   </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.505032e-01</span><span class="w">  </span><span class="mf">3.222940e-06</span><span class="w">  </span><span class="mf">5.494936e-01</span><span class="w"></span>
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.0000e+03</span><span class="w">   </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">1.832053e-01</span><span class="w">  </span><span class="mf">8.942690e-07</span><span class="w">  </span><span class="mf">8.167938e-01</span><span class="w"></span>
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.0000e+04</span><span class="w">   </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">3.898560e-02</span><span class="w">  </span><span class="mf">1.621875e-07</span><span class="w">  </span><span class="mf">9.610142e-01</span><span class="w"></span>
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.0000e+05</span><span class="w">   </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.935882e-03</span><span class="w">  </span><span class="mf">1.984013e-08</span><span class="w">  </span><span class="mf">9.950641e-01</span><span class="w"></span>
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.0000e+06</span><span class="w">   </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">5.166183e-04</span><span class="w">  </span><span class="mf">2.067528e-09</span><span class="w">  </span><span class="mf">9.994834e-01</span><span class="w"></span>
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.0000e+07</span><span class="w">   </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">5.201214e-05</span><span class="w">  </span><span class="mf">2.080593e-10</span><span class="w">  </span><span class="mf">9.999480e-01</span><span class="w"></span>
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.0000e+08</span><span class="w">   </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">5.213149e-06</span><span class="w">  </span><span class="mf">2.085271e-11</span><span class="w">  </span><span class="mf">9.999948e-01</span><span class="w"></span>
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.0000e+09</span><span class="w">   </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">5.183495e-07</span><span class="w">  </span><span class="mf">2.073399e-12</span><span class="w">  </span><span class="mf">9.999995e-01</span><span class="w"></span>
-<span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">4.0000e+10</span><span class="w">   </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">5.450996e-08</span><span class="w">  </span><span class="mf">2.180399e-13</span><span class="w">  </span><span class="mf">9.999999e-01</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">no</span><span class="o">.</span><span class="w"> </span><span class="n">steps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">595</span><span class="w">   </span><span class="n">no</span><span class="o">.</span><span class="w"> </span><span class="n">f</span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">832</span><span class="w">   </span><span class="n">no</span><span class="o">.</span><span class="w"> </span><span class="n">j</span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mi">13</span><span class="w">   </span><span class="n">no</span><span class="o">.</span><span class="w"> </span><span class="n">lu</span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">112</span><span class="w"></span>
-<span class="w">  </span><span class="n">no</span><span class="o">.</span><span class="w"> </span><span class="n">nonlinear</span><span class="w"> </span><span class="n">iterations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">831</span><span class="w"></span>
-<span class="w">  </span><span class="n">no</span><span class="o">.</span><span class="w"> </span><span class="n">nonlinear</span><span class="w"> </span><span class="n">convergence</span><span class="w"> </span><span class="n">failures</span><span class="w"> </span><span class="o">=</span><span class="w">   </span><span class="mi">0</span><span class="w"></span>
-<span class="w">  </span><span class="n">no</span><span class="o">.</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="n">failures</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mi">22</span><span class="w"></span>
 <span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
 <span class="w"> </span><span class="n">full</span><span class="w"> </span><span class="n">description</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">interface</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">dvode</span><span class="o">.</span><span class="w"></span>
 
@@ -1521,29 +1418,32 @@ by a call to iumach (may be machine-dependent).</p>
 <span class="w">   </span><span class="o">-</span><span class="n">substitute</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="nb">max</span><span class="o">-</span><span class="n">norm</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="n">w</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">rms</span><span class="o">-</span><span class="n">norm</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"></span>
 <span class="w">   </span><span class="o">-</span><span class="n">ignore</span><span class="w"> </span><span class="n">some</span><span class="w"> </span><span class="n">components</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">norm</span><span class="p">,</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">effect</span><span class="w"> </span><span class="n">of</span><span class="w"></span>
 <span class="w">    </span><span class="n">suppressing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">control</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">those</span><span class="w"> </span><span class="n">components</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">y</span><span class="o">.</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-<span class="w"> </span><span class="n">revision</span><span class="w"> </span><span class="n">history</span><span class="w"> </span><span class="p">(</span><span class="n">yyyymmdd</span><span class="p">)</span><span class="w"></span>
-<span class="w">  </span><span class="mi">19890615</span><span class="w">  </span><span class="n">date</span><span class="w"> </span><span class="n">written</span><span class="o">.</span><span class="w">  </span><span class="n">initial</span><span class="w"> </span><span class="n">release</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="mi">19890922</span><span class="w">  </span><span class="n">added</span><span class="w"> </span><span class="n">interrupt</span><span class="o">/</span><span class="n">restart</span><span class="w"> </span><span class="n">ability</span><span class="p">,</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="n">throughout</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="mi">19910228</span><span class="w">  </span><span class="n">minor</span><span class="w"> </span><span class="n">revisions</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="n">format</span><span class="p">,</span><span class="w">  </span><span class="n">prologue</span><span class="p">,</span><span class="w"> </span><span class="n">etc</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="mi">19920227</span><span class="w">  </span><span class="n">modifications</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">d</span><span class="o">.</span><span class="w"> </span><span class="n">pang</span><span class="p">:</span><span class="w"></span>
-<span class="w">            </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">applied</span><span class="w"> </span><span class="n">subgennam</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">get</span><span class="w"> </span><span class="n">generic</span><span class="w"> </span><span class="n">intrinsic</span><span class="w"> </span><span class="n">names</span><span class="o">.</span><span class="w"></span>
-<span class="w">            </span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="n">changed</span><span class="w"> </span><span class="n">intrinsic</span><span class="w"> </span><span class="n">names</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">generic</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">comments</span><span class="o">.</span><span class="w"></span>
-<span class="w">            </span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="o">*</span><span class="n">deck</span><span class="w"> </span><span class="n">lines</span><span class="w"> </span><span class="n">before</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="n">routine</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="mi">19920721</span><span class="w">  </span><span class="n">names</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">labeled</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="w"> </span><span class="n">changed</span><span class="p">,</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="k">as</span><span class="w"></span>
-<span class="w">            </span><span class="n">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">unique</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">combined</span><span class="w"> </span><span class="n">single</span><span class="o">/</span><span class="n">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="p">(</span><span class="n">ach</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="mi">19920722</span><span class="w">  </span><span class="n">minor</span><span class="w"> </span><span class="n">revisions</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">prologue</span><span class="w"> </span><span class="p">(</span><span class="n">ach</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="mi">19920831</span><span class="w">  </span><span class="n">conversion</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="p">(</span><span class="n">ach</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="mi">19921106</span><span class="w">  </span><span class="n">fixed</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="n">bug</span><span class="p">:</span><span class="w"> </span><span class="n">etaq</span><span class="p">,</span><span class="n">etaqm1</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">dvstep</span><span class="w"> </span><span class="n">save</span><span class="w"> </span><span class="n">statement</span><span class="w"> </span><span class="p">(</span><span class="n">ach</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="mi">19921118</span><span class="w">  </span><span class="n">changed</span><span class="w"> </span><span class="n">lunsav</span><span class="o">/</span><span class="n">mflgsv</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">ixsav</span><span class="w"> </span><span class="p">(</span><span class="n">ach</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="mi">19941222</span><span class="w">  </span><span class="n">removed</span><span class="w"> </span><span class="n">mf</span><span class="w"> </span><span class="n">overwrite</span><span class="p">;</span><span class="w"> </span><span class="n">attached</span><span class="w"> </span><span class="nb">sign</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">estimated</span><span class="w"> </span><span class="n">second</span><span class="w"></span>
-<span class="w">            </span><span class="n">deriv</span><span class="o">.</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">dvhin</span><span class="p">;</span><span class="w"> </span><span class="n">misc</span><span class="o">.</span><span class="w"> </span><span class="n">comment</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="n">throughout</span><span class="w"> </span><span class="p">(</span><span class="n">ach</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="mi">19970515</span><span class="w">  </span><span class="n">minor</span><span class="w"> </span><span class="n">corrections</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">comments</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">prologue</span><span class="p">,</span><span class="w"> </span><span class="n">dvjac</span><span class="w"> </span><span class="p">(</span><span class="n">ach</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="mi">19981111</span><span class="w">  </span><span class="n">corrected</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">adding</span><span class="w"> </span><span class="n">final</span><span class="w"> </span><span class="n">line</span><span class="p">,</span><span class="w"> </span><span class="n">go</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="p">(</span><span class="n">ach</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">  </span><span class="mi">20020430</span><span class="w">  </span><span class="n">various</span><span class="w"> </span><span class="n">upgrades</span><span class="w"> </span><span class="p">(</span><span class="n">ach</span><span class="p">):</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">odepack</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">handler</span><span class="w"> </span><span class="n">package</span><span class="o">.</span><span class="w"></span>
-<span class="w">            </span><span class="n">replaced</span><span class="w"> </span><span class="n">d1mach</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dumach</span><span class="o">.</span><span class="w">  </span><span class="n">various</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">main</span><span class="w"></span>
-<span class="w">            </span><span class="n">prologue</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="n">routine</span><span class="w"> </span><span class="n">prologues</span><span class="o">.</span><span class="w"></span>
 </code></pre></div>
+
+<h3>Revision history</h3>
+<ul>
+<li>19890615  date written.  initial release.</li>
+<li>19890922  added interrupt/restart ability, minor changes throughout.</li>
+<li>19910228  minor revisions in line format,  prologue, etc.</li>
+<li>19920227  modifications by d. pang:
+              (1) applied subgennam to get generic intrinsic names.
+              (2) changed intrinsic names to generic in comments.
+              (3) added *deck lines before each routine.</li>
+<li>19920721  names of routines and labeled common blocks changed, so as
+              to be unique in combined single/real(wp) code (ach).</li>
+<li>19920722  minor revisions to prologue (ach).</li>
+<li>19920831  conversion to real(wp) done (ach).</li>
+<li>19921106  fixed minor bug: etaq,etaqm1 in dvstep save statement (ach).</li>
+<li>19921118  changed lunsav/mflgsv to ixsav (ach).</li>
+<li>19941222  removed mf overwrite; attached sign to h in estimated second
+              deriv. in dvhin; misc. comment changes throughout (ach).</li>
+<li>19970515  minor corrections to comments in prologue, dvjac (ach).</li>
+<li>19981111  corrected block b by adding final line, go to 200 (ach).</li>
+<li>20020430  various upgrades (ach): use odepack error handler package.
+              replaced d1mach by dumach.  various changes to main
+              prologue and other routine prologues.
+```</li>
+</ul>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2885,53 +2785,9 @@ the sign of h0 is inferred from the initial values of tout and t0.</p>
 </h3>
     
   <p>subroutine dvnlsd is a nonlinear system solver, which uses functional
-  iteration or a chord (modified newton) method.  for the chord method
-  direct linear algebraic system solvers are used.  subroutine dvnlsd
-  then handles the corrector phase of this integration package.</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="p">,</span><span class="w"> </span><span class="n">savf</span><span class="p">,</span><span class="w"> </span><span class="n">ewt</span><span class="p">,</span><span class="w"> </span><span class="n">acor</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"></span>
-<span class="w">                        </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">jac</span><span class="p">,</span><span class="w"> </span><span class="n">nflag</span><span class="w"></span>
-<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">acor</span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"> </span><span class="n">nflag</span><span class="w"></span>
-
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">communication</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvnlsd</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">variables</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="k">for</span><span class="w"></span>
-<span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">details</span><span class="p">,</span><span class="w"> </span><span class="n">please</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">comments</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">driver</span><span class="w"> </span><span class="n">subroutine</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">y</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">dependent</span><span class="w"> </span><span class="n">variable</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">yh</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">nordsieck</span><span class="w"> </span><span class="p">(</span><span class="n">taylor</span><span class="p">)</span><span class="w"> </span><span class="n">array</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">lmax</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="w"></span>
-<span class="w">              </span><span class="ow">and</span><span class="w"> </span><span class="n">output</span><span class="o">.</span><span class="w">  </span><span class="n">on</span><span class="w"> </span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">predicted</span><span class="w"> </span><span class="n">values</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">ldyh</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">constant</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">dimension</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">vsav</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">unused</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">array</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">savf</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">ewt</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">weight</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">acor</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">accumulated</span><span class="w"></span>
-<span class="w">              </span><span class="n">corrections</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">predicted</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="n">vector</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="n">iwm</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">arrays</span><span class="w"> </span><span class="n">associated</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">matrix</span><span class="w"></span>
-<span class="w">              </span><span class="n">operations</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">chord</span><span class="w"> </span><span class="n">iteration</span><span class="w"> </span><span class="p">(</span><span class="n">miter</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">f</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">supplied</span><span class="w"> </span><span class="n">routine</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">jac</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">supplied</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">routine</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">nflag</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">input</span><span class="o">/</span><span class="n">output</span><span class="w"> </span><span class="n">flag</span><span class="p">,</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">meanings</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">follows</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="n">input</span><span class="w"></span>
-<span class="w">                  </span><span class="mi">0</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="n">step</span><span class="o">.</span><span class="w"></span>
-<span class="w">                 </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="n">convergence</span><span class="w"> </span><span class="n">failure</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">previous</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">dvnlsd</span><span class="o">.</span><span class="w"></span>
-<span class="w">                 </span><span class="o">-</span><span class="mi">2</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="n">failure</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">dvstep</span><span class="o">.</span><span class="w"></span>
-<span class="w">              </span><span class="n">output</span><span class="w"></span>
-<span class="w">                  </span><span class="mi">0</span><span class="w"> </span><span class="n">successful</span><span class="w"> </span><span class="n">completion</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">nonlinear</span><span class="w"> </span><span class="n">solver</span><span class="o">.</span><span class="w"></span>
-<span class="w">                 </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="n">convergence</span><span class="w"> </span><span class="n">failure</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">singular</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="w"></span>
-<span class="w">                 </span><span class="o">-</span><span class="mi">2</span><span class="w"> </span><span class="n">unrecoverable</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">preprocessing</span><span class="w"></span>
-<span class="w">                    </span><span class="p">(</span><span class="n">cannot</span><span class="w"> </span><span class="n">occur</span><span class="w"> </span><span class="n">here</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">                 </span><span class="o">-</span><span class="mi">3</span><span class="w"> </span><span class="n">unrecoverable</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">solution</span><span class="w"> </span><span class="p">(</span><span class="n">cannot</span><span class="w"> </span><span class="n">occur</span><span class="w"></span>
-<span class="w">                    </span><span class="n">here</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">ipup</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">own</span><span class="w"> </span><span class="n">variable</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">meanings</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">follows</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="mi">0</span><span class="p">,</span><span class="w">            </span><span class="n">do</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">newton</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="w"></span>
-<span class="w">              </span><span class="n">miter</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="n">newton</span><span class="w"> </span><span class="n">matrix</span><span class="p">,</span><span class="w"> </span><span class="n">because</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
-<span class="w">                            </span><span class="n">initial</span><span class="w"> </span><span class="n">step</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">changed</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">error</span><span class="w"></span>
-<span class="w">                            </span><span class="n">test</span><span class="w"> </span><span class="n">failed</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">indicated</span><span class="w"> </span><span class="n">by</span><span class="w"></span>
-<span class="w">                            </span><span class="n">the</span><span class="w"> </span><span class="n">scalar</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="n">nst</span><span class="o">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">details</span><span class="p">,</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">comments</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">driver</span><span class="w"> </span><span class="n">subroutine</span><span class="o">.</span><span class="w"></span>
-</code></pre></div>
+iteration or a chord (modified newton) method.  for the chord method
+direct linear algebraic system solvers are used.  subroutine dvnlsd
+then handles the corrector phase of this integration package.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2962,46 +2818,47 @@ the sign of h0 is inferred from the initial values of tout and t0.</p>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>y</strong>(*)</td>
             <td>
-
+<p>the dependent variable, a vector of length n</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>yh</strong>(ldyh,*)</td>
             <td>
-
+<p>the nordsieck (taylor) array, ldyh by lmax, input
+and output.  on input, it contains predicted values.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ldyh</strong></td>
             <td>
-
+<p>a constant &gt;= n, the first dimension of yh</p>
             </td>
         </tr>
         <tr>
@@ -3016,7 +2873,7 @@ the sign of h0 is inferred from the initial values of tout and t0.</p>
             <td>::</td>
             <td><strong>vsav</strong>(*)</td>
             <td>
-
+<p>unused work array.</p>
             </td>
         </tr>
         <tr>
@@ -3031,82 +2888,85 @@ the sign of h0 is inferred from the initial values of tout and t0.</p>
             <td>::</td>
             <td><strong>savf</strong>(*)</td>
             <td>
-
+<p>a work array of length n.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ewt</strong>(*)</td>
             <td>
-
+<p>an error weight vector of length n</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>acor</strong>(*)</td>
             <td>
-
+<p>a work array of length n, used for the accumulated
+corrections to the predicted y vector.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>iwm</strong>(*)</td>
             <td>
-
+<p>integer work array associated with matrix
+operations in chord iteration (miter /= 0).</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>wm</strong>(*)</td>
             <td>
-
+<p>real work array associated with matrix
+operations in chord iteration (miter /= 0).</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>nflag</strong></td>
             <td>
-
+<p>input/output flag, with values and meanings as follows:</p><a href="../proc/dvnlsd.html#variable-nflag" class="pull-right"><emph>Read more&hellip;</emph></a>
             </td>
         </tr>
     </tbody>

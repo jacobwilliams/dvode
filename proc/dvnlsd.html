@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 5.3% of total for procedures.">106 statements</a>
+               title=" 5.6% of total for procedures.">112 statements</a>
           </li>
 
             <li id="source-file">
@@ -155,53 +155,9 @@
     
 
     <p>subroutine dvnlsd is a nonlinear system solver, which uses functional
-  iteration or a chord (modified newton) method.  for the chord method
-  direct linear algebraic system solvers are used.  subroutine dvnlsd
-  then handles the corrector phase of this integration package.</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="p">,</span><span class="w"> </span><span class="n">savf</span><span class="p">,</span><span class="w"> </span><span class="n">ewt</span><span class="p">,</span><span class="w"> </span><span class="n">acor</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"></span>
-<span class="w">                        </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">jac</span><span class="p">,</span><span class="w"> </span><span class="n">nflag</span><span class="w"></span>
-<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">acor</span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"> </span><span class="n">nflag</span><span class="w"></span>
-
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">communication</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvnlsd</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">variables</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="k">for</span><span class="w"></span>
-<span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">details</span><span class="p">,</span><span class="w"> </span><span class="n">please</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">comments</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">driver</span><span class="w"> </span><span class="n">subroutine</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">y</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">dependent</span><span class="w"> </span><span class="n">variable</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">yh</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">nordsieck</span><span class="w"> </span><span class="p">(</span><span class="n">taylor</span><span class="p">)</span><span class="w"> </span><span class="n">array</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">lmax</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="w"></span>
-<span class="w">              </span><span class="ow">and</span><span class="w"> </span><span class="n">output</span><span class="o">.</span><span class="w">  </span><span class="n">on</span><span class="w"> </span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">predicted</span><span class="w"> </span><span class="n">values</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">ldyh</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">constant</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">dimension</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">vsav</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">unused</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">array</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">savf</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">ewt</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">weight</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">acor</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">accumulated</span><span class="w"></span>
-<span class="w">              </span><span class="n">corrections</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">predicted</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="n">vector</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="n">iwm</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">arrays</span><span class="w"> </span><span class="n">associated</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">matrix</span><span class="w"></span>
-<span class="w">              </span><span class="n">operations</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">chord</span><span class="w"> </span><span class="n">iteration</span><span class="w"> </span><span class="p">(</span><span class="n">miter</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">f</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">supplied</span><span class="w"> </span><span class="n">routine</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">jac</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">supplied</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">routine</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">nflag</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">input</span><span class="o">/</span><span class="n">output</span><span class="w"> </span><span class="n">flag</span><span class="p">,</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">meanings</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">follows</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="n">input</span><span class="w"></span>
-<span class="w">                  </span><span class="mi">0</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="n">step</span><span class="o">.</span><span class="w"></span>
-<span class="w">                 </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="n">convergence</span><span class="w"> </span><span class="n">failure</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">previous</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">dvnlsd</span><span class="o">.</span><span class="w"></span>
-<span class="w">                 </span><span class="o">-</span><span class="mi">2</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="n">failure</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">dvstep</span><span class="o">.</span><span class="w"></span>
-<span class="w">              </span><span class="n">output</span><span class="w"></span>
-<span class="w">                  </span><span class="mi">0</span><span class="w"> </span><span class="n">successful</span><span class="w"> </span><span class="n">completion</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">nonlinear</span><span class="w"> </span><span class="n">solver</span><span class="o">.</span><span class="w"></span>
-<span class="w">                 </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="n">convergence</span><span class="w"> </span><span class="n">failure</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">singular</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="w"></span>
-<span class="w">                 </span><span class="o">-</span><span class="mi">2</span><span class="w"> </span><span class="n">unrecoverable</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">preprocessing</span><span class="w"></span>
-<span class="w">                    </span><span class="p">(</span><span class="n">cannot</span><span class="w"> </span><span class="n">occur</span><span class="w"> </span><span class="n">here</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">                 </span><span class="o">-</span><span class="mi">3</span><span class="w"> </span><span class="n">unrecoverable</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">solution</span><span class="w"> </span><span class="p">(</span><span class="n">cannot</span><span class="w"> </span><span class="n">occur</span><span class="w"></span>
-<span class="w">                    </span><span class="n">here</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">ipup</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">own</span><span class="w"> </span><span class="n">variable</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">meanings</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">follows</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="mi">0</span><span class="p">,</span><span class="w">            </span><span class="n">do</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">newton</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="w"></span>
-<span class="w">              </span><span class="n">miter</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="n">newton</span><span class="w"> </span><span class="n">matrix</span><span class="p">,</span><span class="w"> </span><span class="n">because</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
-<span class="w">                            </span><span class="n">initial</span><span class="w"> </span><span class="n">step</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">changed</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">error</span><span class="w"></span>
-<span class="w">                            </span><span class="n">test</span><span class="w"> </span><span class="n">failed</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">indicated</span><span class="w"> </span><span class="n">by</span><span class="w"></span>
-<span class="w">                            </span><span class="n">the</span><span class="w"> </span><span class="n">scalar</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="n">nst</span><span class="o">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">details</span><span class="p">,</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">comments</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">driver</span><span class="w"> </span><span class="n">subroutine</span><span class="o">.</span><span class="w"></span>
-</code></pre></div>
+iteration or a chord (modified newton) method.  for the chord method
+direct linear algebraic system solvers are used.  subroutine dvnlsd
+then handles the corrector phase of this integration package.</p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -231,52 +187,53 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-y~5"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-y~2"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>y</strong>(*)</td>
             <td>
-                
+                <p>the dependent variable, a vector of length n</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-yh~5"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-yh"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>yh</strong>(ldyh,*)</td>
             <td>
-                
+                <p>the nordsieck (taylor) array, ldyh by lmax, input
+and output.  on input, it contains predicted values.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ldyh~5"></span>
-              integer
+              <span class="anchor" id="variable-ldyh"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ldyh</strong></td>
             <td>
-                
+                <p>a constant &gt;= n, the first dimension of yh</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-vsav~2"></span>
+              <span class="anchor" id="variable-vsav"></span>
               real(kind=wp)
             </td>
 <td></td>
@@ -286,12 +243,12 @@
             <td>::</td>
             <td><strong>vsav</strong>(*)</td>
             <td>
-                
+                <p>unused work array.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-savf~3"></span>
+              <span class="anchor" id="variable-savf"></span>
               real(kind=wp)
             </td>
 <td></td>
@@ -301,82 +258,104 @@
             <td>::</td>
             <td><strong>savf</strong>(*)</td>
             <td>
-                
+                <p>a work array of length n.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ewt~4"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-ewt~2"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ewt</strong>(*)</td>
             <td>
-                
+                <p>an error weight vector of length n</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-acor~2"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-acor"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>acor</strong>(*)</td>
             <td>
-                
+                <p>a work array of length n, used for the accumulated
+corrections to the predicted y vector.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwm~4"></span>
-              integer
+              <span class="anchor" id="variable-iwm"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>iwm</strong>(*)</td>
             <td>
-                
+                <p>integer work array associated with matrix
+operations in chord iteration (miter /= 0).</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-wm~4"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-wm"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>wm</strong>(*)</td>
             <td>
-                
+                <p>real work array associated with matrix
+operations in chord iteration (miter /= 0).</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-nflag"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>nflag</strong></td>
             <td>
-                
+                <p>input/output flag, with values and meanings as follows:</p>
+<ul>
+<li>
+<p><strong>input:</strong></p>
+<ul>
+<li>0 first call for this time step.</li>
+<li>-1 convergence failure in previous call to dvnlsd.</li>
+<li>-2 error test failure in dvstep.</li>
+</ul>
+</li>
+<li>
+<p><strong>output:</strong></p>
+<ul>
+<li>0 successful completion of nonlinear solver.</li>
+<li>-1 convergence failure or singular matrix.</li>
+<li>-2 unrecoverable error in matrix preprocessing (cannot occur here).</li>
+<li>-3 unrecoverable error in solution (cannot occur here).</li>
+</ul>
+</li>
+</ul>
             </td>
         </tr>
     </tbody>
@@ -420,18 +399,18 @@
 <path fill="none" stroke="#000000" d="M44.97,-87.15C57.99,-96.47 76.18,-109.49 90.89,-120.02"/>
 <polygon fill="#000000" stroke="#000000" points="88.92,-122.91 99.08,-125.89 92.99,-117.22 88.92,-122.91"/>
 </g>
-<!-- proc~dscal -->
+<!-- proc~dvnorm -->
 <g id="proc~~dvnlsd~~CallsGraph_node3" class="node">
-<title>proc~dscal</title>
-<g id="a_proc~~dvnlsd~~CallsGraph_node3"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-108 90,-108 90,-84 144,-84 144,-108"/>
-<text text-anchor="middle" x="117" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
+<title>proc~dvnorm</title>
+<g id="a_proc~~dvnlsd~~CallsGraph_node3"><a xlink:href=".././proc/dvnorm.html" xlink:title="dvnorm">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="144,-108 90,-108 90,-84 144,-84 144,-108"/>
+<text text-anchor="middle" x="117" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvnorm</text>
 </a>
 </g>
 </g>
-<!-- proc~dvnlsd&#45;&gt;proc~dscal -->
+<!-- proc~dvnlsd&#45;&gt;proc~dvnorm -->
 <g id="proc~~dvnlsd~~CallsGraph_edge2" class="edge">
-<title>proc~dvnlsd&#45;&gt;proc~dscal</title>
+<title>proc~dvnlsd&#45;&gt;proc~dvnorm</title>
 <path fill="none" stroke="#000000" d="M54.4,-81.3C62.48,-83.23 71.51,-85.38 80.1,-87.43"/>
 <polygon fill="#000000" stroke="#000000" points="79.38,-90.86 89.92,-89.78 81,-84.05 79.38,-90.86"/>
 </g>
@@ -450,18 +429,18 @@
 <path fill="none" stroke="#000000" d="M54.4,-68.7C62.48,-66.77 71.51,-64.62 80.1,-62.57"/>
 <polygon fill="#000000" stroke="#000000" points="81,-65.95 89.92,-60.22 79.38,-59.14 81,-65.95"/>
 </g>
-<!-- proc~dvnorm -->
+<!-- proc~dscal -->
 <g id="proc~~dvnlsd~~CallsGraph_node5" class="node">
-<title>proc~dvnorm</title>
-<g id="a_proc~~dvnlsd~~CallsGraph_node5"><a xlink:href=".././proc/dvnorm.html" xlink:title="dvnorm">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
-<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvnorm</text>
+<title>proc~dscal</title>
+<g id="a_proc~~dvnlsd~~CallsGraph_node5"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
+<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
 </a>
 </g>
 </g>
-<!-- proc~dvnlsd&#45;&gt;proc~dvnorm -->
+<!-- proc~dvnlsd&#45;&gt;proc~dscal -->
 <g id="proc~~dvnlsd~~CallsGraph_edge4" class="edge">
-<title>proc~dvnlsd&#45;&gt;proc~dvnorm</title>
+<title>proc~dvnlsd&#45;&gt;proc~dscal</title>
 <path fill="none" stroke="#000000" d="M44.97,-62.85C57.99,-53.53 76.18,-40.51 90.89,-29.98"/>
 <polygon fill="#000000" stroke="#000000" points="92.99,-32.78 99.08,-24.11 88.92,-27.09 92.99,-32.78"/>
 </g>
@@ -573,19 +552,34 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre><span></span><span class="w">      </span><span class="k">subroutine </span><span class="n">dvnlsd</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">yh</span><span class="p">,</span><span class="n">ldyh</span><span class="p">,</span><span class="n">vsav</span><span class="p">,</span><span class="n">savf</span><span class="p">,</span><span class="n">ewt</span><span class="p">,</span><span class="n">acor</span><span class="p">,</span><span class="n">iwm</span><span class="p">,</span><span class="n">wm</span><span class="p">,</span><span class="n">nflag</span><span class="p">)</span><span class="w"></span>
+    <div class="highlight"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">dvnlsd</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">yh</span><span class="p">,</span><span class="n">ldyh</span><span class="p">,</span><span class="n">vsav</span><span class="p">,</span><span class="n">savf</span><span class="p">,</span><span class="n">ewt</span><span class="p">,</span><span class="n">acor</span><span class="p">,</span><span class="n">iwm</span><span class="p">,</span><span class="n">wm</span><span class="p">,</span><span class="n">nflag</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">      </span><span class="k">class</span><span class="p">(</span><span class="n">dvode_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">ldyh</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vsav</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">savf</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ewt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">acor</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ldyh</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nflag</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! the dependent variable, a vector of length n</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ldyh</span><span class="w"> </span><span class="c">!! a constant &gt;= n, the first dimension of yh</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">ldyh</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! the nordsieck (taylor) array, ldyh by lmax, input</span>
+<span class="w">                                           </span><span class="c">!! and output.  on input, it contains predicted values.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vsav</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! unused work array.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">savf</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! a work array of length n.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ewt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! an error weight vector of length n</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">acor</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! a work array of length n, used for the accumulated</span>
+<span class="w">                                        </span><span class="c">!! corrections to the predicted y vector.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! real work array associated with matrix</span>
+<span class="w">                                      </span><span class="c">!! operations in chord iteration (miter /= 0).</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! integer work array associated with matrix</span>
+<span class="w">                                      </span><span class="c">!! operations in chord iteration (miter /= 0).</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nflag</span><span class="w"> </span><span class="c">!! input/output flag, with values and meanings as follows:</span>
+<span class="w">                                     </span><span class="c">!!</span>
+<span class="w">                                     </span><span class="c">!! * **input:**</span>
+<span class="w">                                     </span><span class="c">!!     *  0 first call for this time step.</span>
+<span class="w">                                     </span><span class="c">!!     * -1 convergence failure in previous call to dvnlsd.</span>
+<span class="w">                                     </span><span class="c">!!     * -2 error test failure in dvstep.</span>
+<span class="w">                                     </span><span class="c">!!</span>
+<span class="w">                                     </span><span class="c">!! * **output:**</span>
+<span class="w">                                     </span><span class="c">!!     *  0 successful completion of nonlinear solver.</span>
+<span class="w">                                     </span><span class="c">!!     * -1 convergence failure or singular matrix.</span>
+<span class="w">                                     </span><span class="c">!!     * -2 unrecoverable error in matrix preprocessing (cannot occur here).</span>
+<span class="w">                                     </span><span class="c">!!     * -3 unrecoverable error in solution (cannot occur here).</span>
 
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cscale</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">dcon</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">del</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">delp</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ierpj</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">iersl</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="w"></span>
@@ -619,109 +613,118 @@
 <span class="w">         </span><span class="c">!-----------------------------------------------------------------------</span>
 <span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">drc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rc</span><span class="o">-</span><span class="n">one</span><span class="p">)</span><span class="w"></span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">drc</span><span class="o">&gt;</span><span class="n">ccmax</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nst</span><span class="o">&gt;=</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nslp</span><span class="o">+</span><span class="n">msbp</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">ipup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="w"></span>
-<span class="w">      </span><span class="k">end if</span><span class="w"></span>
-<span class="w">      </span><span class="c">!-----------------------------------------------------------------------</span>
-<span class="w">      </span><span class="c">! up to maxcor corrector iterations are taken.  a convergence test is</span>
-<span class="w">      </span><span class="c">! made on the r.m.s. norm of each correction, weighted by the error</span>
-<span class="w">      </span><span class="c">! weight vector ewt.  the sum of the corrections is accumulated in the</span>
-<span class="w">      </span><span class="c">! vector acor(i).  the yh array is not altered in the corrector loop.</span>
-<span class="w">      </span><span class="c">!-----------------------------------------------------------------------</span>
-<span class="w"> </span><span class="mi">100</span><span class="w">  </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="n">delp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="k">call </span><span class="n">dcopy</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">yh</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">call </span><span class="n">me</span><span class="p">%</span><span class="n">f</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="n">savf</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">))</span><span class="w"></span>
-<span class="w">      </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">ipup</span><span class="o">&gt;</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="w">      </span><span class="k">end if</span>
+
+<span class="k">      </span><span class="n">corrector</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>
 <span class="w">         </span><span class="c">!-----------------------------------------------------------------------</span>
-<span class="w">         </span><span class="c">! if indicated, the matrix p = i - h*rl1*j is reevaluated and</span>
-<span class="w">         </span><span class="c">! preprocessed before starting the corrector iteration.  ipup is set</span>
-<span class="w">         </span><span class="c">! to 0 as an indicator that this has been done.</span>
+<span class="w">         </span><span class="c">! up to maxcor corrector iterations are taken.  a convergence test is</span>
+<span class="w">         </span><span class="c">! made on the r.m.s. norm of each correction, weighted by the error</span>
+<span class="w">         </span><span class="c">! weight vector ewt.  the sum of the corrections is accumulated in the</span>
+<span class="w">         </span><span class="c">! vector acor(i).  the yh array is not altered in the corrector loop.</span>
 <span class="w">         </span><span class="c">!-----------------------------------------------------------------------</span>
-<span class="w">         </span><span class="k">call </span><span class="n">me</span><span class="p">%</span><span class="n">dvjac</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">yh</span><span class="p">,</span><span class="n">ldyh</span><span class="p">,</span><span class="n">ewt</span><span class="p">,</span><span class="n">acor</span><span class="p">,</span><span class="n">savf</span><span class="p">,</span><span class="n">wm</span><span class="p">,</span><span class="n">iwm</span><span class="p">,</span><span class="n">ierpj</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">ipup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">drc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">crate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nslp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nst</span><span class="w"></span>
-<span class="w">         </span><span class="c">! if matrix is singular, take error return to force cut in step size. --</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ierpj</span><span class="o">/=</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">goto</span><span class="w"> </span><span class="mi">400</span><span class="w"></span>
-<span class="w">      </span><span class="k">endif</span>
-<span class="k">      do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
-<span class="w">         </span><span class="n">acor</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
-<span class="w">      </span><span class="k">enddo</span><span class="w"></span>
-<span class="w">      </span><span class="c">! this is a looping point for the corrector iteration. -----------------</span>
-<span class="w"> </span><span class="mi">200</span><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">/=</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
-<span class="w">         </span><span class="c">!-----------------------------------------------------------------------</span>
-<span class="w">         </span><span class="c">! in the case of the chord method, compute the corrector error,</span>
-<span class="w">         </span><span class="c">! and solve the linear system with that as right-hand side and</span>
-<span class="w">         </span><span class="c">! p as coefficient matrix.  the correction is scaled by the factor</span>
-<span class="w">         </span><span class="c">! 2/(1+rc) to account for changes in h*rl1 since the last dvjac call.</span>
-<span class="w">         </span><span class="c">!-----------------------------------------------------------------------</span>
-<span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
-<span class="w">            </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rl1</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="p">)</span><span class="o">*</span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rl1</span><span class="o">*</span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="n">acor</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"></span>
-<span class="w">         </span><span class="k">enddo</span>
-<span class="k">         call </span><span class="n">me</span><span class="p">%</span><span class="n">dvsol</span><span class="p">(</span><span class="n">wm</span><span class="p">,</span><span class="n">iwm</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">iersl</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nni</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nni</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">iersl</span><span class="o">&gt;</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">goto</span><span class="w"> </span><span class="mi">300</span><span class="w"></span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">meth</span><span class="o">==</span><span class="mi">2</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rc</span><span class="o">/=</span><span class="n">one</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            </span><span class="n">cscale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">two</span><span class="o">/</span><span class="p">(</span><span class="n">one</span><span class="o">+</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rc</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="k">call </span><span class="n">dscal</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">cscale</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">         </span><span class="n">delp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
+<span class="w">         </span><span class="k">call </span><span class="n">dcopy</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">yh</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="k">call </span><span class="n">me</span><span class="p">%</span><span class="n">f</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="n">savf</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">))</span><span class="w"></span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">ipup</span><span class="o">&gt;</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="w">            </span><span class="c">!-----------------------------------------------------------------------</span>
+<span class="w">            </span><span class="c">! if indicated, the matrix p = i - h*rl1*j is reevaluated and</span>
+<span class="w">            </span><span class="c">! preprocessed before starting the corrector iteration.  ipup is set</span>
+<span class="w">            </span><span class="c">! to 0 as an indicator that this has been done.</span>
+<span class="w">            </span><span class="c">!-----------------------------------------------------------------------</span>
+<span class="w">            </span><span class="k">call </span><span class="n">me</span><span class="p">%</span><span class="n">dvjac</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">yh</span><span class="p">,</span><span class="n">ldyh</span><span class="p">,</span><span class="n">ewt</span><span class="p">,</span><span class="n">acor</span><span class="p">,</span><span class="n">savf</span><span class="p">,</span><span class="n">wm</span><span class="p">,</span><span class="n">iwm</span><span class="p">,</span><span class="n">ierpj</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">ipup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one</span><span class="w"></span>
+<span class="w">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">drc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
+<span class="w">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">crate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one</span><span class="w"></span>
+<span class="w">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nslp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nst</span><span class="w"></span>
+<span class="w">            </span><span class="c">! if matrix is singular, take error return to force cut in step size. --</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ierpj</span><span class="o">/=</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">exit </span><span class="n">corrector</span><span class="w"></span>
 <span class="w">         </span><span class="k">endif</span>
-<span class="k">         </span><span class="n">del</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dvnorm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">ewt</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">call </span><span class="n">daxpy</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">one</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">acor</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
-<span class="w">            </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">acor</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">enddo</span>
-<span class="k">      else</span><span class="w"></span>
-<span class="w">         </span><span class="c">!-----------------------------------------------------------------------</span>
-<span class="w">         </span><span class="c">! in the case of functional iteration, update y directly from</span>
-<span class="w">         </span><span class="c">! the result of the last function evaluation.</span>
-<span class="w">         </span><span class="c">!-----------------------------------------------------------------------</span>
-<span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
-<span class="w">            </span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rl1</span><span class="o">*</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="o">*</span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">-</span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="w"></span>
-<span class="w">         </span><span class="k">enddo</span>
 <span class="k">         do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
-<span class="w">            </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">acor</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">acor</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
 <span class="w">         </span><span class="k">enddo</span>
-<span class="k">         </span><span class="n">del</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dvnorm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">ewt</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
-<span class="w">            </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">enddo</span>
-<span class="k">         call </span><span class="n">dcopy</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">savf</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">acor</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">endif</span><span class="w"></span>
-<span class="w">      </span><span class="c">!-----------------------------------------------------------------------</span>
-<span class="w">      </span><span class="c">! test for convergence.  if m &gt; 0, an estimate of the convergence</span>
-<span class="w">      </span><span class="c">! rate constant is stored in crate, and this is used in the test.</span>
-<span class="w">      </span><span class="c">!-----------------------------------------------------------------------</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m</span><span class="o">/=</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">crate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="n">crdown</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">crate</span><span class="p">,</span><span class="n">del</span><span class="o">/</span><span class="n">delp</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="n">dcon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">del</span><span class="o">*</span><span class="nb">min</span><span class="p">(</span><span class="n">one</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">crate</span><span class="p">)</span><span class="o">/</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">tq</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">dcon</span><span class="o">&lt;=</span><span class="n">one</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
-<span class="w">         </span><span class="c">! return for successful step. ------------------------------------------</span>
-<span class="w">         </span><span class="n">nflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">icf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m</span><span class="o">==</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">acnrm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">del</span><span class="w"></span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m</span><span class="o">&gt;</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">acnrm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dvnorm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">acor</span><span class="p">,</span><span class="n">ewt</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">return</span>
-<span class="k">      else</span>
-<span class="k">         </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m</span><span class="o">/=</span><span class="n">maxcor</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m</span><span class="o">&lt;</span><span class="mi">2</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">del</span><span class="o">&lt;=</span><span class="n">rdiv</span><span class="o">*</span><span class="n">delp</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">               </span><span class="n">delp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">del</span><span class="w"></span>
-<span class="w">               </span><span class="k">call </span><span class="n">me</span><span class="p">%</span><span class="n">f</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="n">savf</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">))</span><span class="w"></span>
-<span class="w">               </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">               </span><span class="k">goto</span><span class="w"> </span><span class="mi">200</span><span class="w"></span>
-<span class="w">            </span><span class="k">endif</span>
-<span class="k">         endif</span>
-<span class="k">      endif</span>
 
-<span class="k"> </span><span class="mi">300</span><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">/=</span><span class="mi">0</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jcur</span><span class="o">/=</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">icf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">ipup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="w"></span>
-<span class="w">         </span><span class="k">goto</span><span class="w"> </span><span class="mi">100</span><span class="w"></span>
-<span class="w">      </span><span class="k">endif</span>
+<span class="k">         do</span><span class="w"></span>
+<span class="w">            </span><span class="c">! this is a looping point for the corrector iteration. -----------------</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">/=</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="w">               </span><span class="c">!-----------------------------------------------------------------------</span>
+<span class="w">               </span><span class="c">! in the case of the chord method, compute the corrector error,</span>
+<span class="w">               </span><span class="c">! and solve the linear system with that as right-hand side and</span>
+<span class="w">               </span><span class="c">! p as coefficient matrix.  the correction is scaled by the factor</span>
+<span class="w">               </span><span class="c">! 2/(1+rc) to account for changes in h*rl1 since the last dvjac call.</span>
+<span class="w">               </span><span class="c">!-----------------------------------------------------------------------</span>
+<span class="w">               </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">                  </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rl1</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="p">)</span><span class="o">*</span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rl1</span><span class="o">*</span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="n">acor</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"></span>
+<span class="w">               </span><span class="k">enddo</span>
+<span class="k">               call </span><span class="n">me</span><span class="p">%</span><span class="n">dvsol</span><span class="p">(</span><span class="n">wm</span><span class="p">,</span><span class="n">iwm</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">iersl</span><span class="p">)</span><span class="w"></span>
+<span class="w">               </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nni</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nni</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">iersl</span><span class="o">&gt;</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">exit</span>
+<span class="k">               if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">meth</span><span class="o">==</span><span class="mi">2</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rc</span><span class="o">/=</span><span class="n">one</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">                  </span><span class="n">cscale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">two</span><span class="o">/</span><span class="p">(</span><span class="n">one</span><span class="o">+</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rc</span><span class="p">)</span><span class="w"></span>
+<span class="w">                  </span><span class="k">call </span><span class="n">dscal</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">cscale</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">               </span><span class="k">endif</span>
+<span class="k">               </span><span class="n">del</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dvnorm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">ewt</span><span class="p">)</span><span class="w"></span>
+<span class="w">               </span><span class="k">call </span><span class="n">daxpy</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">one</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">acor</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">               </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">                  </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">acor</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">               </span><span class="k">enddo</span>
+<span class="k">            else</span><span class="w"></span>
+<span class="w">               </span><span class="c">!-----------------------------------------------------------------------</span>
+<span class="w">               </span><span class="c">! in the case of functional iteration, update y directly from</span>
+<span class="w">               </span><span class="c">! the result of the last function evaluation.</span>
+<span class="w">               </span><span class="c">!-----------------------------------------------------------------------</span>
+<span class="w">               </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">                  </span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rl1</span><span class="o">*</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="o">*</span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">-</span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="w"></span>
+<span class="w">               </span><span class="k">enddo</span>
+<span class="k">               do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">                  </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">acor</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">               </span><span class="k">enddo</span>
+<span class="k">               </span><span class="n">del</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dvnorm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">ewt</span><span class="p">)</span><span class="w"></span>
+<span class="w">               </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">                  </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
+<span class="w">               </span><span class="k">enddo</span>
+<span class="k">               call </span><span class="n">dcopy</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">savf</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">acor</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">endif</span><span class="w"></span>
+<span class="w">            </span><span class="c">!-----------------------------------------------------------------------</span>
+<span class="w">            </span><span class="c">! test for convergence.  if m &gt; 0, an estimate of the convergence</span>
+<span class="w">            </span><span class="c">! rate constant is stored in crate, and this is used in the test.</span>
+<span class="w">            </span><span class="c">!-----------------------------------------------------------------------</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m</span><span class="o">/=</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">crate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="n">crdown</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">crate</span><span class="p">,</span><span class="n">del</span><span class="o">/</span><span class="n">delp</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">dcon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">del</span><span class="o">*</span><span class="nb">min</span><span class="p">(</span><span class="n">one</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">crate</span><span class="p">)</span><span class="o">/</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">tq</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">dcon</span><span class="o">&lt;=</span><span class="n">one</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="w">               </span><span class="c">! return for successful step. ------------------------------------------</span>
+<span class="w">               </span><span class="n">nflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">               </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">               </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">icf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m</span><span class="o">==</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">acnrm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">del</span><span class="w"></span>
+<span class="w">               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m</span><span class="o">&gt;</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">acnrm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dvnorm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">acor</span><span class="p">,</span><span class="n">ewt</span><span class="p">)</span><span class="w"></span>
+<span class="w">               </span><span class="k">return</span>
+<span class="k">            else</span>
+<span class="k">               </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m</span><span class="o">/=</span><span class="n">maxcor</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">                  if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m</span><span class="o">&lt;</span><span class="mi">2</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">del</span><span class="o">&lt;=</span><span class="n">rdiv</span><span class="o">*</span><span class="n">delp</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">                     </span><span class="n">delp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">del</span><span class="w"></span>
+<span class="w">                     </span><span class="k">call </span><span class="n">me</span><span class="p">%</span><span class="n">f</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="n">savf</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">))</span><span class="w"></span>
+<span class="w">                     </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">                     </span><span class="k">cycle</span>
+<span class="k">                  endif</span>
+<span class="k">               endif</span>
+<span class="k">               exit</span>
+<span class="k">            endif</span>
+<span class="k">         end do</span>
 
-<span class="k"> </span><span class="mi">400</span><span class="w">  </span><span class="n">nflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
+<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">/=</span><span class="mi">0</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jcur</span><span class="o">/=</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">icf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">ipup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="w"></span>
+<span class="w">         </span><span class="k">else </span>
+<span class="k">            exit </span><span class="n">corrector</span><span class="w"></span>
+<span class="w">         </span><span class="k">endif</span>
+
+<span class="k">      end do </span><span class="n">corrector</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">nflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
 <span class="w">      </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">icf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
 <span class="w">      </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">ipup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="w"></span>
 

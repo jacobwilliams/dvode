@@ -59,6 +59,14 @@ module dvode_module
       integer :: init     = 0 !! saved integer flag indicating whether initialization of the
                               !! problem has been done (init = 1) or not.
       integer :: ipup     = 0 !! saved flag to signal updating of newton matrix.
+                              !!
+                              !! In [[dvnlsd]]: own variable flag with values and meanings as follows:
+                              !!
+                              !!  * 0, do not update the newton matrix.
+                              !!  * `miter /= 0`, update newton matrix, because it is the
+                              !!    initial step, order was changed, the error
+                              !!    test failed, or an update is indicated by
+                              !!    the scalar `rc` or step counter `nst`.
       integer :: jcur     = 0 !! output flag from [[dvjac]] showing jacobian status:
                               !!
                               !!  * jcur = 0 means j is not current.
@@ -373,109 +381,6 @@ contains
 ! f. to continue the integration after a successful return, simply
 ! reset tout and call dvode again.  no other parameters need be reset.
 !
-!-----------------------------------------------------------------------
-! example problem
-!
-! the following is a simple example problem, with the coding
-! needed for its solution by dvode.  the problem is from chemical
-! kinetics, and consists of the following three rate equations:
-!     dy1/dt = -.04*y1 + 1.e4*y2*y3
-!     dy2/dt = .04*y1 - 1.e4*y2*y3 - 3.e7*y2**2
-!     dy3/dt = 3.e7*y2**2
-! on the interval from t = 0.0 to t = 4.e10, with initial conditions
-! y1 = 1.0, y2 = y3 = 0.  the problem is stiff.
-!
-! the following coding solves this problem with dvode, using mf = 21
-! and printing results at t = .4, 4., ..., 4.e10.  it uses
-! itol = 2 and atol much smaller for y2 than y1 or y3 because
-! y2 has much smaller values.
-! at the end of the run, statistical quantities of interest are
-! printed. (see optional output in the full description below.)
-! to generate fortran source code, replace c in column 1 with a blank
-! in the coding below.
-!
-!     external fex, jex
-!     real(wp) atol, rtol, rwork, t, tout, y
-!     dimension y(3), atol(3), rwork(67), iwork(33)
-!     neq = 3
-!     y(1) = 1.0d0
-!     y(2) = 0.0d0
-!     y(3) = 0.0d0
-!     t = 0.0d0
-!     tout = 0.4d0
-!     itol = 2
-!     rtol = 1.d-4
-!     atol(1) = 1.d-8
-!     atol(2) = 1.d-14
-!     atol(3) = 1.d-6
-!     itask = 1
-!     istate = 1
-!     iopt = 0
-!     lrw = 67
-!     liw = 33
-!     mf = 21
-!     do 40 iout = 1,12
-!       call dvode(fex,neq,y,t,tout,itol,rtol,atol,itask,istate,
-!    1            iopt,rwork,lrw,iwork,liw,jex,mf)
-!       write(6,20)t,y(1),y(2),y(3)
-! 20    format(' at t =',d12.4,'   y =',3d14.6)
-!       if (istate < 0) go to 80
-! 40    tout = tout*10.
-!     write(6,60) iwork(11),iwork(12),iwork(13),iwork(19),
-!    1            iwork(20),iwork(21),iwork(22)
-! 60  format(/' no. steps =',i4,'   no. f-s =',i4,
-!    1       '   no. j-s =',i4,'   no. lu-s =',i4/
-!    2       '  no. nonlinear iterations =',i4/
-!    3       '  no. nonlinear convergence failures =',i4/
-!    4       '  no. error test failures =',i4/)
-!     stop
-! 80  write(6,90)istate
-! 90  format(///' error halt: istate =',i3)
-!     stop
-!     end
-!
-!     subroutine fex (neq, t, y, ydot)
-!     real(wp) t, y, ydot
-!     dimension y(neq), ydot(neq)
-!     ydot(1) = -.04d0*y(1) + 1.d4*y(2)*y(3)
-!     ydot(3) = 3.d7*y(2)*y(2)
-!     ydot(2) = -ydot(1) - ydot(3)
-!     return
-!     end
-!
-!     subroutine jex (neq, t, y, ml, mu, pd, nrpd)
-!     real(wp) pd, t, y
-!     dimension y(neq), pd(nrpd,neq)
-!     pd(1,1) = -.04d0
-!     pd(1,2) = 1.d4*y(3)
-!     pd(1,3) = 1.d4*y(2)
-!     pd(2,1) = .04d0
-!     pd(2,3) = -pd(1,3)
-!     pd(3,2) = 6.d7*y(2)
-!     pd(2,2) = -pd(1,2) - pd(3,2)
-!     return
-!     end
-!
-! the following output was obtained from the above program on a
-! cray-1 computer with the cft compiler.
-!
-! at t =  4.0000e-01   y =  9.851680e-01  3.386314e-05  1.479817e-02
-! at t =  4.0000e+00   y =  9.055255e-01  2.240539e-05  9.445214e-02
-! at t =  4.0000e+01   y =  7.158108e-01  9.184883e-06  2.841800e-01
-! at t =  4.0000e+02   y =  4.505032e-01  3.222940e-06  5.494936e-01
-! at t =  4.0000e+03   y =  1.832053e-01  8.942690e-07  8.167938e-01
-! at t =  4.0000e+04   y =  3.898560e-02  1.621875e-07  9.610142e-01
-! at t =  4.0000e+05   y =  4.935882e-03  1.984013e-08  9.950641e-01
-! at t =  4.0000e+06   y =  5.166183e-04  2.067528e-09  9.994834e-01
-! at t =  4.0000e+07   y =  5.201214e-05  2.080593e-10  9.999480e-01
-! at t =  4.0000e+08   y =  5.213149e-06  2.085271e-11  9.999948e-01
-! at t =  4.0000e+09   y =  5.183495e-07  2.073399e-12  9.999995e-01
-! at t =  4.0000e+10   y =  5.450996e-08  2.180399e-13  9.999999e-01
-!
-! no. steps = 595   no. f-s = 832   no. j-s =  13   no. lu-s = 112
-!  no. nonlinear iterations = 831
-!  no. nonlinear convergence failures =   0
-!  no. error test failures =  22
 !-----------------------------------------------------------------------
 ! full description of user interface to dvode.
 !
@@ -1157,28 +1062,29 @@ contains
 !   -substitute a max-norm of (v(i)*w(i)) for the rms-norm, or
 !   -ignore some components of v in the norm, with the effect of
 !    suppressing the error control on those components of y.
-!-----------------------------------------------------------------------
-! revision history (yyyymmdd)
-!  19890615  date written.  initial release.
-!  19890922  added interrupt/restart ability, minor changes throughout.
-!  19910228  minor revisions in line format,  prologue, etc.
-!  19920227  modifications by d. pang:
-!            (1) applied subgennam to get generic intrinsic names.
-!            (2) changed intrinsic names to generic in comments.
-!            (3) added *deck lines before each routine.
-!  19920721  names of routines and labeled common blocks changed, so as
-!            to be unique in combined single/real(wp) code (ach).
-!  19920722  minor revisions to prologue (ach).
-!  19920831  conversion to real(wp) done (ach).
-!  19921106  fixed minor bug: etaq,etaqm1 in dvstep save statement (ach).
-!  19921118  changed lunsav/mflgsv to ixsav (ach).
-!  19941222  removed mf overwrite; attached sign to h in estimated second
-!            deriv. in dvhin; misc. comment changes throughout (ach).
-!  19970515  minor corrections to comments in prologue, dvjac (ach).
-!  19981111  corrected block b by adding final line, go to 200 (ach).
-!  20020430  various upgrades (ach): use odepack error handler package.
-!            replaced d1mach by dumach.  various changes to main
-!            prologue and other routine prologues.
+!```
+! 
+!### Revision history 
+!  * 19890615  date written.  initial release.
+!  * 19890922  added interrupt/restart ability, minor changes throughout.
+!  * 19910228  minor revisions in line format,  prologue, etc.
+!  * 19920227  modifications by d. pang:
+!              (1) applied subgennam to get generic intrinsic names.
+!              (2) changed intrinsic names to generic in comments.
+!              (3) added *deck lines before each routine.
+!  * 19920721  names of routines and labeled common blocks changed, so as
+!              to be unique in combined single/real(wp) code (ach).
+!  * 19920722  minor revisions to prologue (ach).
+!  * 19920831  conversion to real(wp) done (ach).
+!  * 19921106  fixed minor bug: etaq,etaqm1 in dvstep save statement (ach).
+!  * 19921118  changed lunsav/mflgsv to ixsav (ach).
+!  * 19941222  removed mf overwrite; attached sign to h in estimated second
+!              deriv. in dvhin; misc. comment changes throughout (ach).
+!  * 19970515  minor corrections to comments in prologue, dvjac (ach).
+!  * 19981111  corrected block b by adding final line, go to 200 (ach).
+!  * 20020430  various upgrades (ach): use odepack error handler package.
+!              replaced d1mach by dumach.  various changes to main
+!              prologue and other routine prologues.
 !```
 
    subroutine dvode(me,neq,y,t,tout,itol,rtol,atol,itask,istate,iopt, &
@@ -1249,11 +1155,11 @@ contains
             if ( istate==1 ) then
                me%dat%init = 0
                if ( tout==t ) return
-            elseif ( me%dat%init/=1 ) then
+            else if ( me%dat%init/=1 ) then
                msg = 'dvode--  istate (=i1) > 1 but dvode not initialized      '
                call me%xerrwd(msg,60,3,1,1,istate,0,0,zero,zero)
                goto 1500
-            elseif ( istate==2 ) then
+            else if ( istate==2 ) then
                goto 50
             endif
             !-----------------------------------------------------------------------
@@ -1282,7 +1188,7 @@ contains
                   msg = 'dvode--  itol (=i1) illegal   '
                   call me%xerrwd(msg,30,6,1,1,itol,0,0,zero,zero)
                   goto 1500
-               elseif ( iopt<0 .or. iopt>1 ) then
+               else if ( iopt<0 .or. iopt>1 ) then
                   msg = 'dvode--  iopt (=i1) illegal   '
                   call me%xerrwd(msg,30,7,1,1,iopt,0,0,zero,zero)
                   goto 1500
@@ -1300,7 +1206,7 @@ contains
                         msg = 'dvode--  ml (=i1) illegal:  <0 or >=neq (=i2)'
                         call me%xerrwd(msg,50,9,1,2,ml,neq,0,zero,zero)
                         goto 1500
-                     elseif ( mu<0 .or. mu>=me%dat%n ) then
+                     else if ( mu<0 .or. mu>=me%dat%n ) then
                         msg = 'dvode--  mu (=i1) illegal:  <0 or >=neq (=i2)'
                         call me%xerrwd(msg,50,10,1,2,mu,neq,0,zero,zero)
                         goto 1500
@@ -1403,7 +1309,7 @@ contains
                      msg = 'dvode--  rwork length needed, lenrw (=i1), exceeds lrw (=i2)'
                      call me%xerrwd(msg,60,17,1,2,lenrw,lrw,0,zero,zero)
                      goto 1500
-                  elseif ( leniw>liw ) then
+                  else if ( leniw>liw ) then
                      msg = 'dvode--  iwork length needed, leniw (=i1), exceeds liw (=i2)'
                      call me%xerrwd(msg,60,18,1,2,leniw,liw,0,zero,zero)
                      goto 1500
@@ -2134,7 +2040,7 @@ contains
          ! on an order increase, the history array is augmented by a column.
          ! on a change of step size h, the history array yh is rescaled.
          !-----------------------------------------------------------------------
-      elseif ( me%dat%kuth==1 ) then
+      else if ( me%dat%kuth==1 ) then
          me%dat%eta = min(me%dat%eta,me%dat%h/me%dat%hscal)
          me%dat%newh = 1
       endif
@@ -2283,10 +2189,10 @@ contains
                   ! the step is retried.  after a total of 7 consecutive failures,
                   ! an exit is taken with kflag = -1.
                   !-----------------------------------------------------------------------
-               elseif ( me%dat%kflag==kfh ) then
+               else if ( me%dat%kflag==kfh ) then
                   me%dat%kflag = -1
                   goto 600
-               elseif ( me%dat%nq==1 ) then
+               else if ( me%dat%nq==1 ) then
                   me%dat%eta = max(etamin,me%dat%hmin/abs(me%dat%h))
                   me%dat%h = me%dat%h*me%dat%eta
                   me%dat%hscal = me%dat%h
@@ -2369,7 +2275,7 @@ contains
                      me%dat%newq = me%dat%nq + 1
                      call dcopy(me%dat%n,acor,1,yh(1,me%dat%lmax),1)
                      goto 450
-                  elseif ( me%etaq<me%etaqm1 ) then
+                  else if ( me%etaq<me%etaqm1 ) then
                      goto 420
                   endif
                endif
@@ -2421,10 +2327,10 @@ contains
             if ( nflag==-2 ) me%dat%kflag = -3
             if ( nflag==-3 ) me%dat%kflag = -4
             goto 600
-         elseif ( abs(me%dat%h)<=me%dat%hmin*onepsm ) then
+         else if ( abs(me%dat%h)<=me%dat%hmin*onepsm ) then
             me%dat%kflag = -2
             goto 600
-         elseif ( ncf==mxncf ) then
+         else if ( ncf==mxncf ) then
             me%dat%kflag = -2
             goto 600
          else
@@ -2551,7 +2457,7 @@ contains
             me%dat%tq(3) = abs(elp*rxi*(flotl+one)*t5)
          endif
       ! set coefficients for adams methods. ----------------------------------
-      elseif ( me%dat%nq/=1 ) then
+      else if ( me%dat%nq/=1 ) then
          hsum = me%dat%h
          em(1) = one
          flotnq = flotl - one
@@ -2733,7 +2639,7 @@ contains
       ! nonstiff option...
       ! check to see if the order is being increased or decreased.
       !-----------------------------------------------------------------------
-      elseif ( iord==1 ) then
+      else if ( iord==1 ) then
          ! order increase. ------------------------------------------------------
          ! zero out next column in yh array. ------------------------------------
          lp1 = me%dat%l + 1
@@ -2779,66 +2685,35 @@ contains
 !  iteration or a chord (modified newton) method.  for the chord method
 !  direct linear algebraic system solvers are used.  subroutine dvnlsd
 !  then handles the corrector phase of this integration package.
-!
-!```
-! call sequence input -- y, yh, ldyh, savf, ewt, acor, iwm, wm,
-!                        f, jac, nflag
-! call sequence output -- yh, acor, wm, iwm, nflag
-!
-!-----------------------------------------------------------------------
-!
-! communication with dvnlsd is done with the following variables. (for
-! more details, please see the comments in the driver subroutine.)
-!
-! y          = the dependent variable, a vector of length n, input.
-! yh         = the nordsieck (taylor) array, ldyh by lmax, input
-!              and output.  on input, it contains predicted values.
-! ldyh       = a constant >= n, the first dimension of yh, input.
-! vsav       = unused work array.
-! savf       = a work array of length n.
-! ewt        = an error weight vector of length n, input.
-! acor       = a work array of length n, used for the accumulated
-!              corrections to the predicted y vector.
-! wm,iwm     = real and integer work arrays associated with matrix
-!              operations in chord iteration (miter /= 0).
-! f          = dummy name for user supplied routine for f.
-! jac        = dummy name for user supplied jacobian routine.
-! nflag      = input/output flag, with values and meanings as follows:
-!              input
-!                  0 first call for this time step.
-!                 -1 convergence failure in previous call to dvnlsd.
-!                 -2 error test failure in dvstep.
-!              output
-!                  0 successful completion of nonlinear solver.
-!                 -1 convergence failure or singular matrix.
-!                 -2 unrecoverable error in matrix preprocessing
-!                    (cannot occur here).
-!                 -3 unrecoverable error in solution (cannot occur
-!                    here).
-!
-! ipup       = own variable flag with values and meanings as follows:
-!              0,            do not update the newton matrix.
-!              miter /= 0, update newton matrix, because it is the
-!                            initial step, order was changed, the error
-!                            test failed, or an update is indicated by
-!                            the scalar rc or step counter nst.
-!
-! for more details, see comments in driver subroutine.
-!```
 
-      subroutine dvnlsd(me,y,yh,ldyh,vsav,savf,ewt,acor,iwm,wm,nflag)
+   subroutine dvnlsd(me,y,yh,ldyh,vsav,savf,ewt,acor,iwm,wm,nflag)
 
       class(dvode_t),intent(inout) :: me
-      real(wp) :: y(*)
-      real(wp) :: yh(ldyh,*)
-      real(wp) :: vsav(*)
-      real(wp) :: savf(*)
-      real(wp) :: ewt(*)
-      real(wp) :: acor(*)
-      real(wp) :: wm(*)
-      integer :: ldyh
-      integer :: iwm(*)
-      integer :: nflag
+      real(wp),intent(inout) :: y(*) !! the dependent variable, a vector of length n
+      integer,intent(in) :: ldyh !! a constant >= n, the first dimension of yh
+      real(wp),intent(inout) :: yh(ldyh,*) !! the nordsieck (taylor) array, ldyh by lmax, input
+                                           !! and output.  on input, it contains predicted values.
+      real(wp) :: vsav(*) !! unused work array.
+      real(wp) :: savf(*) !! a work array of length n.
+      real(wp),intent(in) :: ewt(*) !! an error weight vector of length n
+      real(wp),intent(inout) :: acor(*) !! a work array of length n, used for the accumulated
+                                        !! corrections to the predicted y vector.
+      real(wp),intent(inout) :: wm(*) !! real work array associated with matrix
+                                      !! operations in chord iteration (miter /= 0).
+      integer,intent(inout) :: iwm(*) !! integer work array associated with matrix
+                                      !! operations in chord iteration (miter /= 0).
+      integer,intent(inout) :: nflag !! input/output flag, with values and meanings as follows:
+                                     !!
+                                     !! * **input:**
+                                     !!     *  0 first call for this time step.
+                                     !!     * -1 convergence failure in previous call to dvnlsd.
+                                     !!     * -2 error test failure in dvstep.
+                                     !!
+                                     !! * **output:**
+                                     !!     *  0 successful completion of nonlinear solver.
+                                     !!     * -1 convergence failure or singular matrix.
+                                     !!     * -2 unrecoverable error in matrix preprocessing (cannot occur here).
+                                     !!     * -3 unrecoverable error in solution (cannot occur here).
 
       real(wp) :: cscale , dcon , del , delp
       integer :: i , ierpj , iersl , m
@@ -2873,108 +2748,117 @@ contains
          me%dat%drc = abs(me%dat%rc-one)
          if ( me%dat%drc>ccmax .or. me%dat%nst>=me%dat%nslp+msbp ) me%dat%ipup = me%dat%miter
       end if
-      !-----------------------------------------------------------------------
-      ! up to maxcor corrector iterations are taken.  a convergence test is
-      ! made on the r.m.s. norm of each correction, weighted by the error
-      ! weight vector ewt.  the sum of the corrections is accumulated in the
-      ! vector acor(i).  the yh array is not altered in the corrector loop.
-      !-----------------------------------------------------------------------
- 100  m = 0
-      delp = zero
-      call dcopy(me%dat%n,yh(1,1),1,y,1)
-      call me%f(me%dat%n,me%dat%tn,y(1:me%dat%n),savf(1:me%dat%n))
-      me%dat%nfe = me%dat%nfe + 1
-      if ( me%dat%ipup>0 ) then
+
+      corrector : do 
          !-----------------------------------------------------------------------
-         ! if indicated, the matrix p = i - h*rl1*j is reevaluated and
-         ! preprocessed before starting the corrector iteration.  ipup is set
-         ! to 0 as an indicator that this has been done.
+         ! up to maxcor corrector iterations are taken.  a convergence test is
+         ! made on the r.m.s. norm of each correction, weighted by the error
+         ! weight vector ewt.  the sum of the corrections is accumulated in the
+         ! vector acor(i).  the yh array is not altered in the corrector loop.
          !-----------------------------------------------------------------------
-         call me%dvjac(y,yh,ldyh,ewt,acor,savf,wm,iwm,ierpj)
-         me%dat%ipup = 0
-         me%dat%rc = one
-         me%dat%drc = zero
-         me%dat%crate = one
-         me%dat%nslp = me%dat%nst
-         ! if matrix is singular, take error return to force cut in step size. --
-         if ( ierpj/=0 ) goto 400
-      endif
-      do i = 1 , me%dat%n
-         acor(i) = zero
-      enddo
-      ! this is a looping point for the corrector iteration. -----------------
- 200  if ( me%dat%miter/=0 ) then
-         !-----------------------------------------------------------------------
-         ! in the case of the chord method, compute the corrector error,
-         ! and solve the linear system with that as right-hand side and
-         ! p as coefficient matrix.  the correction is scaled by the factor
-         ! 2/(1+rc) to account for changes in h*rl1 since the last dvjac call.
-         !-----------------------------------------------------------------------
-         do i = 1 , me%dat%n
-            y(i) = (me%dat%rl1*me%dat%h)*savf(i) - (me%dat%rl1*yh(i,2)+acor(i))
-         enddo
-         call me%dvsol(wm,iwm,y,iersl)
-         me%dat%nni = me%dat%nni + 1
-         if ( iersl>0 ) goto 300
-         if ( me%dat%meth==2 .and. me%dat%rc/=one ) then
-            cscale = two/(one+me%dat%rc)
-            call dscal(me%dat%n,cscale,y,1)
+         m = 0
+         delp = zero
+         call dcopy(me%dat%n,yh(1,1),1,y,1)
+         call me%f(me%dat%n,me%dat%tn,y(1:me%dat%n),savf(1:me%dat%n))
+         me%dat%nfe = me%dat%nfe + 1
+         if ( me%dat%ipup>0 ) then
+            !-----------------------------------------------------------------------
+            ! if indicated, the matrix p = i - h*rl1*j is reevaluated and
+            ! preprocessed before starting the corrector iteration.  ipup is set
+            ! to 0 as an indicator that this has been done.
+            !-----------------------------------------------------------------------
+            call me%dvjac(y,yh,ldyh,ewt,acor,savf,wm,iwm,ierpj)
+            me%dat%ipup = 0
+            me%dat%rc = one
+            me%dat%drc = zero
+            me%dat%crate = one
+            me%dat%nslp = me%dat%nst
+            ! if matrix is singular, take error return to force cut in step size. --
+            if ( ierpj/=0 ) exit corrector
          endif
-         del = dvnorm(me%dat%n,y,ewt)
-         call daxpy(me%dat%n,one,y,1,acor,1)
          do i = 1 , me%dat%n
-            y(i) = yh(i,1) + acor(i)
+            acor(i) = zero
          enddo
-      else
-         !-----------------------------------------------------------------------
-         ! in the case of functional iteration, update y directly from
-         ! the result of the last function evaluation.
-         !-----------------------------------------------------------------------
-         do i = 1 , me%dat%n
-            savf(i) = me%dat%rl1*(me%dat%h*savf(i)-yh(i,2))
-         enddo
-         do i = 1 , me%dat%n
-            y(i) = savf(i) - acor(i)
-         enddo
-         del = dvnorm(me%dat%n,y,ewt)
-         do i = 1 , me%dat%n
-            y(i) = yh(i,1) + savf(i)
-         enddo
-         call dcopy(me%dat%n,savf,1,acor,1)
-      endif
-      !-----------------------------------------------------------------------
-      ! test for convergence.  if m > 0, an estimate of the convergence
-      ! rate constant is stored in crate, and this is used in the test.
-      !-----------------------------------------------------------------------
-      if ( m/=0 ) me%dat%crate = max(crdown*me%dat%crate,del/delp)
-      dcon = del*min(one,me%dat%crate)/me%dat%tq(4)
-      if ( dcon<=one ) then
-         ! return for successful step. ------------------------------------------
-         nflag = 0
-         me%dat%jcur = 0
-         me%dat%icf = 0
-         if ( m==0 ) me%dat%acnrm = del
-         if ( m>0 ) me%dat%acnrm = dvnorm(me%dat%n,acor,ewt)
-         return
-      else
-         m = m + 1
-         if ( m/=maxcor ) then
-            if ( m<2 .or. del<=rdiv*delp ) then
-               delp = del
-               call me%f(me%dat%n,me%dat%tn,y(1:me%dat%n),savf(1:me%dat%n))
-               me%dat%nfe = me%dat%nfe + 1
-               goto 200
+
+         do
+            ! this is a looping point for the corrector iteration. -----------------
+            if ( me%dat%miter/=0 ) then
+               !-----------------------------------------------------------------------
+               ! in the case of the chord method, compute the corrector error,
+               ! and solve the linear system with that as right-hand side and
+               ! p as coefficient matrix.  the correction is scaled by the factor
+               ! 2/(1+rc) to account for changes in h*rl1 since the last dvjac call.
+               !-----------------------------------------------------------------------
+               do i = 1 , me%dat%n
+                  y(i) = (me%dat%rl1*me%dat%h)*savf(i) - (me%dat%rl1*yh(i,2)+acor(i))
+               enddo
+               call me%dvsol(wm,iwm,y,iersl)
+               me%dat%nni = me%dat%nni + 1
+               if ( iersl>0 ) exit
+               if ( me%dat%meth==2 .and. me%dat%rc/=one ) then
+                  cscale = two/(one+me%dat%rc)
+                  call dscal(me%dat%n,cscale,y,1)
+               endif
+               del = dvnorm(me%dat%n,y,ewt)
+               call daxpy(me%dat%n,one,y,1,acor,1)
+               do i = 1 , me%dat%n
+                  y(i) = yh(i,1) + acor(i)
+               enddo
+            else
+               !-----------------------------------------------------------------------
+               ! in the case of functional iteration, update y directly from
+               ! the result of the last function evaluation.
+               !-----------------------------------------------------------------------
+               do i = 1 , me%dat%n
+                  savf(i) = me%dat%rl1*(me%dat%h*savf(i)-yh(i,2))
+               enddo
+               do i = 1 , me%dat%n
+                  y(i) = savf(i) - acor(i)
+               enddo
+               del = dvnorm(me%dat%n,y,ewt)
+               do i = 1 , me%dat%n
+                  y(i) = yh(i,1) + savf(i)
+               enddo
+               call dcopy(me%dat%n,savf,1,acor,1)
             endif
+            !-----------------------------------------------------------------------
+            ! test for convergence.  if m > 0, an estimate of the convergence
+            ! rate constant is stored in crate, and this is used in the test.
+            !-----------------------------------------------------------------------
+            if ( m/=0 ) me%dat%crate = max(crdown*me%dat%crate,del/delp)
+            dcon = del*min(one,me%dat%crate)/me%dat%tq(4)
+            if ( dcon<=one ) then
+               ! return for successful step. ------------------------------------------
+               nflag = 0
+               me%dat%jcur = 0
+               me%dat%icf = 0
+               if ( m==0 ) me%dat%acnrm = del
+               if ( m>0 ) me%dat%acnrm = dvnorm(me%dat%n,acor,ewt)
+               return
+            else
+               m = m + 1
+               if ( m/=maxcor ) then
+                  if ( m<2 .or. del<=rdiv*delp ) then
+                     delp = del
+                     call me%f(me%dat%n,me%dat%tn,y(1:me%dat%n),savf(1:me%dat%n))
+                     me%dat%nfe = me%dat%nfe + 1
+                     cycle
+                  endif
+               endif
+               exit
+            endif
+         end do
+
+         if ( me%dat%miter/=0 .and. me%dat%jcur/=1 ) then
+            me%dat%icf = 1
+            me%dat%ipup = me%dat%miter
+         else 
+            exit corrector
          endif
-      endif
 
- 300  if ( me%dat%miter/=0 .and. me%dat%jcur/=1 ) then
-         me%dat%icf = 1
-         me%dat%ipup = me%dat%miter
-         goto 100
-      endif
+      end do corrector
 
- 400  nflag = -1
+      nflag = -1
       me%dat%icf = 2
       me%dat%ipup = me%dat%miter
 

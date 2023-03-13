@@ -231,7 +231,7 @@
 
         if ( n<1 .or. incx<1 ) then
            norm = zero
-        elseif ( n==1 ) then
+        else if ( n==1 ) then
            norm = abs(x(1))
         else
            scale = zero
