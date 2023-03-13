@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 8.1% of total for procedures.">160 statements</a>
+               title=" 8.6% of total for procedures.">168 statements</a>
           </li>
 
             <li id="source-file">
@@ -154,60 +154,18 @@
 </h2>
     
 
-    <p>dvjac is called by dvnlsd to compute and process the matrix
-  p = i - h<em>rl1</em>j , where j is an approximation to the jacobian.
-  here j is computed by the user-supplied routine jac if
-  miter = 1 or 4, or by finite differencing if miter = 2, 3, or 5.
-  if miter = 3, a diagonal approximation to j is used.
-  if jsv = -1, j is computed from scratch in all cases.
-  if jsv = 1 and miter = 1, 2, 4, or 5, and if the saved value of j is
-  considered acceptable, then p is constructed from the saved j.
-  j is stored in wm and replaced by p.  if miter /= 3, p is then
-  subjected to lu decomposition in preparation for later solution
-  of linear systems with p as coefficient matrix. this is done
-  by dgefa if miter = 1 or 2, and by dgbfa if miter = 4 or 5.</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="p">,</span><span class="w"> </span><span class="n">ewt</span><span class="p">,</span><span class="w"> </span><span class="n">ftem</span><span class="p">,</span><span class="w"> </span><span class="n">savf</span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"></span>
-<span class="w">                        </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">jac</span><span class="w"></span>
-<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"> </span><span class="n">ierpj</span><span class="w"></span>
-<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w">  </span><span class="n">ccmxj</span><span class="p">,</span><span class="w"> </span><span class="n">drc</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">rl1</span><span class="p">,</span><span class="w"> </span><span class="n">tn</span><span class="p">,</span><span class="w"> </span><span class="n">uround</span><span class="p">,</span><span class="w"> </span><span class="n">icf</span><span class="p">,</span><span class="w"> </span><span class="n">jcur</span><span class="p">,</span><span class="w"> </span><span class="n">locjs</span><span class="p">,</span><span class="w"></span>
-<span class="w">               </span><span class="n">miter</span><span class="p">,</span><span class="w"> </span><span class="n">msbj</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">nslj</span><span class="w"></span>
-<span class="w">     </span><span class="o">/</span><span class="n">dvod02</span><span class="o">/</span><span class="w">  </span><span class="n">nfe</span><span class="p">,</span><span class="w"> </span><span class="n">nst</span><span class="p">,</span><span class="w"> </span><span class="n">nje</span><span class="p">,</span><span class="w"> </span><span class="n">nlu</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvjac</span><span class="p">:</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">jac</span><span class="p">,</span><span class="w"> </span><span class="n">dacopy</span><span class="p">,</span><span class="w"> </span><span class="n">dcopy</span><span class="p">,</span><span class="w"> </span><span class="n">dgbfa</span><span class="p">,</span><span class="w"> </span><span class="n">dgefa</span><span class="p">,</span><span class="w"></span>
-<span class="w">                              </span><span class="n">dscal</span><span class="w"></span>
-<span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvjac</span><span class="p">:</span><span class="w"> </span><span class="n">dvnorm</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">communication</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvjac</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">variables</span><span class="o">.</span><span class="w">  </span><span class="p">(</span><span class="k">for</span><span class="w"></span>
-<span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">details</span><span class="p">,</span><span class="w"> </span><span class="n">please</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">comments</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">driver</span><span class="w"> </span><span class="n">subroutine</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span><span class="n">y</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">predicted</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">entry</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">yh</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">nordsieck</span><span class="w"> </span><span class="n">array</span><span class="p">,</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">ldyh</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">lmax</span><span class="w"> </span><span class="n">array</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">ldyh</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">constant</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">dimension</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">ewt</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">weight</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">savf</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">evaluated</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">predicted</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">wm</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">space</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">matrices</span><span class="o">.</span><span class="w">  </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">output</span><span class="p">,</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">contains</span><span class="w"></span>
-<span class="w">              </span><span class="n">the</span><span class="w"> </span><span class="n">inverse</span><span class="w"> </span><span class="n">diagonal</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">lu</span><span class="w"></span>
-<span class="w">              </span><span class="n">decomposition</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="mf">5.</span><span class="w"></span>
-<span class="w">              </span><span class="n">storage</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">elements</span><span class="w"> </span><span class="n">starts</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">              </span><span class="n">storage</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">saved</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">starts</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="n">locjs</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">              </span><span class="n">wm</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">matrix</span><span class="o">-</span><span class="n">related</span><span class="w"> </span><span class="n">data</span><span class="p">:</span><span class="w"></span>
-<span class="w">              </span><span class="n">wm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sqrt</span><span class="p">(</span><span class="n">uround</span><span class="p">),</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">numerical</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">step</span><span class="o">.</span><span class="w"></span>
-<span class="w">              </span><span class="n">wm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="o">*</span><span class="n">rl1</span><span class="p">,</span><span class="w"> </span><span class="n">saved</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">later</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.</span><span class="w"></span>
-<span class="w"> </span><span class="n">iwm</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">space</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">pivot</span><span class="w"> </span><span class="n">information</span><span class="p">,</span><span class="w"></span>
-<span class="w">              </span><span class="n">starting</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="mi">31</span><span class="p">),</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="mf">5.</span><span class="w"></span>
-<span class="w">              </span><span class="n">iwm</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">band</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"></span>
-<span class="w">              </span><span class="n">mu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">miter</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="mf">5.</span><span class="w"></span>
-<span class="w"> </span><span class="n">f</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">supplied</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">jac</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">supplied</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">subroutine</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">rl1</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="n">el</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">input</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">ierpj</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">flag</span><span class="p">,</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">trouble</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">p</span><span class="w"></span>
-<span class="w">              </span><span class="n">matrix</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">found</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">singular</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">jcur</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">indicate</span><span class="w"> </span><span class="n">whether</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">matrix</span><span class="w"></span>
-<span class="w">              </span><span class="p">(</span><span class="ow">or</span><span class="w"> </span><span class="n">approximation</span><span class="p">)</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="n">current</span><span class="o">.</span><span class="w"></span>
-<span class="w">              </span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">current</span><span class="o">.</span><span class="w"></span>
-<span class="w">              </span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">current</span><span class="o">.</span><span class="w"></span>
-</code></pre></div>
+    <p>dvjac is called by <a href="../proc/dvnlsd.html">dvnlsd</a> to compute and process the matrix
+<code>p = i - h*rl1*j</code> , where j is an approximation to the jacobian.</p>
+<p>here j is computed by the user-supplied routine <code>jac</code> if
+miter = 1 or 4, or by finite differencing if miter = 2, 3, or 5.
+if miter = 3, a diagonal approximation to j is used.
+if jsv = -1, j is computed from scratch in all cases.
+if jsv = 1 and miter = 1, 2, 4, or 5, and if the saved value of j is
+considered acceptable, then p is constructed from the saved j.
+j is stored in wm and replaced by p.  if miter /= 3, p is then
+subjected to lu decomposition in preparation for later solution
+of linear systems with p as coefficient matrix. this is done
+by <a href="../proc/dgefa.html">dgefa</a> if miter = 1 or 2, and by dgbfa if miter = 4 or 5.</p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -237,70 +195,70 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-y~5"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-y"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>y</strong>(*)</td>
             <td>
-                
+                <p>vector containing predicted values on entry.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-yh~5"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-yh"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>yh</strong>(ldyh,*)</td>
             <td>
-                
+                <p>the nordsieck array, an <code>ldyh</code> by <code>lmax</code> array.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ldyh~5"></span>
-              integer
+              <span class="anchor" id="variable-ldyh"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ldyh</strong></td>
             <td>
-                
+                <p>a constant &gt;= n, the first dimension of <code>yh</code>.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ewt~4"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-ewt"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ewt</strong>(*)</td>
             <td>
-                
+                <p>an error weight vector of length <code>n</code>.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-ftem"></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
@@ -312,62 +270,73 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-savf~3"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-savf"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>savf</strong>(*)</td>
             <td>
-                
+                <p>array containing f evaluated at predicted y.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-wm~3"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-wm"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>wm</strong>(*)</td>
             <td>
-                
+                <p>real work space for matrices.  in the output, it contains
+the inverse diagonal matrix if miter = 3 and the lu
+decomposition of p if miter is 1, 2 , 4, or 5.
+storage of matrix elements starts at wm(3).
+storage of the saved jacobian starts at wm(locjs).
+wm also contains the following matrix-related data:
+wm(1) = sqrt(uround), used in numerical jacobian step.
+wm(2) = h*rl1, saved for later use if miter = 3.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwm~3"></span>
-              integer
+              <span class="anchor" id="variable-iwm"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>iwm</strong>(*)</td>
             <td>
-                
+                <p>integer work space containing pivot information,
+starting at iwm(31), if miter is 1, 2, 4, or 5.
+iwm also contains band parameters ml = iwm(1) and
+mu = iwm(2) if miter is 4 or 5.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-ierpj"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ierpj</strong></td>
             <td>
-                
+                <p>output error flag,  = 0 if no trouble, 1 if the p
+matrix is found to be singular.</p>
             </td>
         </tr>
     </tbody>
@@ -411,84 +380,84 @@
 <path fill="none" stroke="#000000" d="M33.02,-128.19C41.54,-147.04 60.78,-182.57 90,-197 114.54,-209.12 145.71,-208.37 169.56,-205"/>
 <polygon fill="#000000" stroke="#000000" points="170.31,-208.43 179.62,-203.37 169.19,-201.52 170.31,-208.43"/>
 </g>
-<!-- proc~dscal -->
+<!-- proc~dgbfa -->
 <g id="proc~~dvjac~~CallsGraph_node3" class="node">
+<title>proc~dgbfa</title>
+<g id="a_proc~~dvjac~~CallsGraph_node3"><a xlink:href=".././proc/dgbfa.html" xlink:title="dgbfa">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-108 90,-108 90,-84 144,-84 144,-108"/>
+<text text-anchor="middle" x="117" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgbfa</text>
+</a>
+</g>
+</g>
+<!-- proc~dvjac&#45;&gt;proc~dgbfa -->
+<g id="proc~~dvjac~~CallsGraph_edge3" class="edge">
+<title>proc~dvjac&#45;&gt;proc~dgbfa</title>
+<path fill="none" stroke="#000000" d="M54.4,-110C62.48,-108.16 71.51,-106.11 80.1,-104.16"/>
+<polygon fill="#000000" stroke="#000000" points="80.94,-107.56 89.92,-101.93 79.39,-100.73 80.94,-107.56"/>
+</g>
+<!-- proc~dgefa -->
+<g id="proc~~dvjac~~CallsGraph_node4" class="node">
+<title>proc~dgefa</title>
+<g id="a_proc~~dvjac~~CallsGraph_node4"><a xlink:href=".././proc/dgefa.html" xlink:title="dgefa">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
+<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgefa</text>
+</a>
+</g>
+</g>
+<!-- proc~dvjac&#45;&gt;proc~dgefa -->
+<g id="proc~~dvjac~~CallsGraph_edge2" class="edge">
+<title>proc~dvjac&#45;&gt;proc~dgefa</title>
+<path fill="none" stroke="#000000" d="M45.39,-103.75C58.24,-94.69 75.96,-82.21 90.43,-72.01"/>
+<polygon fill="#000000" stroke="#000000" points="92.79,-74.63 98.95,-66.01 88.76,-68.91 92.79,-74.63"/>
+</g>
+<!-- proc~dscal -->
+<g id="proc~~dvjac~~CallsGraph_node5" class="node">
 <title>proc~dscal</title>
-<g id="a_proc~~dvjac~~CallsGraph_node3"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
+<g id="a_proc~~dvjac~~CallsGraph_node5"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
 <polygon fill="#d9534f" stroke="#d9534f" points="234,-148 180,-148 180,-124 234,-124 234,-148"/>
 <text text-anchor="middle" x="207" y="-133.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
 </a>
 </g>
 </g>
 <!-- proc~dvjac&#45;&gt;proc~dscal -->
-<g id="proc~~dvjac~~CallsGraph_edge2" class="edge">
+<g id="proc~~dvjac~~CallsGraph_edge4" class="edge">
 <title>proc~dvjac&#45;&gt;proc~dscal</title>
 <path fill="none" stroke="#000000" d="M54.26,-118.95C84.85,-122.39 135.55,-128.08 169.84,-131.94"/>
 <polygon fill="#000000" stroke="#000000" points="169.59,-135.43 179.92,-133.07 170.37,-128.47 169.59,-135.43"/>
 </g>
 <!-- proc~dvnorm -->
-<g id="proc~~dvjac~~CallsGraph_node4" class="node">
+<g id="proc~~dvjac~~CallsGraph_node6" class="node">
 <title>proc~dvnorm</title>
-<g id="a_proc~~dvjac~~CallsGraph_node4"><a xlink:href=".././proc/dvnorm.html" xlink:title="dvnorm">
+<g id="a_proc~~dvjac~~CallsGraph_node6"><a xlink:href=".././proc/dvnorm.html" xlink:title="dvnorm">
 <polygon fill="#d94e8f" stroke="#d94e8f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
 <text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvnorm</text>
 </a>
 </g>
 </g>
 <!-- proc~dvjac&#45;&gt;proc~dvnorm -->
-<g id="proc~~dvjac~~CallsGraph_edge3" class="edge">
+<g id="proc~~dvjac~~CallsGraph_edge5" class="edge">
 <title>proc~dvjac&#45;&gt;proc~dvnorm</title>
 <path fill="none" stroke="#000000" d="M35.76,-103.72C46.73,-86.83 67.92,-55.93 90,-33 90.65,-32.32 91.32,-31.65 92.01,-30.98"/>
 <polygon fill="#000000" stroke="#000000" points="94.64,-33.33 99.78,-24.06 89.98,-28.1 94.64,-33.33"/>
 </g>
-<!-- proc~dgefa -->
-<g id="proc~~dvjac~~CallsGraph_node5" class="node">
-<title>proc~dgefa</title>
-<g id="a_proc~~dvjac~~CallsGraph_node5"><a xlink:href=".././proc/dgefa.html" xlink:title="dgefa">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-108 90,-108 90,-84 144,-84 144,-108"/>
-<text text-anchor="middle" x="117" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgefa</text>
-</a>
-</g>
-</g>
-<!-- proc~dvjac&#45;&gt;proc~dgefa -->
-<g id="proc~~dvjac~~CallsGraph_edge4" class="edge">
-<title>proc~dvjac&#45;&gt;proc~dgefa</title>
-<path fill="none" stroke="#000000" d="M54.4,-110C62.48,-108.16 71.51,-106.11 80.1,-104.16"/>
-<polygon fill="#000000" stroke="#000000" points="80.94,-107.56 89.92,-101.93 79.39,-100.73 80.94,-107.56"/>
-</g>
 <!-- proc~dacopy -->
-<g id="proc~~dvjac~~CallsGraph_node6" class="node">
+<g id="proc~~dvjac~~CallsGraph_node7" class="node">
 <title>proc~dacopy</title>
-<g id="a_proc~~dvjac~~CallsGraph_node6"><a xlink:href=".././proc/dacopy.html" xlink:title="dacopy">
+<g id="a_proc~~dvjac~~CallsGraph_node7"><a xlink:href=".././proc/dacopy.html" xlink:title="dacopy">
 <polygon fill="#d9534f" stroke="#d9534f" points="144,-188 90,-188 90,-164 144,-164 144,-188"/>
 <text text-anchor="middle" x="117" y="-173.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dacopy</text>
 </a>
 </g>
 </g>
 <!-- proc~dvjac&#45;&gt;proc~dacopy -->
-<g id="proc~~dvjac~~CallsGraph_edge5" class="edge">
+<g id="proc~~dvjac~~CallsGraph_edge6" class="edge">
 <title>proc~dvjac&#45;&gt;proc~dacopy</title>
 <path fill="none" stroke="#000000" d="M45.81,-128.14C58.45,-136.76 75.63,-148.48 89.83,-158.16"/>
 <polygon fill="#000000" stroke="#000000" points="87.98,-161.13 98.22,-163.88 91.93,-155.35 87.98,-161.13"/>
 </g>
-<!-- proc~dgbfa -->
-<g id="proc~~dvjac~~CallsGraph_node7" class="node">
-<title>proc~dgbfa</title>
-<g id="a_proc~~dvjac~~CallsGraph_node7"><a xlink:href=".././proc/dgbfa.html" xlink:title="dgbfa">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
-<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgbfa</text>
-</a>
-</g>
-</g>
-<!-- proc~dvjac&#45;&gt;proc~dgbfa -->
-<g id="proc~~dvjac~~CallsGraph_edge6" class="edge">
-<title>proc~dvjac&#45;&gt;proc~dgbfa</title>
-<path fill="none" stroke="#000000" d="M45.39,-103.75C58.24,-94.69 75.96,-82.21 90.43,-72.01"/>
-<polygon fill="#000000" stroke="#000000" points="92.79,-74.63 98.95,-66.01 88.76,-68.91 92.79,-74.63"/>
-</g>
-<!-- proc~dgefa&#45;&gt;proc~dscal -->
+<!-- proc~dgbfa&#45;&gt;proc~dscal -->
 <g id="proc~~dvjac~~CallsGraph_edge8" class="edge">
-<title>proc~dgefa&#45;&gt;proc~dscal</title>
+<title>proc~dgbfa&#45;&gt;proc~dscal</title>
 <path fill="none" stroke="#000000" d="M144.4,-108C152.66,-111.75 161.9,-115.95 170.66,-119.94"/>
 <polygon fill="#000000" stroke="#000000" points="169.37,-123.19 179.92,-124.14 172.26,-116.82 169.37,-123.19"/>
 </g>
@@ -501,9 +470,9 @@
 </a>
 </g>
 </g>
-<!-- proc~dgefa&#45;&gt;proc~idamax -->
+<!-- proc~dgbfa&#45;&gt;proc~idamax -->
 <g id="proc~~dvjac~~CallsGraph_edge7" class="edge">
-<title>proc~dgefa&#45;&gt;proc~idamax</title>
+<title>proc~dgbfa&#45;&gt;proc~idamax</title>
 <path fill="none" stroke="#000000" d="M144.4,-95.4C152.39,-95.22 161.31,-95.02 169.82,-94.82"/>
 <polygon fill="#000000" stroke="#000000" points="170,-98.32 179.92,-94.59 169.84,-91.32 170,-98.32"/>
 </g>
@@ -516,35 +485,35 @@
 </a>
 </g>
 </g>
-<!-- proc~dgefa&#45;&gt;proc~daxpy -->
+<!-- proc~dgbfa&#45;&gt;proc~daxpy -->
 <g id="proc~~dvjac~~CallsGraph_edge9" class="edge">
-<title>proc~dgefa&#45;&gt;proc~daxpy</title>
+<title>proc~dgbfa&#45;&gt;proc~daxpy</title>
 <path fill="none" stroke="#000000" d="M142.05,-83.98C151.55,-79.22 162.64,-73.68 172.88,-68.56"/>
 <polygon fill="#000000" stroke="#000000" points="174.6,-71.61 181.98,-64.01 171.47,-65.35 174.6,-71.61"/>
 </g>
-<!-- proc~dacopy&#45;&gt;proc~dcopy -->
-<g id="proc~~dvjac~~CallsGraph_edge10" class="edge">
-<title>proc~dacopy&#45;&gt;proc~dcopy</title>
-<path fill="none" stroke="#000000" d="M144.4,-182.3C152.48,-184.23 161.51,-186.38 170.1,-188.43"/>
-<polygon fill="#000000" stroke="#000000" points="169.38,-191.86 179.92,-190.78 171,-185.05 169.38,-191.86"/>
-</g>
-<!-- proc~dgbfa&#45;&gt;proc~dscal -->
-<g id="proc~~dvjac~~CallsGraph_edge12" class="edge">
-<title>proc~dgbfa&#45;&gt;proc~dscal</title>
+<!-- proc~dgefa&#45;&gt;proc~dscal -->
+<g id="proc~~dvjac~~CallsGraph_edge11" class="edge">
+<title>proc~dgefa&#45;&gt;proc~dscal</title>
 <path fill="none" stroke="#000000" d="M133.74,-66.05C137.21,-68.88 140.8,-71.97 144,-75 161.36,-91.45 162.64,-98.55 180,-115 180.8,-115.76 181.62,-116.52 182.47,-117.28"/>
 <polygon fill="#000000" stroke="#000000" points="180.39,-120.11 190.26,-123.95 184.94,-114.79 180.39,-120.11"/>
 </g>
-<!-- proc~dgbfa&#45;&gt;proc~idamax -->
-<g id="proc~~dvjac~~CallsGraph_edge11" class="edge">
-<title>proc~dgbfa&#45;&gt;proc~idamax</title>
+<!-- proc~dgefa&#45;&gt;proc~idamax -->
+<g id="proc~~dvjac~~CallsGraph_edge10" class="edge">
+<title>proc~dgefa&#45;&gt;proc~idamax</title>
 <path fill="none" stroke="#000000" d="M144.4,-66C152.66,-69.75 161.9,-73.95 170.66,-77.94"/>
 <polygon fill="#000000" stroke="#000000" points="169.37,-81.19 179.92,-82.14 172.26,-74.82 169.37,-81.19"/>
 </g>
-<!-- proc~dgbfa&#45;&gt;proc~daxpy -->
-<g id="proc~~dvjac~~CallsGraph_edge13" class="edge">
-<title>proc~dgbfa&#45;&gt;proc~daxpy</title>
+<!-- proc~dgefa&#45;&gt;proc~daxpy -->
+<g id="proc~~dvjac~~CallsGraph_edge12" class="edge">
+<title>proc~dgefa&#45;&gt;proc~daxpy</title>
 <path fill="none" stroke="#000000" d="M144.4,-53.4C152.39,-53.22 161.31,-53.02 169.82,-52.82"/>
 <polygon fill="#000000" stroke="#000000" points="170,-56.32 179.92,-52.59 169.84,-49.32 170,-56.32"/>
+</g>
+<!-- proc~dacopy&#45;&gt;proc~dcopy -->
+<g id="proc~~dvjac~~CallsGraph_edge13" class="edge">
+<title>proc~dacopy&#45;&gt;proc~dcopy</title>
+<path fill="none" stroke="#000000" d="M144.4,-182.3C152.48,-184.23 161.51,-186.38 170.1,-188.43"/>
+<polygon fill="#000000" stroke="#000000" points="169.38,-191.86 179.92,-190.78 171,-185.05 169.38,-191.86"/>
 </g>
 </g>
 </svg>
@@ -659,12 +628,28 @@
 <span class="w">      </span><span class="k">implicit none</span>
 
 <span class="k">      class</span><span class="p">(</span><span class="n">dvode_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">ldyh</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ewt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ftem</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">savf</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ldyh</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ierpj</span><span class="w"></span>
-<span class="c">!</span>
-<span class="c">! type declarations for local variables --------------------------------</span>
-<span class="c">!</span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">con</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">di</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">fac</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hrl1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">r0</span><span class="w"> </span><span class="p">,</span><span class="w">     </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! vector containing predicted values on entry.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ldyh</span><span class="w"> </span><span class="c">!! a constant &gt;= n, the first dimension of `yh`.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">ldyh</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! the nordsieck array, an `ldyh` by `lmax` array.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ewt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! an error weight vector of length `n`.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ftem</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">savf</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! array containing f evaluated at predicted y.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! real work space for matrices.  in the output, it contains</span>
+<span class="w">                                      </span><span class="c">!! the inverse diagonal matrix if miter = 3 and the lu</span>
+<span class="w">                                      </span><span class="c">!! decomposition of p if miter is 1, 2 , 4, or 5.</span>
+<span class="w">                                      </span><span class="c">!! storage of matrix elements starts at wm(3).</span>
+<span class="w">                                      </span><span class="c">!! storage of the saved jacobian starts at wm(locjs).</span>
+<span class="w">                                      </span><span class="c">!! wm also contains the following matrix-related data:</span>
+<span class="w">                                      </span><span class="c">!! wm(1) = sqrt(uround), used in numerical jacobian step.</span>
+<span class="w">                                      </span><span class="c">!! wm(2) = h*rl1, saved for later use if miter = 3.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! integer work space containing pivot information,</span>
+<span class="w">                                      </span><span class="c">!! starting at iwm(31), if miter is 1, 2, 4, or 5.</span>
+<span class="w">                                      </span><span class="c">!! iwm also contains band parameters ml = iwm(1) and</span>
+<span class="w">                                      </span><span class="c">!! mu = iwm(2) if miter is 4 or 5.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ierpj</span><span class="w"> </span><span class="c">!! output error flag,  = 0 if no trouble, 1 if the p</span>
+<span class="w">                                   </span><span class="c">!! matrix is found to be singular.</span>
+
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">con</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">di</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">fac</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hrl1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">r0</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
 <span class="w">                  </span><span class="n">srur</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">yi</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">yj</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">yjj</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ier</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ii</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">j1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">jj</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">jok</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">lenp</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mba</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
 <span class="w">                 </span><span class="n">mband</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">meb1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">meband</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ml3</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">np1</span><span class="w"></span>
@@ -672,179 +657,180 @@
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0_wp</span><span class="w"></span>
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">thou</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="mf">0.0_wp</span><span class="w"></span>
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pt1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1_wp</span><span class="w"></span>
-<span class="c">!</span>
+
 <span class="w">      </span><span class="n">ierpj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">      </span><span class="n">hrl1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">h</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">rl1</span><span class="w"></span>
-<span class="c">! see whether j should be evaluated (jok = -1) or not (jok = 1). -------</span>
-<span class="w">      </span><span class="n">jok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">jsv</span><span class="w"></span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">jsv</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nst</span><span class="o">==</span><span class="mi">0</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nst</span><span class="o">&gt;</span><span class="n">me</span><span class="p">%</span><span class="n">nslj</span><span class="o">+</span><span class="n">me</span><span class="p">%</span><span class="n">msbj</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">jok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">icf</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">drc</span><span class="o">&lt;</span><span class="n">me</span><span class="p">%</span><span class="n">ccmxj</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">jok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">icf</span><span class="o">==</span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">jok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
+<span class="w">      </span><span class="n">hrl1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rl1</span><span class="w"> </span><span class="c">! rl1 = 1/el(2)</span>
+<span class="w">      </span><span class="c">! see whether j should be evaluated (jok = -1) or not (jok = 1). -------</span>
+<span class="w">      </span><span class="n">jok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jsv</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jsv</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nst</span><span class="o">==</span><span class="mi">0</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nst</span><span class="o">&gt;</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nslj</span><span class="o">+</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">msbj</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">jok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">icf</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">drc</span><span class="o">&lt;</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">ccmxj</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">jok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">icf</span><span class="o">==</span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">jok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
 <span class="w">      </span><span class="k">endif</span><span class="w"></span>
-<span class="c">! end of setting jok. --------------------------------------------------</span>
-<span class="c">!</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jok</span><span class="o">==-</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
-<span class="c">! if jok = -1 and miter = 1, call me%jac to evaluate jacobian. ------------</span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">nslj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nst</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="n">lenp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">      </span><span class="c">! end of setting jok. --------------------------------------------------</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jok</span><span class="o">==-</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="w">         </span><span class="c">! if jok = -1 and miter = 1, call me%jac to evaluate jacobian. ------------</span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nslj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nst</span><span class="w"></span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="n">lenp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
 <span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">lenp</span><span class="w"></span>
 <span class="w">            </span><span class="n">wm</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
 <span class="w">         </span><span class="k">enddo</span>
-<span class="k">         call </span><span class="n">me</span><span class="p">%</span><span class="n">jac</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">jsv</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">dcopy</span><span class="p">(</span><span class="n">lenp</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">locjs</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">endif</span><span class="w"></span>
-<span class="c">!</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jok</span><span class="o">==-</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
-<span class="c">! if miter = 2, make n calls to f to approximate the jacobian. ---------</span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">nslj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nst</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="n">fac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dvnorm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">savf</span><span class="p">,</span><span class="n">ewt</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="n">r0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">thou</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">h</span><span class="p">)</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">uround</span><span class="o">*</span><span class="kt">real</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">wp</span><span class="p">)</span><span class="o">*</span><span class="n">fac</span><span class="w"></span>
+<span class="k">         call </span><span class="n">me</span><span class="p">%</span><span class="n">jac</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jsv</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">dcopy</span><span class="p">(</span><span class="n">lenp</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">locjs</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">endif</span>
+
+<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jok</span><span class="o">==-</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="w">         </span><span class="c">! if miter = 2, make n calls to f to approximate the jacobian. ---------</span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nslj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nst</span><span class="w"></span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="n">fac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dvnorm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">savf</span><span class="p">,</span><span class="n">ewt</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="n">r0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">thou</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="p">)</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">uround</span><span class="o">*</span><span class="kt">real</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">wp</span><span class="p">)</span><span class="o">*</span><span class="n">fac</span><span class="w"></span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">r0</span><span class="o">==</span><span class="n">zero</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">r0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one</span><span class="w"></span>
 <span class="w">         </span><span class="n">srur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 <span class="w">         </span><span class="n">j1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
-<span class="w">         </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">         </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
 <span class="w">            </span><span class="n">yj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"></span>
 <span class="w">            </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="n">srur</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">yj</span><span class="p">),</span><span class="n">r0</span><span class="o">/</span><span class="n">ewt</span><span class="p">(</span><span class="n">j</span><span class="p">))</span><span class="w"></span>
 <span class="w">            </span><span class="n">y</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">r</span><span class="w"></span>
 <span class="w">            </span><span class="n">fac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one</span><span class="o">/</span><span class="n">r</span><span class="w"></span>
-<span class="w">            </span><span class="k">call </span><span class="n">me</span><span class="p">%</span><span class="n">f</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="n">ftem</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">))</span><span class="w"></span>
-<span class="w">            </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">            </span><span class="k">call </span><span class="n">me</span><span class="p">%</span><span class="n">f</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="n">ftem</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">))</span><span class="w"></span>
+<span class="w">            </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
 <span class="w">               </span><span class="n">wm</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="n">j1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">ftem</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">-</span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">*</span><span class="n">fac</span><span class="w"></span>
 <span class="w">            </span><span class="k">enddo</span>
 <span class="k">            </span><span class="n">y</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yj</span><span class="w"></span>
-<span class="w">            </span><span class="n">j1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">            </span><span class="n">j1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
 <span class="w">         </span><span class="k">enddo</span>
-<span class="k">         </span><span class="n">me</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
-<span class="w">         </span><span class="n">lenp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">jsv</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">dcopy</span><span class="p">(</span><span class="n">lenp</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">locjs</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">endif</span><span class="w"></span>
-<span class="c">!</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jok</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         </span><span class="n">me</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">         </span><span class="n">lenp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
-<span class="w">         </span><span class="k">call </span><span class="n">dcopy</span><span class="p">(</span><span class="n">lenp</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">locjs</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">endif</span><span class="w"></span>
-<span class="c">!</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
-<span class="c">! multiply jacobian by scalar, add identity, and do lu decomposition. --</span>
+<span class="k">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">         </span><span class="n">lenp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jsv</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">dcopy</span><span class="p">(</span><span class="n">lenp</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">locjs</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">endif</span>
+
+<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jok</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">         </span><span class="n">lenp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">         </span><span class="k">call </span><span class="n">dcopy</span><span class="p">(</span><span class="n">lenp</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">locjs</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">endif</span>
+
+<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="w">         </span><span class="c">! multiply jacobian by scalar, add identity, and do lu decomposition. --</span>
 <span class="w">         </span><span class="n">con</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">hrl1</span><span class="w"></span>
 <span class="w">         </span><span class="k">call </span><span class="n">dscal</span><span class="p">(</span><span class="n">lenp</span><span class="p">,</span><span class="n">con</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 <span class="w">         </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"></span>
-<span class="w">         </span><span class="n">np1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">         </span><span class="n">np1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
 <span class="w">            </span><span class="n">wm</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">one</span><span class="w"></span>
 <span class="w">            </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">np1</span><span class="w"></span>
 <span class="w">         </span><span class="k">enddo</span>
-<span class="k">         </span><span class="n">me</span><span class="p">%</span><span class="n">nlu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nlu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="k">call </span><span class="n">dgefa</span><span class="p">(</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">iwm</span><span class="p">(</span><span class="mi">31</span><span class="p">),</span><span class="n">ier</span><span class="p">)</span><span class="w"></span>
+<span class="k">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nlu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nlu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="k">call </span><span class="n">dgefa</span><span class="p">(</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">iwm</span><span class="p">(</span><span class="mi">31</span><span class="p">),</span><span class="n">ier</span><span class="p">)</span><span class="w"></span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ier</span><span class="o">/=</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">ierpj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">         </span><span class="k">return</span>
 <span class="k">      endif</span><span class="w"></span>
-<span class="c">! end of code block for miter = 1 or 2. --------------------------------</span>
-<span class="c">!</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">3</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
-<span class="c">! if miter = 3, construct a diagonal approximation to j and p. ---------</span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">      </span><span class="c">! end of code block for miter = 1 or 2. --------------------------------</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">3</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="w">         </span><span class="c">! if miter = 3, construct a diagonal approximation to j and p. ---------</span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">         </span><span class="n">wm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hrl1</span><span class="w"></span>
-<span class="w">         </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">rl1</span><span class="o">*</span><span class="n">pt1</span><span class="w"></span>
-<span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
-<span class="w">            </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">h</span><span class="o">*</span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">-</span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="w"></span>
+<span class="w">         </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rl1</span><span class="o">*</span><span class="n">pt1</span><span class="w"></span>
+<span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">            </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="o">*</span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">-</span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="w"></span>
 <span class="w">         </span><span class="k">enddo</span>
-<span class="k">         call </span><span class="n">me</span><span class="p">%</span><span class="n">f</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
-<span class="w">            </span><span class="n">r0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">h</span><span class="o">*</span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="n">di</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pt1</span><span class="o">*</span><span class="n">r0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">h</span><span class="o">*</span><span class="p">(</span><span class="n">wm</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"></span>
+<span class="k">         call </span><span class="n">me</span><span class="p">%</span><span class="n">f</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="w"></span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">            </span><span class="n">r0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="o">*</span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">di</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pt1</span><span class="o">*</span><span class="n">r0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="o">*</span><span class="p">(</span><span class="n">wm</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"></span>
 <span class="w">            </span><span class="n">wm</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one</span><span class="w"></span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">me</span><span class="p">%</span><span class="n">uround</span><span class="o">/</span><span class="n">ewt</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">               if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">di</span><span class="p">)</span><span class="o">==</span><span class="n">zero</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">goto</span><span class="w"> </span><span class="mi">50</span><span class="w"></span>
-<span class="w">               </span><span class="n">wm</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pt1</span><span class="o">*</span><span class="n">r0</span><span class="o">/</span><span class="n">di</span><span class="w"></span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">uround</span><span class="o">/</span><span class="n">ewt</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">               if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">di</span><span class="p">)</span><span class="o">==</span><span class="n">zero</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">                  </span><span class="n">ierpj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">                  </span><span class="k">return</span>
+<span class="k">               end if</span>
+<span class="k">               </span><span class="n">wm</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pt1</span><span class="o">*</span><span class="n">r0</span><span class="o">/</span><span class="n">di</span><span class="w"></span>
 <span class="w">            </span><span class="k">endif</span>
 <span class="k">         enddo</span>
 <span class="k">         return</span>
-<span class="k"> </span><span class="mi">50</span><span class="w">      </span><span class="n">ierpj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="k">return</span>
 <span class="k">      endif</span><span class="w"></span>
-<span class="c">! end of code block for miter = 3. -------------------------------------</span>
-<span class="c">!</span>
-<span class="c">! set constants for miter = 4 or 5. ------------------------------------</span>
+<span class="w">      </span><span class="c">! end of code block for miter = 3. -------------------------------------</span>
+
+<span class="w">      </span><span class="c">! set constants for miter = 4 or 5. ------------------------------------</span>
 <span class="w">      </span><span class="n">ml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 <span class="w">      </span><span class="n">mu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
 <span class="w">      </span><span class="n">ml3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="w"></span>
 <span class="w">      </span><span class="n">mband</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">      </span><span class="n">meband</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mband</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ml</span><span class="w"></span>
-<span class="w">      </span><span class="n">lenp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">meband</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
-<span class="c">!</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jok</span><span class="o">==-</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
-<span class="c">! if jok = -1 and miter = 4, call me%jac to evaluate jacobian. ------------</span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">nslj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nst</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">      </span><span class="n">lenp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">meband</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jok</span><span class="o">==-</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="w">         </span><span class="c">! if jok = -1 and miter = 4, call me%jac to evaluate jacobian. ------------</span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nslj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nst</span><span class="w"></span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">lenp</span><span class="w"></span>
 <span class="w">            </span><span class="n">wm</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
 <span class="w">         </span><span class="k">enddo</span>
-<span class="k">         call </span><span class="n">me</span><span class="p">%</span><span class="n">jac</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="n">ml</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">ml3</span><span class="p">),</span><span class="n">meband</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">jsv</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">dacopy</span><span class="p">(</span><span class="n">mband</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">ml3</span><span class="p">),</span><span class="n">meband</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">locjs</span><span class="p">),</span><span class="n">mband</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">endif</span><span class="w"></span>
-<span class="c">!</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jok</span><span class="o">==-</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">5</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
-<span class="c">! if miter = 5, make ml+mu+1 calls to f to approximate the jacobian. ---</span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">nslj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nst</span><span class="w"></span>
-<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">         </span><span class="n">mba</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="n">mband</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="k">         call </span><span class="n">me</span><span class="p">%</span><span class="n">jac</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="n">ml</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">ml3</span><span class="p">),</span><span class="n">meband</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jsv</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">dacopy</span><span class="p">(</span><span class="n">mband</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">ml3</span><span class="p">),</span><span class="n">meband</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">locjs</span><span class="p">),</span><span class="n">mband</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">endif</span>
+
+<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jok</span><span class="o">==-</span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">miter</span><span class="o">==</span><span class="mi">5</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
+<span class="w">         </span><span class="c">! if miter = 5, make ml+mu+1 calls to f to approximate the jacobian. ---</span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nje</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nslj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nst</span><span class="w"></span>
+<span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">         </span><span class="n">mba</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="n">mband</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
 <span class="w">         </span><span class="n">meb1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">meband</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">         </span><span class="n">srur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="n">fac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dvnorm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">savf</span><span class="p">,</span><span class="n">ewt</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="n">r0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">thou</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">h</span><span class="p">)</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">uround</span><span class="o">*</span><span class="kt">real</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">wp</span><span class="p">)</span><span class="o">*</span><span class="n">fac</span><span class="w"></span>
+<span class="w">         </span><span class="n">fac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dvnorm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">savf</span><span class="p">,</span><span class="n">ewt</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="n">r0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">thou</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="p">)</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">uround</span><span class="o">*</span><span class="kt">real</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">wp</span><span class="p">)</span><span class="o">*</span><span class="n">fac</span><span class="w"></span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">r0</span><span class="o">==</span><span class="n">zero</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">r0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one</span><span class="w"></span>
 <span class="w">         </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mba</span><span class="w"></span>
-<span class="w">            </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mband</span><span class="w"></span>
+<span class="w">            </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mband</span><span class="w"></span>
 <span class="w">               </span><span class="n">yi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
 <span class="w">               </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="n">srur</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">yi</span><span class="p">),</span><span class="n">r0</span><span class="o">/</span><span class="n">ewt</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"></span>
 <span class="w">               </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">r</span><span class="w"></span>
 <span class="w">            </span><span class="k">enddo</span>
-<span class="k">            call </span><span class="n">me</span><span class="p">%</span><span class="n">f</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="n">ftem</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">))</span><span class="w"></span>
-<span class="w">            </span><span class="k">do </span><span class="n">jj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mband</span><span class="w"></span>
+<span class="k">            call </span><span class="n">me</span><span class="p">%</span><span class="n">f</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">tn</span><span class="p">,</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">),</span><span class="n">ftem</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">))</span><span class="w"></span>
+<span class="w">            </span><span class="k">do </span><span class="n">jj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mband</span><span class="w"></span>
 <span class="w">               </span><span class="n">y</span><span class="p">(</span><span class="n">jj</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 <span class="w">               </span><span class="n">yjj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">jj</span><span class="p">)</span><span class="w"></span>
 <span class="w">               </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="n">srur</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">yjj</span><span class="p">),</span><span class="n">r0</span><span class="o">/</span><span class="n">ewt</span><span class="p">(</span><span class="n">jj</span><span class="p">))</span><span class="w"></span>
 <span class="w">               </span><span class="n">fac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one</span><span class="o">/</span><span class="n">r</span><span class="w"></span>
 <span class="w">               </span><span class="n">i1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="n">jj</span><span class="o">-</span><span class="n">mu</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">               </span><span class="n">i2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="n">jj</span><span class="o">+</span><span class="n">ml</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="w">               </span><span class="n">i2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="n">jj</span><span class="o">+</span><span class="n">ml</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
 <span class="w">               </span><span class="n">ii</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">jj</span><span class="o">*</span><span class="n">meb1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ml</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
 <span class="w">               </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="w"></span>
 <span class="w">                  </span><span class="n">wm</span><span class="p">(</span><span class="n">ii</span><span class="o">+</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">ftem</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">-</span><span class="n">savf</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">*</span><span class="n">fac</span><span class="w"></span>
 <span class="w">               </span><span class="k">enddo</span>
 <span class="k">            enddo</span>
 <span class="k">         enddo</span>
-<span class="k">         </span><span class="n">me</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mba</span><span class="w"></span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">jsv</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">dacopy</span><span class="p">(</span><span class="n">mband</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">ml3</span><span class="p">),</span><span class="n">meband</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">locjs</span><span class="p">),</span><span class="n">mband</span><span class="p">)</span><span class="w"></span>
+<span class="k">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nfe</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mba</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jsv</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">dacopy</span><span class="p">(</span><span class="n">mband</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">ml3</span><span class="p">),</span><span class="n">meband</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">locjs</span><span class="p">),</span><span class="n">mband</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">endif</span>
+
+<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jok</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">         </span><span class="k">call </span><span class="n">dacopy</span><span class="p">(</span><span class="n">mband</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">locjs</span><span class="p">),</span><span class="n">mband</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">ml3</span><span class="p">),</span><span class="n">meband</span><span class="p">)</span><span class="w"></span>
 <span class="w">      </span><span class="k">endif</span><span class="w"></span>
-<span class="c">!</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">jok</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         </span><span class="n">me</span><span class="p">%</span><span class="n">jcur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">         </span><span class="k">call </span><span class="n">dacopy</span><span class="p">(</span><span class="n">mband</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">locjs</span><span class="p">),</span><span class="n">mband</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="n">ml3</span><span class="p">),</span><span class="n">meband</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">endif</span><span class="w"></span>
-<span class="c">!</span>
-<span class="c">! multiply jacobian by scalar, add identity, and do lu decomposition.</span>
+
+<span class="w">      </span><span class="c">! multiply jacobian by scalar, add identity, and do lu decomposition.</span>
 <span class="w">      </span><span class="n">con</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">hrl1</span><span class="w"></span>
 <span class="w">      </span><span class="k">call </span><span class="n">dscal</span><span class="p">(</span><span class="n">lenp</span><span class="p">,</span><span class="n">con</span><span class="p">,</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 <span class="w">      </span><span class="n">ii</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mband</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
-<span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
+<span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="w"></span>
 <span class="w">         </span><span class="n">wm</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">one</span><span class="w"></span>
 <span class="w">         </span><span class="n">ii</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ii</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">meband</span><span class="w"></span>
 <span class="w">      </span><span class="k">enddo</span>
-<span class="k">      </span><span class="n">me</span><span class="p">%</span><span class="n">nlu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">nlu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">      </span><span class="k">call </span><span class="n">dgbfa</span><span class="p">(</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">meband</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">ml</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">iwm</span><span class="p">(</span><span class="mi">31</span><span class="p">),</span><span class="n">ier</span><span class="p">)</span><span class="w"></span>
+<span class="k">      </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nlu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nlu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">      </span><span class="k">call </span><span class="n">dgbfa</span><span class="p">(</span><span class="n">wm</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">meband</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">ml</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">iwm</span><span class="p">(</span><span class="mi">31</span><span class="p">),</span><span class="n">ier</span><span class="p">)</span><span class="w"></span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ier</span><span class="o">/=</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">ierpj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="c">! end of code block for miter = 4 or 5. --------------------------------</span>
+<span class="w">      </span><span class="c">! end of code block for miter = 4 or 5. --------------------------------</span>
 
 <span class="w">      </span><span class="k">end subroutine </span><span class="n">dvjac</span><span class="w"></span>
 </pre></div>

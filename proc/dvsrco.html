@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 2.0% of total for procedures.">40 statements</a>
+               title=" 0.7% of total for procedures.">14 statements</a>
           </li>
 
             <li id="source-file">
@@ -118,20 +118,7 @@
     <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
       <div id="sidebar">
       <h3>Contents</h3>
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#common-0">Common Blocks</a>
-        </h3>
-      </div>
-      <div id="common-0" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../proc/dvsrco.html#common-dvod01">dvod01</a>
-            <a class="list-group-item" href="../proc/dvsrco.html#common-dvod02">dvod02</a>
-        </div>
-      </div>
-    </div>
-
+  
   
   
   
@@ -163,28 +150,12 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine dvsrco(rsav, isav, job)  
+    <h2>private  subroutine dvsrco(me, sav, job)  
 </h2>
     
 
-    <p>this routine saves or restores (depending on job) the contents of the
-  common blocks dvod01 and dvod02, which are used internally by dvode.</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">rsav</span><span class="p">,</span><span class="w"> </span><span class="n">isav</span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="w"></span>
-<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">rsav</span><span class="p">,</span><span class="w"> </span><span class="n">isav</span><span class="w"></span>
-<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">/</span><span class="n">dvod02</span><span class="o">/</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">subroutines</span><span class="o">/</span><span class="n">functions</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvsrco</span><span class="p">:</span><span class="w"> </span><span class="n">none</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">rsav</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">49</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">isav</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">41</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">job</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="n">indicating</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">save</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="n">job</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">saved</span><span class="w"> </span><span class="p">(</span><span class="n">written</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">rsav</span><span class="o">/</span><span class="n">isav</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">        </span><span class="n">job</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">restored</span><span class="w"> </span><span class="p">(</span><span class="n">read</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">rsav</span><span class="o">/</span><span class="n">isav</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">        </span><span class="n">a</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">presumes</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">prior</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"></span>
-</code></pre></div>
-
-<p>TODO: have to rewrite this to use the class variables !</p>
+    <p>this routine saves or restores (depending on <code>job</code>) the contents of the
+dvode internal variables.</p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -199,30 +170,30 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-rsav"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-me~11"></span>
+              class(<a href='../type/dvode_t.html'>dvode_t</a>),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>rsav</strong></td>
+            <td><strong>me</strong></td>
             <td>
                 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-isav"></span>
-              integer
+              <span class="anchor" id="variable-sav"></span>
+              type(<a href='../type/dvode_data_t.html'>dvode_data_t</a>),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>isav</strong></td>
+            <td><strong>sav</strong></td>
             <td>
                 
             </td>
@@ -230,16 +201,21 @@
         <tr>
             <td>
               <span class="anchor" id="variable-job"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>job</strong></td>
             <td>
-                
+                <p>flag indicating to save or restore the data:</p>
+<ul>
+<li><code>job = 1</code> if common is to be saved (written to <code>sav</code>).</li>
+<li><code>job = 2</code> if common is to be restored (read from <code>sav</code>).</li>
+</ul>
+<p>a call with job = 2 presumes a prior call with job = 1.</p>
             </td>
         </tr>
     </tbody>
@@ -249,20 +225,7 @@
 
     <section class="visible-xs visible-sm hidden-md">
         <h3>Contents</h3>
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#common-1">Common Blocks</a>
-        </h3>
-      </div>
-      <div id="common-1" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../proc/dvsrco.html#common-dvod01">dvod01</a>
-            <a class="list-group-item" href="../proc/dvsrco.html#common-dvod02">dvod02</a>
-        </div>
-      </div>
-    </div>
-
+  
   
   
   
@@ -292,129 +255,6 @@
     </section>
     <br class="visible-xs visible-sm hidden-md">
 
-    <section>
-      <h2>Common Blocks</h2>
-        <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="common-dvod01"></span><h3>
-        <a data-toggle="popover" data-html="true" tabindex="0"
-           data-trigger="focus"
-           data-content="<h4>Used Elsewhere:</h4>">common /dvod01/</a>
-           
-    </h3></div>
-    <div class="panel-body">
-      
-          <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-<th></th><th>Initial</th>        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-rvod1"></span>
-              real
-            </td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>rvod1</strong>(48)</td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-ivod1"></span>
-              integer
-            </td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ivod1</strong>(33)</td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    </div>
-  </div>
-
-        <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="common-dvod02"></span><h3>
-        <a data-toggle="popover" data-html="true" tabindex="0"
-           data-trigger="focus"
-           data-content="<h4>Used Elsewhere:</h4>">common /dvod02/</a>
-           
-    </h3></div>
-    <div class="panel-body">
-      
-          <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-<th></th><th>Initial</th>        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-rvod2"></span>
-              real
-            </td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>rvod2</strong>(1)</td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-ivod2"></span>
-              integer
-            </td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ivod2</strong>(8)</td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    </div>
-  </div>
-
-    </section>
-    <br>
-    <script>
-      $(function () {
-      $('[data-toggle="popover"]').popover()
-      })
-    </script>
 
     
     
@@ -426,55 +266,25 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre><span></span><span class="w">      </span><span class="k">subroutine </span><span class="n">dvsrco</span><span class="p">(</span><span class="n">rsav</span><span class="p">,</span><span class="n">isav</span><span class="p">,</span><span class="n">job</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="c">!! TODO: have to rewrite this to use the class variables !</span>
+    <div class="highlight"><pre><span></span><span class="w">      </span><span class="k">subroutine </span><span class="n">dvsrco</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">sav</span><span class="p">,</span><span class="n">job</span><span class="p">)</span><span class="w"></span>
+
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">rsav</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer </span><span class="n">isav</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="w"></span>
-<span class="w">      </span><span class="k">dimension </span><span class="n">rsav</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">isav</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">rvod1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">rvod2</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer </span><span class="n">ivod1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ivod2</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer </span><span class="n">i</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">leniv1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">leniv2</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">lenrv1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">lenrv2</span><span class="w"></span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="c">! the following fortran-77 declaration is to cause the values of the</span>
-<span class="c">! listed (local) variables to be saved between calls to this integrator.</span>
-<span class="c">!-----------------------------------------------------------------------</span>
-<span class="w">      </span><span class="k">save </span><span class="n">lenrv1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">leniv1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">lenrv2</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">leniv2</span><span class="w"></span>
-<span class="c">!</span>
-<span class="w">      </span><span class="k">common</span><span class="w"> </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w"> </span><span class="n">rvod1</span><span class="p">(</span><span class="mi">48</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ivod1</span><span class="p">(</span><span class="mi">33</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">common</span><span class="w"> </span><span class="o">/</span><span class="n">dvod02</span><span class="o">/</span><span class="w"> </span><span class="n">rvod2</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ivod2</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">data </span><span class="n">lenrv1</span><span class="o">/</span><span class="mi">48</span><span class="o">/</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">leniv1</span><span class="o">/</span><span class="mi">33</span><span class="o">/</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">lenrv2</span><span class="o">/</span><span class="mi">1</span><span class="o">/</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">leniv2</span><span class="o">/</span><span class="mi">8</span><span class="o">/</span><span class="w"></span>
-<span class="c">!</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">job</span><span class="o">==</span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
-<span class="c">!</span>
-<span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">lenrv1</span><span class="w"></span>
-<span class="w">            </span><span class="n">rvod1</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rsav</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">enddo</span>
-<span class="k">         do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">lenrv2</span><span class="w"></span>
-<span class="w">            </span><span class="n">rvod2</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rsav</span><span class="p">(</span><span class="n">lenrv1</span><span class="o">+</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">enddo</span><span class="w"></span>
-<span class="c">!</span>
-<span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">leniv1</span><span class="w"></span>
-<span class="w">            </span><span class="n">ivod1</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isav</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">enddo</span>
-<span class="k">         do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">leniv2</span><span class="w"></span>
-<span class="w">            </span><span class="n">ivod2</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isav</span><span class="p">(</span><span class="n">leniv1</span><span class="o">+</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
-<span class="w">         </span><span class="k">enddo</span>
-<span class="k">         return</span>
-<span class="k">      endif</span>
-<span class="k">      do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">lenrv1</span><span class="w"></span>
-<span class="w">         </span><span class="n">rsav</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rvod1</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">enddo</span>
-<span class="k">      do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">lenrv2</span><span class="w"></span>
-<span class="w">         </span><span class="n">rsav</span><span class="p">(</span><span class="n">lenrv1</span><span class="o">+</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rvod2</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">enddo</span><span class="w"></span>
-<span class="c">!</span>
-<span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">leniv1</span><span class="w"></span>
-<span class="w">         </span><span class="n">isav</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ivod1</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">enddo</span>
-<span class="k">      do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">leniv2</span><span class="w"></span>
-<span class="w">         </span><span class="n">isav</span><span class="p">(</span><span class="n">leniv1</span><span class="o">+</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ivod2</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="k">enddo</span>
+
+<span class="k">      class</span><span class="p">(</span><span class="n">dvode_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span><span class="w"></span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">dvode_data_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sav</span><span class="w"></span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="c">!! flag indicating to save or restore the data:</span>
+<span class="w">                                </span><span class="c">!!</span>
+<span class="w">                                </span><span class="c">!! * `job = 1` if common is to be saved (written to `sav`).</span>
+<span class="w">                                </span><span class="c">!! * `job = 2` if common is to be restored (read from `sav`).</span>
+<span class="w">                                </span><span class="c">!!</span>
+<span class="w">                                </span><span class="c">!! a call with job = 2 presumes a prior call with job = 1.</span>
+
+<span class="w">      </span><span class="k">select case</span><span class="w"> </span><span class="p">(</span><span class="n">job</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">case</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="n">sav</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="w"></span>
+<span class="w">      </span><span class="k">case</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sav</span><span class="w"></span>
+<span class="w">      </span><span class="k">case </span><span class="n">default</span><span class="w"></span>
+<span class="w">         </span><span class="k">error stop</span><span class="w"> </span><span class="s1">&#39;invalid input to dvsrco&#39;</span><span class="w"></span>
+<span class="w">      </span><span class="k">end select</span>
 
 <span class="k">   end subroutine </span><span class="n">dvsrco</span><span class="w"></span>
 </pre></div>

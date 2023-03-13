@@ -1,6 +1,6 @@
 module dvode_module
 
-   ! TODO: replace EXTERNAL, GOTO
+   ! TODO: replace GOTO, SAVE
 
     use dvode_blas_module
     use dvode_linpack_module
@@ -16,20 +16,17 @@ module dvode_module
     integer,parameter :: iumach  = output_unit     !! standard output unit number
     integer,dimension(2),parameter :: mord = [12,5]
 
-    type,public :: dvode_t
+   type,public :: dvode_data_t
 
-      private
+      !! the following internal common blocks contain variables which are
+      !! communicated between subroutines in the dvode package, or which are
+      !! to be saved between calls to dvode.
+      !! in each block, real variables precede integers.
+      !! the block /dvod01/ appears in subroutines dvode, dvindy, dvstep,
+      !! dvset, dvnlsd, dvjac, dvsol, dvjust and dvsrco.
+      !! the block /dvod02/ appears in subroutines dvode, dvindy, dvstep,
+      !! dvnlsd, dvjac, and dvsrco.
 
-      !-----------------------------------------------------------------------
-      ! the following internal common blocks contain variables which are
-      ! communicated between subroutines in the dvode package, or which are
-      ! to be saved between calls to dvode.
-      ! in each block, real variables precede integers.
-      ! the block /dvod01/ appears in subroutines dvode, dvindy, dvstep,
-      ! dvset, dvnlsd, dvjac, dvsol, dvjust and dvsrco.
-      ! the block /dvod02/ appears in subroutines dvode, dvindy, dvstep,
-      ! dvnlsd, dvjac, and dvsrco.
-      !
       ! the variables stored in the internal common blocks are as follows:
       !
       ! acnrm  = weighted r.m.s. norm of accumulated correction vectors.
@@ -65,7 +62,7 @@ module dvode_module
       ! init   = saved integer flag indicating whether initialization of the
       !          problem has been done (init = 1) or not.
       ! ipup   = saved flag to signal updating of newton matrix.
-      ! jcur   = output flag from dvjac showing jacobian status:
+      ! jcur   = output flag from [[dvjac]] showing jacobian status:
       !            jcur = 0 means j is not current.
       !            jcur = 1 means j is current.
       ! jstart = integer flag used as input to dvstep:
@@ -182,9 +179,19 @@ module dvode_module
       integer :: nqu = 0
       integer :: nst = 0
 
+   end type  dvode_data_t
+
+   type,public :: dvode_t
+
+      private
+
+      type(dvode_data_t) :: dat !! internal data
+
       ! formerly save variables
       real(wp) :: etaq   = zero
       real(wp) :: etaqm1 = zero
+      integer :: lunit = -1
+      integer :: mesflg = 1
 
       procedure(f_func),pointer :: f => null()
       procedure(f_jac),pointer :: jac => null()
@@ -204,6 +211,11 @@ module dvode_module
       procedure :: dvnlsd
       procedure :: dvjac
       procedure :: dvsol
+      procedure :: dvsrco
+      procedure :: ixsav
+      procedure :: xsetun
+      procedure :: xsetf
+      procedure :: xerrwd
 
     end type dvode_t
 
@@ -1087,7 +1099,7 @@ contains
 !                             later, or alternating between two or
 !                             more problems solved with dvode.
 !
-!  call me%dvindy(,,,,,)         provide derivatives of y, of various
+!  call dvindy(,,,,,)         provide derivatives of y, of various
 !        (see below.)         orders, at a specified point t, if
 !                             desired.  it may be called only after
 !                             a successful return from dvode.
@@ -1095,7 +1107,7 @@ contains
 ! the detailed instructions for using dvindy are as follows.
 ! the form of the call is:
 !
-!  call me%dvindy (t, k, rwork(21), nyh, dky, iflag)
+!  call dvindy (t, k, rwork(21), nyh, dky, iflag)
 !
 ! the input parameters are:
 !
@@ -1314,25 +1326,25 @@ integer :: mf
 ! is a negative istate, the run is aborted (apparent infinite loop).
 !-----------------------------------------------------------------------
          msg = 'dvode--  istate (=i1) illegal '
-         call xerrwd(msg,30,1,1,1,istate,0,0,zero,zero)
+         call me%xerrwd(msg,30,1,1,1,istate,0,0,zero,zero)
          if ( istate>=0 ) goto 1500
 !
          msg = 'dvode--  run aborted:  apparent infinite loop     '
-         call xerrwd(msg,50,303,2,0,0,0,0,zero,zero)
+         call me%xerrwd(msg,50,303,2,0,0,0,0,zero,zero)
          return
       else
          if ( itask<1 .or. itask>5 ) then
             msg = 'dvode--  itask (=i1) illegal  '
-            call xerrwd(msg,30,2,1,1,itask,0,0,zero,zero)
+            call me%xerrwd(msg,30,2,1,1,itask,0,0,zero,zero)
             goto 1500
          else
             if ( istate==1 ) then
-               me%init = 0
+               me%dat%init = 0
                if ( tout==t ) return
-            elseif ( me%init/=1 ) then
+            elseif ( me%dat%init/=1 ) then
                msg =                                                    &
           'dvode--  istate (=i1) > 1 but dvode not initialized      '
-               call xerrwd(msg,60,3,1,1,istate,0,0,zero,zero)
+               call me%xerrwd(msg,60,3,1,1,istate,0,0,zero,zero)
                goto 1500
             elseif ( istate==2 ) then
                goto 50
@@ -1348,84 +1360,84 @@ integer :: mf
 !-----------------------------------------------------------------------
             if ( neq<=0 ) then
                msg = 'dvode--  neq (=i1) < 1     '
-               call xerrwd(msg,30,4,1,1,neq,0,0,zero,zero)
+               call me%xerrwd(msg,30,4,1,1,neq,0,0,zero,zero)
                goto 1500
             else
                if ( istate/=1 ) then
-                  if ( neq>me%n ) then
+                  if ( neq>me%dat%n ) then
                      msg =                                              &
                     'dvode--  istate = 3 and neq increased (i1 to i2)  '
-                     call xerrwd(msg,50,5,1,2,me%n,neq,0,zero,zero)
+                     call me%xerrwd(msg,50,5,1,2,me%dat%n,neq,0,zero,zero)
                      goto 1500
                   endif
                endif
-               me%n = neq
+               me%dat%n = neq
                if ( itol<1 .or. itol>4 ) then
                   msg = 'dvode--  itol (=i1) illegal   '
-                  call xerrwd(msg,30,6,1,1,itol,0,0,zero,zero)
+                  call me%xerrwd(msg,30,6,1,1,itol,0,0,zero,zero)
                   goto 1500
                elseif ( iopt<0 .or. iopt>1 ) then
                   msg = 'dvode--  iopt (=i1) illegal   '
-                  call xerrwd(msg,30,7,1,1,iopt,0,0,zero,zero)
+                  call me%xerrwd(msg,30,7,1,1,iopt,0,0,zero,zero)
                   goto 1500
                else
-                  me%jsv = sign(1,mf)
+                  me%dat%jsv = sign(1,mf)
                   mfa = abs(mf)
-                  me%meth = mfa/10
-                  me%miter = mfa - 10*me%meth
-                  if ( me%meth<1 .or. me%meth>2 ) goto 800
-                  if ( me%miter<0 .or. me%miter>5 ) goto 800
-                  if ( me%miter>3 ) then
+                  me%dat%meth = mfa/10
+                  me%dat%miter = mfa - 10*me%dat%meth
+                  if ( me%dat%meth<1 .or. me%dat%meth>2 ) goto 800
+                  if ( me%dat%miter<0 .or. me%dat%miter>5 ) goto 800
+                  if ( me%dat%miter>3 ) then
                      ml = iwork(1)
                      mu = iwork(2)
-                     if ( ml<0 .or. ml>=me%n ) then
+                     if ( ml<0 .or. ml>=me%dat%n ) then
                         msg =                                           &
                     'dvode--  ml (=i1) illegal:  <0 or >=neq (=i2)'
-                        call xerrwd(msg,50,9,1,2,ml,neq,0,zero,zero)
+                        call me%xerrwd(msg,50,9,1,2,ml,neq,0,zero,zero)
                         goto 1500
-                     elseif ( mu<0 .or. mu>=me%n ) then
+                     elseif ( mu<0 .or. mu>=me%dat%n ) then
                         msg =                                           &
                     'dvode--  mu (=i1) illegal:  <0 or >=neq (=i2)'
-                        call xerrwd(msg,50,10,1,2,mu,neq,0,zero,zero)
+                        call me%xerrwd(msg,50,10,1,2,mu,neq,0,zero,zero)
                         goto 1500
                      endif
                   endif
 ! next process and check the optional input. ---------------------------
                   if ( iopt==1 ) then
-                     me%maxord = iwork(5)
-                     if ( me%maxord<0 ) then
+                     me%dat%maxord = iwork(5)
+                     if ( me%dat%maxord<0 ) then
                         msg = 'dvode--  maxord (=i1) < 0  '
-                        call xerrwd(msg,30,11,1,1,me%maxord,0,0,zero,zero)
+                        call me%xerrwd(msg,30,11,1,1,me%dat%maxord,0,0,zero,zero)
                         goto 1500
                      else
-                        if ( me%maxord==0 ) me%maxord = 100
-                        me%maxord = min(me%maxord,mord(me%meth))
-                        me%mxstep = iwork(6)
-                        if ( me%mxstep<0 ) then
+                        if ( me%dat%maxord==0 ) me%dat%maxord = 100
+                        me%dat%maxord = min(me%dat%maxord,mord(me%dat%meth))
+                        me%dat%mxstep = iwork(6)
+                        if ( me%dat%mxstep<0 ) then
                            msg = 'dvode--  mxstep (=i1) < 0  '
-                           call xerrwd(msg,30,12,1,1,me%mxstep,0,0,zero,   &
+                           call me%xerrwd(msg,30,12,1,1,me%dat%mxstep,0,0,zero,   &
                                        zero)
                            goto 1500
                         else
-                           if ( me%mxstep==0 ) me%mxstep = mxstp0
-                           me%mxhnil = iwork(7)
-                           if ( me%mxhnil<0 ) then
+                           if ( me%dat%mxstep==0 ) me%dat%mxstep = mxstp0
+                           me%dat%mxhnil = iwork(7)
+                           if ( me%dat%mxhnil<0 ) then
                               msg = 'dvode--  mxhnil (=i1) < 0  '
-                              call xerrwd(msg,30,13,1,1,me%mxhnil,0,0,zero,&
+                              call me%xerrwd(msg,30,13,1,1,me%dat%mxhnil,0,0,zero,&
                                  zero)
                               goto 1500
                            else
-                              if ( me%mxhnil==0 ) me%mxhnil = mxhnl0
+                              if ( me%dat%mxhnil==0 ) me%dat%mxhnil = mxhnl0
                               if ( istate==1 ) then
                                  h0 = rwork(5)
                                  if ( (tout-t)*h0<zero ) then
                                     msg =                               &
                               'dvode--  tout (=r1) behind t (=r2)      '
-                                    call xerrwd(msg,40,14,1,0,0,0,2,    &
+                                    call me%xerrwd(msg,40,14,1,0,0,0,2,    &
                                        tout,t)
                                     msg =                               &
                     '      integration direction is given by h0 (=r1)  '
-                                    call xerrwd(msg,50,14,1,0,0,0,1,h0, &
+                                    call me%xerrwd(msg,50,14,1,0,0,0,1,h0, &
                                        zero)
                                     goto 1500
                                  endif
@@ -1433,18 +1445,18 @@ integer :: mf
                               hmax = rwork(6)
                               if ( hmax<zero ) then
                                  msg = 'dvode--  hmax (=r1) < 0.0  '
-                                 call xerrwd(msg,30,15,1,0,0,0,1,hmax,  &
+                                 call me%xerrwd(msg,30,15,1,0,0,0,1,hmax,  &
                                     zero)
                                  goto 1500
                               else
-                                 me%hmxi = zero
-                                 if ( hmax>zero ) me%hmxi = one/hmax
-                                 me%hmin = rwork(7)
-                                 if ( me%hmin<zero ) then
+                                 me%dat%hmxi = zero
+                                 if ( hmax>zero ) me%dat%hmxi = one/hmax
+                                 me%dat%hmin = rwork(7)
+                                 if ( me%dat%hmin<zero ) then
                                     msg =                               &
                                        'dvode--  hmin (=r1) < 0.0  '
-                                    call xerrwd(msg,30,16,1,0,0,0,1,    &
-                                       me%hmin,zero)
+                                    call me%xerrwd(msg,30,16,1,0,0,0,1,    &
+                                       me%dat%hmin,zero)
                                     goto 1500
                                  endif
                               endif
@@ -1452,12 +1464,12 @@ integer :: mf
                         endif
                      endif
                   else
-                     me%maxord = mord(me%meth)
-                     me%mxstep = mxstp0
-                     me%mxhnil = mxhnl0
+                     me%dat%maxord = mord(me%dat%meth)
+                     me%dat%mxstep = mxstp0
+                     me%dat%mxhnil = mxhnl0
                      if ( istate==1 ) h0 = zero
-                     me%hmxi = zero
-                     me%hmin = zero
+                     me%dat%hmxi = zero
+                     me%dat%hmin = zero
                   endif
 !-----------------------------------------------------------------------
 ! set work array pointers and check lengths lrw and liw.
@@ -1466,47 +1478,47 @@ integer :: mf
 ! segments of rwork (in order) are denoted  yh, wm, ewt, savf, acor.
 ! within wm, locjs is the location of the saved jacobian (jsv > 0).
 !-----------------------------------------------------------------------
-                  me%lyh = 21
-                  if ( istate==1 ) me%nyh = me%n
-                  me%lwm = me%lyh + (me%maxord+1)*me%nyh
-                  jco = max(0,me%jsv)
-                  if ( me%miter==0 ) lenwm = 0
-                  if ( me%miter==1 .or. me%miter==2 ) then
-                     lenwm = 2 + (1+jco)*me%n*me%n
-                     me%locjs = me%n*me%n + 3
+                  me%dat%lyh = 21
+                  if ( istate==1 ) me%dat%nyh = me%dat%n
+                  me%dat%lwm = me%dat%lyh + (me%dat%maxord+1)*me%dat%nyh
+                  jco = max(0,me%dat%jsv)
+                  if ( me%dat%miter==0 ) lenwm = 0
+                  if ( me%dat%miter==1 .or. me%dat%miter==2 ) then
+                     lenwm = 2 + (1+jco)*me%dat%n*me%dat%n
+                     me%dat%locjs = me%dat%n*me%dat%n + 3
                   endif
-                  if ( me%miter==3 ) lenwm = 2 + me%n
-                  if ( me%miter==4 .or. me%miter==5 ) then
+                  if ( me%dat%miter==3 ) lenwm = 2 + me%dat%n
+                  if ( me%dat%miter==4 .or. me%dat%miter==5 ) then
                      mband = ml + mu + 1
-                     lenp = (mband+ml)*me%n
-                     lenj = mband*me%n
+                     lenp = (mband+ml)*me%dat%n
+                     lenj = mband*me%dat%n
                      lenwm = 2 + lenp + jco*lenj
-                     me%locjs = lenp + 3
+                     me%dat%locjs = lenp + 3
                   endif
-                  me%lewt = me%lwm + lenwm
-                  me%lsavf = me%lewt + me%n
-                  me%lacor = me%lsavf + me%n
-                  lenrw = me%lacor + me%n - 1
+                  me%dat%lewt = me%dat%lwm + lenwm
+                  me%dat%lsavf = me%dat%lewt + me%dat%n
+                  me%dat%lacor = me%dat%lsavf + me%dat%n
+                  lenrw = me%dat%lacor + me%dat%n - 1
                   iwork(17) = lenrw
-                  me%liwm = 1
-                  leniw = 30 + me%n
-                  if ( me%miter==0 .or. me%miter==3 ) leniw = 30
+                  me%dat%liwm = 1
+                  leniw = 30 + me%dat%n
+                  if ( me%dat%miter==0 .or. me%dat%miter==3 ) leniw = 30
                   iwork(18) = leniw
                   if ( lenrw>lrw ) then
                      msg =                                              &
           'dvode--  rwork length needed, lenrw (=i1), exceeds lrw (=i2)'
-                     call xerrwd(msg,60,17,1,2,lenrw,lrw,0,zero,zero)
+                     call me%xerrwd(msg,60,17,1,2,lenrw,lrw,0,zero,zero)
                      goto 1500
                   elseif ( leniw>liw ) then
                      msg =                                              &
           'dvode--  iwork length needed, leniw (=i1), exceeds liw (=i2)'
-                     call xerrwd(msg,60,18,1,2,leniw,liw,0,zero,zero)
+                     call me%xerrwd(msg,60,18,1,2,leniw,liw,0,zero,zero)
                      goto 1500
                   else
 ! check rtol and atol for legality. ------------------------------------
                      rtoli = rtol(1)
                      atoli = atol(1)
-                     do i = 1 , me%n
+                     do i = 1 , me%dat%n
                         if ( itol>=3 ) rtoli = rtol(i)
                         if ( itol==2 .or. itol==4 ) atoli = atol(i)
                         if ( rtoli<zero ) goto 900
@@ -1520,72 +1532,72 @@ integer :: mf
 ! and the calculation of the initial step size.
 ! the error weights in ewt are inverted after being loaded.
 !-----------------------------------------------------------------------
-                        me%uround = epmach
-                        me%tn = t
+                        me%dat%uround = epmach
+                        me%dat%tn = t
                         if ( itask==4 .or. itask==5 ) then
                            tcrit = rwork(1)
                            if ( (tcrit-tout)*(tout-t)<zero ) goto 1300
                            if ( h0/=zero .and. (t+h0-tcrit)*h0>zero ) &
                                 h0 = tcrit - t
                         endif
-                        me%jstart = 0
-                        if ( me%miter>0 ) rwork(me%lwm) = sqrt(me%uround)
-                        me%ccmxj = pt2
-                        me%msbj = 50
-                        me%nhnil = 0
-                        me%nst = 0
-                        me%nje = 0
-                        me%nni = 0
-                        me%ncfn = 0
-                        me%netf = 0
-                        me%nlu = 0
-                        me%nslj = 0
+                        me%dat%jstart = 0
+                        if ( me%dat%miter>0 ) rwork(me%dat%lwm) = sqrt(me%dat%uround)
+                        me%dat%ccmxj = pt2
+                        me%dat%msbj = 50
+                        me%dat%nhnil = 0
+                        me%dat%nst = 0
+                        me%dat%nje = 0
+                        me%dat%nni = 0
+                        me%dat%ncfn = 0
+                        me%dat%netf = 0
+                        me%dat%nlu = 0
+                        me%dat%nslj = 0
                         nslast = 0
-                        me%hu = zero
-                        me%nqu = 0
+                        me%dat%hu = zero
+                        me%dat%nqu = 0
 ! initial call to f.  (lf0 points to yh(*,2).) -------------------------
-                        lf0 = me%lyh + me%nyh
-                        call me%f(me%n,t,y(1:me%n),rwork(lf0))
-                        me%nfe = 1
+                        lf0 = me%dat%lyh + me%dat%nyh
+                        call me%f(me%dat%n,t,y(1:me%dat%n),rwork(lf0))
+                        me%dat%nfe = 1
 ! load the initial value vector in yh. ---------------------------------
-                        call dcopy(me%n,y,1,rwork(me%lyh),1)
+                        call dcopy(me%dat%n,y,1,rwork(me%dat%lyh),1)
 ! load and invert the ewt array.  (h is temporarily set to 1.0.) -------
-                        me%nq = 1
-                        me%h = one
-                        call dewset(me%n,itol,rtol,atol,rwork(me%lyh), &
-                                    rwork(me%lewt))
-                        do i = 1 , me%n
-                           if ( rwork(i+me%lewt-1)<=zero ) goto 1100
-                           rwork(i+me%lewt-1) = one/rwork(i+me%lewt-1)
+                        me%dat%nq = 1
+                        me%dat%h = one
+                        call dewset(me%dat%n,itol,rtol,atol,rwork(me%dat%lyh), &
+                                    rwork(me%dat%lewt))
+                        do i = 1 , me%dat%n
+                           if ( rwork(i+me%dat%lewt-1)<=zero ) goto 1100
+                           rwork(i+me%dat%lewt-1) = one/rwork(i+me%dat%lewt-1)
                         enddo
                         if ( h0==zero ) then
 ! call dvhin to set initial step size h0 to be attempted. --------------
-                           call me%dvhin(me%n,t,rwork(me%lyh),rwork(lf0), &
-                                         tout,me%uround,rwork(me%lewt),itol,&
-                                         atol,y,rwork(me%lacor),h0,niter,ier)
-                           me%nfe = me%nfe + niter
+                           call me%dvhin(me%dat%n,t,rwork(me%dat%lyh),rwork(lf0), &
+                                         tout,me%dat%uround,rwork(me%dat%lewt),itol,&
+                                         atol,y,rwork(me%dat%lacor),h0,niter,ier)
+                           me%dat%nfe = me%dat%nfe + niter
                            if ( ier/=0 ) then
                               msg = &
                               'dvode--  tout (=r1) too close to t(=r2) to start integration'
-                              call xerrwd(msg,60,22,1,0,0,0,2,tout,t)
+                              call me%xerrwd(msg,60,22,1,0,0,0,2,tout,t)
                               goto 1500
                            endif
                         endif
 ! adjust h0 if necessary to meet hmax bound. ---------------------------
-                        rh = abs(h0)*me%hmxi
+                        rh = abs(h0)*me%dat%hmxi
                         if ( rh>one ) h0 = h0/rh
 ! load h with h0 and scale yh(*,2) by h0. ------------------------------
-                        me%h = h0
-                        call dscal(me%n,h0,rwork(lf0),1)
+                        me%dat%h = h0
+                        call dscal(me%dat%n,h0,rwork(lf0),1)
                         goto 200
                      else
 ! if istate = 3, set flag to signal parameter changes to dvstep. -------
-                        me%jstart = -1
+                        me%dat%jstart = -1
 ! maxord was reduced below nq.  copy yh(*,maxord+2) into savf. ---------
-                        if ( me%nq>me%maxord ) &
-                             call dcopy(me%n,rwork(me%lwm),1,rwork(me%lsavf),1)
+                        if ( me%dat%nq>me%dat%maxord ) &
+                             call dcopy(me%dat%n,rwork(me%dat%lwm),1,rwork(me%dat%lsavf),1)
 ! reload wm(1) = rwork(lwm), since lwm may have changed. ---------------
-                        if ( me%miter>0 ) rwork(me%lwm) = sqrt(me%uround)
+                        if ( me%dat%miter>0 ) rwork(me%dat%lwm) = sqrt(me%dat%uround)
                      endif
                   endif
                endif
@@ -1596,49 +1608,49 @@ integer :: mf
 ! the next code block is for continuation calls only (istate = 2 or 3)
 ! and is to check stop conditions before taking a step.
 !-----------------------------------------------------------------------
- 50      nslast = me%nst
-         me%kuth = 0
+ 50      nslast = me%dat%nst
+         me%dat%kuth = 0
          select case (itask)
          case (2)
             goto 100
          case (3)
-            tp = me%tn - me%hu*(one+hun*me%uround)
-            if ( (tp-tout)*me%h>zero ) then
+            tp = me%dat%tn - me%dat%hu*(one+hun*me%dat%uround)
+            if ( (tp-tout)*me%dat%h>zero ) then
                msg = &
                'dvode--  itask = i1 and tout (=r1) behind tcur - hu (= r2)  '
-               call xerrwd(msg,60,23,1,1,itask,0,2,tout,tp)
+               call me%xerrwd(msg,60,23,1,1,itask,0,2,tout,tp)
                goto 1500
             else
-               if ( (me%tn-tout)*me%h>=zero ) goto 300
+               if ( (me%dat%tn-tout)*me%dat%h>=zero ) goto 300
                goto 100
             endif
          case (4)
             tcrit = rwork(1)
-            if ( (me%tn-tcrit)*me%h>zero ) goto 1200
-            if ( (tcrit-tout)*me%h<zero ) goto 1300
-            if ( (me%tn-tout)*me%h>=zero ) then
-               call me%dvindy(tout,0,rwork(me%lyh),me%nyh,y,iflag)
+            if ( (me%dat%tn-tcrit)*me%dat%h>zero ) goto 1200
+            if ( (tcrit-tout)*me%dat%h<zero ) goto 1300
+            if ( (me%dat%tn-tout)*me%dat%h>=zero ) then
+               call me%dvindy(tout,0,rwork(me%dat%lyh),me%dat%nyh,y,iflag)
                if ( iflag/=0 ) goto 1400
                t = tout
                goto 400
             endif
          case (5)
             tcrit = rwork(1)
-            if ( (me%tn-tcrit)*me%h>zero ) goto 1200
+            if ( (me%dat%tn-tcrit)*me%dat%h>zero ) goto 1200
          case default
-            if ( (me%tn-tout)*me%h<zero ) goto 100
-            call me%dvindy(tout,0,rwork(me%lyh),me%nyh,y,iflag)
+            if ( (me%dat%tn-tout)*me%dat%h<zero ) goto 100
+            call me%dvindy(tout,0,rwork(me%dat%lyh),me%dat%nyh,y,iflag)
             if ( iflag/=0 ) goto 1400
             t = tout
             goto 400
          end select
-         hmx = abs(me%tn) + abs(me%h)
-         ihit = abs(me%tn-tcrit)<=hun*me%uround*hmx
+         hmx = abs(me%dat%tn) + abs(me%dat%h)
+         ihit = abs(me%dat%tn-tcrit)<=hun*me%dat%uround*hmx
          if ( ihit ) goto 300
-         tnext = me%tn + me%hnew*(one+four*me%uround)
-         if ( (tnext-tcrit)*me%h>zero ) then
-            me%h = (tcrit-me%tn)*(one-four*me%uround)
-            me%kuth = 1
+         tnext = me%dat%tn + me%dat%hnew*(one+four*me%dat%uround)
+         if ( (tnext-tcrit)*me%dat%h>zero ) then
+            me%dat%h = (tcrit-me%dat%tn)*(one-four*me%dat%uround)
+            me%dat%kuth = 1
          endif
       endif
 !-----------------------------------------------------------------------
@@ -1652,7 +1664,7 @@ integer :: mf
 ! start of problem), check for too much accuracy being requested, and
 ! check for h below the roundoff level in t.
 !-----------------------------------------------------------------------
- 100  if ( (me%nst-nslast)>=me%mxstep ) then
+ 100  if ( (me%dat%nst-nslast)>=me%dat%mxstep ) then
 !-----------------------------------------------------------------------
 ! block h.
 ! the following block handles all unsuccessful returns other than
@@ -1663,39 +1675,39 @@ integer :: mf
 !-----------------------------------------------------------------------
 ! the maximum number of steps was taken before reaching tout. ----------
          msg = 'dvode--  at current t (=r1), mxstep (=i1) steps   '
-         call xerrwd(msg,50,201,1,0,0,0,0,zero,zero)
+         call me%xerrwd(msg,50,201,1,0,0,0,0,zero,zero)
          msg = '      taken on this call before reaching tout     '
-         call xerrwd(msg,50,201,1,1,me%mxstep,0,1,me%tn,zero)
+         call me%xerrwd(msg,50,201,1,1,me%dat%mxstep,0,1,me%dat%tn,zero)
          istate = -1
          goto 700
       else
-         call dewset(me%n,itol,rtol,atol,rwork(me%lyh),rwork(me%lewt))
-         do i = 1 , me%n
-            if ( rwork(i+me%lewt-1)<=zero ) goto 500
-            rwork(i+me%lewt-1) = one/rwork(i+me%lewt-1)
+         call dewset(me%dat%n,itol,rtol,atol,rwork(me%dat%lyh),rwork(me%dat%lewt))
+         do i = 1 , me%dat%n
+            if ( rwork(i+me%dat%lewt-1)<=zero ) goto 500
+            rwork(i+me%dat%lewt-1) = one/rwork(i+me%dat%lewt-1)
          enddo
       endif
- 200  tolsf = me%uround*dvnorm(me%n,rwork(me%lyh),rwork(me%lewt))
+ 200  tolsf = me%dat%uround*dvnorm(me%dat%n,rwork(me%dat%lyh),rwork(me%dat%lewt))
       if ( tolsf<=one ) then
-         if ( (me%tn+me%h)==me%tn ) then
-            me%nhnil = me%nhnil + 1
-            if ( me%nhnil<=me%mxhnil ) then
+         if ( (me%dat%tn+me%dat%h)==me%dat%tn ) then
+            me%dat%nhnil = me%dat%nhnil + 1
+            if ( me%dat%nhnil<=me%dat%mxhnil ) then
                msg = &
                     'dvode--  warning: internal t (=r1) and h (=r2) are'
-               call xerrwd(msg,50,101,1,0,0,0,0,zero,zero)
+               call me%xerrwd(msg,50,101,1,0,0,0,0,zero,zero)
                msg = &
                     '      such that in the machine, t + h = t on the next step  '
-               call xerrwd(msg,60,101,1,0,0,0,0,zero,zero)
+               call me%xerrwd(msg,60,101,1,0,0,0,0,zero,zero)
                msg = &
                     '      (h = step size). solver will continue anyway'
-               call xerrwd(msg,50,101,1,0,0,0,2,me%tn,me%h)
-               if ( me%nhnil>=me%mxhnil ) then
+               call me%xerrwd(msg,50,101,1,0,0,0,2,me%dat%tn,me%dat%h)
+               if ( me%dat%nhnil>=me%dat%mxhnil ) then
                   msg = &
                     'dvode--  above warning has been issued i1 times.  '
-                  call xerrwd(msg,50,102,1,0,0,0,0,zero,zero)
+                  call me%xerrwd(msg,50,102,1,0,0,0,0,zero,zero)
                   msg = &
                     '      it will not be issued again for this problem'
-                  call xerrwd(msg,50,102,1,1,me%mxhnil,0,0,zero,zero)
+                  call me%xerrwd(msg,50,102,1,1,me%dat%mxhnil,0,0,zero,zero)
                endif
             endif
          endif
@@ -1703,28 +1715,28 @@ integer :: mf
 ! call me%dvstep (y, yh, nyh, yh, ewt, savf, vsav, acor,
 !              wm, iwm, f, jac, f, dvnlsd)
 !-----------------------------------------------------------------------
-         call me%dvstep(y,rwork(me%lyh),me%nyh,rwork(me%lyh),rwork(me%lewt), &
-                        rwork(me%lsavf),y,rwork(me%lacor),rwork(me%lwm),iwork(me%liwm))
-         kgo = 1 - me%kflag
+         call me%dvstep(y,rwork(me%dat%lyh),me%dat%nyh,rwork(me%dat%lyh),rwork(me%dat%lewt), &
+                        rwork(me%dat%lsavf),y,rwork(me%dat%lacor),rwork(me%dat%lwm),iwork(me%dat%liwm))
+         kgo = 1 - me%dat%kflag
 ! branch on kflag.  note: in this version, kflag can not be set to -3.
 !  kflag == 0,   -1,  -2
          select case (kgo)
          case (2)
 ! kflag = -1.  error test failed repeatedly or with abs(h) = hmin. -----
             msg = 'dvode--  at t(=r1) and step size h(=r2), the error'
-            call xerrwd(msg,50,204,1,0,0,0,0,zero,zero)
+            call me%xerrwd(msg,50,204,1,0,0,0,0,zero,zero)
             msg = '      test failed repeatedly or with abs(h) = hmin'
-            call xerrwd(msg,50,204,1,0,0,0,2,me%tn,me%h)
+            call me%xerrwd(msg,50,204,1,0,0,0,2,me%dat%tn,me%dat%h)
             istate = -4
             goto 600
          case (3)
 ! kflag = -2.  convergence failed repeatedly or with abs(h) = hmin. ----
             msg = 'dvode--  at t (=r1) and step size h (=r2), the    '
-            call xerrwd(msg,50,205,1,0,0,0,0,zero,zero)
+            call me%xerrwd(msg,50,205,1,0,0,0,0,zero,zero)
             msg = '      corrector convergence failed repeatedly     '
-            call xerrwd(msg,50,205,1,0,0,0,0,zero,zero)
+            call me%xerrwd(msg,50,205,1,0,0,0,0,zero,zero)
             msg = '      or with abs(h) = hmin   '
-            call xerrwd(msg,30,205,1,0,0,0,2,me%tn,me%h)
+            call me%xerrwd(msg,30,205,1,0,0,0,2,me%dat%tn,me%dat%h)
             istate = -5
             goto 600
          case default
@@ -1733,59 +1745,59 @@ integer :: mf
 ! the following block handles the case of a successful return from the
 ! core integrator (kflag = 0).  test for stop conditions.
 !-----------------------------------------------------------------------
-            me%init = 1
-            me%kuth = 0
+            me%dat%init = 1
+            me%dat%kuth = 0
             select case (itask)
             case (2)
             case (3)
 ! itask = 3.  jump to exit if tout was reached. ------------------------
-               if ( (me%tn-tout)*me%h<zero ) goto 100
+               if ( (me%dat%tn-tout)*me%dat%h<zero ) goto 100
             case (4)
 ! itask = 4.  see if tout or tcrit was reached.  adjust h if necessary.
-               if ( (me%tn-tout)*me%h<zero ) then
-                  hmx = abs(me%tn) + abs(me%h)
-                  ihit = abs(me%tn-tcrit)<=hun*me%uround*hmx
+               if ( (me%dat%tn-tout)*me%dat%h<zero ) then
+                  hmx = abs(me%dat%tn) + abs(me%dat%h)
+                  ihit = abs(me%dat%tn-tcrit)<=hun*me%dat%uround*hmx
                   if ( .not.(ihit) ) then
-                     tnext = me%tn + me%hnew*(one+four*me%uround)
-                     if ( (tnext-tcrit)*me%h>zero ) then
-                        me%h = (tcrit-me%tn)*(one-four*me%uround)
-                        me%kuth = 1
+                     tnext = me%dat%tn + me%dat%hnew*(one+four*me%dat%uround)
+                     if ( (tnext-tcrit)*me%dat%h>zero ) then
+                        me%dat%h = (tcrit-me%dat%tn)*(one-four*me%dat%uround)
+                        me%dat%kuth = 1
                      endif
                      goto 100
                   endif
                else
-                  call me%dvindy(tout,0,rwork(me%lyh),me%nyh,y,iflag)
+                  call me%dvindy(tout,0,rwork(me%dat%lyh),me%dat%nyh,y,iflag)
                   t = tout
                   goto 400
                endif
             case (5)
 ! itask = 5.  see if tcrit was reached and jump to exit. ---------------
-               hmx = abs(me%tn) + abs(me%h)
-               ihit = abs(me%tn-tcrit)<=hun*me%uround*hmx
+               hmx = abs(me%dat%tn) + abs(me%dat%h)
+               ihit = abs(me%dat%tn-tcrit)<=hun*me%dat%uround*hmx
             case default
 ! itask = 1.  if tout has been reached, interpolate. -------------------
-               if ( (me%tn-tout)*me%h<zero ) goto 100
-               call me%dvindy(tout,0,rwork(me%lyh),me%nyh,y,iflag)
+               if ( (me%dat%tn-tout)*me%dat%h<zero ) goto 100
+               call me%dvindy(tout,0,rwork(me%dat%lyh),me%dat%nyh,y,iflag)
                t = tout
                goto 400
             end select
          end select
       else
          tolsf = tolsf*two
-         if ( me%nst==0 ) then
+         if ( me%dat%nst==0 ) then
             msg = 'dvode--  at start of problem, too much accuracy   '
-            call xerrwd(msg,50,26,1,0,0,0,0,zero,zero)
+            call me%xerrwd(msg,50,26,1,0,0,0,0,zero,zero)
             msg = &
                   '      requested for precision of machine:   see tolsf (=r1) '
-            call xerrwd(msg,60,26,1,0,0,0,1,tolsf,zero)
+            call me%xerrwd(msg,60,26,1,0,0,0,1,tolsf,zero)
             rwork(14) = tolsf
             goto 1500
          else
 ! too much accuracy requested for machine precision. -------------------
             msg = 'dvode--  at t (=r1), too much accuracy requested  '
-            call xerrwd(msg,50,203,1,0,0,0,0,zero,zero)
+            call me%xerrwd(msg,50,203,1,0,0,0,0,zero,zero)
             msg = '      for precision of machine:   see tolsf (=r2) '
-            call xerrwd(msg,50,203,1,0,0,0,2,me%tn,tolsf)
+            call me%xerrwd(msg,50,203,1,0,0,0,2,me%dat%tn,tolsf)
             rwork(14) = tolsf
             istate = -2
             goto 700
@@ -1798,38 +1810,38 @@ integer :: mf
 ! istate is set to 2, and the optional output is loaded into the work
 ! arrays before returning.
 !-----------------------------------------------------------------------
- 300  call dcopy(me%n,rwork(me%lyh),1,y,1)
-      t = me%tn
+ 300  call dcopy(me%dat%n,rwork(me%dat%lyh),1,y,1)
+      t = me%dat%tn
       if ( itask==4 .or. itask==5 ) then
          if ( ihit ) t = tcrit
       endif
  400  istate = 2
-      rwork(11) = me%hu
-      rwork(12) = me%hnew
-      rwork(13) = me%tn
-      iwork(11) = me%nst
-      iwork(12) = me%nfe
-      iwork(13) = me%nje
-      iwork(14) = me%nqu
-      iwork(15) = me%newq
-      iwork(19) = me%nlu
-      iwork(20) = me%nni
-      iwork(21) = me%ncfn
-      iwork(22) = me%netf
+      rwork(11) = me%dat%hu
+      rwork(12) = me%dat%hnew
+      rwork(13) = me%dat%tn
+      iwork(11) = me%dat%nst
+      iwork(12) = me%dat%nfe
+      iwork(13) = me%dat%nje
+      iwork(14) = me%dat%nqu
+      iwork(15) = me%dat%newq
+      iwork(19) = me%dat%nlu
+      iwork(20) = me%dat%nni
+      iwork(21) = me%dat%ncfn
+      iwork(22) = me%dat%netf
       return
 
 ! ewt(i) <= 0.0 for some i (not at start of problem). ----------------
- 500  ewti = rwork(me%lewt+i-1)
+ 500  ewti = rwork(me%dat%lewt+i-1)
       msg = 'dvode--  at t (=r1), ewt(i1) has become r2 <= 0.'
-      call xerrwd(msg,50,202,1,1,i,0,2,me%tn,ewti)
+      call me%xerrwd(msg,50,202,1,1,i,0,2,me%dat%tn,ewti)
       istate = -6
       goto 700
 
 ! compute imxer if relevant. -------------------------------------------
  600  big = zero
       imxer = 1
-      do i = 1 , me%n
-         size = abs(rwork(i+me%lacor-1)*rwork(i+me%lewt-1))
+      do i = 1 , me%dat%n
+         size = abs(rwork(i+me%dat%lacor-1)*rwork(i+me%dat%lewt-1))
          if ( big<size ) then
             big = size
             imxer = i
@@ -1837,47 +1849,47 @@ integer :: mf
       enddo
       iwork(16) = imxer
 ! set y vector, t, and optional output. --------------------------------
- 700  call dcopy(me%n,rwork(me%lyh),1,y,1)
-      t = me%tn
-      rwork(11) = me%hu
-      rwork(12) = me%h
-      rwork(13) = me%tn
-      iwork(11) = me%nst
-      iwork(12) = me%nfe
-      iwork(13) = me%nje
-      iwork(14) = me%nqu
-      iwork(15) = me%nq
-      iwork(19) = me%nlu
-      iwork(20) = me%nni
-      iwork(21) = me%ncfn
-      iwork(22) = me%netf
+ 700  call dcopy(me%dat%n,rwork(me%dat%lyh),1,y,1)
+      t = me%dat%tn
+      rwork(11) = me%dat%hu
+      rwork(12) = me%dat%h
+      rwork(13) = me%dat%tn
+      iwork(11) = me%dat%nst
+      iwork(12) = me%dat%nfe
+      iwork(13) = me%dat%nje
+      iwork(14) = me%dat%nqu
+      iwork(15) = me%dat%nq
+      iwork(19) = me%dat%nlu
+      iwork(20) = me%dat%nni
+      iwork(21) = me%dat%ncfn
+      iwork(22) = me%dat%netf
 
       return
 
  800  msg = 'dvode--  mf (=i1) illegal     '
-      call xerrwd(msg,30,8,1,1,mf,0,0,zero,zero)
+      call me%xerrwd(msg,30,8,1,1,mf,0,0,zero,zero)
       goto 1500
  900  msg = 'dvode--  rtol(i1) is r1 < 0.0        '
-      call xerrwd(msg,40,19,1,1,i,0,1,rtoli,zero)
+      call me%xerrwd(msg,40,19,1,1,i,0,1,rtoli,zero)
       goto 1500
  1000 msg = 'dvode--  atol(i1) is r1 < 0.0        '
-      call xerrwd(msg,40,20,1,1,i,0,1,atoli,zero)
+      call me%xerrwd(msg,40,20,1,1,i,0,1,atoli,zero)
       goto 1500
- 1100 ewti = rwork(me%lewt+i-1)
+ 1100 ewti = rwork(me%dat%lewt+i-1)
       msg = 'dvode--  ewt(i1) is r1 <= 0.0         '
-      call xerrwd(msg,40,21,1,1,i,0,1,ewti,zero)
+      call me%xerrwd(msg,40,21,1,1,i,0,1,ewti,zero)
       goto 1500
  1200 msg = &
           'dvode--  itask = 4 or 5 and tcrit (=r1) behind tcur (=r2)   '
-      call xerrwd(msg,60,24,1,0,0,0,2,tcrit,me%tn)
+      call me%xerrwd(msg,60,24,1,0,0,0,2,tcrit,me%dat%tn)
       goto 1500
  1300 msg = &
           'dvode--  itask = 4 or 5 and tcrit (=r1) behind tout (=r2)   '
-      call xerrwd(msg,60,25,1,0,0,0,2,tcrit,tout)
+      call me%xerrwd(msg,60,25,1,0,0,0,2,tcrit,tout)
       goto 1500
  1400 msg = &
           'dvode--  trouble from dvindy.  itask = i1, tout = r1.       '
-      call xerrwd(msg,60,27,1,1,itask,0,1,tout,zero)
+      call me%xerrwd(msg,60,27,1,1,itask,0,1,tout,zero)
 
  1500 istate = -3
 
@@ -2064,7 +2076,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 
       implicit none
 
-      class(dvode_t),intent(in) :: me
+      class(dvode_t),intent(inout) :: me
       real(wp) :: t , yh(ldyh,*) , dky(*)
       integer :: k , ldyh , iflag
 
@@ -2079,41 +2091,41 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
       real(wp),parameter :: zero = 0.0_wp
 
       iflag = 0
-      if ( k<0 .or. k>me%nq ) then
+      if ( k<0 .or. k>me%dat%nq ) then
          msg = 'dvindy-- k (=i1) illegal      '
-         call xerrwd(msg,30,51,1,1,k,0,0,zero,zero)
+         call me%xerrwd(msg,30,51,1,1,k,0,0,zero,zero)
          iflag = -1
          return
       else
-         tfuzz = hun*me%uround*sign(abs(me%tn)+abs(me%hu),me%hu)
-         tp = me%tn - me%hu - tfuzz
-         tn1 = me%tn + tfuzz
+         tfuzz = hun*me%dat%uround*sign(abs(me%dat%tn)+abs(me%dat%hu),me%dat%hu)
+         tp = me%dat%tn - me%dat%hu - tfuzz
+         tn1 = me%dat%tn + tfuzz
          if ( (t-tp)*(t-tn1)>zero ) then
             msg = 'dvindy-- t (=r1) illegal      '
-            call xerrwd(msg,30,52,1,0,0,0,1,t,zero)
+            call me%xerrwd(msg,30,52,1,0,0,0,1,t,zero)
             msg = &
                   '      t not in interval tcur - hu (= r1) to tcur (=r2)      '
-            call xerrwd(msg,60,52,1,0,0,0,2,tp,me%tn)
+            call me%xerrwd(msg,60,52,1,0,0,0,2,tp,me%dat%tn)
             iflag = -2
             return
          else
 !
-            s = (t-me%tn)/me%h
+            s = (t-me%dat%tn)/me%dat%h
             ic = 1
             if ( k/=0 ) then
-               jj1 = me%l - k
-               do jj = jj1 , me%nq
+               jj1 = me%dat%l - k
+               do jj = jj1 , me%dat%nq
                   ic = ic*jj
                enddo
             endif
             c = real(ic,wp)
-            do i = 1 , me%n
-               dky(i) = c*yh(i,me%l)
+            do i = 1 , me%dat%n
+               dky(i) = c*yh(i,me%dat%l)
             enddo
-            if ( k/=me%nq ) then
-               jb2 = me%nq - k
+            if ( k/=me%dat%nq ) then
+               jb2 = me%dat%nq - k
                do jb = 1 , jb2
-                  j = me%nq - jb
+                  j = me%dat%nq - jb
                   jp1 = j + 1
                   ic = 1
                   if ( k/=0 ) then
@@ -2123,7 +2135,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
                      enddo
                   endif
                   c = real(ic,wp)
-                  do i = 1 , me%n
+                  do i = 1 , me%dat%n
                      dky(i) = c*yh(i,jp1) + s*dky(i)
                   enddo
                enddo
@@ -2131,8 +2143,8 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
             endif
          endif
       endif
-      r = me%h**(-k)
-      call dscal(me%n,r,dky,1)
+      r = me%dat%h**(-k)
+      call dscal(me%dat%n,r,dky,1)
 
    end subroutine dvindy
 
@@ -2234,13 +2246,13 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
       real(wp),parameter :: onepsm = 1.00001_wp
       real(wp),parameter :: thresh = 1.5_wp
 
-      me%kflag = 0
-      told = me%tn
+      me%dat%kflag = 0
+      told = me%dat%tn
       ncf = 0
-      me%jcur = 0
+      me%dat%jcur = 0
       nflag = 0
-      if ( me%jstart<=0 ) then
-         if ( me%jstart==-1 ) goto 200
+      if ( me%dat%jstart<=0 ) then
+         if ( me%dat%jstart==-1 ) goto 200
 !-----------------------------------------------------------------------
 ! on the first call, the order is set to 1, and other variables are
 ! initialized.  etamax is the maximum ratio by which h can be increased
@@ -2249,16 +2261,16 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 ! occurs (in corrector convergence or error test), etamax is set to 1
 ! for the next increase.
 !-----------------------------------------------------------------------
-         me%lmax = me%maxord + 1
-         me%nq = 1
-         me%l = 2
-         me%nqnyh = me%nq*ldyh
-         me%tau(1) = me%h
-         me%prl1 = one
-         me%rc = zero
-         me%etamax = etamx1
-         me%nqwait = 2
-         me%hscal = me%h
+         me%dat%lmax = me%dat%maxord + 1
+         me%dat%nq = 1
+         me%dat%l = 2
+         me%dat%nqnyh = me%dat%nq*ldyh
+         me%dat%tau(1) = me%dat%h
+         me%dat%prl1 = one
+         me%dat%rc = zero
+         me%dat%etamax = etamx1
+         me%dat%nqwait = 2
+         me%dat%hscal = me%dat%h
          goto 400
 !-----------------------------------------------------------------------
 ! take preliminary actions on a normal continuation step (jstart>0).
@@ -2269,24 +2281,24 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 ! on an order increase, the history array is augmented by a column.
 ! on a change of step size h, the history array yh is rescaled.
 !-----------------------------------------------------------------------
-      elseif ( me%kuth==1 ) then
-         me%eta = min(me%eta,me%h/me%hscal)
-         me%newh = 1
+      elseif ( me%dat%kuth==1 ) then
+         me%dat%eta = min(me%dat%eta,me%dat%h/me%dat%hscal)
+         me%dat%newh = 1
       endif
- 100  if ( me%newh==0 ) goto 400
-      if ( me%newq==me%nq ) goto 300
-      if ( me%newq<me%nq ) then
+ 100  if ( me%dat%newh==0 ) goto 400
+      if ( me%dat%newq==me%dat%nq ) goto 300
+      if ( me%dat%newq<me%dat%nq ) then
          call me%dvjust(yh,ldyh,-1)
-         me%nq = me%newq
-         me%l = me%nq + 1
-         me%nqwait = me%l
+         me%dat%nq = me%dat%newq
+         me%dat%l = me%dat%nq + 1
+         me%dat%nqwait = me%dat%l
          goto 300
       endif
-      if ( me%newq>me%nq ) then
+      if ( me%dat%newq>me%dat%nq ) then
          call me%dvjust(yh,ldyh,1)
-         me%nq = me%newq
-         me%l = me%nq + 1
-         me%nqwait = me%l
+         me%dat%nq = me%dat%newq
+         me%dat%l = me%dat%nq + 1
+         me%dat%nqwait = me%dat%l
          goto 300
       endif
 !-----------------------------------------------------------------------
@@ -2301,70 +2313,70 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 ! by hmin if kuth = 0, and by hmxi in any case.
 ! finally, the history array yh is rescaled.
 !-----------------------------------------------------------------------
- 200  me%lmax = me%maxord + 1
-      if ( me%n/=ldyh ) then
-         i1 = 1 + (me%newq+1)*ldyh
-         i2 = (me%maxord+1)*ldyh
+ 200  me%dat%lmax = me%dat%maxord + 1
+      if ( me%dat%n/=ldyh ) then
+         i1 = 1 + (me%dat%newq+1)*ldyh
+         i2 = (me%dat%maxord+1)*ldyh
          if ( i1<=i2 ) then
             do i = i1 , i2
                yh1(i) = zero
             enddo
          endif
       endif
-      if ( me%newq>me%maxord ) then
-         flotl = real(me%lmax,wp)
-         if ( me%maxord<me%nq-1 ) then
-            ddn = dvnorm(me%n,savf,ewt)/me%tq(1)
-            me%eta = one/((bias1*ddn)**(one/flotl)+addon)
+      if ( me%dat%newq>me%dat%maxord ) then
+         flotl = real(me%dat%lmax,wp)
+         if ( me%dat%maxord<me%dat%nq-1 ) then
+            ddn = dvnorm(me%dat%n,savf,ewt)/me%dat%tq(1)
+            me%dat%eta = one/((bias1*ddn)**(one/flotl)+addon)
          endif
-         if ( me%maxord==me%nq .and. me%newq==me%nq+1 ) me%eta = me%etaq
-         if ( me%maxord==me%nq-1 .and. me%newq==me%nq+1 ) then
-            me%eta = me%etaqm1
+         if ( me%dat%maxord==me%dat%nq .and. me%dat%newq==me%dat%nq+1 ) me%dat%eta = me%etaq
+         if ( me%dat%maxord==me%dat%nq-1 .and. me%dat%newq==me%dat%nq+1 ) then
+            me%dat%eta = me%etaqm1
             call me%dvjust(yh,ldyh,-1)
          endif
-         if ( me%maxord==me%nq-1 .and. me%newq==me%nq ) then
-            ddn = dvnorm(me%n,savf,ewt)/me%tq(1)
-            me%eta = one/((bias1*ddn)**(one/flotl)+addon)
+         if ( me%dat%maxord==me%dat%nq-1 .and. me%dat%newq==me%dat%nq ) then
+            ddn = dvnorm(me%dat%n,savf,ewt)/me%dat%tq(1)
+            me%dat%eta = one/((bias1*ddn)**(one/flotl)+addon)
             call me%dvjust(yh,ldyh,-1)
          endif
-         me%eta = min(me%eta,one)
-         me%nq = me%maxord
-         me%l = me%lmax
+         me%dat%eta = min(me%dat%eta,one)
+         me%dat%nq = me%dat%maxord
+         me%dat%l = me%dat%lmax
       endif
-      if ( me%kuth==1 ) me%eta = min(me%eta,abs(me%h/me%hscal))
-      if ( me%kuth==0 ) me%eta = max(me%eta,me%hmin/abs(me%hscal))
-      me%eta = me%eta/max(one,abs(me%hscal)*me%hmxi*me%eta)
-      me%newh = 1
-      me%nqwait = me%l
-      if ( me%newq<=me%maxord ) goto 100
+      if ( me%dat%kuth==1 ) me%dat%eta = min(me%dat%eta,abs(me%dat%h/me%dat%hscal))
+      if ( me%dat%kuth==0 ) me%dat%eta = max(me%dat%eta,me%dat%hmin/abs(me%dat%hscal))
+      me%dat%eta = me%dat%eta/max(one,abs(me%dat%hscal)*me%dat%hmxi*me%dat%eta)
+      me%dat%newh = 1
+      me%dat%nqwait = me%dat%l
+      if ( me%dat%newq<=me%dat%maxord ) goto 100
 ! rescale the history array for a change in h by a factor of eta. ------
  300  r = one
-      do j = 2 , me%l
-         r = r*me%eta
-         call dscal(me%n,r,yh(1,j),1)
+      do j = 2 , me%dat%l
+         r = r*me%dat%eta
+         call dscal(me%dat%n,r,yh(1,j),1)
       enddo
-      me%h = me%hscal*me%eta
-      me%hscal = me%h
-      me%rc = me%rc*me%eta
-      me%nqnyh = me%nq*ldyh
+      me%dat%h = me%dat%hscal*me%dat%eta
+      me%dat%hscal = me%dat%h
+      me%dat%rc = me%dat%rc*me%dat%eta
+      me%dat%nqnyh = me%dat%nq*ldyh
 !-----------------------------------------------------------------------
 ! this section computes the predicted values by effectively
 ! multiplying the yh array by the pascal triangle matrix.
 ! dvset is called to calculate all integration coefficients.
 ! rc is the ratio of new to old values of the coefficient h/el(2)=h/l1.
 !-----------------------------------------------------------------------
- 400  me%tn = me%tn + me%h
-      i1 = me%nqnyh + 1
-      do jb = 1 , me%nq
+ 400  me%dat%tn = me%dat%tn + me%dat%h
+      i1 = me%dat%nqnyh + 1
+      do jb = 1 , me%dat%nq
          i1 = i1 - ldyh
-         do i = i1 , me%nqnyh
+         do i = i1 , me%dat%nqnyh
             yh1(i) = yh1(i) + yh1(i+ldyh)
          enddo
       enddo
       call me%dvset()
-      me%rl1 = one/me%el(2)
-      me%rc = me%rc*(me%rl1/me%prl1)
-      me%prl1 = me%rl1
+      me%dat%rl1 = one/me%dat%el(2)
+      me%dat%rc = me%dat%rc*(me%dat%rl1/me%dat%prl1)
+      me%dat%prl1 = me%dat%rl1
 !
 ! call the nonlinear system solver. ------------------------------------
 !
@@ -2375,7 +2387,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 ! the corrector has converged (nflag = 0).  the local error test is
 ! made and control passes to statement 500 if it fails.
 !-----------------------------------------------------------------------
-         dsm = me%acnrm/me%tq(2)
+         dsm = me%dat%acnrm/me%dat%tq(2)
          if ( dsm>one ) then
 !-----------------------------------------------------------------------
 ! the error test failed.  kflag keeps track of multiple failures.
@@ -2384,32 +2396,32 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 ! same order.  after repeated failures, h is forced to decrease
 ! more rapidly.
 !-----------------------------------------------------------------------
-            me%kflag = me%kflag - 1
-            me%netf = me%netf + 1
+            me%dat%kflag = me%dat%kflag - 1
+            me%dat%netf = me%dat%netf + 1
             nflag = -2
-            me%tn = told
-            i1 = me%nqnyh + 1
-            do jb = 1 , me%nq
+            me%dat%tn = told
+            i1 = me%dat%nqnyh + 1
+            do jb = 1 , me%dat%nq
                i1 = i1 - ldyh
-               do i = i1 , me%nqnyh
+               do i = i1 , me%dat%nqnyh
                   yh1(i) = yh1(i) - yh1(i+ldyh)
                enddo
             enddo
-            if ( abs(me%h)<=me%hmin*onepsm ) then
+            if ( abs(me%dat%h)<=me%dat%hmin*onepsm ) then
 !-----------------------------------------------------------------------
 ! all returns are made through this section.
 ! on a successful return, etamax is reset and acor is scaled.
 !-----------------------------------------------------------------------
-               me%kflag = -1
+               me%dat%kflag = -1
                goto 600
             else
-               me%etamax = one
-               if ( me%kflag>kfc ) then
+               me%dat%etamax = one
+               if ( me%dat%kflag>kfc ) then
 ! compute ratio of new h to current h at the current order. ------------
-                  flotl = real(me%l,wp)
-                  me%eta = one/((bias2*dsm)**(one/flotl)+addon)
-                  me%eta = max(me%eta,me%hmin/abs(me%h),etamin)
-                  if ( (me%kflag<=-2) .and. (me%eta>etamxf) ) me%eta = etamxf
+                  flotl = real(me%dat%l,wp)
+                  me%dat%eta = one/((bias2*dsm)**(one/flotl)+addon)
+                  me%dat%eta = max(me%dat%eta,me%dat%hmin/abs(me%dat%h),etamin)
+                  if ( (me%dat%kflag<=-2) .and. (me%dat%eta>etamxf) ) me%dat%eta = etamxf
                   goto 300
 !-----------------------------------------------------------------------
 ! control reaches this section if 3 or more consecutive failures
@@ -2419,27 +2431,27 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 ! the step is retried.  after a total of 7 consecutive failures,
 ! an exit is taken with kflag = -1.
 !-----------------------------------------------------------------------
-               elseif ( me%kflag==kfh ) then
-                  me%kflag = -1
+               elseif ( me%dat%kflag==kfh ) then
+                  me%dat%kflag = -1
                   goto 600
-               elseif ( me%nq==1 ) then
-                  me%eta = max(etamin,me%hmin/abs(me%h))
-                  me%h = me%h*me%eta
-                  me%hscal = me%h
-                  me%tau(1) = me%h
-                  call me%f(me%n,me%tn,y(1:me%n),savf(1:me%n))
-                  me%nfe = me%nfe + 1
-                  do i = 1 , me%n
-                     yh(i,2) = me%h*savf(i)
+               elseif ( me%dat%nq==1 ) then
+                  me%dat%eta = max(etamin,me%dat%hmin/abs(me%dat%h))
+                  me%dat%h = me%dat%h*me%dat%eta
+                  me%dat%hscal = me%dat%h
+                  me%dat%tau(1) = me%dat%h
+                  call me%f(me%dat%n,me%dat%tn,y(1:me%dat%n),savf(1:me%dat%n))
+                  me%dat%nfe = me%dat%nfe + 1
+                  do i = 1 , me%dat%n
+                     yh(i,2) = me%dat%h*savf(i)
                   enddo
-                  me%nqwait = 10
+                  me%dat%nqwait = 10
                   goto 400
                else
-                  me%eta = max(etamin,me%hmin/abs(me%h))
+                  me%dat%eta = max(etamin,me%dat%hmin/abs(me%dat%h))
                   call me%dvjust(yh,ldyh,-1)
-                  me%l = me%nq
-                  me%nq = me%nq - 1
-                  me%nqwait = me%l
+                  me%dat%l = me%dat%nq
+                  me%dat%nq = me%dat%nq - 1
+                  me%dat%nqwait = me%dat%l
                   goto 300
                endif
             endif
@@ -2450,24 +2462,24 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 ! for use in a possible order increase on the next step.
 ! if etamax = 1 (a failure occurred this step), keep nqwait >= 2.
 !-----------------------------------------------------------------------
-            me%kflag = 0
-            me%nst = me%nst + 1
-            me%hu = me%h
-            me%nqu = me%nq
-            do iback = 1 , me%nq
-               i = me%l - iback
-               me%tau(i+1) = me%tau(i)
+            me%dat%kflag = 0
+            me%dat%nst = me%dat%nst + 1
+            me%dat%hu = me%dat%h
+            me%dat%nqu = me%dat%nq
+            do iback = 1 , me%dat%nq
+               i = me%dat%l - iback
+               me%dat%tau(i+1) = me%dat%tau(i)
             enddo
-            me%tau(1) = me%h
-            do j = 1 , me%l
-               call daxpy(me%n,me%el(j),acor,1,yh(1,j),1)
+            me%dat%tau(1) = me%dat%h
+            do j = 1 , me%dat%l
+               call daxpy(me%dat%n,me%dat%el(j),acor,1,yh(1,j),1)
             enddo
-            me%nqwait = me%nqwait - 1
-            if ( (me%l/=me%lmax) .and. (me%nqwait==1) ) then
-               call dcopy(me%n,acor,1,yh(1,me%lmax),1)
-               me%conp = me%tq(5)
+            me%dat%nqwait = me%dat%nqwait - 1
+            if ( (me%dat%l/=me%dat%lmax) .and. (me%dat%nqwait==1) ) then
+               call dcopy(me%dat%n,acor,1,yh(1,me%dat%lmax),1)
+               me%dat%conp = me%dat%tq(5)
             endif
-            if ( me%etamax/=one ) then
+            if ( me%dat%etamax/=one ) then
 !-----------------------------------------------------------------------
 ! if nqwait = 0, an increase or decrease in order by one is considered.
 ! factors etaq, etaqm1, etaqp1 are computed by which h could
@@ -2479,61 +2491,61 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 ! then nqwait is set to 2 (reconsider it after 2 steps).
 !-----------------------------------------------------------------------
 ! compute ratio of new h to current h at the current order. ------------
-               flotl = real(me%l,wp)
+               flotl = real(me%dat%l,wp)
                me%etaq = one/((bias2*dsm)**(one/flotl)+addon)
-               if ( me%nqwait==0 ) then
-                  me%nqwait = 2
+               if ( me%dat%nqwait==0 ) then
+                  me%dat%nqwait = 2
                   me%etaqm1 = zero
-                  if ( me%nq/=1 ) then
+                  if ( me%dat%nq/=1 ) then
 ! compute ratio of new h to current h at the current order less one. ---
-                     ddn = dvnorm(me%n,yh(1,me%l),ewt)/me%tq(1)
+                     ddn = dvnorm(me%dat%n,yh(1,me%dat%l),ewt)/me%dat%tq(1)
                      me%etaqm1 = one/((bias1*ddn)**(one/(flotl-one))+addon)
                   endif
                   etaqp1 = zero
-                  if ( me%l/=me%lmax ) then
+                  if ( me%dat%l/=me%dat%lmax ) then
 ! compute ratio of new h to current h at current order plus one. -------
-                     cnquot = (me%tq(5)/me%conp)*(me%h/me%tau(2))**me%l
-                     do i = 1 , me%n
-                        savf(i) = acor(i) - cnquot*yh(i,me%lmax)
+                     cnquot = (me%dat%tq(5)/me%dat%conp)*(me%dat%h/me%dat%tau(2))**me%dat%l
+                     do i = 1 , me%dat%n
+                        savf(i) = acor(i) - cnquot*yh(i,me%dat%lmax)
                      enddo
-                     dup = dvnorm(me%n,savf,ewt)/me%tq(3)
+                     dup = dvnorm(me%dat%n,savf,ewt)/me%dat%tq(3)
                      etaqp1 = one/((bias3*dup)**(one/(flotl+one))+addon)
                   endif
                   if ( me%etaq<etaqp1 ) then
                      if ( etaqp1<=me%etaqm1 ) goto 420
-                     me%eta = etaqp1
-                     me%newq = me%nq + 1
-                     call dcopy(me%n,acor,1,yh(1,me%lmax),1)
+                     me%dat%eta = etaqp1
+                     me%dat%newq = me%dat%nq + 1
+                     call dcopy(me%dat%n,acor,1,yh(1,me%dat%lmax),1)
                      goto 450
                   elseif ( me%etaq<me%etaqm1 ) then
                      goto 420
                   endif
                endif
-               me%eta = me%etaq
-               me%newq = me%nq
+               me%dat%eta = me%etaq
+               me%dat%newq = me%dat%nq
                goto 450
             else
-               if ( me%nqwait<2 ) me%nqwait = 2
-               me%newq = me%nq
-               me%newh = 0
-               me%eta = one
-               me%hnew = me%h
+               if ( me%dat%nqwait<2 ) me%dat%nqwait = 2
+               me%dat%newq = me%dat%nq
+               me%dat%newh = 0
+               me%dat%eta = one
+               me%dat%hnew = me%dat%h
                goto 500
             endif
- 420        me%eta = me%etaqm1
-            me%newq = me%nq - 1
+ 420        me%dat%eta = me%etaqm1
+            me%dat%newq = me%dat%nq - 1
          endif
 ! test tentative new h against thresh, etamax, and hmxi, then exit. ----
- 450     if ( me%eta<thresh .or. me%etamax==one ) then
-            me%newq = me%nq
-            me%newh = 0
-            me%eta = one
-            me%hnew = me%h
+ 450     if ( me%dat%eta<thresh .or. me%dat%etamax==one ) then
+            me%dat%newq = me%dat%nq
+            me%dat%newh = 0
+            me%dat%eta = one
+            me%dat%hnew = me%dat%h
          else
-            me%eta = min(me%eta,me%etamax)
-            me%eta = me%eta/max(one,abs(me%h)*me%hmxi*me%eta)
-            me%newh = 1
-            me%hnew = me%h*me%eta
+            me%dat%eta = min(me%dat%eta,me%dat%etamax)
+            me%dat%eta = me%dat%eta/max(one,abs(me%dat%h)*me%dat%hmxi*me%dat%eta)
+            me%dat%newh = 1
+            me%dat%hnew = me%dat%h*me%dat%eta
          endif
       else
 !-----------------------------------------------------------------------
@@ -2543,38 +2555,38 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 ! otherwise, an error exit is taken.
 !-----------------------------------------------------------------------
          ncf = ncf + 1
-         me%ncfn = me%ncfn + 1
-         me%etamax = one
-         me%tn = told
-         i1 = me%nqnyh + 1
-         do jb = 1 , me%nq
+         me%dat%ncfn = me%dat%ncfn + 1
+         me%dat%etamax = one
+         me%dat%tn = told
+         i1 = me%dat%nqnyh + 1
+         do jb = 1 , me%dat%nq
             i1 = i1 - ldyh
-            do i = i1 , me%nqnyh
+            do i = i1 , me%dat%nqnyh
                yh1(i) = yh1(i) - yh1(i+ldyh)
             enddo
          enddo
          if ( nflag<-1 ) then
-            if ( nflag==-2 ) me%kflag = -3
-            if ( nflag==-3 ) me%kflag = -4
+            if ( nflag==-2 ) me%dat%kflag = -3
+            if ( nflag==-3 ) me%dat%kflag = -4
             goto 600
-         elseif ( abs(me%h)<=me%hmin*onepsm ) then
-            me%kflag = -2
+         elseif ( abs(me%dat%h)<=me%dat%hmin*onepsm ) then
+            me%dat%kflag = -2
             goto 600
          elseif ( ncf==mxncf ) then
-            me%kflag = -2
+            me%dat%kflag = -2
             goto 600
          else
-            me%eta = etacf
-            me%eta = max(me%eta,me%hmin/abs(me%h))
+            me%dat%eta = etacf
+            me%dat%eta = max(me%dat%eta,me%dat%hmin/abs(me%dat%h))
             nflag = -1
             goto 300
          endif
       endif
- 500  me%etamax = etamx3
-      if ( me%nst<=10 ) me%etamax = etamx2
-      r = one/me%tq(2)
-      call dscal(me%n,r,acor,1)
- 600  me%jstart = 1
+ 500  me%dat%etamax = etamx3
+      if ( me%dat%nst<=10 ) me%dat%etamax = etamx2
+      r = one/me%dat%tq(2)
+      call dscal(me%dat%n,r,acor,1)
+ 600  me%dat%jstart = 1
 
       end subroutine dvstep
 
@@ -2647,92 +2659,92 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
       real(wp),parameter :: six = 6.0_wp
       real(wp),parameter :: two = 2.0_wp
 
-      flotl = real(me%l,wp)
-      nqm1 = me%nq - 1
-      nqm2 = me%nq - 2
-      if ( me%meth==2 ) then
+      flotl = real(me%dat%l,wp)
+      nqm1 = me%dat%nq - 1
+      nqm2 = me%dat%nq - 2
+      if ( me%dat%meth==2 ) then
 !
 ! set coefficients for bdf methods. ------------------------------------
-         do i = 3 , me%l
-            me%el(i) = zero
+         do i = 3 , me%dat%l
+            me%dat%el(i) = zero
          enddo
-         me%el(1) = one
-         me%el(2) = one
+         me%dat%el(1) = one
+         me%dat%el(2) = one
          alph0 = -one
          ahatn0 = -one
-         hsum = me%h
+         hsum = me%dat%h
          rxi = one
          rxis = one
-         if ( me%nq/=1 ) then
+         if ( me%dat%nq/=1 ) then
             do j = 1 , nqm2
 ! in el, construct coefficients of (1+x/xi(1))*...*(1+x/xi(j+1)). ------
-               hsum = hsum + me%tau(j)
-               rxi = me%h/hsum
+               hsum = hsum + me%dat%tau(j)
+               rxi = me%dat%h/hsum
                jp1 = j + 1
                alph0 = alph0 - one/real(jp1,wp)
                do iback = 1 , jp1
                   i = (j+3) - iback
-                  me%el(i) = me%el(i) + me%el(i-1)*rxi
+                  me%dat%el(i) = me%dat%el(i) + me%dat%el(i-1)*rxi
                enddo
             enddo
-            alph0 = alph0 - one/real(me%nq,wp)
-            rxis = -me%el(2) - alph0
-            hsum = hsum + me%tau(nqm1)
-            rxi = me%h/hsum
-            ahatn0 = -me%el(2) - rxi
-            do iback = 1 , me%nq
-               i = (me%nq+2) - iback
-               me%el(i) = me%el(i) + me%el(i-1)*rxis
+            alph0 = alph0 - one/real(me%dat%nq,wp)
+            rxis = -me%dat%el(2) - alph0
+            hsum = hsum + me%dat%tau(nqm1)
+            rxi = me%dat%h/hsum
+            ahatn0 = -me%dat%el(2) - rxi
+            do iback = 1 , me%dat%nq
+               i = (me%dat%nq+2) - iback
+               me%dat%el(i) = me%dat%el(i) + me%dat%el(i-1)*rxis
             enddo
          endif
          t1 = one - ahatn0 + alph0
-         t2 = one + real(me%nq,wp)*t1
-         me%tq(2) = abs(alph0*t2/t1)
-         me%tq(5) = abs(t2/(me%el(me%l)*rxi/rxis))
-         if ( me%nqwait==1 ) then
-            cnqm1 = rxis/me%el(me%l)
-            t3 = alph0 + one/real(me%nq,wp)
+         t2 = one + real(me%dat%nq,wp)*t1
+         me%dat%tq(2) = abs(alph0*t2/t1)
+         me%dat%tq(5) = abs(t2/(me%dat%el(me%dat%l)*rxi/rxis))
+         if ( me%dat%nqwait==1 ) then
+            cnqm1 = rxis/me%dat%el(me%dat%l)
+            t3 = alph0 + one/real(me%dat%nq,wp)
             t4 = ahatn0 + rxi
             elp = t3/(one-t4+t3)
-            me%tq(1) = abs(elp/cnqm1)
-            hsum = hsum + me%tau(me%nq)
-            rxi = me%h/hsum
-            t5 = alph0 - one/real(me%nq+1,wp)
+            me%dat%tq(1) = abs(elp/cnqm1)
+            hsum = hsum + me%dat%tau(me%dat%nq)
+            rxi = me%dat%h/hsum
+            t5 = alph0 - one/real(me%dat%nq+1,wp)
             t6 = ahatn0 - rxi
             elp = t2/(one-t6+t5)
-            me%tq(3) = abs(elp*rxi*(flotl+one)*t5)
+            me%dat%tq(3) = abs(elp*rxi*(flotl+one)*t5)
          endif
 !
 ! set coefficients for adams methods. ----------------------------------
-      elseif ( me%nq/=1 ) then
-         hsum = me%h
+      elseif ( me%dat%nq/=1 ) then
+         hsum = me%dat%h
          em(1) = one
          flotnq = flotl - one
-         do i = 2 , me%l
+         do i = 2 , me%dat%l
             em(i) = zero
          enddo
          do j = 1 , nqm1
-            if ( (j==nqm1) .and. (me%nqwait==1) ) then
+            if ( (j==nqm1) .and. (me%dat%nqwait==1) ) then
                s = one
                csum = zero
                do i = 1 , nqm1
                   csum = csum + s*em(i)/real(i+1,wp)
                   s = -s
                enddo
-               me%tq(1) = em(nqm1)/(flotnq*csum)
+               me%dat%tq(1) = em(nqm1)/(flotnq*csum)
             endif
-            rxi = me%h/hsum
+            rxi = me%dat%h/hsum
             do iback = 1 , j
                i = (j+2) - iback
                em(i) = em(i) + em(i-1)*rxi
             enddo
-            hsum = hsum + me%tau(j)
+            hsum = hsum + me%dat%tau(j)
          enddo
 ! compute integral from -1 to 0 of polynomial and of x times it. -------
          s = one
          em0 = zero
          csum = zero
-         do i = 1 , me%nq
+         do i = 1 , me%dat%nq
             floti = real(i,wp)
             em0 = em0 + s*em(i)/floti
             csum = csum + s*em(i)/(floti+one)
@@ -2740,38 +2752,38 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
          enddo
 ! in el, form coefficients of normalized integrated polynomial. --------
          s = one/em0
-         me%el(1) = one
-         do i = 1 , me%nq
-            me%el(i+1) = s*em(i)/real(i,wp)
+         me%dat%el(1) = one
+         do i = 1 , me%dat%nq
+            me%dat%el(i+1) = s*em(i)/real(i,wp)
          enddo
-         xi = hsum/me%h
-         me%tq(2) = xi*em0/csum
-         me%tq(5) = xi/me%el(me%l)
-         if ( me%nqwait==1 ) then
+         xi = hsum/me%dat%h
+         me%dat%tq(2) = xi*em0/csum
+         me%dat%tq(5) = xi/me%dat%el(me%dat%l)
+         if ( me%dat%nqwait==1 ) then
 ! for higher order control constant, multiply polynomial by 1+x/xi(q). -
             rxi = one/xi
-            do iback = 1 , me%nq
-               i = (me%l+1) - iback
+            do iback = 1 , me%dat%nq
+               i = (me%dat%l+1) - iback
                em(i) = em(i) + em(i-1)*rxi
             enddo
 ! compute integral of polynomial. --------------------------------------
             s = one
             csum = zero
-            do i = 1 , me%l
+            do i = 1 , me%dat%l
                csum = csum + s*em(i)/real(i+1,wp)
                s = -s
             enddo
-            me%tq(3) = flotl*em0/csum
+            me%dat%tq(3) = flotl*em0/csum
          endif
       else
-         me%el(1) = one
-         me%el(2) = one
-         me%tq(1) = one
-         me%tq(2) = two
-         me%tq(3) = six*me%tq(2)
-         me%tq(5) = one
+         me%dat%el(1) = one
+         me%dat%el(2) = one
+         me%dat%tq(1) = one
+         me%dat%tq(2) = two
+         me%dat%tq(3) = six*me%dat%tq(2)
+         me%dat%tq(5) = one
       endif
-      me%tq(4) = cortes*me%tq(2)
+      me%dat%tq(4) = cortes*me%dat%tq(2)
 
       end subroutine dvset
 
@@ -2814,73 +2826,73 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 
       real(wp),parameter :: one = 1.0_wp
 
-      if ( (me%nq==2) .and. (iord/=1) ) return
-      nqm1 = me%nq - 1
-      nqm2 = me%nq - 2
-      if ( me%meth==2 ) then
+      if ( (me%dat%nq==2) .and. (iord/=1) ) return
+      nqm1 = me%dat%nq - 1
+      nqm2 = me%dat%nq - 2
+      if ( me%dat%meth==2 ) then
 !-----------------------------------------------------------------------
 ! stiff option...
 ! check to see if the order is being increased or decreased.
 !-----------------------------------------------------------------------
          if ( iord==1 ) then
 ! order increase. ------------------------------------------------------
-            do j = 1 , me%lmax
-               me%el(j) = zero
+            do j = 1 , me%dat%lmax
+               me%dat%el(j) = zero
             enddo
-            me%el(3) = one
+            me%dat%el(3) = one
             alph0 = -one
             alph1 = one
             prod = one
             xiold = one
-            hsum = me%hscal
-            if ( me%nq/=1 ) then
+            hsum = me%dat%hscal
+            if ( me%dat%nq/=1 ) then
                do j = 1 , nqm1
 ! construct coefficients of x*x*(x+xi(1))*...*(x+xi(j)). ---------------
                   jp1 = j + 1
-                  hsum = hsum + me%tau(jp1)
-                  xi = hsum/me%hscal
+                  hsum = hsum + me%dat%tau(jp1)
+                  xi = hsum/me%dat%hscal
                   prod = prod*xi
                   alph0 = alph0 - one/real(jp1,wp)
                   alph1 = alph1 + one/xi
                   do iback = 1 , jp1
                      i = (j+4) - iback
-                     me%el(i) = me%el(i)*xiold + me%el(i-1)
+                     me%dat%el(i) = me%dat%el(i)*xiold + me%dat%el(i-1)
                   enddo
                   xiold = xi
                enddo
             endif
             t1 = (-alph0-alph1)/prod
 ! load column l + 1 in yh array. ---------------------------------------
-            lp1 = me%l + 1
-            do i = 1 , me%n
-               yh(i,lp1) = t1*yh(i,me%lmax)
+            lp1 = me%dat%l + 1
+            do i = 1 , me%dat%n
+               yh(i,lp1) = t1*yh(i,me%dat%lmax)
             enddo
 ! add correction terms to yh array. ------------------------------------
-            nqp1 = me%nq + 1
+            nqp1 = me%dat%nq + 1
             do j = 3 , nqp1
-               call daxpy(me%n,me%el(j),yh(1,lp1),1,yh(1,j),1)
+               call daxpy(me%dat%n,me%dat%el(j),yh(1,lp1),1,yh(1,j),1)
             enddo
          else
 ! order decrease. ------------------------------------------------------
-            do j = 1 , me%lmax
-               me%el(j) = zero
+            do j = 1 , me%dat%lmax
+               me%dat%el(j) = zero
             enddo
-            me%el(3) = one
+            me%dat%el(3) = one
             hsum = zero
             do j = 1 , nqm2
 ! construct coefficients of x*x*(x+xi(1))*...*(x+xi(j)). ---------------
-               hsum = hsum + me%tau(j)
-               xi = hsum/me%hscal
+               hsum = hsum + me%dat%tau(j)
+               xi = hsum/me%dat%hscal
                jp1 = j + 1
                do iback = 1 , jp1
                   i = (j+4) - iback
-                  me%el(i) = me%el(i)*xi + me%el(i-1)
+                  me%dat%el(i) = me%dat%el(i)*xi + me%dat%el(i-1)
                enddo
             enddo
 ! subtract correction terms from yh array. -----------------------------
-            do j = 3 , me%nq
-               do i = 1 , me%n
-                  yh(i,j) = yh(i,j) - yh(i,me%l)*me%el(j)
+            do j = 3 , me%dat%nq
+               do i = 1 , me%dat%n
+                  yh(i,j) = yh(i,j) - yh(i,me%dat%l)*me%dat%el(j)
                enddo
             enddo
             return
@@ -2892,36 +2904,36 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
       elseif ( iord==1 ) then
 ! order increase. ------------------------------------------------------
 ! zero out next column in yh array. ------------------------------------
-         lp1 = me%l + 1
-         do i = 1 , me%n
+         lp1 = me%dat%l + 1
+         do i = 1 , me%dat%n
             yh(i,lp1) = zero
          enddo
          return
       else
 ! order decrease. ------------------------------------------------------
-         do j = 1 , me%lmax
-            me%el(j) = zero
+         do j = 1 , me%dat%lmax
+            me%dat%el(j) = zero
          enddo
-         me%el(2) = one
+         me%dat%el(2) = one
          hsum = zero
          do j = 1 , nqm2
 ! construct coefficients of x*(x+xi(1))*...*(x+xi(j)). -----------------
-            hsum = hsum + me%tau(j)
-            xi = hsum/me%hscal
+            hsum = hsum + me%dat%tau(j)
+            xi = hsum/me%dat%hscal
             jp1 = j + 1
             do iback = 1 , jp1
                i = (j+3) - iback
-               me%el(i) = me%el(i)*xi + me%el(i-1)
+               me%dat%el(i) = me%dat%el(i)*xi + me%dat%el(i-1)
             enddo
          enddo
 ! construct coefficients of integrated polynomial. ---------------------
          do j = 2 , nqm1
-            me%el(j+1) = real(me%nq,wp)*me%el(j)/real(j,wp)
+            me%dat%el(j+1) = real(me%dat%nq,wp)*me%dat%el(j)/real(j,wp)
          enddo
 ! subtract correction terms from yh array. -----------------------------
-         do j = 3 , me%nq
-            do i = 1 , me%n
-               yh(i,j) = yh(i,j) - yh(i,me%l)*me%el(j)
+         do j = 3 , me%dat%nq
+            do i = 1 , me%dat%n
+               yh(i,j) = yh(i,j) - yh(i,me%dat%l)*me%dat%el(j)
             enddo
          enddo
          return
@@ -2940,13 +2952,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 ! call sequence input -- y, yh, ldyh, savf, ewt, acor, iwm, wm,
 !                        f, jac, nflag
 ! call sequence output -- yh, acor, wm, iwm, nflag
-! common block variables accessed:
-!     /dvod01/ acnrm, crate, drc, h, rc, rl1, tq(5), tn, icf,
-!                jcur, meth, miter, n, nslp
-!     /dvod02/ hu, ncfn, netf, nfe, nje, nlu, nni, nqu, nst
 !
-! subroutines called by dvnlsd: f, daxpy, dcopy, dscal, dvjac, dvsol
-! function routines called by dvnlsd: dvnorm
 !-----------------------------------------------------------------------
 !
 ! communication with dvnlsd is done with the following variables. (for
@@ -2993,12 +2999,17 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
       implicit none
 
       class(dvode_t),intent(inout) :: me
-      real(wp) :: y(*) , yh(ldyh,*) , vsav(*) , savf(*) , ewt(*) , acor(*) , wm(*)
-      integer :: ldyh , iwm(*) , nflag
+      real(wp) :: y(*)
+      real(wp) :: yh(ldyh,*)
+      real(wp) :: vsav(*)
+      real(wp) :: savf(*)
+      real(wp) :: ewt(*)
+      real(wp) :: acor(*)
+      real(wp) :: wm(*)
+      integer :: ldyh
+      integer :: iwm(*)
+      integer :: nflag
 
-!
-! type declarations for local variables --------------------------------
-!
       real(wp) :: cscale , dcon , del , delp
       integer :: i , ierpj , iersl , m
 
@@ -3010,142 +3021,141 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
       real(wp),parameter :: one = 1.0_wp
       real(wp),parameter :: two = 2.0_wp
 
-!-----------------------------------------------------------------------
-! on the first step, on a change of method order, or after a
-! nonlinear convergence failure with nflag = -2, set ipup = miter
-! to force a jacobian update when miter /= 0.
-!-----------------------------------------------------------------------
-      if ( me%jstart==0 ) me%nslp = 0
-      if ( nflag==0 ) me%icf = 0
-      if ( nflag==-2 ) me%ipup = me%miter
-      if ( (me%jstart==0) .or. (me%jstart==-1) ) me%ipup = me%miter
+      !-----------------------------------------------------------------------
+      ! on the first step, on a change of method order, or after a
+      ! nonlinear convergence failure with nflag = -2, set ipup = miter
+      ! to force a jacobian update when miter /= 0.
+      !-----------------------------------------------------------------------
+      if ( me%dat%jstart==0 ) me%dat%nslp = 0
+      if ( nflag==0 ) me%dat%icf = 0
+      if ( nflag==-2 ) me%dat%ipup = me%dat%miter
+      if ( (me%dat%jstart==0) .or. (me%dat%jstart==-1) ) me%dat%ipup = me%dat%miter
       ! if this is functional iteration, set crate == 1 and drop to 220
-      if ( me%miter==0 ) then
-         me%crate = one
-         goto 100
-      endif
-!-----------------------------------------------------------------------
-! rc is the ratio of new to old values of the coefficient h/el(2)=h/l1.
-! when rc differs from 1 by more than ccmax, ipup is set to miter
-! to force dvjac to be called, if a jacobian is involved.
-! in any case, dvjac is called at least every msbp steps.
-!-----------------------------------------------------------------------
-      me%drc = abs(me%rc-one)
-      if ( me%drc>ccmax .or. me%nst>=me%nslp+msbp ) me%ipup = me%miter
-!-----------------------------------------------------------------------
-! up to maxcor corrector iterations are taken.  a convergence test is
-! made on the r.m.s. norm of each correction, weighted by the error
-! weight vector ewt.  the sum of the corrections is accumulated in the
-! vector acor(i).  the yh array is not altered in the corrector loop.
-!-----------------------------------------------------------------------
+      if ( me%dat%miter==0 ) then
+         me%dat%crate = one
+      else
+         !-----------------------------------------------------------------------
+         ! rc is the ratio of new to old values of the coefficient h/el(2)=h/l1.
+         ! when rc differs from 1 by more than ccmax, ipup is set to miter
+         ! to force dvjac to be called, if a jacobian is involved.
+         ! in any case, dvjac is called at least every msbp steps.
+         !-----------------------------------------------------------------------
+         me%dat%drc = abs(me%dat%rc-one)
+         if ( me%dat%drc>ccmax .or. me%dat%nst>=me%dat%nslp+msbp ) me%dat%ipup = me%dat%miter
+      end if
+      !-----------------------------------------------------------------------
+      ! up to maxcor corrector iterations are taken.  a convergence test is
+      ! made on the r.m.s. norm of each correction, weighted by the error
+      ! weight vector ewt.  the sum of the corrections is accumulated in the
+      ! vector acor(i).  the yh array is not altered in the corrector loop.
+      !-----------------------------------------------------------------------
  100  m = 0
       delp = zero
-      call dcopy(me%n,yh(1,1),1,y,1)
-      call me%f(me%n,me%tn,y(1:me%n),savf(1:me%n))
-      me%nfe = me%nfe + 1
-      if ( me%ipup>0 ) then
-!-----------------------------------------------------------------------
-! if indicated, the matrix p = i - h*rl1*j is reevaluated and
-! preprocessed before starting the corrector iteration.  ipup is set
-! to 0 as an indicator that this has been done.
-!-----------------------------------------------------------------------
+      call dcopy(me%dat%n,yh(1,1),1,y,1)
+      call me%f(me%dat%n,me%dat%tn,y(1:me%dat%n),savf(1:me%dat%n))
+      me%dat%nfe = me%dat%nfe + 1
+      if ( me%dat%ipup>0 ) then
+         !-----------------------------------------------------------------------
+         ! if indicated, the matrix p = i - h*rl1*j is reevaluated and
+         ! preprocessed before starting the corrector iteration.  ipup is set
+         ! to 0 as an indicator that this has been done.
+         !-----------------------------------------------------------------------
          call me%dvjac(y,yh,ldyh,ewt,acor,savf,wm,iwm,ierpj)
-         me%ipup = 0
-         me%rc = one
-         me%drc = zero
-         me%crate = one
-         me%nslp = me%nst
-! if matrix is singular, take error return to force cut in step size. --
+         me%dat%ipup = 0
+         me%dat%rc = one
+         me%dat%drc = zero
+         me%dat%crate = one
+         me%dat%nslp = me%dat%nst
+         ! if matrix is singular, take error return to force cut in step size. --
          if ( ierpj/=0 ) goto 400
       endif
-      do i = 1 , me%n
+      do i = 1 , me%dat%n
          acor(i) = zero
       enddo
-! this is a looping point for the corrector iteration. -----------------
- 200  if ( me%miter/=0 ) then
-!-----------------------------------------------------------------------
-! in the case of the chord method, compute the corrector error,
-! and solve the linear system with that as right-hand side and
-! p as coefficient matrix.  the correction is scaled by the factor
-! 2/(1+rc) to account for changes in h*rl1 since the last dvjac call.
-!-----------------------------------------------------------------------
-         do i = 1 , me%n
-            y(i) = (me%rl1*me%h)*savf(i) - (me%rl1*yh(i,2)+acor(i))
+      ! this is a looping point for the corrector iteration. -----------------
+ 200  if ( me%dat%miter/=0 ) then
+         !-----------------------------------------------------------------------
+         ! in the case of the chord method, compute the corrector error,
+         ! and solve the linear system with that as right-hand side and
+         ! p as coefficient matrix.  the correction is scaled by the factor
+         ! 2/(1+rc) to account for changes in h*rl1 since the last dvjac call.
+         !-----------------------------------------------------------------------
+         do i = 1 , me%dat%n
+            y(i) = (me%dat%rl1*me%dat%h)*savf(i) - (me%dat%rl1*yh(i,2)+acor(i))
          enddo
          call me%dvsol(wm,iwm,y,iersl)
-         me%nni = me%nni + 1
+         me%dat%nni = me%dat%nni + 1
          if ( iersl>0 ) goto 300
-         if ( me%meth==2 .and. me%rc/=one ) then
-            cscale = two/(one+me%rc)
-            call dscal(me%n,cscale,y,1)
+         if ( me%dat%meth==2 .and. me%dat%rc/=one ) then
+            cscale = two/(one+me%dat%rc)
+            call dscal(me%dat%n,cscale,y,1)
          endif
-         del = dvnorm(me%n,y,ewt)
-         call daxpy(me%n,one,y,1,acor,1)
-         do i = 1 , me%n
+         del = dvnorm(me%dat%n,y,ewt)
+         call daxpy(me%dat%n,one,y,1,acor,1)
+         do i = 1 , me%dat%n
             y(i) = yh(i,1) + acor(i)
          enddo
       else
-!-----------------------------------------------------------------------
-! in the case of functional iteration, update y directly from
-! the result of the last function evaluation.
-!-----------------------------------------------------------------------
-         do i = 1 , me%n
-            savf(i) = me%rl1*(me%h*savf(i)-yh(i,2))
+         !-----------------------------------------------------------------------
+         ! in the case of functional iteration, update y directly from
+         ! the result of the last function evaluation.
+         !-----------------------------------------------------------------------
+         do i = 1 , me%dat%n
+            savf(i) = me%dat%rl1*(me%dat%h*savf(i)-yh(i,2))
          enddo
-         do i = 1 , me%n
+         do i = 1 , me%dat%n
             y(i) = savf(i) - acor(i)
          enddo
-         del = dvnorm(me%n,y,ewt)
-         do i = 1 , me%n
+         del = dvnorm(me%dat%n,y,ewt)
+         do i = 1 , me%dat%n
             y(i) = yh(i,1) + savf(i)
          enddo
-         call dcopy(me%n,savf,1,acor,1)
+         call dcopy(me%dat%n,savf,1,acor,1)
       endif
-!-----------------------------------------------------------------------
-! test for convergence.  if m > 0, an estimate of the convergence
-! rate constant is stored in crate, and this is used in the test.
-!-----------------------------------------------------------------------
-      if ( m/=0 ) me%crate = max(crdown*me%crate,del/delp)
-      dcon = del*min(one,me%crate)/me%tq(4)
+      !-----------------------------------------------------------------------
+      ! test for convergence.  if m > 0, an estimate of the convergence
+      ! rate constant is stored in crate, and this is used in the test.
+      !-----------------------------------------------------------------------
+      if ( m/=0 ) me%dat%crate = max(crdown*me%dat%crate,del/delp)
+      dcon = del*min(one,me%dat%crate)/me%dat%tq(4)
       if ( dcon<=one ) then
-!
-! return for successful step. ------------------------------------------
+         ! return for successful step. ------------------------------------------
          nflag = 0
-         me%jcur = 0
-         me%icf = 0
-         if ( m==0 ) me%acnrm = del
-         if ( m>0 ) me%acnrm = dvnorm(me%n,acor,ewt)
+         me%dat%jcur = 0
+         me%dat%icf = 0
+         if ( m==0 ) me%dat%acnrm = del
+         if ( m>0 ) me%dat%acnrm = dvnorm(me%dat%n,acor,ewt)
          return
       else
          m = m + 1
          if ( m/=maxcor ) then
             if ( m<2 .or. del<=rdiv*delp ) then
                delp = del
-               call me%f(me%n,me%tn,y(1:me%n),savf(1:me%n))
-               me%nfe = me%nfe + 1
+               call me%f(me%dat%n,me%dat%tn,y(1:me%dat%n),savf(1:me%dat%n))
+               me%dat%nfe = me%dat%nfe + 1
                goto 200
             endif
          endif
       endif
-!
- 300  if ( me%miter/=0 .and. me%jcur/=1 ) then
-         me%icf = 1
-         me%ipup = me%miter
+
+ 300  if ( me%dat%miter/=0 .and. me%dat%jcur/=1 ) then
+         me%dat%icf = 1
+         me%dat%ipup = me%dat%miter
          goto 100
       endif
-!
+
  400  nflag = -1
-      me%icf = 2
-      me%ipup = me%miter
-      return
+      me%dat%icf = 2
+      me%dat%ipup = me%dat%miter
 
    end subroutine dvnlsd
 
 !*****************************************************************************************
 !>
-!  dvjac is called by dvnlsd to compute and process the matrix
-!  p = i - h*rl1*j , where j is an approximation to the jacobian.
-!  here j is computed by the user-supplied routine jac if
+!  dvjac is called by [[dvnlsd]] to compute and process the matrix
+!  `p = i - h*rl1*j` , where j is an approximation to the jacobian.
+!
+!  here j is computed by the user-supplied routine `jac` if
 !  miter = 1 or 4, or by finite differencing if miter = 2, 3, or 5.
 !  if miter = 3, a diagonal approximation to j is used.
 !  if jsv = -1, j is computed from scratch in all cases.
@@ -3154,63 +3164,35 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 !  j is stored in wm and replaced by p.  if miter /= 3, p is then
 !  subjected to lu decomposition in preparation for later solution
 !  of linear systems with p as coefficient matrix. this is done
-!  by dgefa if miter = 1 or 2, and by dgbfa if miter = 4 or 5.
-!
-!```
-! call sequence input -- y, yh, ldyh, ewt, ftem, savf, wm, iwm,
-!                        f, jac
-! call sequence output -- wm, iwm, ierpj
-! common block variables accessed:
-!     /dvod01/  ccmxj, drc, h, rl1, tn, uround, icf, jcur, locjs,
-!               miter, msbj, n, nslj
-!     /dvod02/  nfe, nst, nje, nlu
-!
-! subroutines called by dvjac: f, jac, dacopy, dcopy, dgbfa, dgefa,
-!                              dscal
-! function routines called by dvjac: dvnorm
-!-----------------------------------------------------------------------
-!
-! communication with dvjac is done with the following variables.  (for
-! more details, please see the comments in the driver subroutine.)
-! y          = vector containing predicted values on entry.
-! yh         = the nordsieck array, an ldyh by lmax array, input.
-! ldyh       = a constant >= n, the first dimension of yh, input.
-! ewt        = an error weight vector of length n.
-! savf       = array containing f evaluated at predicted y, input.
-! wm         = real work space for matrices.  in the output, it contains
-!              the inverse diagonal matrix if miter = 3 and the lu
-!              decomposition of p if miter is 1, 2 , 4, or 5.
-!              storage of matrix elements starts at wm(3).
-!              storage of the saved jacobian starts at wm(locjs).
-!              wm also contains the following matrix-related data:
-!              wm(1) = sqrt(uround), used in numerical jacobian step.
-!              wm(2) = h*rl1, saved for later use if miter = 3.
-! iwm        = integer work space containing pivot information,
-!              starting at iwm(31), if miter is 1, 2, 4, or 5.
-!              iwm also contains band parameters ml = iwm(1) and
-!              mu = iwm(2) if miter is 4 or 5.
-! f          = dummy name for the user supplied subroutine for f.
-! jac        = dummy name for the user supplied jacobian subroutine.
-! rl1        = 1/el(2) (input).
-! ierpj      = output error flag,  = 0 if no trouble, 1 if the p
-!              matrix is found to be singular.
-! jcur       = output flag to indicate whether the jacobian matrix
-!              (or approximation) is now current.
-!              jcur = 0 means j is not current.
-!              jcur = 1 means j is current.
-!```
+!  by [[dgefa]] if miter = 1 or 2, and by dgbfa if miter = 4 or 5.
 
       subroutine dvjac(me,y,yh,ldyh,ewt,ftem,savf,wm,iwm,ierpj)
 
       implicit none
 
       class(dvode_t),intent(inout) :: me
-      real(wp) :: y(*) , yh(ldyh,*) , ewt(*) , ftem(*) , savf(*) , wm(*)
-      integer :: ldyh , iwm(*) , ierpj
-!
-! type declarations for local variables --------------------------------
-!
-      real(wp) :: con , di , fac , hrl1 , r , r0 ,     &
+      real(wp),intent(inout) :: y(*) !! vector containing predicted values on entry.
+      integer,intent(in) :: ldyh !! a constant >= n, the first dimension of `yh`.
+      real(wp),intent(in) :: yh(ldyh,*) !! the nordsieck array, an `ldyh` by `lmax` array.
+      real(wp),intent(in) :: ewt(*) !! an error weight vector of length `n`.
+      real(wp),intent(in) :: ftem(*)
+      real(wp),intent(in) :: savf(*) !! array containing f evaluated at predicted y.
+      real(wp),intent(inout) :: wm(*) !! real work space for matrices.  in the output, it contains
+                                      !! the inverse diagonal matrix if miter = 3 and the lu
+                                      !! decomposition of p if miter is 1, 2 , 4, or 5.
+                                      !! storage of matrix elements starts at wm(3).
+                                      !! storage of the saved jacobian starts at wm(locjs).
+                                      !! wm also contains the following matrix-related data:
+                                      !! wm(1) = sqrt(uround), used in numerical jacobian step.
+                                      !! wm(2) = h*rl1, saved for later use if miter = 3.
+      integer,intent(inout) :: iwm(*) !! integer work space containing pivot information,
+                                      !! starting at iwm(31), if miter is 1, 2, 4, or 5.
+                                      !! iwm also contains band parameters ml = iwm(1) and
+                                      !! mu = iwm(2) if miter is 4 or 5.
+      integer,intent(out) :: ierpj !! output error flag,  = 0 if no trouble, 1 if the p
+                                   !! matrix is found to be singular.
+
+      real(wp) :: con , di , fac , hrl1 , r , r0 , &
                   srur , yi , yj , yjj
       integer :: i , i1 , i2 , ier , ii , j , j1 , jj , jok , lenp , mba , &
                  mband , meb1 , meband , ml , ml3 , mu , np1
@@ -3218,179 +3200,180 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
       real(wp),parameter :: one = 1.0_wp
       real(wp),parameter :: thou = 1000.0_wp
       real(wp),parameter :: pt1 = 0.1_wp
-!
+
       ierpj = 0
-      hrl1 = me%h*me%rl1
-! see whether j should be evaluated (jok = -1) or not (jok = 1). -------
-      jok = me%jsv
-      if ( me%jsv==1 ) then
-         if ( me%nst==0 .or. me%nst>me%nslj+me%msbj ) jok = -1
-         if ( me%icf==1 .and. me%drc<me%ccmxj ) jok = -1
-         if ( me%icf==2 ) jok = -1
+      hrl1 = me%dat%h*me%dat%rl1 ! rl1 = 1/el(2)
+      ! see whether j should be evaluated (jok = -1) or not (jok = 1). -------
+      jok = me%dat%jsv
+      if ( me%dat%jsv==1 ) then
+         if ( me%dat%nst==0 .or. me%dat%nst>me%dat%nslj+me%dat%msbj ) jok = -1
+         if ( me%dat%icf==1 .and. me%dat%drc<me%dat%ccmxj ) jok = -1
+         if ( me%dat%icf==2 ) jok = -1
       endif
-! end of setting jok. --------------------------------------------------
-!
-      if ( jok==-1 .and. me%miter==1 ) then
-! if jok = -1 and miter = 1, call me%jac to evaluate jacobian. ------------
-         me%nje = me%nje + 1
-         me%nslj = me%nst
-         me%jcur = 1
-         lenp = me%n*me%n
+      ! end of setting jok. --------------------------------------------------
+
+      if ( jok==-1 .and. me%dat%miter==1 ) then
+         ! if jok = -1 and miter = 1, call me%jac to evaluate jacobian. ------------
+         me%dat%nje = me%dat%nje + 1
+         me%dat%nslj = me%dat%nst
+         me%dat%jcur = 1
+         lenp = me%dat%n*me%dat%n
          do i = 1 , lenp
             wm(i+2) = zero
          enddo
-         call me%jac(me%n,me%tn,y(1:me%n),0,0,wm(3),me%n)
-         if ( me%jsv==1 ) call dcopy(lenp,wm(3),1,wm(me%locjs),1)
+         call me%jac(me%dat%n,me%dat%tn,y(1:me%dat%n),0,0,wm(3),me%dat%n)
+         if ( me%dat%jsv==1 ) call dcopy(lenp,wm(3),1,wm(me%dat%locjs),1)
       endif
-!
-      if ( jok==-1 .and. me%miter==2 ) then
-! if miter = 2, make n calls to f to approximate the jacobian. ---------
-         me%nje = me%nje + 1
-         me%nslj = me%nst
-         me%jcur = 1
-         fac = dvnorm(me%n,savf,ewt)
-         r0 = thou*abs(me%h)*me%uround*real(me%n,wp)*fac
+
+      if ( jok==-1 .and. me%dat%miter==2 ) then
+         ! if miter = 2, make n calls to f to approximate the jacobian. ---------
+         me%dat%nje = me%dat%nje + 1
+         me%dat%nslj = me%dat%nst
+         me%dat%jcur = 1
+         fac = dvnorm(me%dat%n,savf,ewt)
+         r0 = thou*abs(me%dat%h)*me%dat%uround*real(me%dat%n,wp)*fac
          if ( r0==zero ) r0 = one
          srur = wm(1)
          j1 = 2
-         do j = 1 , me%n
+         do j = 1 , me%dat%n
             yj = y(j)
             r = max(srur*abs(yj),r0/ewt(j))
             y(j) = y(j) + r
             fac = one/r
-            call me%f(me%n,me%tn,y(1:me%n),ftem(1:me%n))
-            do i = 1 , me%n
+            call me%f(me%dat%n,me%dat%tn,y(1:me%dat%n),ftem(1:me%dat%n))
+            do i = 1 , me%dat%n
                wm(i+j1) = (ftem(i)-savf(i))*fac
             enddo
             y(j) = yj
-            j1 = j1 + me%n
+            j1 = j1 + me%dat%n
          enddo
-         me%nfe = me%nfe + me%n
-         lenp = me%n*me%n
-         if ( me%jsv==1 ) call dcopy(lenp,wm(3),1,wm(me%locjs),1)
+         me%dat%nfe = me%dat%nfe + me%dat%n
+         lenp = me%dat%n*me%dat%n
+         if ( me%dat%jsv==1 ) call dcopy(lenp,wm(3),1,wm(me%dat%locjs),1)
       endif
-!
-      if ( jok==1 .and. (me%miter==1 .or. me%miter==2) ) then
-         me%jcur = 0
-         lenp = me%n*me%n
-         call dcopy(lenp,wm(me%locjs),1,wm(3),1)
+
+      if ( jok==1 .and. (me%dat%miter==1 .or. me%dat%miter==2) ) then
+         me%dat%jcur = 0
+         lenp = me%dat%n*me%dat%n
+         call dcopy(lenp,wm(me%dat%locjs),1,wm(3),1)
       endif
-!
-      if ( me%miter==1 .or. me%miter==2 ) then
-! multiply jacobian by scalar, add identity, and do lu decomposition. --
+
+      if ( me%dat%miter==1 .or. me%dat%miter==2 ) then
+         ! multiply jacobian by scalar, add identity, and do lu decomposition. --
          con = -hrl1
          call dscal(lenp,con,wm(3),1)
          j = 3
-         np1 = me%n + 1
-         do i = 1 , me%n
+         np1 = me%dat%n + 1
+         do i = 1 , me%dat%n
             wm(j) = wm(j) + one
             j = j + np1
          enddo
-         me%nlu = me%nlu + 1
-         call dgefa(wm(3),me%n,me%n,iwm(31),ier)
+         me%dat%nlu = me%dat%nlu + 1
+         call dgefa(wm(3),me%dat%n,me%dat%n,iwm(31),ier)
          if ( ier/=0 ) ierpj = 1
          return
       endif
-! end of code block for miter = 1 or 2. --------------------------------
-!
-      if ( me%miter==3 ) then
-! if miter = 3, construct a diagonal approximation to j and p. ---------
-         me%nje = me%nje + 1
-         me%jcur = 1
+      ! end of code block for miter = 1 or 2. --------------------------------
+
+      if ( me%dat%miter==3 ) then
+         ! if miter = 3, construct a diagonal approximation to j and p. ---------
+         me%dat%nje = me%dat%nje + 1
+         me%dat%jcur = 1
          wm(2) = hrl1
-         r = me%rl1*pt1
-         do i = 1 , me%n
-            y(i) = y(i) + r*(me%h*savf(i)-yh(i,2))
+         r = me%dat%rl1*pt1
+         do i = 1 , me%dat%n
+            y(i) = y(i) + r*(me%dat%h*savf(i)-yh(i,2))
          enddo
-         call me%f(me%n,me%tn,y(1:me%n),wm(3))
-         me%nfe = me%nfe + 1
-         do i = 1 , me%n
-            r0 = me%h*savf(i) - yh(i,2)
-            di = pt1*r0 - me%h*(wm(i+2)-savf(i))
+         call me%f(me%dat%n,me%dat%tn,y(1:me%dat%n),wm(3))
+         me%dat%nfe = me%dat%nfe + 1
+         do i = 1 , me%dat%n
+            r0 = me%dat%h*savf(i) - yh(i,2)
+            di = pt1*r0 - me%dat%h*(wm(i+2)-savf(i))
             wm(i+2) = one
-            if ( abs(r0)>=me%uround/ewt(i) ) then
-               if ( abs(di)==zero ) goto 50
+            if ( abs(r0)>=me%dat%uround/ewt(i) ) then
+               if ( abs(di)==zero ) then
+                  ierpj = 1
+                  return
+               end if
                wm(i+2) = pt1*r0/di
             endif
          enddo
          return
- 50      ierpj = 1
-         return
       endif
-! end of code block for miter = 3. -------------------------------------
-!
-! set constants for miter = 4 or 5. ------------------------------------
+      ! end of code block for miter = 3. -------------------------------------
+
+      ! set constants for miter = 4 or 5. ------------------------------------
       ml = iwm(1)
       mu = iwm(2)
       ml3 = ml + 3
       mband = ml + mu + 1
       meband = mband + ml
-      lenp = meband*me%n
-!
-      if ( jok==-1 .and. me%miter==4 ) then
-! if jok = -1 and miter = 4, call me%jac to evaluate jacobian. ------------
-         me%nje = me%nje + 1
-         me%nslj = me%nst
-         me%jcur = 1
+      lenp = meband*me%dat%n
+
+      if ( jok==-1 .and. me%dat%miter==4 ) then
+         ! if jok = -1 and miter = 4, call me%jac to evaluate jacobian. ------------
+         me%dat%nje = me%dat%nje + 1
+         me%dat%nslj = me%dat%nst
+         me%dat%jcur = 1
          do i = 1 , lenp
             wm(i+2) = zero
          enddo
-         call me%jac(me%n,me%tn,y(1:me%n),ml,mu,wm(ml3),meband)
-         if ( me%jsv==1 ) call dacopy(mband,me%n,wm(ml3),meband,wm(me%locjs),mband)
+         call me%jac(me%dat%n,me%dat%tn,y(1:me%dat%n),ml,mu,wm(ml3),meband)
+         if ( me%dat%jsv==1 ) call dacopy(mband,me%dat%n,wm(ml3),meband,wm(me%dat%locjs),mband)
       endif
-!
-      if ( jok==-1 .and. me%miter==5 ) then
-! if miter = 5, make ml+mu+1 calls to f to approximate the jacobian. ---
-         me%nje = me%nje + 1
-         me%nslj = me%nst
-         me%jcur = 1
-         mba = min(mband,me%n)
+
+      if ( jok==-1 .and. me%dat%miter==5 ) then
+         ! if miter = 5, make ml+mu+1 calls to f to approximate the jacobian. ---
+         me%dat%nje = me%dat%nje + 1
+         me%dat%nslj = me%dat%nst
+         me%dat%jcur = 1
+         mba = min(mband,me%dat%n)
          meb1 = meband - 1
          srur = wm(1)
-         fac = dvnorm(me%n,savf,ewt)
-         r0 = thou*abs(me%h)*me%uround*real(me%n,wp)*fac
+         fac = dvnorm(me%dat%n,savf,ewt)
+         r0 = thou*abs(me%dat%h)*me%dat%uround*real(me%dat%n,wp)*fac
          if ( r0==zero ) r0 = one
          do j = 1 , mba
-            do i = j , me%n , mband
+            do i = j , me%dat%n , mband
                yi = y(i)
                r = max(srur*abs(yi),r0/ewt(i))
                y(i) = y(i) + r
             enddo
-            call me%f(me%n,me%tn,y(1:me%n),ftem(1:me%n))
-            do jj = j , me%n , mband
+            call me%f(me%dat%n,me%dat%tn,y(1:me%dat%n),ftem(1:me%dat%n))
+            do jj = j , me%dat%n , mband
                y(jj) = yh(jj,1)
                yjj = y(jj)
                r = max(srur*abs(yjj),r0/ewt(jj))
                fac = one/r
                i1 = max(jj-mu,1)
-               i2 = min(jj+ml,me%n)
+               i2 = min(jj+ml,me%dat%n)
                ii = jj*meb1 - ml + 2
                do i = i1 , i2
                   wm(ii+i) = (ftem(i)-savf(i))*fac
                enddo
             enddo
          enddo
-         me%nfe = me%nfe + mba
-         if ( me%jsv==1 ) call dacopy(mband,me%n,wm(ml3),meband,wm(me%locjs),mband)
+         me%dat%nfe = me%dat%nfe + mba
+         if ( me%dat%jsv==1 ) call dacopy(mband,me%dat%n,wm(ml3),meband,wm(me%dat%locjs),mband)
       endif
-!
+
       if ( jok==1 ) then
-         me%jcur = 0
-         call dacopy(mband,me%n,wm(me%locjs),mband,wm(ml3),meband)
+         me%dat%jcur = 0
+         call dacopy(mband,me%dat%n,wm(me%dat%locjs),mband,wm(ml3),meband)
       endif
-!
-! multiply jacobian by scalar, add identity, and do lu decomposition.
+
+      ! multiply jacobian by scalar, add identity, and do lu decomposition.
       con = -hrl1
       call dscal(lenp,con,wm(3),1)
       ii = mband + 2
-      do i = 1 , me%n
+      do i = 1 , me%dat%n
          wm(ii) = wm(ii) + one
          ii = ii + meband
       enddo
-      me%nlu = me%nlu + 1
-      call dgbfa(wm(3),meband,me%n,ml,mu,iwm(31),ier)
+      me%dat%nlu = me%dat%nlu + 1
+      call dgbfa(wm(3),meband,me%dat%n,ml,mu,iwm(31),ier)
       if ( ier/=0 ) ierpj = 1
-! end of code block for miter = 4 or 5. --------------------------------
+      ! end of code block for miter = 4 or 5. --------------------------------
 
       end subroutine dvjac
 
@@ -3464,122 +3447,71 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
       implicit none
 
       class(dvode_t),intent(inout) :: me
-      real(wp) :: wm(*) , x(*)
-      integer :: iwm(*) , iersl
-!
-! type declarations for local variables --------------------------------
-!
-      integer i , meband , ml , mu
-      real(wp) di , hrl1 , phrl1 , r
+      real(wp) :: wm(*)
+      real(wp) :: x(*)
+      integer :: iwm(*)
+      integer :: iersl
+
+      integer :: i , meband , ml , mu
+      real(wp) :: di , hrl1 , phrl1 , r
 
       real(wp),parameter :: one = 1.0_wp
-!
+
       iersl = 0
-      select case (me%miter)
+      select case (me%dat%miter)
       case (3)
-!
          phrl1 = wm(2)
-         hrl1 = me%h*me%rl1
+         hrl1 = me%dat%h*me%dat%rl1
          wm(2) = hrl1
          if ( hrl1/=phrl1 ) then
             r = hrl1/phrl1
-            do i = 1 , me%n
+            do i = 1 , me%dat%n
                di = one - r*(one-one/wm(i+2))
-               if ( abs(di)==zero ) goto 100
+               if ( abs(di)==zero ) then
+                  iersl = 1
+                  return
+               end if
                wm(i+2) = one/di
             enddo
          endif
-!
-         do i = 1 , me%n
+         do i = 1 , me%dat%n
             x(i) = wm(i+2)*x(i)
          enddo
-         return
       case (4,5)
-!
          ml = iwm(1)
          mu = iwm(2)
          meband = 2*ml + mu + 1
-         call dgbsl(wm(3),meband,me%n,ml,mu,iwm(31),x,0)
-         return
+         call dgbsl(wm(3),meband,me%dat%n,ml,mu,iwm(31),x,0)
       case default
-         call dgesl(wm(3),me%n,me%n,iwm(31),x,0)
-         return
+         call dgesl(wm(3),me%dat%n,me%dat%n,iwm(31),x,0)
       end select
- 100  iersl = 1
-      return
 
    end subroutine dvsol
 
 !*****************************************************************************************
 !>
-!  this routine saves or restores (depending on job) the contents of the
-!  common blocks dvod01 and dvod02, which are used internally by dvode.
-!
-!```
-! call sequence input -- rsav, isav, job
-! call sequence output -- rsav, isav
-! common block variables accessed -- all of /dvod01/ and /dvod02/
-!
-! subroutines/functions called by dvsrco: none
-!-----------------------------------------------------------------------
-!
-! rsav = real array of length 49 or more.
-! isav = integer array of length 41 or more.
-! job  = flag indicating to save or restore the common blocks:
-!        job  = 1 if common is to be saved (written to rsav/isav).
-!        job  = 2 if common is to be restored (read from rsav/isav).
-!        a call with job = 2 presumes a prior call with job = 1.
-!```
+!  this routine saves or restores (depending on `job`) the contents of the
+!  dvode internal variables.
 
-      subroutine dvsrco(rsav,isav,job)
-         !! TODO: have to rewrite this to use the class variables !
+      subroutine dvsrco(me,sav,job)
+
       implicit none
-      real(wp) rsav
-      integer isav , job
-      dimension rsav(*) , isav(*)
-      real(wp) rvod1 , rvod2
-      integer ivod1 , ivod2
-      integer i , leniv1 , leniv2 , lenrv1 , lenrv2
-!-----------------------------------------------------------------------
-! the following fortran-77 declaration is to cause the values of the
-! listed (local) variables to be saved between calls to this integrator.
-!-----------------------------------------------------------------------
-      save lenrv1 , leniv1 , lenrv2 , leniv2
-!
-      common /dvod01/ rvod1(48) , ivod1(33)
-      common /dvod02/ rvod2(1) , ivod2(8)
-      data lenrv1/48/ , leniv1/33/ , lenrv2/1/ , leniv2/8/
-!
-      if ( job==2 ) then
-!
-         do i = 1 , lenrv1
-            rvod1(i) = rsav(i)
-         enddo
-         do i = 1 , lenrv2
-            rvod2(i) = rsav(lenrv1+i)
-         enddo
-!
-         do i = 1 , leniv1
-            ivod1(i) = isav(i)
-         enddo
-         do i = 1 , leniv2
-            ivod2(i) = isav(leniv1+i)
-         enddo
-         return
-      endif
-      do i = 1 , lenrv1
-         rsav(i) = rvod1(i)
-      enddo
-      do i = 1 , lenrv2
-         rsav(lenrv1+i) = rvod2(i)
-      enddo
-!
-      do i = 1 , leniv1
-         isav(i) = ivod1(i)
-      enddo
-      do i = 1 , leniv2
-         isav(leniv1+i) = ivod2(i)
-      enddo
+
+      class(dvode_t),intent(inout) :: me
+      type(dvode_data_t),intent(inout) :: sav
+      integer,intent(in) :: job !! flag indicating to save or restore the data:
+                                !!
+                                !! * `job = 1` if common is to be saved (written to `sav`).
+                                !! * `job = 2` if common is to be restored (read from `sav`).
+                                !!
+                                !! a call with job = 2 presumes a prior call with job = 1.
+
+      select case (job)
+      case(1); sav = me%dat
+      case(2); me%dat = sav
+      case default
+         error stop 'invalid input to dvsrco'
+      end select
 
    end subroutine dvsrco
 
@@ -3600,11 +3532,10 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 !   930809  renamed to allow single/real(wp) versions. (ach)
 
       subroutine dewset(n,itol,rtol,atol,ycur,ewt)
-      implicit none
-      integer n , itol
-      integer i
-      real(wp) rtol , atol , ycur , ewt
-      dimension rtol(*) , atol(*) , ycur(n) , ewt(n)
+
+      integer :: n , itol
+      integer :: i
+      real(wp) :: rtol(*) , atol(*) , ycur(n) , ewt(n)
 
       select case (itol)
       case (2)
@@ -3648,7 +3579,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 !   930809  renamed to allow single/real(wp) versions. (ach)
 
       real(wp) function dvnorm(n,v,w)
-      implicit none
+
       integer :: n , i
       real(wp) :: v(n) , w(n) , sum
 
@@ -3706,49 +3637,40 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 ! routine that it calls) will need to be modified.
 ! for a different run-abort command, change the statement following
 ! statement 100 at the end.
-!-----------------------------------------------------------------------
-! subroutines called by xerrwd.. none
-! function routine called by xerrwd.. ixsav
-!-----------------------------------------------------------------------
 
-      subroutine xerrwd(msg,nmes,nerr,level,ni,i1,i2,nr,r1,r2)
-      implicit none
-!
-!  declare arguments.
-!
-      real(wp) r1 , r2
-      integer nmes , nerr , level , ni , i1 , i2 , nr
-      character*(*) msg
-!
-!  declare local variables.
-!
-      integer lunit , mesflg
-!
-!  get logical unit number and message print flag.
-!
+      subroutine xerrwd(me,msg,nmes,nerr,level,ni,i1,i2,nr,r1,r2)
 
-      lunit = ixsav(1,0,.false.)
-      mesflg = ixsav(2,0,.false.)
+      class(dvode_t),intent(inout) :: me
+      real(wp) :: r1 , r2
+      integer :: nmes , nerr , level , ni , i1 , i2 , nr
+      character(len=*),intent(in) :: msg
+
+      ! declare local variables.
+      integer :: lunit , mesflg
+
+      ! get logical unit number and message print flag.
+      lunit = me%ixsav(1,0,.false.)
+      mesflg = me%ixsav(2,0,.false.)
+
       if ( mesflg/=0 ) then
-!
-!  write the message.
-!
-         write (lunit,99001) msg
-99001    format (1x,a)
-         if ( ni==1 ) write (lunit,99002) i1
-99002    format (6x,'in above message,  i1 =',i10)
-         if ( ni==2 ) write (lunit,99003) i1 , i2
-99003    format (6x,'in above message,  i1 =',i10,3x,'i2 =',i10)
-         if ( nr==1 ) write (lunit,99004) r1
-99004    format (6x,'in above message,  r1 =',d21.13)
-         if ( nr==2 ) write (lunit,99005) r1 , r2
-99005    format (6x,'in above,  r1 =',d21.13,3x,'r2 =',d21.13)
+         ! write the message.
+         write (lunit,'(A)') trim(msg)
+         select case (ni)
+         case(1)
+            write (lunit,'(6X,A,I10)') 'in above message,  i1 =', i1
+         case(2)
+            write (lunit,'(6X,A,I10,3X,A,I10)') 'in above message,  i1 =', i1, 'i2 =', i2
+         end select
+         select case (nr)
+         case(1)
+            write (lunit,'(6X,A,D21.13)') 'in above message,  r1 =', r1
+         case (2)
+            write (lunit,'(6X,A,D21.13,3X,A,D21.13)') 'in above message,  r1 =', r1, 'r2 =', r2
+         end select
       endif
-!
-!  abort the run if level = 2.
-!
-      if ( level/=2 ) return
-      stop
+
+      ! abort the run if level = 2.
+      if ( level==2 ) stop
 
       end subroutine xerrwd
 
@@ -3767,11 +3689,14 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 !   930407  corrected see also section. (fnf)
 !   930922  made user-callable, and other cosmetic changes. (fnf)
 
-      subroutine xsetf(mflag)
-      implicit none
-      integer mflag , junk
+      subroutine xsetf(me,mflag)
 
-      if ( mflag==0 .or. mflag==1 ) junk = ixsav(2,mflag,.true.)
+      class(dvode_t),intent(inout) :: me
+      integer :: mflag
+
+      integer :: junk
+
+      if ( mflag==0 .or. mflag==1 ) junk = me%ixsav(2,mflag,.true.)
 
       end subroutine xsetf
 
@@ -3788,11 +3713,14 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 !   930407  corrected see also section. (fnf)
 !   930922  made user-callable, and other cosmetic changes. (fnf)
 
-      subroutine xsetun(lun)
-      implicit none
-      integer lun , junk
+      subroutine xsetun(me,lun)
 
-      if ( lun>0 ) junk = ixsav(1,lun,.true.)
+      class(dvode_t),intent(inout) :: me
+      integer :: lun
+
+      integer :: junk
+
+      if ( lun>0 ) junk = me%ixsav(1,lun,.true.)
 
       end subroutine xsetun
 
@@ -3832,31 +3760,22 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,   &
 !   930922  minor cosmetic changes. (fnf)
 !   010425  type declaration for iumach added. (ach)
 
-      integer function ixsav(ipar,ivalue,iset)
-      implicit none
-      logical iset
-      integer ipar , ivalue
-!-----------------------------------------------------------------------
-      integer lunit , mesflg
-!-----------------------------------------------------------------------
-! the following fortran-77 declaration is to cause the values of the
-! listed (local) variables to be saved between calls to this routine.
-!-----------------------------------------------------------------------
-      save lunit , mesflg
-      data lunit/ - 1/ , mesflg/1/
-!
+      integer function ixsav(me,ipar,ivalue,iset)
+
+      class(dvode_t),intent(inout) :: me
+      logical :: iset
+      integer :: ipar , ivalue
 
       if ( ipar==1 ) then
-         if ( lunit==-1 ) lunit = iumach
-         ixsav = lunit
-         if ( iset ) lunit = ivalue
+         if ( me%lunit==-1 ) me%lunit = iumach
+         ixsav = me%lunit
+         if ( iset ) me%lunit = ivalue
       endif
-!
+
       if ( ipar==2 ) then
-         ixsav = mesflg
-         if ( iset ) mesflg = ivalue
+         ixsav = me%mesflg
+         if ( iset ) me%mesflg = ivalue
       endif
-!
 
       end function ixsav
 
