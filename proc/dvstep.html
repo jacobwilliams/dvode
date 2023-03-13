@@ -155,50 +155,15 @@
     
 
     <p>dvstep performs one step of the integration of an initial value
-  problem for a system of ordinary differential equations.
-  dvstep calls subroutine vnls for the solution of the nonlinear system
-  arising in the time step.  thus it is independent of the problem
-  jacobian structure and the type of nonlinear system solution method.
-  dvstep returns a completion flag kflag (in common).
-  a return with kflag = -1 or -2 means either abs(h) = hmin or 10
-  consecutive failures occurred.  on a return with kflag negative,
-  the values of tn and the yh array are as of the beginning of the last
-  step, and h is the last step size attempted.</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="p">,</span><span class="w"> </span><span class="n">yh1</span><span class="p">,</span><span class="w"> </span><span class="n">ewt</span><span class="p">,</span><span class="w"> </span><span class="n">savf</span><span class="p">,</span><span class="w"> </span><span class="n">vsav</span><span class="p">,</span><span class="w"></span>
-<span class="w">                        </span><span class="n">acor</span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">jac</span><span class="p">,</span><span class="w"> </span><span class="n">psol</span><span class="p">,</span><span class="w"> </span><span class="n">vnls</span><span class="w"></span>
-<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">acor</span><span class="p">,</span><span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="w"> </span><span class="n">iwm</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-<span class="w"> </span><span class="n">communication</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvstep</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">variables</span><span class="p">:</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">y</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">dependent</span><span class="w"> </span><span class="n">variable</span><span class="w"> </span><span class="n">vector</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">yh</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">ldyh</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">lmax</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">dependent</span><span class="w"> </span><span class="n">variables</span><span class="w"></span>
-<span class="w">          </span><span class="ow">and</span><span class="w"> </span><span class="n">their</span><span class="w"> </span><span class="n">approximate</span><span class="w"> </span><span class="n">scaled</span><span class="w"> </span><span class="n">derivatives</span><span class="p">,</span><span class="w"> </span><span class="n">where</span><span class="w"></span>
-<span class="w">          </span><span class="n">lmax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maxord</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.</span><span class="w">  </span><span class="n">yh</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">approximate</span><span class="w"></span>
-<span class="w">          </span><span class="n">j</span><span class="o">-</span><span class="n">th</span><span class="w"> </span><span class="n">derivative</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="w"> </span><span class="n">scaled</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">h</span><span class="o">**</span><span class="n">j</span><span class="o">/</span><span class="n">factorial</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"></span>
-<span class="w">          </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="n">nq</span><span class="p">)</span><span class="o">.</span><span class="w">  </span><span class="n">on</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">step</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">first</span><span class="w"></span>
-<span class="w">          </span><span class="n">two</span><span class="w"> </span><span class="n">columns</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">yh</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">initial</span><span class="w"> </span><span class="n">values</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">ldyh</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">constant</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">dimension</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">yh</span><span class="o">.</span><span class="w"></span>
-<span class="w">          </span><span class="n">n</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">odes</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">system</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">yh1</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">one</span><span class="o">-</span><span class="n">dimensional</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">occupying</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">same</span><span class="w"> </span><span class="n">space</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">yh</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">ewt</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">multiplicative</span><span class="w"> </span><span class="n">weights</span><span class="w"></span>
-<span class="w">          </span><span class="k">for</span><span class="w"> </span><span class="n">local</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">measurements</span><span class="o">.</span><span class="w">  </span><span class="n">local</span><span class="w"> </span><span class="n">errors</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">are</span><span class="w"></span>
-<span class="w">          </span><span class="n">compared</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="mf">1.0</span><span class="o">/</span><span class="n">ewt</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">various</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">tests</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">savf</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">working</span><span class="w"> </span><span class="n">storage</span><span class="p">,</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="o">.</span><span class="w"></span>
-<span class="w">          </span><span class="n">also</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="n">maxord</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="n">when</span><span class="w"> </span><span class="n">jstart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
-<span class="w">          </span><span class="ow">and</span><span class="w"> </span><span class="n">maxord</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="n">nq</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">vsav</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="n">passed</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="n">vnls</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">acor</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">accumulated</span><span class="w"></span>
-<span class="w">          </span><span class="n">corrections</span><span class="o">.</span><span class="w">  </span><span class="n">on</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">successful</span><span class="w"> </span><span class="k">return</span><span class="p">,</span><span class="w"> </span><span class="n">acor</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">contains</span><span class="w"></span>
-<span class="w">          </span><span class="n">the</span><span class="w"> </span><span class="n">estimated</span><span class="w"> </span><span class="n">one</span><span class="o">-</span><span class="n">step</span><span class="w"> </span><span class="n">local</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">wm</span><span class="p">,</span><span class="n">iwm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">arrays</span><span class="w"> </span><span class="n">associated</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">matrix</span><span class="w"></span>
-<span class="w">          </span><span class="n">operations</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">vnls</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">f</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">supplied</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">jac</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">supplied</span><span class="w"> </span><span class="n">jacobian</span><span class="w"> </span><span class="n">subroutine</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">psol</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="n">passed</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">vnls</span><span class="p">,</span><span class="w"> </span><span class="k">for</span><span class="w"></span>
-<span class="w">          </span><span class="n">possible</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">there</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">vnls</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">dummy</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">nonlinear</span><span class="w"> </span><span class="n">system</span><span class="w"> </span><span class="n">solving</span><span class="w"> </span><span class="n">subroutine</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="n">whose</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">dependent</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="n">used</span><span class="o">.</span><span class="w"></span>
-</code></pre></div>
+problem for a system of ordinary differential equations.</p>
+<p>dvstep calls subroutine <a href="../proc/dvnlsd.html">dvnlsd</a> for the solution of the nonlinear system
+arising in the time step.  thus it is independent of the problem
+jacobian structure and the type of nonlinear system solution method.
+dvstep returns a completion flag kflag (in common).
+a return with kflag = -1 or -2 means either abs(h) = hmin or 10
+consecutive failures occurred.  on a return with kflag negative,
+the values of tn and the yh array are as of the beginning of the last
+step, and h is the last step size attempted.</p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -228,82 +193,90 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-y~5"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-y~2"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>y</strong>(*)</td>
             <td>
-                
+                <p>an array of length n used for the dependent variable vector.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-yh~4"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-yh"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>yh</strong>(ldyh,*)</td>
             <td>
-                
+                <p>an ldyh by lmax array containing the dependent variables
+and their approximate scaled derivatives, where
+lmax = maxord + 1.  yh(i,j+1) contains the approximate
+j-th derivative of y(i), scaled by h**j/factorial(j)
+(j = 0,1,...,nq).  on entry for the first step, the first
+two columns of yh must be set from the initial values.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ldyh~4"></span>
-              integer
+              <span class="anchor" id="variable-ldyh"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ldyh</strong></td>
             <td>
-                
+                <p>a constant integer &gt;= n, the first dimension of yh.
+n is the number of odes in the system.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-yh1"></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>yh1</strong>(*)</td>
             <td>
-                
+                <p>a one-dimensional array occupying the same space as yh.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ewt~4"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-ewt~2"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ewt</strong>(*)</td>
             <td>
-                
+                <p>an array of length n containing multiplicative weights
+for local error measurements.  local errors in y(i) are
+compared to 1.0/ewt(i) in various error tests.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-savf~3"></span>
+              <span class="anchor" id="variable-savf"></span>
               real(kind=wp)
             </td>
 <td></td>
@@ -313,12 +286,14 @@
             <td>::</td>
             <td><strong>savf</strong>(*)</td>
             <td>
-                
+                <p>an array of working storage, of length n.
+also used for input of yh(*,maxord+2) when jstart = -1
+and maxord &lt; the current order nq.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-vsav~2"></span>
+              <span class="anchor" id="variable-vsav"></span>
               real(kind=wp)
             </td>
 <td></td>
@@ -328,12 +303,12 @@
             <td>::</td>
             <td><strong>vsav</strong>(*)</td>
             <td>
-                
+                <p>a work array of length n passed to subroutine <a href="../proc/dvnlsd.html">dvnlsd</a>.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-acor~2"></span>
+              <span class="anchor" id="variable-acor"></span>
               real(kind=wp)
             </td>
 <td></td>
@@ -343,12 +318,14 @@
             <td>::</td>
             <td><strong>acor</strong>(*)</td>
             <td>
-                
+                <p>a work array of length n, used for the accumulated
+corrections.  on a successful return, acor(i) contains
+the estimated one-step local error in y(i).</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-wm~4"></span>
+              <span class="anchor" id="variable-wm"></span>
               real(kind=wp)
             </td>
 <td></td>
@@ -358,12 +335,13 @@
             <td>::</td>
             <td><strong>wm</strong>(*)</td>
             <td>
-                
+                <p>real work array associated with matrix
+operations in <a href="../proc/dvnlsd.html">dvnlsd</a>.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwm~4"></span>
+              <span class="anchor" id="variable-iwm"></span>
               integer
             </td>
 <td></td>
@@ -373,7 +351,8 @@
             <td>::</td>
             <td><strong>iwm</strong>(*)</td>
             <td>
-                
+                <p>integer work array associated with matrix
+operations in <a href="../proc/dvnlsd.html">dvnlsd</a>. </p>
             </td>
         </tr>
     </tbody>
@@ -417,48 +396,48 @@
 <path fill="none" stroke="#000000" d="M44.97,-87.15C57.99,-96.47 76.18,-109.49 90.89,-120.02"/>
 <polygon fill="#000000" stroke="#000000" points="88.92,-122.91 99.08,-125.89 92.99,-117.22 88.92,-122.91"/>
 </g>
-<!-- proc~daxpy -->
-<g id="proc~~dvstep~~CallsGraph_node3" class="node">
-<title>proc~daxpy</title>
-<g id="a_proc~~dvstep~~CallsGraph_node3"><a xlink:href=".././proc/daxpy.html" xlink:title="daxpy">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-108 90,-108 90,-84 144,-84 144,-108"/>
-<text text-anchor="middle" x="117" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">daxpy</text>
-</a>
-</g>
-</g>
-<!-- proc~dvstep&#45;&gt;proc~daxpy -->
-<g id="proc~~dvstep~~CallsGraph_edge2" class="edge">
-<title>proc~dvstep&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M54.4,-81.3C62.48,-83.23 71.51,-85.38 80.1,-87.43"/>
-<polygon fill="#000000" stroke="#000000" points="79.38,-90.86 89.92,-89.78 81,-84.05 79.38,-90.86"/>
-</g>
-<!-- proc~dscal -->
-<g id="proc~~dvstep~~CallsGraph_node4" class="node">
-<title>proc~dscal</title>
-<g id="a_proc~~dvstep~~CallsGraph_node4"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
-<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
-</a>
-</g>
-</g>
-<!-- proc~dvstep&#45;&gt;proc~dscal -->
-<g id="proc~~dvstep~~CallsGraph_edge3" class="edge">
-<title>proc~dvstep&#45;&gt;proc~dscal</title>
-<path fill="none" stroke="#000000" d="M54.4,-68.7C62.48,-66.77 71.51,-64.62 80.1,-62.57"/>
-<polygon fill="#000000" stroke="#000000" points="81,-65.95 89.92,-60.22 79.38,-59.14 81,-65.95"/>
-</g>
 <!-- proc~dcopy -->
-<g id="proc~~dvstep~~CallsGraph_node5" class="node">
+<g id="proc~~dvstep~~CallsGraph_node3" class="node">
 <title>proc~dcopy</title>
-<g id="a_proc~~dvstep~~CallsGraph_node5"><a xlink:href=".././proc/dcopy.html" xlink:title="dcopy">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
-<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dcopy</text>
+<g id="a_proc~~dvstep~~CallsGraph_node3"><a xlink:href=".././proc/dcopy.html" xlink:title="dcopy">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-108 90,-108 90,-84 144,-84 144,-108"/>
+<text text-anchor="middle" x="117" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dcopy</text>
 </a>
 </g>
 </g>
 <!-- proc~dvstep&#45;&gt;proc~dcopy -->
-<g id="proc~~dvstep~~CallsGraph_edge4" class="edge">
+<g id="proc~~dvstep~~CallsGraph_edge2" class="edge">
 <title>proc~dvstep&#45;&gt;proc~dcopy</title>
+<path fill="none" stroke="#000000" d="M54.4,-81.3C62.48,-83.23 71.51,-85.38 80.1,-87.43"/>
+<polygon fill="#000000" stroke="#000000" points="79.38,-90.86 89.92,-89.78 81,-84.05 79.38,-90.86"/>
+</g>
+<!-- proc~daxpy -->
+<g id="proc~~dvstep~~CallsGraph_node4" class="node">
+<title>proc~daxpy</title>
+<g id="a_proc~~dvstep~~CallsGraph_node4"><a xlink:href=".././proc/daxpy.html" xlink:title="daxpy">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
+<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">daxpy</text>
+</a>
+</g>
+</g>
+<!-- proc~dvstep&#45;&gt;proc~daxpy -->
+<g id="proc~~dvstep~~CallsGraph_edge3" class="edge">
+<title>proc~dvstep&#45;&gt;proc~daxpy</title>
+<path fill="none" stroke="#000000" d="M54.4,-68.7C62.48,-66.77 71.51,-64.62 80.1,-62.57"/>
+<polygon fill="#000000" stroke="#000000" points="81,-65.95 89.92,-60.22 79.38,-59.14 81,-65.95"/>
+</g>
+<!-- proc~dscal -->
+<g id="proc~~dvstep~~CallsGraph_node5" class="node">
+<title>proc~dscal</title>
+<g id="a_proc~~dvstep~~CallsGraph_node5"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
+<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
+</a>
+</g>
+</g>
+<!-- proc~dvstep&#45;&gt;proc~dscal -->
+<g id="proc~~dvstep~~CallsGraph_edge4" class="edge">
+<title>proc~dvstep&#45;&gt;proc~dscal</title>
 <path fill="none" stroke="#000000" d="M44.97,-62.85C57.99,-53.53 76.18,-40.51 90.89,-29.98"/>
 <polygon fill="#000000" stroke="#000000" points="92.99,-32.78 99.08,-24.11 88.92,-27.09 92.99,-32.78"/>
 </g>
@@ -573,16 +552,30 @@
     <div class="highlight"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">dvstep</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">yh</span><span class="p">,</span><span class="n">ldyh</span><span class="p">,</span><span class="n">yh1</span><span class="p">,</span><span class="n">ewt</span><span class="p">,</span><span class="n">savf</span><span class="p">,</span><span class="n">vsav</span><span class="p">,</span><span class="n">acor</span><span class="p">,</span><span class="n">wm</span><span class="p">,</span><span class="n">iwm</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">      </span><span class="k">class</span><span class="p">(</span><span class="n">dvode_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ldyh</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">ldyh</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">yh1</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ewt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">savf</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vsav</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">acor</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ldyh</span><span class="w"> </span><span class="c">!! a constant integer &gt;= n, the first dimension of yh.</span>
+<span class="w">                                 </span><span class="c">!! n is the number of odes in the system.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! an array of length n used for the dependent variable vector.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">ldyh</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! an ldyh by lmax array containing the dependent variables</span>
+<span class="w">                                           </span><span class="c">!! and their approximate scaled derivatives, where</span>
+<span class="w">                                           </span><span class="c">!! lmax = maxord + 1.  yh(i,j+1) contains the approximate</span>
+<span class="w">                                           </span><span class="c">!! j-th derivative of y(i), scaled by h**j/factorial(j)</span>
+<span class="w">                                           </span><span class="c">!! (j = 0,1,...,nq).  on entry for the first step, the first</span>
+<span class="w">                                           </span><span class="c">!! two columns of yh must be set from the initial values.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">yh1</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! a one-dimensional array occupying the same space as yh.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ewt</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! an array of length n containing multiplicative weights</span>
+<span class="w">                                    </span><span class="c">!! for local error measurements.  local errors in y(i) are</span>
+<span class="w">                                    </span><span class="c">!! compared to 1.0/ewt(i) in various error tests.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">savf</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! an array of working storage, of length n.</span>
+<span class="w">                          </span><span class="c">!! also used for input of yh(*,maxord+2) when jstart = -1</span>
+<span class="w">                          </span><span class="c">!! and maxord &lt; the current order nq.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vsav</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! a work array of length n passed to subroutine [[dvnlsd]].</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">acor</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! a work array of length n, used for the accumulated</span>
+<span class="w">                          </span><span class="c">!! corrections.  on a successful return, acor(i) contains</span>
+<span class="w">                          </span><span class="c">!! the estimated one-step local error in y(i).</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! real work array associated with matrix</span>
+<span class="w">                        </span><span class="c">!! operations in [[dvnlsd]].</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iwm</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! integer work array associated with matrix</span>
+<span class="w">                        </span><span class="c">!! operations in [[dvnlsd]]. </span>
 
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cnquot</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ddn</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">dsm</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">dup</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">etaqp1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
 <span class="w">                  </span><span class="n">flotl</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">told</span><span class="w"></span>

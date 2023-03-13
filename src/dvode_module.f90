@@ -38,7 +38,9 @@ module dvode_module
       real(wp) :: hmxi    = zero !! inverse of the maximum absolute value of h to be used.
                                  !! hmxi = 0.0 is allowed and corresponds to an infinite hmax.
       real(wp) :: hnew    = zero !! the step size to be attempted on the next step.
-      real(wp) :: hscal   = zero !! stepsize in scaling of yh array.
+      real(wp) :: hscal   = zero !! step size `h` used in scaling of nordsieck array `yh` in [[dvjust]].
+                                 !! (if `iord = +1`, [[dvjust]] assumes that `hscal = tau(1)`.)
+                                 !! see references 1 and 2 for details.
       real(wp) :: prl1    = zero !! the saved value of rl1.
       real(wp) :: rc      = zero !! ratio of current h*rl1 to value on last dvjac call.
       real(wp) :: rl1     = zero !! the reciprocal of the coefficient el(1).
@@ -1924,7 +1926,8 @@ contains
 !>
 !  dvstep performs one step of the integration of an initial value
 !  problem for a system of ordinary differential equations.
-!  dvstep calls subroutine vnls for the solution of the nonlinear system
+!
+!  dvstep calls subroutine [[dvnlsd]] for the solution of the nonlinear system
 !  arising in the time step.  thus it is independent of the problem
 !  jacobian structure and the type of nonlinear system solution method.
 !  dvstep returns a completion flag kflag (in common).
@@ -1932,57 +1935,34 @@ contains
 !  consecutive failures occurred.  on a return with kflag negative,
 !  the values of tn and the yh array are as of the beginning of the last
 !  step, and h is the last step size attempted.
-!
-!```
-! call sequence input -- y, yh, ldyh, yh1, ewt, savf, vsav,
-!                        acor, wm, iwm, f, jac, psol, vnls
-! call sequence output -- yh, acor, wm, iwm
-!-----------------------------------------------------------------------
-! communication with dvstep is done with the following variables:
-!
-! y      = an array of length n used for the dependent variable vector.
-! yh     = an ldyh by lmax array containing the dependent variables
-!          and their approximate scaled derivatives, where
-!          lmax = maxord + 1.  yh(i,j+1) contains the approximate
-!          j-th derivative of y(i), scaled by h**j/factorial(j)
-!          (j = 0,1,...,nq).  on entry for the first step, the first
-!          two columns of yh must be set from the initial values.
-! ldyh   = a constant integer >= n, the first dimension of yh.
-!          n is the number of odes in the system.
-! yh1    = a one-dimensional array occupying the same space as yh.
-! ewt    = an array of length n containing multiplicative weights
-!          for local error measurements.  local errors in y(i) are
-!          compared to 1.0/ewt(i) in various error tests.
-! savf   = an array of working storage, of length n.
-!          also used for input of yh(*,maxord+2) when jstart = -1
-!          and maxord < the current order nq.
-! vsav   = a work array of length n passed to subroutine vnls.
-! acor   = a work array of length n, used for the accumulated
-!          corrections.  on a successful return, acor(i) contains
-!          the estimated one-step local error in y(i).
-! wm,iwm = real and integer work arrays associated with matrix
-!          operations in vnls.
-! f      = dummy name for the user supplied subroutine for f.
-! jac    = dummy name for the user supplied jacobian subroutine.
-! psol   = dummy name for the subroutine passed to vnls, for
-!          possible use there.
-! vnls   = dummy name for the nonlinear system solving subroutine,
-!          whose real name is dependent on the method used.
-!```
 
    subroutine dvstep(me,y,yh,ldyh,yh1,ewt,savf,vsav,acor,wm,iwm)
 
       class(dvode_t),intent(inout) :: me
-      integer :: ldyh
-      real(wp) :: y(*)
-      real(wp) :: yh(ldyh,*)
-      real(wp) :: yh1(*)
-      real(wp) :: ewt(*)
-      real(wp) :: savf(*)
-      real(wp) :: vsav(*)
-      real(wp) :: acor(*)
-      real(wp) :: wm(*)
-      integer :: iwm(*)
+      integer,intent(in) :: ldyh !! a constant integer >= n, the first dimension of yh.
+                                 !! n is the number of odes in the system.
+      real(wp),intent(inout) :: y(*) !! an array of length n used for the dependent variable vector.
+      real(wp),intent(inout) :: yh(ldyh,*) !! an ldyh by lmax array containing the dependent variables
+                                           !! and their approximate scaled derivatives, where
+                                           !! lmax = maxord + 1.  yh(i,j+1) contains the approximate
+                                           !! j-th derivative of y(i), scaled by h**j/factorial(j)
+                                           !! (j = 0,1,...,nq).  on entry for the first step, the first
+                                           !! two columns of yh must be set from the initial values.
+      real(wp),intent(inout) :: yh1(*) !! a one-dimensional array occupying the same space as yh.
+      real(wp),intent(in) :: ewt(*) !! an array of length n containing multiplicative weights
+                                    !! for local error measurements.  local errors in y(i) are
+                                    !! compared to 1.0/ewt(i) in various error tests.
+      real(wp) :: savf(*) !! an array of working storage, of length n.
+                          !! also used for input of yh(*,maxord+2) when jstart = -1
+                          !! and maxord < the current order nq.
+      real(wp) :: vsav(*) !! a work array of length n passed to subroutine [[dvnlsd]].
+      real(wp) :: acor(*) !! a work array of length n, used for the accumulated
+                          !! corrections.  on a successful return, acor(i) contains
+                          !! the estimated one-step local error in y(i).
+      real(wp) :: wm(*) !! real work array associated with matrix
+                        !! operations in [[dvnlsd]].
+      integer :: iwm(*) !! integer work array associated with matrix
+                        !! operations in [[dvnlsd]]. 
 
       real(wp) :: cnquot , ddn , dsm , dup , etaqp1 , &
                   flotl , r , told
@@ -2530,36 +2510,18 @@ contains
 
 !*****************************************************************************************
 !>
-!  this subroutine adjusts the yh array on reduction of order,
+!  this subroutine adjusts the `yh` array on reduction of order,
 !  and also when the order is increased for the stiff option (meth = 2).
-!  communication with dvjust uses the following:
-!
-!  iord  = an integer flag used when meth = 2 to indicate an order
-!          increase (iord = +1) or an order decrease (iord = -1).
-!  hscal = step size h used in scaling of nordsieck array yh.
-!          (if iord = +1, dvjust assumes that hscal = tau(1).)
-!  see references 1 and 2 for details.
-!
-!```
-! call sequence input -- yh, ldyh, iord
-! call sequence output -- yh
-! common block input -- nq, meth, lmax, hscal, tau(13), n
-! common block variables accessed:
-!     /dvod01/ -- hscal, tau(13), lmax, meth, n, nq,
-!
-! subroutines called by dvjust: daxpy
-! function routines called by dvjust: none
-!```
 
    subroutine dvjust(me,yh,ldyh,iord)
 
       class(dvode_t),intent(inout) :: me
-      integer :: ldyh
-      integer :: iord
-      real(wp) :: yh(ldyh,*)
+      integer,intent(in) :: ldyh !! leading dimension of `yh`
+      integer,intent(in) :: iord !! an integer flag used when meth = 2 to indicate an order
+                                 !! increase (iord = +1) or an order decrease (iord = -1).
+      real(wp),intent(inout) :: yh(ldyh,*)
 
-      real(wp) :: alph0 , alph1 , hsum , prod , t1 , xi ,    &
-                  xiold
+      real(wp) :: alph0 , alph1 , hsum , prod , t1 , xi , xiold
       integer :: i , iback , j , jp1 , lp1 , nqm1 , nqm2 , nqp1
 
       real(wp),parameter :: one = 1.0_wp

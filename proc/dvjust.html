@@ -154,23 +154,8 @@
 </h2>
     
 
-    <p>this subroutine adjusts the yh array on reduction of order,
-  and also when the order is increased for the stiff option (meth = 2).
-  communication with dvjust uses the following:</p>
-<p>iord  = an integer flag used when meth = 2 to indicate an order
-          increase (iord = +1) or an order decrease (iord = -1).
-  hscal = step size h used in scaling of nordsieck array yh.
-          (if iord = +1, dvjust assumes that hscal = tau(1).)
-  see references 1 and 2 for details.</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="p">,</span><span class="w"> </span><span class="n">iord</span><span class="w"></span>
-<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">yh</span><span class="w"></span>
-<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">nq</span><span class="p">,</span><span class="w"> </span><span class="n">meth</span><span class="p">,</span><span class="w"> </span><span class="n">lmax</span><span class="p">,</span><span class="w"> </span><span class="n">hscal</span><span class="p">,</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="mi">13</span><span class="p">),</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
-<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">hscal</span><span class="p">,</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="mi">13</span><span class="p">),</span><span class="w"> </span><span class="n">lmax</span><span class="p">,</span><span class="w"> </span><span class="n">meth</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">nq</span><span class="p">,</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvjust</span><span class="p">:</span><span class="w"> </span><span class="n">daxpy</span><span class="w"></span>
-<span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvjust</span><span class="p">:</span><span class="w"> </span><span class="n">none</span><span class="w"></span>
-</code></pre></div>
+    <p>this subroutine adjusts the <code>yh</code> array on reduction of order,
+and also when the order is increased for the stiff option (meth = 2).</p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -201,9 +186,9 @@
         <tr>
             <td>
               <span class="anchor" id="variable-yh~5"></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -215,32 +200,33 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ldyh~5"></span>
-              integer
+              <span class="anchor" id="variable-ldyh~2"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ldyh</strong></td>
             <td>
-                
+                <p>leading dimension of <code>yh</code></p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-iord"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>iord</strong></td>
             <td>
-                
+                <p>an integer flag used when meth = 2 to indicate an order
+increase (iord = +1) or an order decrease (iord = -1).</p>
             </td>
         </tr>
     </tbody>
@@ -395,12 +381,12 @@
     <div class="highlight"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">dvjust</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">yh</span><span class="p">,</span><span class="n">ldyh</span><span class="p">,</span><span class="n">iord</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">      </span><span class="k">class</span><span class="p">(</span><span class="n">dvode_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ldyh</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iord</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">ldyh</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ldyh</span><span class="w"> </span><span class="c">!! leading dimension of `yh`</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iord</span><span class="w"> </span><span class="c">!! an integer flag used when meth = 2 to indicate an order</span>
+<span class="w">                                 </span><span class="c">!! increase (iord = +1) or an order decrease (iord = -1).</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">ldyh</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">alph0</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">alph1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hsum</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">prod</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">t1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">xi</span><span class="w"> </span><span class="p">,</span><span class="w">    </span><span class="p">&amp;</span><span class="w"></span>
-<span class="w">                  </span><span class="n">xiold</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">alph0</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">alph1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">hsum</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">prod</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">t1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">xi</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">xiold</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">iback</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">jp1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">lp1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nqm1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nqm2</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nqp1</span><span class="w"></span>
 
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0_wp</span><span class="w"></span>

@@ -195,7 +195,7 @@ by <a href="../proc/dgefa.html">dgefa</a> if miter = 1 or 2, and by dgbfa if mit
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-y~3"></span>
+              <span class="anchor" id="variable-y~4"></span>
               real(kind=wp),
             </td>
 <td>intent(inout)</td>
@@ -210,7 +210,7 @@ by <a href="../proc/dgefa.html">dgefa</a> if miter = 1 or 2, and by dgbfa if mit
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-yh~2"></span>
+              <span class="anchor" id="variable-yh~3"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -225,7 +225,7 @@ by <a href="../proc/dgefa.html">dgefa</a> if miter = 1 or 2, and by dgbfa if mit
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ldyh~2"></span>
+              <span class="anchor" id="variable-ldyh~4"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -240,7 +240,7 @@ by <a href="../proc/dgefa.html">dgefa</a> if miter = 1 or 2, and by dgbfa if mit
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ewt~3"></span>
+              <span class="anchor" id="variable-ewt~4"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -270,7 +270,7 @@ by <a href="../proc/dgefa.html">dgefa</a> if miter = 1 or 2, and by dgbfa if mit
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-savf~2"></span>
+              <span class="anchor" id="variable-savf~3"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -285,7 +285,7 @@ by <a href="../proc/dgefa.html">dgefa</a> if miter = 1 or 2, and by dgbfa if mit
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-wm~2"></span>
+              <span class="anchor" id="variable-wm~3"></span>
               real(kind=wp),
             </td>
 <td>intent(inout)</td>
@@ -307,7 +307,7 @@ wm(2) = h*rl1, saved for later use if miter = 3.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-iwm~2"></span>
+              <span class="anchor" id="variable-iwm~3"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -365,20 +365,20 @@ matrix is found to be singular.</p>
 <polygon fill="none" stroke="black" points="54,-128 0,-128 0,-104 54,-104 54,-128"/>
 <text text-anchor="middle" x="27" y="-113.6" font-family="Helvetica,sans-Serif" font-size="10.50">dvjac</text>
 </g>
-<!-- proc~dcopy -->
+<!-- proc~dacopy -->
 <g id="proc~~dvjac~~CallsGraph_node2" class="node">
-<title>proc~dcopy</title>
-<g id="a_proc~~dvjac~~CallsGraph_node2"><a xlink:href=".././proc/dcopy.html" xlink:title="dcopy">
-<polygon fill="#d9534f" stroke="#d9534f" points="234,-210 180,-210 180,-186 234,-186 234,-210"/>
-<text text-anchor="middle" x="207" y="-195.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dcopy</text>
+<title>proc~dacopy</title>
+<g id="a_proc~~dvjac~~CallsGraph_node2"><a xlink:href=".././proc/dacopy.html" xlink:title="dacopy">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-190 90,-190 90,-166 144,-166 144,-190"/>
+<text text-anchor="middle" x="117" y="-175.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dacopy</text>
 </a>
 </g>
 </g>
-<!-- proc~dvjac&#45;&gt;proc~dcopy -->
+<!-- proc~dvjac&#45;&gt;proc~dacopy -->
 <g id="proc~~dvjac~~CallsGraph_edge1" class="edge">
-<title>proc~dvjac&#45;&gt;proc~dcopy</title>
-<path fill="none" stroke="#000000" d="M32.8,-128.17C41.12,-147.38 60.25,-184.09 90,-199 114.47,-211.26 145.64,-210.23 169.51,-206.55"/>
-<polygon fill="#000000" stroke="#000000" points="170.34,-209.96 179.59,-204.78 169.13,-203.07 170.34,-209.96"/>
+<title>proc~dvjac&#45;&gt;proc~dacopy</title>
+<path fill="none" stroke="#000000" d="M45.39,-128.25C58.24,-137.31 75.96,-149.79 90.43,-159.99"/>
+<polygon fill="#000000" stroke="#000000" points="88.76,-163.09 98.95,-165.99 92.79,-157.37 88.76,-163.09"/>
 </g>
 <!-- proc~dvnorm -->
 <g id="proc~~dvjac~~CallsGraph_node3" class="node">
@@ -390,74 +390,80 @@ matrix is found to be singular.</p>
 </g>
 </g>
 <!-- proc~dvjac&#45;&gt;proc~dvnorm -->
-<g id="proc~~dvjac~~CallsGraph_edge2" class="edge">
+<g id="proc~~dvjac~~CallsGraph_edge3" class="edge">
 <title>proc~dvjac&#45;&gt;proc~dvnorm</title>
 <path fill="none" stroke="#000000" d="M54.4,-122C62.48,-123.84 71.51,-125.89 80.1,-127.84"/>
 <polygon fill="#000000" stroke="#000000" points="79.39,-131.27 89.92,-130.07 80.94,-124.44 79.39,-131.27"/>
 </g>
-<!-- proc~dscal -->
+<!-- proc~dgefa -->
 <g id="proc~~dvjac~~CallsGraph_node4" class="node">
+<title>proc~dgefa</title>
+<g id="a_proc~~dvjac~~CallsGraph_node4"><a xlink:href=".././proc/dgefa.html" xlink:title="dgefa">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-68 90,-68 90,-44 144,-44 144,-68"/>
+<text text-anchor="middle" x="117" y="-53.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgefa</text>
+</a>
+</g>
+</g>
+<!-- proc~dvjac&#45;&gt;proc~dgefa -->
+<g id="proc~~dvjac~~CallsGraph_edge2" class="edge">
+<title>proc~dvjac&#45;&gt;proc~dgefa</title>
+<path fill="none" stroke="#000000" d="M45.81,-103.86C58.45,-95.24 75.63,-83.52 89.83,-73.84"/>
+<polygon fill="#000000" stroke="#000000" points="91.93,-76.65 98.22,-68.12 87.98,-70.87 91.93,-76.65"/>
+</g>
+<!-- proc~dcopy -->
+<g id="proc~~dvjac~~CallsGraph_node5" class="node">
+<title>proc~dcopy</title>
+<g id="a_proc~~dvjac~~CallsGraph_node5"><a xlink:href=".././proc/dcopy.html" xlink:title="dcopy">
+<polygon fill="#d9534f" stroke="#d9534f" points="234,-210 180,-210 180,-186 234,-186 234,-210"/>
+<text text-anchor="middle" x="207" y="-195.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dcopy</text>
+</a>
+</g>
+</g>
+<!-- proc~dvjac&#45;&gt;proc~dcopy -->
+<g id="proc~~dvjac~~CallsGraph_edge4" class="edge">
+<title>proc~dvjac&#45;&gt;proc~dcopy</title>
+<path fill="none" stroke="#000000" d="M32.8,-128.17C41.12,-147.38 60.25,-184.09 90,-199 114.47,-211.26 145.64,-210.23 169.51,-206.55"/>
+<polygon fill="#000000" stroke="#000000" points="170.34,-209.96 179.59,-204.78 169.13,-203.07 170.34,-209.96"/>
+</g>
+<!-- proc~dscal -->
+<g id="proc~~dvjac~~CallsGraph_node6" class="node">
 <title>proc~dscal</title>
-<g id="a_proc~~dvjac~~CallsGraph_node4"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
+<g id="a_proc~~dvjac~~CallsGraph_node6"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
 <polygon fill="#d9534f" stroke="#d9534f" points="234,-108 180,-108 180,-84 234,-84 234,-108"/>
 <text text-anchor="middle" x="207" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
 </a>
 </g>
 </g>
 <!-- proc~dvjac&#45;&gt;proc~dscal -->
-<g id="proc~~dvjac~~CallsGraph_edge3" class="edge">
+<g id="proc~~dvjac~~CallsGraph_edge5" class="edge">
 <title>proc~dvjac&#45;&gt;proc~dscal</title>
 <path fill="none" stroke="#000000" d="M54.26,-113.05C84.85,-109.61 135.55,-103.92 169.84,-100.06"/>
 <polygon fill="#000000" stroke="#000000" points="170.37,-103.53 179.92,-98.93 169.59,-96.57 170.37,-103.53"/>
 </g>
 <!-- proc~dgbfa -->
-<g id="proc~~dvjac~~CallsGraph_node5" class="node">
+<g id="proc~~dvjac~~CallsGraph_node7" class="node">
 <title>proc~dgbfa</title>
-<g id="a_proc~~dvjac~~CallsGraph_node5"><a xlink:href=".././proc/dgbfa.html" xlink:title="dgbfa">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-68 90,-68 90,-44 144,-44 144,-68"/>
-<text text-anchor="middle" x="117" y="-53.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgbfa</text>
+<g id="a_proc~~dvjac~~CallsGraph_node7"><a xlink:href=".././proc/dgbfa.html" xlink:title="dgbfa">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-26 90,-26 90,-2 144,-2 144,-26"/>
+<text text-anchor="middle" x="117" y="-11.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgbfa</text>
 </a>
 </g>
 </g>
 <!-- proc~dvjac&#45;&gt;proc~dgbfa -->
-<g id="proc~~dvjac~~CallsGraph_edge4" class="edge">
+<g id="proc~~dvjac~~CallsGraph_edge6" class="edge">
 <title>proc~dvjac&#45;&gt;proc~dgbfa</title>
-<path fill="none" stroke="#000000" d="M45.81,-103.86C58.45,-95.24 75.63,-83.52 89.83,-73.84"/>
-<polygon fill="#000000" stroke="#000000" points="91.93,-76.65 98.22,-68.12 87.98,-70.87 91.93,-76.65"/>
-</g>
-<!-- proc~dgefa -->
-<g id="proc~~dvjac~~CallsGraph_node6" class="node">
-<title>proc~dgefa</title>
-<g id="a_proc~~dvjac~~CallsGraph_node6"><a xlink:href=".././proc/dgefa.html" xlink:title="dgefa">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-26 90,-26 90,-2 144,-2 144,-26"/>
-<text text-anchor="middle" x="117" y="-11.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgefa</text>
-</a>
-</g>
-</g>
-<!-- proc~dvjac&#45;&gt;proc~dgefa -->
-<g id="proc~~dvjac~~CallsGraph_edge5" class="edge">
-<title>proc~dvjac&#45;&gt;proc~dgefa</title>
 <path fill="none" stroke="#000000" d="M36.01,-103.75C47.1,-87.24 68.25,-57.33 90,-35 90.66,-34.33 91.33,-33.66 92.02,-32.99"/>
 <polygon fill="#000000" stroke="#000000" points="94.65,-35.34 99.8,-26.09 90,-30.1 94.65,-35.34"/>
 </g>
-<!-- proc~dacopy -->
-<g id="proc~~dvjac~~CallsGraph_node7" class="node">
-<title>proc~dacopy</title>
-<g id="a_proc~~dvjac~~CallsGraph_node7"><a xlink:href=".././proc/dacopy.html" xlink:title="dacopy">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-190 90,-190 90,-166 144,-166 144,-190"/>
-<text text-anchor="middle" x="117" y="-175.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dacopy</text>
-</a>
+<!-- proc~dacopy&#45;&gt;proc~dcopy -->
+<g id="proc~~dvjac~~CallsGraph_edge7" class="edge">
+<title>proc~dacopy&#45;&gt;proc~dcopy</title>
+<path fill="none" stroke="#000000" d="M144.4,-184C152.48,-185.84 161.51,-187.89 170.1,-189.84"/>
+<polygon fill="#000000" stroke="#000000" points="169.39,-193.27 179.92,-192.07 170.94,-186.44 169.39,-193.27"/>
 </g>
-</g>
-<!-- proc~dvjac&#45;&gt;proc~dacopy -->
-<g id="proc~~dvjac~~CallsGraph_edge6" class="edge">
-<title>proc~dvjac&#45;&gt;proc~dacopy</title>
-<path fill="none" stroke="#000000" d="M45.39,-128.25C58.24,-137.31 75.96,-149.79 90.43,-159.99"/>
-<polygon fill="#000000" stroke="#000000" points="88.76,-163.09 98.95,-165.99 92.79,-157.37 88.76,-163.09"/>
-</g>
-<!-- proc~dgbfa&#45;&gt;proc~dscal -->
-<g id="proc~~dvjac~~CallsGraph_edge9" class="edge">
-<title>proc~dgbfa&#45;&gt;proc~dscal</title>
+<!-- proc~dgefa&#45;&gt;proc~dscal -->
+<g id="proc~~dvjac~~CallsGraph_edge10" class="edge">
+<title>proc~dgefa&#45;&gt;proc~dscal</title>
 <path fill="none" stroke="#000000" d="M144.4,-68C152.66,-71.75 161.9,-75.95 170.66,-79.94"/>
 <polygon fill="#000000" stroke="#000000" points="169.37,-83.19 179.92,-84.14 172.26,-76.82 169.37,-83.19"/>
 </g>
@@ -470,9 +476,9 @@ matrix is found to be singular.</p>
 </a>
 </g>
 </g>
-<!-- proc~dgbfa&#45;&gt;proc~idamax -->
-<g id="proc~~dvjac~~CallsGraph_edge7" class="edge">
-<title>proc~dgbfa&#45;&gt;proc~idamax</title>
+<!-- proc~dgefa&#45;&gt;proc~idamax -->
+<g id="proc~~dvjac~~CallsGraph_edge8" class="edge">
+<title>proc~dgefa&#45;&gt;proc~idamax</title>
 <path fill="none" stroke="#000000" d="M144.4,-55.4C152.39,-55.22 161.31,-55.02 169.82,-54.82"/>
 <polygon fill="#000000" stroke="#000000" points="170,-58.32 179.92,-54.59 169.84,-51.32 170,-58.32"/>
 </g>
@@ -485,35 +491,29 @@ matrix is found to be singular.</p>
 </a>
 </g>
 </g>
-<!-- proc~dgbfa&#45;&gt;proc~daxpy -->
-<g id="proc~~dvjac~~CallsGraph_edge8" class="edge">
-<title>proc~dgbfa&#45;&gt;proc~daxpy</title>
+<!-- proc~dgefa&#45;&gt;proc~daxpy -->
+<g id="proc~~dvjac~~CallsGraph_edge9" class="edge">
+<title>proc~dgefa&#45;&gt;proc~daxpy</title>
 <path fill="none" stroke="#000000" d="M142.05,-43.98C151.55,-39.22 162.64,-33.68 172.88,-28.56"/>
 <polygon fill="#000000" stroke="#000000" points="174.6,-31.61 181.98,-24.01 171.47,-25.35 174.6,-31.61"/>
 </g>
-<!-- proc~dgefa&#45;&gt;proc~dscal -->
-<g id="proc~~dvjac~~CallsGraph_edge12" class="edge">
-<title>proc~dgefa&#45;&gt;proc~dscal</title>
+<!-- proc~dgbfa&#45;&gt;proc~dscal -->
+<g id="proc~~dvjac~~CallsGraph_edge13" class="edge">
+<title>proc~dgbfa&#45;&gt;proc~dscal</title>
 <path fill="none" stroke="#000000" d="M133.74,-26.05C137.21,-28.88 140.8,-31.97 144,-35 161.36,-51.45 162.64,-58.55 180,-75 180.8,-75.76 181.62,-76.52 182.47,-77.28"/>
 <polygon fill="#000000" stroke="#000000" points="180.39,-80.11 190.26,-83.95 184.94,-74.79 180.39,-80.11"/>
 </g>
-<!-- proc~dgefa&#45;&gt;proc~idamax -->
-<g id="proc~~dvjac~~CallsGraph_edge10" class="edge">
-<title>proc~dgefa&#45;&gt;proc~idamax</title>
+<!-- proc~dgbfa&#45;&gt;proc~idamax -->
+<g id="proc~~dvjac~~CallsGraph_edge11" class="edge">
+<title>proc~dgbfa&#45;&gt;proc~idamax</title>
 <path fill="none" stroke="#000000" d="M144.4,-26C152.66,-29.75 161.9,-33.95 170.66,-37.94"/>
 <polygon fill="#000000" stroke="#000000" points="169.37,-41.19 179.92,-42.14 172.26,-34.82 169.37,-41.19"/>
 </g>
-<!-- proc~dgefa&#45;&gt;proc~daxpy -->
-<g id="proc~~dvjac~~CallsGraph_edge11" class="edge">
-<title>proc~dgefa&#45;&gt;proc~daxpy</title>
+<!-- proc~dgbfa&#45;&gt;proc~daxpy -->
+<g id="proc~~dvjac~~CallsGraph_edge12" class="edge">
+<title>proc~dgbfa&#45;&gt;proc~daxpy</title>
 <path fill="none" stroke="#000000" d="M144.4,-13.4C152.39,-13.22 161.31,-13.02 169.82,-12.82"/>
 <polygon fill="#000000" stroke="#000000" points="170,-16.32 179.92,-12.59 169.84,-9.32 170,-16.32"/>
-</g>
-<!-- proc~dacopy&#45;&gt;proc~dcopy -->
-<g id="proc~~dvjac~~CallsGraph_edge13" class="edge">
-<title>proc~dacopy&#45;&gt;proc~dcopy</title>
-<path fill="none" stroke="#000000" d="M144.4,-184C152.48,-185.84 161.51,-187.89 170.1,-189.84"/>
-<polygon fill="#000000" stroke="#000000" points="169.39,-193.27 179.92,-192.07 170.94,-186.44 169.39,-193.27"/>
 </g>
 </g>
 </svg>
