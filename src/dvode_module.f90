@@ -132,8 +132,12 @@ module dvode_module
       ! formerly save variables
       real(wp) :: etaq   = zero
       real(wp) :: etaqm1 = zero
-      integer :: lunit = -1
-      integer :: mesflg = 1
+      integer :: lunit = -1 !! logical unit number for messages.  the default is obtained
+                            !! by a call to iumach (may be machine-dependent).
+      integer :: mesflg = 1 !! print control flag:
+                            !!
+                            !!  * 1 means print all messages (the default).
+                            !!  * 0 means no printing.
 
       procedure(f_func),pointer :: f => null()
       procedure(f_jac),pointer :: jac => null()
@@ -1177,10 +1181,8 @@ contains
 !            prologue and other routine prologues.
 !```
 
-subroutine dvode(me,neq,y,t,tout,itol,rtol,atol,itask,istate,iopt, &
-                 rwork,lrw,iwork,liw,mf)
-
-      implicit none
+   subroutine dvode(me,neq,y,t,tout,itol,rtol,atol,itask,istate,iopt, &
+                    rwork,lrw,iwork,liw,mf)
 
       class(dvode_t),intent(inout) :: me
       real(wp) :: y(*)
@@ -1188,15 +1190,15 @@ subroutine dvode(me,neq,y,t,tout,itol,rtol,atol,itask,istate,iopt, &
       real(wp) :: tout
       real(wp) :: rtol(*)
       real(wp) :: atol(*)
+      integer :: lrw
       real(wp) :: rwork(lrw)
       integer :: neq
       integer :: itol
       integer :: itask
       integer :: istate
       integer :: iopt
-      integer :: lrw
-      integer :: iwork(liw)
       integer :: liw
+      integer :: iwork(liw)
       integer :: mf
 
       logical :: ihit
@@ -1791,10 +1793,8 @@ subroutine dvode(me,neq,y,t,tout,itol,rtol,atol,itask,istate,iopt, &
 !  a bias factor of 1/2 is applied to the resulting h.
 !  the sign of h0 is inferred from the initial values of tout and t0.
 
-subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
-                 atol,y,temp,h0,niter,ier)
-
-      implicit none
+   subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
+                    atol,y,temp,h0,niter,ier)
 
       class(dvode_t),intent(inout) :: me
       real(wp),intent(in) :: t0 !! initial value of independent variable
@@ -1944,15 +1944,14 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 
       subroutine dvindy(me,t,k,yh,ldyh,dky,iflag)
 
-      implicit none
-
       class(dvode_t),intent(inout) :: me
-      real(wp) :: t , yh(ldyh,*) , dky(*)
-      integer :: k , ldyh , iflag
+      real(wp) :: t
+      real(wp) :: yh(ldyh,*)
+      real(wp) :: dky(*)
+      integer :: k
+      integer :: ldyh
+      integer :: iflag
 
-!
-! type declarations for local variables --------------------------------
-!
       real(wp) :: c , r , s , tfuzz , tn1 , tp
       integer :: i , ic , j , jb , jb2 , jj , jj1 , jp1
       character(len=80) :: msg
@@ -1972,13 +1971,11 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
          if ( (t-tp)*(t-tn1)>zero ) then
             msg = 'dvindy-- t (=r1) illegal      '
             call me%xerrwd(msg,30,52,1,0,0,0,1,t,zero)
-            msg = &
-                  '      t not in interval tcur - hu (= r1) to tcur (=r2)      '
+            msg =  '      t not in interval tcur - hu (= r1) to tcur (=r2)      '
             call me%xerrwd(msg,60,52,1,0,0,0,2,tp,me%dat%tn)
             iflag = -2
             return
          else
-!
             s = (t-me%dat%tn)/me%dat%h
             ic = 1
             if ( k/=0 ) then
@@ -2034,15 +2031,6 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 ! call sequence input -- y, yh, ldyh, yh1, ewt, savf, vsav,
 !                        acor, wm, iwm, f, jac, psol, vnls
 ! call sequence output -- yh, acor, wm, iwm
-! common block variables accessed:
-!     /dvod01/  acnrm, el(13), h, hmin, hmxi, hnew, hscal, rc, tau(13),
-!               tq(5), tn, jcur, jstart, kflag, kuth,
-!               l, lmax, maxord, n, newq, nq, nqwait
-!     /dvod02/  hu, ncfn, netf, nfe, nqu, nst
-!
-! subroutines called by dvstep: f, daxpy, dcopy, dscal,
-!                               dvjust, vnls, dvset
-! function routines called by dvstep: dvnorm
 !-----------------------------------------------------------------------
 ! communication with dvstep is done with the following variables:
 !
@@ -2076,9 +2064,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 !          whose real name is dependent on the method used.
 !```
 
-      subroutine dvstep(me,y,yh,ldyh,yh1,ewt,savf,vsav,acor,wm,iwm)
-
-      implicit none
+   subroutine dvstep(me,y,yh,ldyh,yh1,ewt,savf,vsav,acor,wm,iwm)
 
       class(dvode_t),intent(inout) :: me
       integer :: ldyh
@@ -2092,8 +2078,6 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
       real(wp) :: wm(*)
       integer :: iwm(*)
 
-! type declarations for local variables --------------------------------
-!
       real(wp) :: cnquot , ddn , dsm , dup , etaqp1 , &
                   flotl , r , told
       integer :: i , i1 , i2 , iback , j , jb , ncf , nflag
@@ -2122,14 +2106,14 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
       nflag = 0
       if ( me%dat%jstart<=0 ) then
          if ( me%dat%jstart==-1 ) goto 200
-!-----------------------------------------------------------------------
-! on the first call, the order is set to 1, and other variables are
-! initialized.  etamax is the maximum ratio by which h can be increased
-! in a single step.  it is normally 10, but is larger during the
-! first step to compensate for the small initial h.  if a failure
-! occurs (in corrector convergence or error test), etamax is set to 1
-! for the next increase.
-!-----------------------------------------------------------------------
+         !-----------------------------------------------------------------------
+         ! on the first call, the order is set to 1, and other variables are
+         ! initialized.  etamax is the maximum ratio by which h can be increased
+         ! in a single step.  it is normally 10, but is larger during the
+         ! first step to compensate for the small initial h.  if a failure
+         ! occurs (in corrector convergence or error test), etamax is set to 1
+         ! for the next increase.
+         !-----------------------------------------------------------------------
          me%dat%lmax = me%dat%maxord + 1
          me%dat%nq = 1
          me%dat%l = 2
@@ -2141,15 +2125,15 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
          me%dat%nqwait = 2
          me%dat%hscal = me%dat%h
          goto 400
-!-----------------------------------------------------------------------
-! take preliminary actions on a normal continuation step (jstart>0).
-! if the driver changed h, then eta must be reset and newh set to 1.
-! if a change of order was dictated on the previous step, then
-! it is done here and appropriate adjustments in the history are made.
-! on an order decrease, the history array is adjusted by dvjust.
-! on an order increase, the history array is augmented by a column.
-! on a change of step size h, the history array yh is rescaled.
-!-----------------------------------------------------------------------
+         !-----------------------------------------------------------------------
+         ! take preliminary actions on a normal continuation step (jstart>0).
+         ! if the driver changed h, then eta must be reset and newh set to 1.
+         ! if a change of order was dictated on the previous step, then
+         ! it is done here and appropriate adjustments in the history are made.
+         ! on an order decrease, the history array is adjusted by dvjust.
+         ! on an order increase, the history array is augmented by a column.
+         ! on a change of step size h, the history array yh is rescaled.
+         !-----------------------------------------------------------------------
       elseif ( me%dat%kuth==1 ) then
          me%dat%eta = min(me%dat%eta,me%dat%h/me%dat%hscal)
          me%dat%newh = 1
@@ -2170,18 +2154,18 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
          me%dat%nqwait = me%dat%l
          goto 300
       endif
-!-----------------------------------------------------------------------
-! the following block handles preliminaries needed when jstart = -1.
-! if n was reduced, zero out part of yh to avoid undefined references.
-! if maxord was reduced to a value less than the tentative order newq,
-! then nq is set to maxord, and a new h ratio eta is chosen.
-! otherwise, we take the same preliminary actions as for jstart > 0.
-! in any case, nqwait is reset to l = nq + 1 to prevent further
-! changes in order for that many steps.
-! the new h ratio eta is limited by the input h if kuth = 1,
-! by hmin if kuth = 0, and by hmxi in any case.
-! finally, the history array yh is rescaled.
-!-----------------------------------------------------------------------
+      !-----------------------------------------------------------------------
+      ! the following block handles preliminaries needed when jstart = -1.
+      ! if n was reduced, zero out part of yh to avoid undefined references.
+      ! if maxord was reduced to a value less than the tentative order newq,
+      ! then nq is set to maxord, and a new h ratio eta is chosen.
+      ! otherwise, we take the same preliminary actions as for jstart > 0.
+      ! in any case, nqwait is reset to l = nq + 1 to prevent further
+      ! changes in order for that many steps.
+      ! the new h ratio eta is limited by the input h if kuth = 1,
+      ! by hmin if kuth = 0, and by hmxi in any case.
+      ! finally, the history array yh is rescaled.
+      !-----------------------------------------------------------------------
  200  me%dat%lmax = me%dat%maxord + 1
       if ( me%dat%n/=ldyh ) then
          i1 = 1 + (me%dat%newq+1)*ldyh
@@ -2218,7 +2202,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
       me%dat%newh = 1
       me%dat%nqwait = me%dat%l
       if ( me%dat%newq<=me%dat%maxord ) goto 100
-! rescale the history array for a change in h by a factor of eta. ------
+      ! rescale the history array for a change in h by a factor of eta. ------
  300  r = one
       do j = 2 , me%dat%l
          r = r*me%dat%eta
@@ -2228,12 +2212,12 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
       me%dat%hscal = me%dat%h
       me%dat%rc = me%dat%rc*me%dat%eta
       me%dat%nqnyh = me%dat%nq*ldyh
-!-----------------------------------------------------------------------
-! this section computes the predicted values by effectively
-! multiplying the yh array by the pascal triangle matrix.
-! dvset is called to calculate all integration coefficients.
-! rc is the ratio of new to old values of the coefficient h/el(2)=h/l1.
-!-----------------------------------------------------------------------
+      !-----------------------------------------------------------------------
+      ! this section computes the predicted values by effectively
+      ! multiplying the yh array by the pascal triangle matrix.
+      ! dvset is called to calculate all integration coefficients.
+      ! rc is the ratio of new to old values of the coefficient h/el(2)=h/l1.
+      !-----------------------------------------------------------------------
  400  me%dat%tn = me%dat%tn + me%dat%h
       i1 = me%dat%nqnyh + 1
       do jb = 1 , me%dat%nq
@@ -2246,25 +2230,24 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
       me%dat%rl1 = one/me%dat%el(2)
       me%dat%rc = me%dat%rc*(me%dat%rl1/me%dat%prl1)
       me%dat%prl1 = me%dat%rl1
-!
-! call the nonlinear system solver. ------------------------------------
-!
+
+      ! call the nonlinear system solver. ------------------------------------
       call me%dvnlsd(y,yh,ldyh,vsav,savf,ewt,acor,iwm,wm,nflag)
-!
+
       if ( nflag==0 ) then
-!-----------------------------------------------------------------------
-! the corrector has converged (nflag = 0).  the local error test is
-! made and control passes to statement 500 if it fails.
-!-----------------------------------------------------------------------
+         !-----------------------------------------------------------------------
+         ! the corrector has converged (nflag = 0).  the local error test is
+         ! made and control passes to statement 500 if it fails.
+         !-----------------------------------------------------------------------
          dsm = me%dat%acnrm/me%dat%tq(2)
          if ( dsm>one ) then
-!-----------------------------------------------------------------------
-! the error test failed.  kflag keeps track of multiple failures.
-! restore tn and the yh array to their previous values, and prepare
-! to try the step again.  compute the optimum step size for the
-! same order.  after repeated failures, h is forced to decrease
-! more rapidly.
-!-----------------------------------------------------------------------
+            !-----------------------------------------------------------------------
+            ! the error test failed.  kflag keeps track of multiple failures.
+            ! restore tn and the yh array to their previous values, and prepare
+            ! to try the step again.  compute the optimum step size for the
+            ! same order.  after repeated failures, h is forced to decrease
+            ! more rapidly.
+            !-----------------------------------------------------------------------
             me%dat%kflag = me%dat%kflag - 1
             me%dat%netf = me%dat%netf + 1
             nflag = -2
@@ -2277,29 +2260,29 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
                enddo
             enddo
             if ( abs(me%dat%h)<=me%dat%hmin*onepsm ) then
-!-----------------------------------------------------------------------
-! all returns are made through this section.
-! on a successful return, etamax is reset and acor is scaled.
-!-----------------------------------------------------------------------
+               !-----------------------------------------------------------------------
+               ! all returns are made through this section.
+               ! on a successful return, etamax is reset and acor is scaled.
+               !-----------------------------------------------------------------------
                me%dat%kflag = -1
                goto 600
             else
                me%dat%etamax = one
                if ( me%dat%kflag>kfc ) then
-! compute ratio of new h to current h at the current order. ------------
+                  ! compute ratio of new h to current h at the current order. ------------
                   flotl = real(me%dat%l,wp)
                   me%dat%eta = one/((bias2*dsm)**(one/flotl)+addon)
                   me%dat%eta = max(me%dat%eta,me%dat%hmin/abs(me%dat%h),etamin)
                   if ( (me%dat%kflag<=-2) .and. (me%dat%eta>etamxf) ) me%dat%eta = etamxf
                   goto 300
-!-----------------------------------------------------------------------
-! control reaches this section if 3 or more consecutive failures
-! have occurred.  it is assumed that the elements of the yh array
-! have accumulated errors of the wrong order.  the order is reduced
-! by one, if possible.  then h is reduced by a factor of 0.1 and
-! the step is retried.  after a total of 7 consecutive failures,
-! an exit is taken with kflag = -1.
-!-----------------------------------------------------------------------
+                  !-----------------------------------------------------------------------
+                  ! control reaches this section if 3 or more consecutive failures
+                  ! have occurred.  it is assumed that the elements of the yh array
+                  ! have accumulated errors of the wrong order.  the order is reduced
+                  ! by one, if possible.  then h is reduced by a factor of 0.1 and
+                  ! the step is retried.  after a total of 7 consecutive failures,
+                  ! an exit is taken with kflag = -1.
+                  !-----------------------------------------------------------------------
                elseif ( me%dat%kflag==kfh ) then
                   me%dat%kflag = -1
                   goto 600
@@ -2325,12 +2308,12 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
                endif
             endif
          else
-!-----------------------------------------------------------------------
-! after a successful step, update the yh and tau arrays and decrement
-! nqwait.  if nqwait is then 1 and nq < maxord, then acor is saved
-! for use in a possible order increase on the next step.
-! if etamax = 1 (a failure occurred this step), keep nqwait >= 2.
-!-----------------------------------------------------------------------
+            !-----------------------------------------------------------------------
+            ! after a successful step, update the yh and tau arrays and decrement
+            ! nqwait.  if nqwait is then 1 and nq < maxord, then acor is saved
+            ! for use in a possible order increase on the next step.
+            ! if etamax = 1 (a failure occurred this step), keep nqwait >= 2.
+            !-----------------------------------------------------------------------
             me%dat%kflag = 0
             me%dat%nst = me%dat%nst + 1
             me%dat%hu = me%dat%h
@@ -2349,30 +2332,30 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
                me%dat%conp = me%dat%tq(5)
             endif
             if ( me%dat%etamax/=one ) then
-!-----------------------------------------------------------------------
-! if nqwait = 0, an increase or decrease in order by one is considered.
-! factors etaq, etaqm1, etaqp1 are computed by which h could
-! be multiplied at order q, q-1, or q+1, respectively.
-! the largest of these is determined, and the new order and
-! step size set accordingly.
-! a change of h or nq is made only if h increases by at least a
-! factor of thresh.  if an order change is considered and rejected,
-! then nqwait is set to 2 (reconsider it after 2 steps).
-!-----------------------------------------------------------------------
-! compute ratio of new h to current h at the current order. ------------
+               !-----------------------------------------------------------------------
+               ! if nqwait = 0, an increase or decrease in order by one is considered.
+               ! factors etaq, etaqm1, etaqp1 are computed by which h could
+               ! be multiplied at order q, q-1, or q+1, respectively.
+               ! the largest of these is determined, and the new order and
+               ! step size set accordingly.
+               ! a change of h or nq is made only if h increases by at least a
+               ! factor of thresh.  if an order change is considered and rejected,
+               ! then nqwait is set to 2 (reconsider it after 2 steps).
+               !-----------------------------------------------------------------------
+               ! compute ratio of new h to current h at the current order. ------------
                flotl = real(me%dat%l,wp)
                me%etaq = one/((bias2*dsm)**(one/flotl)+addon)
                if ( me%dat%nqwait==0 ) then
                   me%dat%nqwait = 2
                   me%etaqm1 = zero
                   if ( me%dat%nq/=1 ) then
-! compute ratio of new h to current h at the current order less one. ---
+                     ! compute ratio of new h to current h at the current order less one. ---
                      ddn = dvnorm(me%dat%n,yh(1,me%dat%l),ewt)/me%dat%tq(1)
                      me%etaqm1 = one/((bias1*ddn)**(one/(flotl-one))+addon)
                   endif
                   etaqp1 = zero
                   if ( me%dat%l/=me%dat%lmax ) then
-! compute ratio of new h to current h at current order plus one. -------
+                     ! compute ratio of new h to current h at current order plus one. -------
                      cnquot = (me%dat%tq(5)/me%dat%conp)*(me%dat%h/me%dat%tau(2))**me%dat%l
                      do i = 1 , me%dat%n
                         savf(i) = acor(i) - cnquot*yh(i,me%dat%lmax)
@@ -2404,7 +2387,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
  420        me%dat%eta = me%etaqm1
             me%dat%newq = me%dat%nq - 1
          endif
-! test tentative new h against thresh, etamax, and hmxi, then exit. ----
+         ! test tentative new h against thresh, etamax, and hmxi, then exit. ----
  450     if ( me%dat%eta<thresh .or. me%dat%etamax==one ) then
             me%dat%newq = me%dat%nq
             me%dat%newh = 0
@@ -2417,12 +2400,12 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
             me%dat%hnew = me%dat%h*me%dat%eta
          endif
       else
-!-----------------------------------------------------------------------
-! the vnls routine failed to achieve convergence (nflag /= 0).
-! the yh array is retracted to its values before prediction.
-! the step size h is reduced and the step is retried, if possible.
-! otherwise, an error exit is taken.
-!-----------------------------------------------------------------------
+         !-----------------------------------------------------------------------
+         ! the vnls routine failed to achieve convergence (nflag /= 0).
+         ! the yh array is retracted to its values before prediction.
+         ! the step size h is reduced and the step is retried, if possible.
+         ! otherwise, an error exit is taken.
+         !-----------------------------------------------------------------------
          ncf = ncf + 1
          me%dat%ncfn = me%dat%ncfn + 1
          me%dat%etamax = one
@@ -2457,22 +2440,13 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
       call dscal(me%dat%n,r,acor,1)
  600  me%dat%jstart = 1
 
-      end subroutine dvstep
+   end subroutine dvstep
 
 !*****************************************************************************************
 !>
 !  dvset is called by dvstep and sets coefficients for use there.
 !
 !```
-! call sequence communication: none
-! common block variables accessed:
-!     /dvod01/ -- el(13), h, tau(13), tq(5), l(= nq + 1),
-!                 meth, nq, nqwait
-!
-! subroutines called by dvset: none
-! function routines called by dvset: none
-!-----------------------------------------------------------------------
-!
 ! for each order nq, the coefficients in el are calculated by use of
 !  the generating polynomial lambda(x), with coefficients el(i).
 !      lambda(x) = el(1) + el(2)*x + ... + el(nq+1)*(x**nq).
@@ -2489,7 +2463,6 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 ! in both cases, xi(i) is defined by
 !      h*xi(i) = t sub n  -  t sub (n-i)
 !              = h + tau(1) + tau(2) + ... tau(i-1).
-!
 !
 ! in addition to variables described previously, communication
 ! with dvset uses the following:
@@ -2508,20 +2481,15 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 !            an order change is about to be considered if nqwait = 1.
 !```
 
-      subroutine dvset(me)
-      implicit none
+   subroutine dvset(me)
 
       class(dvode_t),intent(inout) :: me
-!
-! type declarations for local variables --------------------------------
-!
-      real(wp) :: ahatn0 , alph0 , cnqm1 , csum , elp ,   &
-                       em , em0 , floti , flotl , flotnq , hsum , &
-                       rxi , rxis , s , t1 , t2 , t3 , t4 , t5 ,  &
-                       t6 , xi
+
+      real(wp) :: ahatn0 , alph0 , cnqm1 , csum , elp , &
+                  em(13) , em0 , floti , flotl , flotnq , hsum , &
+                  rxi , rxis , s , t1 , t2 , t3 , t4 , t5 ,  &
+                  t6 , xi
       integer :: i , iback , j , jp1 , nqm1 , nqm2
-!
-      dimension em(13)
 
       real(wp),parameter :: cortes = 0.1_wp
       real(wp),parameter :: one = 1.0_wp
@@ -2532,8 +2500,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
       nqm1 = me%dat%nq - 1
       nqm2 = me%dat%nq - 2
       if ( me%dat%meth==2 ) then
-!
-! set coefficients for bdf methods. ------------------------------------
+         ! set coefficients for bdf methods. ------------------------------------
          do i = 3 , me%dat%l
             me%dat%el(i) = zero
          enddo
@@ -2546,7 +2513,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
          rxis = one
          if ( me%dat%nq/=1 ) then
             do j = 1 , nqm2
-! in el, construct coefficients of (1+x/xi(1))*...*(1+x/xi(j+1)). ------
+               ! in el, construct coefficients of (1+x/xi(1))*...*(1+x/xi(j+1)). ------
                hsum = hsum + me%dat%tau(j)
                rxi = me%dat%h/hsum
                jp1 = j + 1
@@ -2583,8 +2550,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
             elp = t2/(one-t6+t5)
             me%dat%tq(3) = abs(elp*rxi*(flotl+one)*t5)
          endif
-!
-! set coefficients for adams methods. ----------------------------------
+      ! set coefficients for adams methods. ----------------------------------
       elseif ( me%dat%nq/=1 ) then
          hsum = me%dat%h
          em(1) = one
@@ -2609,7 +2575,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
             enddo
             hsum = hsum + me%dat%tau(j)
          enddo
-! compute integral from -1 to 0 of polynomial and of x times it. -------
+         ! compute integral from -1 to 0 of polynomial and of x times it. -------
          s = one
          em0 = zero
          csum = zero
@@ -2619,7 +2585,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
             csum = csum + s*em(i)/(floti+one)
             s = -s
          enddo
-! in el, form coefficients of normalized integrated polynomial. --------
+         ! in el, form coefficients of normalized integrated polynomial. --------
          s = one/em0
          me%dat%el(1) = one
          do i = 1 , me%dat%nq
@@ -2629,13 +2595,13 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
          me%dat%tq(2) = xi*em0/csum
          me%dat%tq(5) = xi/me%dat%el(me%dat%l)
          if ( me%dat%nqwait==1 ) then
-! for higher order control constant, multiply polynomial by 1+x/xi(q). -
+            ! for higher order control constant, multiply polynomial by 1+x/xi(q). -
             rxi = one/xi
             do iback = 1 , me%dat%nq
                i = (me%dat%l+1) - iback
                em(i) = em(i) + em(i-1)*rxi
             enddo
-! compute integral of polynomial. --------------------------------------
+            ! compute integral of polynomial. --------------------------------------
             s = one
             csum = zero
             do i = 1 , me%dat%l
@@ -2654,7 +2620,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
       endif
       me%dat%tq(4) = cortes*me%dat%tq(2)
 
-      end subroutine dvset
+   end subroutine dvset
 
 !*****************************************************************************************
 !>
@@ -2679,19 +2645,16 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 ! function routines called by dvjust: none
 !```
 
-      subroutine dvjust(me,yh,ldyh,iord)
-
-      implicit none
+   subroutine dvjust(me,yh,ldyh,iord)
 
       class(dvode_t),intent(inout) :: me
-      integer :: ldyh , iord
+      integer :: ldyh
+      integer :: iord
       real(wp) :: yh(ldyh,*)
-!
-! type declarations for local variables --------------------------------
-!
-      real(wp) alph0 , alph1 , hsum , prod , t1 , xi ,    &
-                       xiold
-      integer i , iback , j , jp1 , lp1 , nqm1 , nqm2 , nqp1
+
+      real(wp) :: alph0 , alph1 , hsum , prod , t1 , xi ,    &
+                  xiold
+      integer :: i , iback , j , jp1 , lp1 , nqm1 , nqm2 , nqp1
 
       real(wp),parameter :: one = 1.0_wp
 
@@ -2699,12 +2662,12 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
       nqm1 = me%dat%nq - 1
       nqm2 = me%dat%nq - 2
       if ( me%dat%meth==2 ) then
-!-----------------------------------------------------------------------
-! stiff option...
-! check to see if the order is being increased or decreased.
-!-----------------------------------------------------------------------
+         !-----------------------------------------------------------------------
+         ! stiff option...
+         ! check to see if the order is being increased or decreased.
+         !-----------------------------------------------------------------------
          if ( iord==1 ) then
-! order increase. ------------------------------------------------------
+            ! order increase. ------------------------------------------------------
             do j = 1 , me%dat%lmax
                me%dat%el(j) = zero
             enddo
@@ -2716,7 +2679,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
             hsum = me%dat%hscal
             if ( me%dat%nq/=1 ) then
                do j = 1 , nqm1
-! construct coefficients of x*x*(x+xi(1))*...*(x+xi(j)). ---------------
+                  ! construct coefficients of x*x*(x+xi(1))*...*(x+xi(j)). ---------------
                   jp1 = j + 1
                   hsum = hsum + me%dat%tau(jp1)
                   xi = hsum/me%dat%hscal
@@ -2731,25 +2694,25 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
                enddo
             endif
             t1 = (-alph0-alph1)/prod
-! load column l + 1 in yh array. ---------------------------------------
+            ! load column l + 1 in yh array. ---------------------------------------
             lp1 = me%dat%l + 1
             do i = 1 , me%dat%n
                yh(i,lp1) = t1*yh(i,me%dat%lmax)
             enddo
-! add correction terms to yh array. ------------------------------------
+            ! add correction terms to yh array. ------------------------------------
             nqp1 = me%dat%nq + 1
             do j = 3 , nqp1
                call daxpy(me%dat%n,me%dat%el(j),yh(1,lp1),1,yh(1,j),1)
             enddo
          else
-! order decrease. ------------------------------------------------------
+            ! order decrease. ------------------------------------------------------
             do j = 1 , me%dat%lmax
                me%dat%el(j) = zero
             enddo
             me%dat%el(3) = one
             hsum = zero
             do j = 1 , nqm2
-! construct coefficients of x*x*(x+xi(1))*...*(x+xi(j)). ---------------
+               ! construct coefficients of x*x*(x+xi(1))*...*(x+xi(j)). ---------------
                hsum = hsum + me%dat%tau(j)
                xi = hsum/me%dat%hscal
                jp1 = j + 1
@@ -2758,7 +2721,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
                   me%dat%el(i) = me%dat%el(i)*xi + me%dat%el(i-1)
                enddo
             enddo
-! subtract correction terms from yh array. -----------------------------
+            ! subtract correction terms from yh array. -----------------------------
             do j = 3 , me%dat%nq
                do i = 1 , me%dat%n
                   yh(i,j) = yh(i,j) - yh(i,me%dat%l)*me%dat%el(j)
@@ -2766,27 +2729,27 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
             enddo
             return
          endif
-!-----------------------------------------------------------------------
-! nonstiff option...
-! check to see if the order is being increased or decreased.
-!-----------------------------------------------------------------------
+      !-----------------------------------------------------------------------
+      ! nonstiff option...
+      ! check to see if the order is being increased or decreased.
+      !-----------------------------------------------------------------------
       elseif ( iord==1 ) then
-! order increase. ------------------------------------------------------
-! zero out next column in yh array. ------------------------------------
+         ! order increase. ------------------------------------------------------
+         ! zero out next column in yh array. ------------------------------------
          lp1 = me%dat%l + 1
          do i = 1 , me%dat%n
             yh(i,lp1) = zero
          enddo
          return
       else
-! order decrease. ------------------------------------------------------
+         ! order decrease. ------------------------------------------------------
          do j = 1 , me%dat%lmax
             me%dat%el(j) = zero
          enddo
          me%dat%el(2) = one
          hsum = zero
          do j = 1 , nqm2
-! construct coefficients of x*(x+xi(1))*...*(x+xi(j)). -----------------
+            ! construct coefficients of x*(x+xi(1))*...*(x+xi(j)). -----------------
             hsum = hsum + me%dat%tau(j)
             xi = hsum/me%dat%hscal
             jp1 = j + 1
@@ -2795,11 +2758,11 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
                me%dat%el(i) = me%dat%el(i)*xi + me%dat%el(i-1)
             enddo
          enddo
-! construct coefficients of integrated polynomial. ---------------------
+         ! construct coefficients of integrated polynomial. ---------------------
          do j = 2 , nqm1
             me%dat%el(j+1) = real(me%dat%nq,wp)*me%dat%el(j)/real(j,wp)
          enddo
-! subtract correction terms from yh array. -----------------------------
+         ! subtract correction terms from yh array. -----------------------------
          do j = 3 , me%dat%nq
             do i = 1 , me%dat%n
                yh(i,j) = yh(i,j) - yh(i,me%dat%l)*me%dat%el(j)
@@ -2808,7 +2771,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
          return
       endif
 
-      end subroutine dvjust
+   end subroutine dvjust
 
 !*****************************************************************************************
 !>
@@ -2864,8 +2827,6 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 !```
 
       subroutine dvnlsd(me,y,yh,ldyh,vsav,savf,ewt,acor,iwm,wm,nflag)
-
-      implicit none
 
       class(dvode_t),intent(inout) :: me
       real(wp) :: y(*)
@@ -3035,9 +2996,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 !  of linear systems with p as coefficient matrix. this is done
 !  by [[dgefa]] if miter = 1 or 2, and by dgbfa if miter = 4 or 5.
 
-      subroutine dvjac(me,y,yh,ldyh,ewt,ftem,savf,wm,iwm,ierpj)
-
-      implicit none
+   subroutine dvjac(me,y,yh,ldyh,ewt,ftem,savf,wm,iwm,ierpj)
 
       class(dvode_t),intent(inout) :: me
       real(wp),intent(inout) :: y(*) !! vector containing predicted values on entry.
@@ -3244,82 +3203,58 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
       if ( ier/=0 ) ierpj = 1
       ! end of code block for miter = 4 or 5. --------------------------------
 
-      end subroutine dvjac
+   end subroutine dvjac
 
 !*****************************************************************************************
 !>
-! this routine copies one rectangular array, a, to another, b,
-! where a and b may have different row dimensions, nrowa and nrowb.
-! the data copied consists of nrow rows and ncol columns.
-!
-!```
-! call sequence input -- nrow, ncol, a, nrowa, nrowb
-! call sequence output -- b
-! common block variables accessed -- none
-!
-! subroutines called by dacopy: dcopy
-! function routines called by dacopy: none
-!```
+! this routine copies one rectangular array, `a`, to another, `b`,
+! where `a` and `b` may have different row dimensions, `nrowa` and `nrowb`.
+! the data copied consists of `nrow` rows and `ncol` columns.
 
-      subroutine dacopy(nrow,ncol,a,nrowa,b,nrowb)
+   subroutine dacopy(nrow,ncol,a,nrowa,b,nrowb)
 
-      implicit none
+      integer,intent(in) :: nrow
+      integer,intent(in) :: ncol
+      integer,intent(in) :: nrowa
+      integer,intent(in) :: nrowb
+      real(wp),intent(in) :: a(nrowa,ncol)
+      real(wp),intent(out) :: b(nrowb,ncol)
 
-      real(wp) :: a , b
-      integer :: nrow , ncol , nrowa , nrowb
-      dimension :: a(nrowa,ncol) , b(nrowb,ncol)
       integer :: ic
 
       do ic = 1 , ncol
          call dcopy(nrow,a(1,ic),1,b(1,ic),1)
       enddo
 
-      end subroutine dacopy
+   end subroutine dacopy
 
 !*****************************************************************************************
 !>
-!  this routine manages the solution of the linear system arising from
-!  a chord iteration.  it is called if miter /= 0.
-!  if miter is 1 or 2, it calls dgesl to accomplish this.
-!  if miter = 3 it updates the coefficient h*rl1 in the diagonal
-!  matrix, and then computes the solution.
-!  if miter is 4 or 5, it calls dgbsl.
+!  This routine manages the solution of the linear system arising from
+!  a chord iteration.  it is called if `miter /= 0`:
 !
-!```
-! call sequence input -- wm, iwm, x
-! call sequence output -- x, iersl
-! common block variables accessed:
-!     /dvod01/ -- h, rl1, miter, n
-!
-! subroutines called by dvsol: dgesl, dgbsl
-! function routines called by dvsol: none
-!-----------------------------------------------------------------------
-!
-! communication with dvsol uses the following variables:
-! wm    = real work space containing the inverse diagonal matrix if
-!         miter = 3 and the lu decomposition of the matrix otherwise.
-!         storage of matrix elements starts at wm(3).
-!         wm also contains the following matrix-related data:
-!         wm(1) = sqrt(uround) (not used here),
-!         wm(2) = hrl1, the previous value of h*rl1, used if miter = 3.
-! iwm   = integer work space containing pivot information, starting at
-!         iwm(31), if miter is 1, 2, 4, or 5.  iwm also contains band
-!         parameters ml = iwm(1) and mu = iwm(2) if miter is 4 or 5.
-! x     = the right-hand side vector on input, and the solution vector
-!         on output, of length n.
-! iersl = output flag.  iersl = 0 if no trouble occurred.
-!         iersl = 1 if a singular matrix arose with miter = 3.
-!```
+!   * if miter is 1 or 2, it calls [[dgesl]] to accomplish this.
+!   * if miter = 3 it updates the coefficient `h*rl1` in the diagonal
+!     matrix, and then computes the solution.
+!   * if miter is 4 or 5, it calls [[dgbsl]].
 
-      subroutine dvsol(me,wm,iwm,x,iersl)
-
-      implicit none
+   subroutine dvsol(me,wm,iwm,x,iersl)
 
       class(dvode_t),intent(inout) :: me
-      real(wp) :: wm(*)
-      real(wp) :: x(*)
-      integer :: iwm(*)
-      integer :: iersl
+      real(wp),intent(inout) :: wm(*) !! real work space containing the inverse diagonal matrix if
+                                      !! miter = 3 and the lu decomposition of the matrix otherwise.
+                                      !! storage of matrix elements starts at wm(3).
+                                      !! wm also contains the following matrix-related data:
+                                      !! wm(1) = sqrt(uround) (not used here),
+                                      !! wm(2) = hrl1, the previous value of h*rl1, used if miter = 3.
+      real(wp),intent(inout) :: x(*) !! the right-hand side vector on input,
+                                     !! and the solution vector
+                                     !! on output, of length n.
+      integer :: iwm(*) !! integer work space containing pivot information, starting at
+                        !! iwm(31), if miter is 1, 2, 4, or 5.  iwm also contains band
+                        !! parameters ml = iwm(1) and mu = iwm(2) if miter is 4 or 5.
+      integer,intent(out) :: iersl !! output flag.  iersl = 0 if no trouble occurred.
+                                   !! iersl = 1 if a singular matrix arose with miter = 3.
 
       integer :: i , meband , ml , mu
       real(wp) :: di , hrl1 , phrl1 , r
@@ -3362,9 +3297,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 !  this routine saves or restores (depending on `job`) the contents of the
 !  dvode internal variables.
 
-      subroutine dvsrco(me,sav,job)
-
-      implicit none
+   subroutine dvsrco(me,sav,job)
 
       class(dvode_t),intent(inout) :: me
       type(dvode_data_t),intent(inout) :: sav
@@ -3386,25 +3319,33 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 
 !*****************************************************************************************
 !>
-!  set error weight vector.
+!  Set error weight vector.
 !
 !  this subroutine sets the error weight vector ewt according to
+!```
 !      ewt(i) = rtol(i)*abs(ycur(i)) + atol(i),  i = 1,...,n,
+!```
 !  with the subscript on rtol and/or atol possibly replaced by 1 above,
 !  depending on the value of itol.
 !
-!***author  hindmarsh, alan c., (llnl)
-!***revision history  (yymmdd)
-!   791129  date written
-!   890501  modified prologue to slatec/ldoc format.  (fnf)
-!   890503  minor cosmetic changes.  (fnf)
-!   930809  renamed to allow single/real(wp) versions. (ach)
+!### Author
+!  * hindmarsh, alan c., (llnl)
+!
+!### Revision history
+!  * 791129  date written
+!  * 890501  modified prologue to slatec/ldoc format.  (fnf)
+!  * 890503  minor cosmetic changes.  (fnf)
+!  * 930809  renamed to allow single/real(wp) versions. (ach)
 
-      subroutine dewset(n,itol,rtol,atol,ycur,ewt)
+   subroutine dewset(n,itol,rtol,atol,ycur,ewt)
 
-      integer :: n , itol
+      integer :: n
+      integer :: itol
       integer :: i
-      real(wp) :: rtol(*) , atol(*) , ycur(n) , ewt(n)
+      real(wp) :: rtol(*)
+      real(wp) :: atol(*)
+      real(wp) :: ycur(n)
+      real(wp) :: ewt(n)
 
       select case (itol)
       case (2)
@@ -3424,10 +3365,10 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
          return
       case default
       end select
+
       do i = 1 , n
          ewt(i) = rtol(1)*abs(ycur(i)) + atol(1)
       enddo
-      return
 
    end subroutine dewset
 
@@ -3438,14 +3379,18 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 !  this function routine computes the weighted root-mean-square norm
 !  of the vector of length n contained in the array v, with weights
 !  contained in the array w of length n:
+!```
 !    dvnorm = sqrt( (1/n) * sum( v(i)*w(i) )**2 )
+!```
 !
-!***author  hindmarsh, alan c., (llnl)
-!***revision history  (yymmdd)
-!   791129  date written
-!   890501  modified prologue to slatec/ldoc format.  (fnf)
-!   890503  minor cosmetic changes.  (fnf)
-!   930809  renamed to allow single/real(wp) versions. (ach)
+!### Author
+!  * hindmarsh, alan c., (llnl)
+!
+!### Revision history
+!  * 791129  date written
+!  * 890501  modified prologue to slatec/ldoc format.  (fnf)
+!  * 890503  minor cosmetic changes.  (fnf)
+!  * 930809  renamed to allow single/real(wp) versions. (ach)
 
       real(wp) function dvnorm(n,v,w)
 
@@ -3464,7 +3409,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 !>
 !  write error message with values.
 !
-!  subroutines xerrwd, xsetf, xsetun, and the function routine ixsav,
+!  subroutines [[xerrwd]], [[xsetf]], [[xsetun]], and the function routine [[ixsav]],
 !  as given here, constitute a simplified version of the slatec error
 !  handling package.
 !
@@ -3481,37 +3426,47 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 !  nr     = number of reals (0, 1, or 2) to be printed with message.
 !  r1,r2  = reals to be printed, depending on nr.
 !
-!  note..  this routine is machine-dependent and specialized for use
-!  in limited context, in the following ways..
-!  1. the argument msg is assumed to be of type character, and
-!     the message is printed with a format of (1x,a).
-!  2. the message is assumed to take only one line.
-!     multi-line messages are generated by repeated calls.
-!  3. if level = 2, control passes to the statement   stop
-!     to abort the run.  this statement may be machine-dependent.
-!  4. r1 and r2 are assumed to be in real(wp) and are printed
-!     in d21.13 format.
+!  Note: this routine is machine-dependent and specialized for use
+!  in limited context, in the following ways:
 !
-!***author  hindmarsh, alan c., (llnl)
-!***revision history  (yymmdd)
-!   920831  date written
-!   921118  replaced mflgsv/lunsav by ixsav. (ach)
-!   930329  modified prologue to slatec format. (fnf)
-!   930407  changed msg from character*1 array to variable. (fnf)
-!   930922  minor cosmetic change. (fnf)
+!   1. the argument msg is assumed to be of type character, and
+!      the message is printed with a format of (1x,a).
+!   2. the message is assumed to take only one line.
+!      multi-line messages are generated by repeated calls.
+!   3. if level = 2, control passes to the statement   stop
+!      to abort the run.  this statement may be machine-dependent.
+!   4. r1 and r2 are assumed to be in real(wp) and are printed
+!      in d21.13 format.
 !
-!*internal notes:
+!### Author
+!  * hindmarsh, alan c., (llnl)
 !
-! for a different default logical unit number, ixsav (or a subsidiary
-! routine that it calls) will need to be modified.
-! for a different run-abort command, change the statement following
-! statement 100 at the end.
+!### Revision history
+!  * 920831  date written
+!  * 921118  replaced mflgsv/lunsav by ixsav. (ach)
+!  * 930329  modified prologue to slatec format. (fnf)
+!  * 930407  changed msg from character*1 array to variable. (fnf)
+!  * 930922  minor cosmetic change. (fnf)
+!
+!### internal notes:
+!
+!  for a different default logical unit number, [[ixsav]] (or a subsidiary
+!  routine that it calls) will need to be modified.
+!  for a different run-abort command, change the statement following
+!  statement 100 at the end.
 
-      subroutine xerrwd(me,msg,nmes,nerr,level,ni,i1,i2,nr,r1,r2)
+   subroutine xerrwd(me,msg,nmes,nerr,level,ni,i1,i2,nr,r1,r2)
 
       class(dvode_t),intent(inout) :: me
-      real(wp) :: r1 , r2
-      integer :: nmes , nerr , level , ni , i1 , i2 , nr
+      real(wp) :: r1
+      real(wp) :: r2
+      integer :: nmes
+      integer :: nerr
+      integer :: level
+      integer :: ni
+      integer :: i1
+      integer :: i2
+      integer :: nr
       character(len=*),intent(in) :: msg
 
       ! declare local variables.
@@ -3541,24 +3496,27 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
       ! abort the run if level = 2.
       if ( level==2 ) stop
 
-      end subroutine xerrwd
+   end subroutine xerrwd
 
 !*****************************************************************************************
 !>
 !  reset the error print control flag.
 !
 !  xsetf sets the error print control flag to mflag:
-!      mflag=1 means print all messages (the default).
-!      mflag=0 means no printing.
 !
-!***author  hindmarsh, alan c., (llnl)
-!***revision history  (yymmdd)
-!   921118  date written
-!   930329  added slatec format prologue. (fnf)
-!   930407  corrected see also section. (fnf)
-!   930922  made user-callable, and other cosmetic changes. (fnf)
+!  * mflag=1 means print all messages (the default).
+!  * mflag=0 means no printing.
+!
+!### Author
+!  * hindmarsh, alan c., (llnl)
+!
+!### Revision history
+!  * 921118  date written
+!  * 930329  added slatec format prologue. (fnf)
+!  * 930407  corrected see also section. (fnf)
+!  * 930922  made user-callable, and other cosmetic changes. (fnf)
 
-      subroutine xsetf(me,mflag)
+   subroutine xsetf(me,mflag)
 
       class(dvode_t),intent(inout) :: me
       integer :: mflag
@@ -3567,7 +3525,7 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 
       if ( mflag==0 .or. mflag==1 ) junk = me%ixsav(2,mflag,.true.)
 
-      end subroutine xsetf
+   end subroutine xsetf
 
 !*****************************************************************************************
 !>
@@ -3575,14 +3533,16 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 !
 !  xsetun sets the logical unit number for error messages to lun.
 !
-!***author  hindmarsh, alan c., (llnl)
-!***revision history  (yymmdd)
-!   921118  date written
-!   930329  added slatec format prologue. (fnf)
-!   930407  corrected see also section. (fnf)
-!   930922  made user-callable, and other cosmetic changes. (fnf)
+!### Author
+!  * hindmarsh, alan c., (llnl)
+!
+!### Revision history
+!  * 921118  date written
+!  * 930329  added slatec format prologue. (fnf)
+!  * 930407  corrected see also section. (fnf)
+!  * 930922  made user-callable, and other cosmetic changes. (fnf)
 
-      subroutine xsetun(me,lun)
+   subroutine xsetun(me,lun)
 
       class(dvode_t),intent(inout) :: me
       integer :: lun
@@ -3591,61 +3551,57 @@ subroutine dvhin(me,n,t0,y0,ydot,tout,uround,ewt,itol,&
 
       if ( lun>0 ) junk = me%ixsav(1,lun,.true.)
 
-      end subroutine xsetun
+   end subroutine xsetun
 
 !*****************************************************************************************
 !>
 !  save and recall error message control parameters.
 !
-!  ixsav saves and recalls one of two error message parameters:
-!    lunit, the logical unit number to which messages are printed, and
-!    mesflg, the message print flag.
-!  this is a modification of the slatec library routine j4save.
+!  [[ixsav]] saves and recalls one of two error message parameters:
 !
-!  saved local variables..
-!   lunit  = logical unit number for messages.  the default is obtained
-!            by a call to iumach (may be machine-dependent).
-!   mesflg = print control flag..
-!            1 means print all messages (the default).
-!            0 means no printing.
+!  * `lunit`, the logical unit number to which messages are printed, and
+!  * `mesflg`, the message print flag.
 !
-!  on input..
-!    ipar   = parameter indicator (1 for lunit, 2 for mesflg).
-!    ivalue = the value to be set for the parameter, if iset = .true.
-!    iset   = logical flag to indicate whether to read or write.
-!             if iset = .true., the parameter will be given
-!             the value ivalue.  if iset = .false., the parameter
-!             will be unchanged, and ivalue is a dummy argument.
+!  this is a modification of the slatec library routine `j4save`.
 !
-!  on return..
-!    ixsav = the (old) value of the parameter.
+!  on return:
 !
-!***see also  xerrwd, xerrwv
-!***author  hindmarsh, alan c., (llnl)
-!***revision history  (yymmdd)
-!   921118  date written
-!   930329  modified prologue to slatec format. (fnf)
-!   930915  added iumach call to get default output unit.  (ach)
-!   930922  minor cosmetic changes. (fnf)
-!   010425  type declaration for iumach added. (ach)
+!  * `ixsav` = the (old) value of the parameter.
+!
+!### See also
+!  * [[xerrwd]]
+!  * [[xerrwv]]
+!
+!### Author
+!  * hindmarsh, alan c., (llnl)
+!
+!### Revision history
+!  * 921118  date written
+!  * 930329  modified prologue to slatec format. (fnf)
+!  * 930915  added iumach call to get default output unit.  (ach)
+!  * 930922  minor cosmetic changes. (fnf)
+!  * 010425  type declaration for iumach added. (ach)
 
-      integer function ixsav(me,ipar,ivalue,iset)
+   integer function ixsav(me,ipar,ivalue,iset)
 
       class(dvode_t),intent(inout) :: me
-      logical :: iset
-      integer :: ipar , ivalue
+      integer,intent(in) :: ipar !! parameter indicator (1 for `lunit`, 2 for `mesflg`).
+      integer :: ivalue !! the value to be set for the parameter, if iset = .true.
+      logical,intent(in) :: iset !! logical flag to indicate whether to read or write.
+                                 !! if `iset = .true.`, the parameter will be given
+                                 !! the value `ivalue`.  if `iset = .false.`, the parameter
+                                 !! will be unchanged, and `ivalue` is a dummy argument.
 
-      if ( ipar==1 ) then
+      select case (ipar)
+      case ( 1 )
          if ( me%lunit==-1 ) me%lunit = iumach
          ixsav = me%lunit
          if ( iset ) me%lunit = ivalue
-      endif
-
-      if ( ipar==2 ) then
+      case ( 2 )
          ixsav = me%mesflg
          if ( iset ) me%mesflg = ivalue
-      endif
+      end select
 
-      end function ixsav
+   end function ixsav
 
 end module dvode_module
