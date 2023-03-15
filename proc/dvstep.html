@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="14.1% of total for procedures.">282 statements</a>
+               title="14.0% of total for procedures.">282 statements</a>
           </li>
 
             <li id="source-file">
@@ -193,7 +193,7 @@ step, and h is the last step size attempted.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-y~2"></span>
+              <span class="anchor" id="variable-y~3"></span>
               real(kind=wp),
             </td>
 <td>intent(inout)</td>
@@ -208,7 +208,7 @@ step, and h is the last step size attempted.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-yh"></span>
+              <span class="anchor" id="variable-yh~2"></span>
               real(kind=wp),
             </td>
 <td>intent(inout)</td>
@@ -228,7 +228,7 @@ two columns of yh must be set from the initial values.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ldyh"></span>
+              <span class="anchor" id="variable-ldyh~2"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -411,33 +411,33 @@ operations in <a href="../proc/dvnlsd.html">dvnlsd</a>. </p>
 <path fill="none" stroke="#000000" d="M54.4,-81.3C62.48,-83.23 71.51,-85.38 80.1,-87.43"/>
 <polygon fill="#000000" stroke="#000000" points="79.38,-90.86 89.92,-89.78 81,-84.05 79.38,-90.86"/>
 </g>
-<!-- proc~daxpy -->
-<g id="proc~~dvstep~~CallsGraph_node4" class="node">
-<title>proc~daxpy</title>
-<g id="a_proc~~dvstep~~CallsGraph_node4"><a xlink:href=".././proc/daxpy.html" xlink:title="daxpy">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
-<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">daxpy</text>
-</a>
-</g>
-</g>
-<!-- proc~dvstep&#45;&gt;proc~daxpy -->
-<g id="proc~~dvstep~~CallsGraph_edge3" class="edge">
-<title>proc~dvstep&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M54.4,-68.7C62.48,-66.77 71.51,-64.62 80.1,-62.57"/>
-<polygon fill="#000000" stroke="#000000" points="81,-65.95 89.92,-60.22 79.38,-59.14 81,-65.95"/>
-</g>
 <!-- proc~dscal -->
-<g id="proc~~dvstep~~CallsGraph_node5" class="node">
+<g id="proc~~dvstep~~CallsGraph_node4" class="node">
 <title>proc~dscal</title>
-<g id="a_proc~~dvstep~~CallsGraph_node5"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
-<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
+<g id="a_proc~~dvstep~~CallsGraph_node4"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
+<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
 </a>
 </g>
 </g>
 <!-- proc~dvstep&#45;&gt;proc~dscal -->
-<g id="proc~~dvstep~~CallsGraph_edge4" class="edge">
+<g id="proc~~dvstep~~CallsGraph_edge3" class="edge">
 <title>proc~dvstep&#45;&gt;proc~dscal</title>
+<path fill="none" stroke="#000000" d="M54.4,-68.7C62.48,-66.77 71.51,-64.62 80.1,-62.57"/>
+<polygon fill="#000000" stroke="#000000" points="81,-65.95 89.92,-60.22 79.38,-59.14 81,-65.95"/>
+</g>
+<!-- proc~daxpy -->
+<g id="proc~~dvstep~~CallsGraph_node5" class="node">
+<title>proc~daxpy</title>
+<g id="a_proc~~dvstep~~CallsGraph_node5"><a xlink:href=".././proc/daxpy.html" xlink:title="daxpy">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
+<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">daxpy</text>
+</a>
+</g>
+</g>
+<!-- proc~dvstep&#45;&gt;proc~daxpy -->
+<g id="proc~~dvstep~~CallsGraph_edge4" class="edge">
+<title>proc~dvstep&#45;&gt;proc~daxpy</title>
 <path fill="none" stroke="#000000" d="M44.97,-62.85C57.99,-53.53 76.18,-40.51 90.89,-29.98"/>
 <polygon fill="#000000" stroke="#000000" points="92.99,-32.78 99.08,-24.11 88.92,-27.09 92.99,-32.78"/>
 </g>
@@ -638,6 +638,7 @@ operations in <a href="../proc/dvnlsd.html">dvnlsd</a>. </p>
 <span class="w">         </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">newh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">      </span><span class="k">endif</span>
 <span class="k"> </span><span class="mi">100</span><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">newh</span><span class="o">==</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">goto</span><span class="w"> </span><span class="mi">400</span><span class="w"></span>
+
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">newq</span><span class="o">==</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nq</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">goto</span><span class="w"> </span><span class="mi">300</span><span class="w"></span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">newq</span><span class="o">&lt;</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nq</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">         call </span><span class="n">me</span><span class="p">%</span><span class="n">dvjust</span><span class="p">(</span><span class="n">yh</span><span class="p">,</span><span class="n">ldyh</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
@@ -701,6 +702,7 @@ operations in <a href="../proc/dvnlsd.html">dvnlsd</a>. </p>
 <span class="w">      </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">newh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 <span class="w">      </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nqwait</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">l</span><span class="w"></span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">newq</span><span class="o">&lt;=</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">maxord</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">goto</span><span class="w"> </span><span class="mi">100</span><span class="w"></span>
+
 <span class="w">      </span><span class="c">! rescale the history array for a change in h by a factor of eta. ------</span>
 <span class="w"> </span><span class="mi">300</span><span class="w">  </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one</span><span class="w"></span>
 <span class="w">      </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">l</span><span class="w"></span>
@@ -711,6 +713,7 @@ operations in <a href="../proc/dvnlsd.html">dvnlsd</a>. </p>
 <span class="w">      </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">hscal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="w"></span>
 <span class="w">      </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">rc</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">eta</span><span class="w"></span>
 <span class="w">      </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nqnyh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nq</span><span class="o">*</span><span class="n">ldyh</span><span class="w"></span>
+<span class="w">      </span>
 <span class="w">      </span><span class="c">!-----------------------------------------------------------------------</span>
 <span class="w">      </span><span class="c">! this section computes the predicted values by effectively</span>
 <span class="w">      </span><span class="c">! multiplying the yh array by the pascal triangle matrix.</span>

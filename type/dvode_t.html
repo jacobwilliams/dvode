@@ -795,7 +795,7 @@ by a call to iumach (may be machine-dependent).</p>
 <span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="n">quantities</span><span class="w"> </span><span class="n">computed</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">routine</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">needed</span><span class="w"></span>
 <span class="w">          </span><span class="n">externally</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">dvode</span><span class="p">,</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">extra</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">made</span><span class="w"></span>
 <span class="w">          </span><span class="k">for</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">purpose</span><span class="p">,</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">consistent</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">accurate</span><span class="w"> </span><span class="n">results</span><span class="o">.</span><span class="w"></span>
-<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">derivative</span><span class="w"> </span><span class="n">dy</span><span class="o">/</span><span class="n">dt</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">needed</span><span class="p">,</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">dvindy</span><span class="w"> </span><span class="n">instead</span><span class="o">.</span><span class="w"></span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">derivative</span><span class="w"> </span><span class="n">dy</span><span class="o">/</span><span class="n">dt</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">needed</span><span class="p">,</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="p">[[</span><span class="n">dvindy</span><span class="p">]]</span><span class="w"> </span><span class="n">instead</span><span class="o">.</span><span class="w"></span>
 
 <span class="w"> </span><span class="n">neq</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">ode</span><span class="w"> </span><span class="n">system</span><span class="w"> </span><span class="p">(</span><span class="n">number</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">order</span><span class="w"></span>
 <span class="w">          </span><span class="n">ordinary</span><span class="w"> </span><span class="n">differential</span><span class="w"> </span><span class="n">equations</span><span class="p">)</span><span class="o">.</span><span class="w">  </span><span class="n">used</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
@@ -1261,13 +1261,13 @@ by a call to iumach (may be machine-dependent).</p>
 <span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">interrupted</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">alternating</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">ode</span><span class="w"> </span><span class="n">problems</span><span class="p">,</span><span class="w"></span>
 <span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">save</span><span class="p">,</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="n">call</span><span class="w"></span>
 <span class="w"> </span><span class="n">prior</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">interruption</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">contents</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"></span>
-<span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">internal</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">later</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">these</span><span class="w"></span>
+<span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">internal</span><span class="w"> </span><span class="n">variables</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">later</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">these</span><span class="w"></span>
 <span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="n">before</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">next</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">problem</span><span class="o">.</span><span class="w">  </span><span class="n">to</span><span class="w"> </span><span class="n">save</span><span class="w"></span>
-<span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="p">,</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="n">dvsrco</span><span class="p">,</span><span class="w"> </span><span class="k">as</span><span class="w"></span>
+<span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">variables</span><span class="p">,</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="p">[[</span><span class="n">dvsrco</span><span class="p">]],</span><span class="w"> </span><span class="k">as</span><span class="w"></span>
 <span class="w"> </span><span class="n">described</span><span class="w"> </span><span class="n">below</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="n">ii</span><span class="o">.</span><span class="w"></span>
 
 <span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">addition</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">non</span><span class="o">-</span><span class="n">default</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">either</span><span class="w"> </span><span class="n">lun</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">mflag</span><span class="w"> </span><span class="n">are</span><span class="w"></span>
-<span class="w"> </span><span class="n">desired</span><span class="p">,</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">extra</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">xsetun</span><span class="w"> </span><span class="ow">and</span><span class="o">/</span><span class="ow">or</span><span class="w"> </span><span class="n">xsetf</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">made</span><span class="w"> </span><span class="n">just</span><span class="w"></span>
+<span class="w"> </span><span class="n">desired</span><span class="p">,</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">extra</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="p">[[</span><span class="n">xsetun</span><span class="p">]]</span><span class="w"> </span><span class="ow">and</span><span class="o">/</span><span class="ow">or</span><span class="w"> </span><span class="p">[[</span><span class="n">xsetf</span><span class="p">]]</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">made</span><span class="w"> </span><span class="n">just</span><span class="w"></span>
 <span class="w"> </span><span class="n">before</span><span class="w"> </span><span class="n">continuing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">integration</span><span class="o">.</span><span class="w">  </span><span class="n">see</span><span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="n">ii</span><span class="w"> </span><span class="n">below</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">details</span><span class="o">.</span><span class="w"></span>
 
 <span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
@@ -1275,84 +1275,13 @@ by a call to iumach (may be machine-dependent).</p>
 
 <span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">optional</span><span class="w"> </span><span class="n">calls</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">make</span><span class="w"> </span><span class="n">to</span><span class="w"></span>
 <span class="w"> </span><span class="n">gain</span><span class="w"> </span><span class="n">additional</span><span class="w"> </span><span class="n">capabilities</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">conjunction</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvode</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="p">(</span><span class="n">the</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">xsetun</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">xsetf</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">designed</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">conform</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
+<span class="w"> </span><span class="p">(</span><span class="n">the</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="p">[[</span><span class="n">xsetun</span><span class="p">]]</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">[[</span><span class="n">xsetf</span><span class="p">]]</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">designed</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">conform</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
 <span class="w"> </span><span class="n">slatec</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">handling</span><span class="w"> </span><span class="n">package</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">     </span><span class="n">form</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">call</span><span class="w">                  </span><span class="n">function</span><span class="w"></span>
-<span class="w">  </span><span class="n">call</span><span class="w"> </span><span class="n">xsetun</span><span class="p">(</span><span class="n">lun</span><span class="p">)</span><span class="w">           </span><span class="n">set</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">logical</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="n">number</span><span class="p">,</span><span class="w"> </span><span class="n">lun</span><span class="p">,</span><span class="w"> </span><span class="k">for</span><span class="w"></span>
-<span class="w">                             </span><span class="n">output</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">messages</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">dvode</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="w"></span>
-<span class="w">                             </span><span class="n">the</span><span class="w"> </span><span class="n">default</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">desired</span><span class="o">.</span><span class="w"></span>
-<span class="w">                             </span><span class="n">the</span><span class="w"> </span><span class="n">default</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">lun</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mf">6.</span><span class="w"></span>
-
-<span class="w">  </span><span class="n">call</span><span class="w"> </span><span class="n">xsetf</span><span class="p">(</span><span class="n">mflag</span><span class="p">)</span><span class="w">          </span><span class="n">set</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">control</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">printing</span><span class="w"> </span><span class="n">of</span><span class="w"></span>
-<span class="w">                             </span><span class="n">messages</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvode</span><span class="o">.</span><span class="w"></span>
-<span class="w">                             </span><span class="n">mflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nb">print</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="n">danger</span><span class="p">:</span><span class="w"></span>
-<span class="w">                             </span><span class="n">this</span><span class="w"> </span><span class="n">risks</span><span class="w"> </span><span class="n">losing</span><span class="w"> </span><span class="n">valuable</span><span class="w"> </span><span class="n">information</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
-<span class="w">                             </span><span class="n">mflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="nb">print</span><span class="w"> </span><span class="p">(</span><span class="n">the</span><span class="w"> </span><span class="n">default</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-
-<span class="w">                             </span><span class="n">either</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">above</span><span class="w"> </span><span class="n">calls</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">made</span><span class="w"> </span><span class="n">at</span><span class="w"></span>
-<span class="w">                             </span><span class="n">any</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">take</span><span class="w"> </span><span class="n">effect</span><span class="w"> </span><span class="n">immediately</span><span class="o">.</span><span class="w"></span>
-
-<span class="w">  </span><span class="n">call</span><span class="w"> </span><span class="n">dvsrco</span><span class="p">(</span><span class="n">rsav</span><span class="p">,</span><span class="n">isav</span><span class="p">,</span><span class="n">job</span><span class="p">)</span><span class="w"> </span><span class="n">saves</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">restores</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">contents</span><span class="w"> </span><span class="n">of</span><span class="w"></span>
-<span class="w">                             </span><span class="n">the</span><span class="w"> </span><span class="n">internal</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="n">by</span><span class="w"></span>
-<span class="w">                             </span><span class="n">dvode</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="n">see</span><span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="n">iii</span><span class="w"> </span><span class="n">below</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
-<span class="w">                             </span><span class="n">rsav</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">49</span><span class="w"></span>
-<span class="w">                             </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">isav</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">integer</span><span class="w"></span>
-<span class="w">                             </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">40</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="o">.</span><span class="w"></span>
-<span class="w">                             </span><span class="n">job</span><span class="o">=</span><span class="mi">1</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">save</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="n">rsav</span><span class="o">/</span><span class="n">isav</span><span class="o">.</span><span class="w"></span>
-<span class="w">                             </span><span class="n">job</span><span class="o">=</span><span class="mi">2</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">rsav</span><span class="o">/</span><span class="n">isav</span><span class="o">.</span><span class="w"></span>
-<span class="w">                                </span><span class="n">dvsrco</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">useful</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="k">is</span><span class="w"></span>
-<span class="w">                             </span><span class="n">interrupting</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">restarting</span><span class="w"></span>
-<span class="w">                             </span><span class="n">later</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">alternating</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="ow">or</span><span class="w"></span>
-<span class="w">                             </span><span class="n">more</span><span class="w"> </span><span class="n">problems</span><span class="w"> </span><span class="n">solved</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvode</span><span class="o">.</span><span class="w"></span>
-
-<span class="w">  </span><span class="n">call</span><span class="w"> </span><span class="n">dvindy</span><span class="p">(,,,,,)</span><span class="w">         </span><span class="n">provide</span><span class="w"> </span><span class="n">derivatives</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">various</span><span class="w"></span>
-<span class="w">        </span><span class="p">(</span><span class="n">see</span><span class="w"> </span><span class="n">below</span><span class="o">.</span><span class="p">)</span><span class="w">         </span><span class="n">orders</span><span class="p">,</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">specified</span><span class="w"> </span><span class="n">point</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="w"></span>
-<span class="w">                             </span><span class="n">desired</span><span class="o">.</span><span class="w">  </span><span class="n">it</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">after</span><span class="w"></span>
-<span class="w">                             </span><span class="n">a</span><span class="w"> </span><span class="n">successful</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">dvode</span><span class="o">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">detailed</span><span class="w"> </span><span class="n">instructions</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">dvindy</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">follows</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">form</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="k">is</span><span class="p">:</span><span class="w"></span>
-
-<span class="w">  </span><span class="n">call</span><span class="w"> </span><span class="n">dvindy</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">rwork</span><span class="p">(</span><span class="mi">21</span><span class="p">),</span><span class="w"> </span><span class="n">nyh</span><span class="p">,</span><span class="w"> </span><span class="n">dky</span><span class="p">,</span><span class="w"> </span><span class="n">iflag</span><span class="p">)</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="n">are</span><span class="p">:</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">t</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">independent</span><span class="w"> </span><span class="n">variable</span><span class="w"> </span><span class="n">where</span><span class="w"> </span><span class="n">answers</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">desired</span><span class="w"></span>
-<span class="w">             </span><span class="p">(</span><span class="n">normally</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">same</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="n">returned</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvode</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">             </span><span class="k">for</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="n">results</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">lie</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">tcur</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">hu</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">tcur</span><span class="o">.</span><span class="w"></span>
-<span class="w">             </span><span class="p">(</span><span class="n">see</span><span class="w"> </span><span class="n">optional</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">tcur</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">hu</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span><span class="n">k</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">derivative</span><span class="w"> </span><span class="n">desired</span><span class="o">.</span><span class="w">  </span><span class="n">k</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">satisfy</span><span class="w"></span>
-<span class="w">             </span><span class="mi">0</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">nqcur</span><span class="p">,</span><span class="w"> </span><span class="n">where</span><span class="w"> </span><span class="n">nqcur</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="n">order</span><span class="w"></span>
-<span class="w">             </span><span class="p">(</span><span class="n">see</span><span class="w"> </span><span class="n">optional</span><span class="w"> </span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="w">  </span><span class="n">the</span><span class="w"> </span><span class="n">capability</span><span class="w"> </span><span class="n">corresponding</span><span class="w"></span>
-<span class="w">             </span><span class="n">to</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span><span class="w"> </span><span class="n">computing</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">t</span><span class="p">),</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">already</span><span class="w"> </span><span class="n">provided</span><span class="w"></span>
-<span class="w">             </span><span class="n">by</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="n">directly</span><span class="o">.</span><span class="w">  </span><span class="n">since</span><span class="w"> </span><span class="n">nqcur</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">first</span><span class="w"></span>
-<span class="w">             </span><span class="n">derivative</span><span class="w"> </span><span class="n">dy</span><span class="o">/</span><span class="n">dt</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">always</span><span class="w"> </span><span class="n">available</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvindy</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">rwork</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">base</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">history</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">yh</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">nyh</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">equal</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">initial</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">neq</span><span class="o">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="n">are</span><span class="p">:</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">dky</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">neq</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">computed</span><span class="w"> </span><span class="n">value</span><span class="w"></span>
-<span class="w">             </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">k</span><span class="o">-</span><span class="n">th</span><span class="w"> </span><span class="n">derivative</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">iflag</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">flag</span><span class="p">,</span><span class="w"> </span><span class="n">returned</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">were</span><span class="w"> </span><span class="n">legal</span><span class="p">,</span><span class="w"></span>
-<span class="w">             </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">illegal</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">illegal</span><span class="o">.</span><span class="w"></span>
-<span class="w">             </span><span class="n">on</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="k">return</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">written</span><span class="o">.</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-<span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="n">iii</span><span class="o">.</span><span class="w">  </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">overlay</span><span class="w"> </span><span class="n">situation</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"></span>
-<span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">declare</span><span class="p">,</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">primary</span><span class="w"> </span><span class="n">overlay</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="ow">in</span><span class="p">:</span><span class="w"></span>
-<span class="w">   </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">dvode</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">internal</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="w"></span>
-<span class="w">         </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w">  </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w">  </span><span class="mi">81</span><span class="w">  </span><span class="p">(</span><span class="mi">48</span><span class="w"> </span><span class="n">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">words</span><span class="w"></span>
-<span class="w">                         </span><span class="n">followed</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="mi">33</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">words</span><span class="p">),</span><span class="w"></span>
-<span class="w">         </span><span class="o">/</span><span class="n">dvod02</span><span class="o">/</span><span class="w">  </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w">  </span><span class="mi">9</span><span class="w">  </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="n">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">word</span><span class="w"></span>
-<span class="w">                         </span><span class="n">followed</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">words</span><span class="p">),</span><span class="w"></span>
-
-<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">system</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">contents</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">internal</span><span class="w"></span>
-<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">preserved</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">calls</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">should</span><span class="w"></span>
-<span class="w"> </span><span class="n">declare</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">above</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">his</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="n">program</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">insure</span><span class="w"></span>
-<span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">their</span><span class="w"> </span><span class="n">contents</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">preserved</span><span class="o">.</span><span class="w"></span>
+<span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="p">[[</span><span class="n">xsetun</span><span class="p">]]</span><span class="w"></span>
+<span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="p">[[</span><span class="n">xsetf</span><span class="p">]]</span><span class="w"></span>
+<span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="p">[[</span><span class="n">dvsrco</span><span class="p">]]</span><span class="w"></span>
+<span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="p">[[</span><span class="n">dvindy</span><span class="p">]]</span><span class="w"></span>
 
 <span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
 <span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="n">iv</span><span class="o">.</span><span class="w">  </span><span class="n">optionally</span><span class="w"> </span><span class="n">replaceable</span><span class="w"> </span><span class="n">solver</span><span class="w"> </span><span class="n">routines</span><span class="o">.</span><span class="w"></span>
@@ -1474,136 +1403,140 @@ by a call to iumach (may be machine-dependent).</p>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>neq</strong></td>
             <td>
-
+<p>number of first order odes.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>y</strong>(*)</td>
             <td>
-
+<p><strong>input:</strong> array of initial values, of length <code>neq</code>. 
+<strong>outout:</strong> array of computed values of <code>y(t)</code> vector.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>t</strong></td>
             <td>
-
+<p><strong>input:</strong> the initial value of the independent variable.
+<strong>outout:</strong> corresponding value of independent variable (normally <code>tout</code>).</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>tout</strong></td>
             <td>
-
+<p>first point where output is desired (/= t).</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>itol</strong></td>
             <td>
-
+<p>1 or 2 according as <code>atol</code> is a scalar or array.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>rtol</strong>(*)</td>
             <td>
-
+<p>relative tolerance parameter (scalar).</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>atol</strong>(*)</td>
             <td>
-
+<p>absolute tolerance parameter (scalar or array).
+ the estimated local error in y(i) will be controlled so as
+ to be roughly less (in magnitude) than</p><a href="../proc/dvode.html#variable-atol" class="pull-right"><emph>Read more&hellip;</emph></a>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>itask</strong></td>
             <td>
-
+<p>1 for normal computation of output values of y at t = tout.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>istate</strong></td>
             <td>
-
+<p>integer flag (input and output):</p><a href="../proc/dvode.html#variable-istate" class="pull-right"><emph>Read more&hellip;</emph></a>
             </td>
         </tr>
         <tr>
@@ -1633,22 +1566,22 @@ by a call to iumach (may be machine-dependent).</p>
             <td>::</td>
             <td><strong>rwork</strong>(lrw)</td>
             <td>
-
+<p>real work array of length at least:</p><a href="../proc/dvode.html#variable-rwork" class="pull-right"><emph>Read more&hellip;</emph></a>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>lrw</strong></td>
             <td>
-
+<p>declared length of <code>rwork</code> (in user's dimension statement).</p>
             </td>
         </tr>
         <tr>
@@ -1707,6 +1640,14 @@ by a call to iumach (may be machine-dependent).</p>
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-xsetun"></span><h3>procedure, public :: <strong>xsetun</strong>          
     </h3></div>
+      <div class="panel-body">
+        
+        <p>set the logical unit number, lun, for
+output of messages from dvode, if
+the default is not desired.
+the default value of lun is 6.
+this call may be made at any time and will take effect immediately.</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
@@ -1779,6 +1720,15 @@ by a call to iumach (may be machine-dependent).</p>
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-xsetf"></span><h3>procedure, public :: <strong>xsetf</strong>          
     </h3></div>
+      <div class="panel-body">
+        
+        <p>set a flag to control the printing of
+messages by dvode.
+mflag = 0 means do not print. (danger:
+this risks losing valuable information.)
+mflag = 1 means print (the default).
+this call may be made at any time and will take effect immediately.</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
@@ -1855,6 +1805,15 @@ by a call to iumach (may be machine-dependent).</p>
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-dvsrco"></span><h3>procedure, public :: <strong>dvsrco</strong>          
     </h3></div>
+      <div class="panel-body">
+        
+        <p>saves and restores the contents of
+the internal variables used by dvode.
+<a href="../proc/dvsrco.html">dvsrco</a> is useful if one is
+interrupting a run and restarting
+later, or alternating between two or
+more problems solved with <a href="../proc/dvode.html">dvode</a>.</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
@@ -1931,6 +1890,13 @@ dvode internal variables.</p>
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-dvindy"></span><h3>procedure, public :: <strong>dvindy</strong>          
     </h3></div>
+      <div class="panel-body">
+        
+        <p>provide derivatives of y, of various
+orders, at a specified point t, if
+desired.  it may be called only after
+a successful return from dvode.</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
@@ -1942,16 +1908,7 @@ dvode internal variables.</p>
   is called within the package with k = 0 and t = tout, but may
   also be called by the user for any k up to the current order.
   (see detailed instructions in the usage documentation.)</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="w"></span>
-<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">dky</span><span class="p">,</span><span class="w"> </span><span class="n">iflag</span><span class="w"></span>
-<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w"> </span><span class="o">--</span><span class="w">  </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">tn</span><span class="p">,</span><span class="w"> </span><span class="n">uround</span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">nq</span><span class="w"></span>
-<span class="w">     </span><span class="o">/</span><span class="n">dvod02</span><span class="o">/</span><span class="w"> </span><span class="o">--</span><span class="w">  </span><span class="n">hu</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvindy</span><span class="p">:</span><span class="w"> </span><span class="n">dscal</span><span class="p">,</span><span class="w"> </span><span class="n">xerrwd</span><span class="w"></span>
-<span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvindy</span><span class="p">:</span><span class="w"> </span><span class="n">none</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">computed</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">dky</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">gotten</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">interpolation</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">computed</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">dky</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">gotten</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">interpolation</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
 <span class="w"> </span><span class="n">nordsieck</span><span class="w"> </span><span class="n">history</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">yh</span><span class="o">.</span><span class="w">  </span><span class="n">this</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">corresponds</span><span class="w"> </span><span class="n">uniquely</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
 <span class="w"> </span><span class="n">vector</span><span class="o">-</span><span class="n">valued</span><span class="w"> </span><span class="n">polynomial</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">degree</span><span class="w"> </span><span class="n">nqcur</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">less</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">dky</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">set</span><span class="w"></span>
 <span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">k</span><span class="o">-</span><span class="n">th</span><span class="w"> </span><span class="n">derivative</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">polynomial</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="o">.</span><span class="w"></span>
@@ -1996,91 +1953,102 @@ dvode internal variables.</p>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>t</strong></td>
             <td>
-
+<p>value of independent variable where answers are desired
+(normally the same as the t last returned by <a href="../proc/dvode.html">dvode</a>).
+for valid results, t must lie between tcur - hu and tcur.
+(see optional output for tcur and hu.)</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>k</strong></td>
             <td>
-
+<p>integer order of the derivative desired.  k must satisfy
+0 &lt;= k &lt;= nqcur, where nqcur is the current order
+(see optional output).  the capability corresponding
+to k = 0, i.e. computing y(t), is already provided
+by <a href="../proc/dvode.html">dvode</a> directly.  since nqcur &gt;= 1, the first
+derivative dy/dt is always available with <a href="../proc/dvindy.html">dvindy</a>.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>yh</strong>(ldyh,*)</td>
             <td>
-
+<p>the history array yh</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ldyh</strong></td>
             <td>
-
+<p>column length of yh, equal to the initial value of neq.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>dky</strong>(*)</td>
             <td>
-
+<p>a real array of length neq containing the computed value
+of the k-th derivative of y(t).</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>iflag</strong></td>
             <td>
-
+<p>integer flag, returned as 0 if k and t were legal,
+-1 if k was illegal, and -2 if t was illegal.
+on an error return, a message is also written.</p>
             </td>
         </tr>
     </tbody>
@@ -2579,40 +2547,46 @@ operations in <a href="../proc/dvnlsd.html">dvnlsd</a>. </p>
     private  subroutine <a href='../proc/dvset.html'>dvset</a>(me)  
 </h3>
     
-  <p>dvset is called by dvstep and sets coefficients for use there.</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="n">nq</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">coefficients</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">calculated</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">of</span><span class="w"></span>
-<span class="w">  </span><span class="n">the</span><span class="w"> </span><span class="n">generating</span><span class="w"> </span><span class="n">polynomial</span><span class="w"> </span><span class="n">lambda</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">coefficients</span><span class="w"> </span><span class="n">el</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">      </span><span class="n">lambda</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">el</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">el</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="o">...</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">el</span><span class="p">(</span><span class="n">nq</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="n">nq</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">backward</span><span class="w"> </span><span class="n">differentiation</span><span class="w"> </span><span class="n">formulas</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                     </span><span class="n">nq</span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
-<span class="w">      </span><span class="n">lambda</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="o">/</span><span class="n">xi</span><span class="o">*</span><span class="p">(</span><span class="n">nq</span><span class="p">))</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="o">/</span><span class="n">xi</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">.</span><span class="w"></span>
-<span class="w">                                     </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">adams</span><span class="w"> </span><span class="n">formulas</span><span class="p">,</span><span class="w"></span>
-<span class="w">                              </span><span class="n">nq</span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
-<span class="w">      </span><span class="p">(</span><span class="n">d</span><span class="o">/</span><span class="n">dx</span><span class="p">)</span><span class="w"> </span><span class="n">lambda</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="o">/</span><span class="n">xi</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"></span>
-<span class="w">                              </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">      </span><span class="n">lambda</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="n">lambda</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
-<span class="w"> </span><span class="n">where</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">normalization</span><span class="w"> </span><span class="n">constant</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">both</span><span class="w"> </span><span class="n">cases</span><span class="p">,</span><span class="w"> </span><span class="n">xi</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">defined</span><span class="w"> </span><span class="n">by</span><span class="w"></span>
-<span class="w">      </span><span class="n">h</span><span class="o">*</span><span class="n">xi</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">sub</span><span class="w"> </span><span class="n">n</span><span class="w">  </span><span class="o">-</span><span class="w">  </span><span class="n">t</span><span class="w"> </span><span class="n">sub</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">i</span><span class="p">)</span><span class="w"></span>
-<span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="o">...</span><span class="w"> </span><span class="n">tau</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">addition</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">described</span><span class="w"> </span><span class="n">previously</span><span class="p">,</span><span class="w"> </span><span class="n">communication</span><span class="w"></span>
-<span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvset</span><span class="w"> </span><span class="n">uses</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="p">:</span><span class="w"></span>
-<span class="w">   </span><span class="n">tau</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">past</span><span class="w"> </span><span class="n">nq</span><span class="w"> </span><span class="n">values</span><span class="w"></span>
-<span class="w">            </span><span class="n">of</span><span class="w"> </span><span class="n">h</span><span class="o">.</span><span class="w"></span>
-<span class="w">   </span><span class="n">el</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">vset</span><span class="w"> </span><span class="n">stores</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
-<span class="w">            </span><span class="n">coefficients</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">corrector</span><span class="w"> </span><span class="n">formula</span><span class="o">.</span><span class="w"></span>
-<span class="w">   </span><span class="n">tq</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">vset</span><span class="w"> </span><span class="n">stores</span><span class="w"> </span><span class="n">constants</span><span class="w"></span>
-<span class="w">            </span><span class="n">used</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">convergence</span><span class="w"> </span><span class="n">test</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">test</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
-<span class="w">            </span><span class="n">selection</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">new</span><span class="w"> </span><span class="n">order</span><span class="o">.</span><span class="w"></span>
-<span class="w">   </span><span class="n">meth</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">basic</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="n">indicator</span><span class="o">.</span><span class="w"></span>
-<span class="w">   </span><span class="n">nq</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="n">order</span><span class="o">.</span><span class="w"></span>
-<span class="w">   </span><span class="n">l</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">nq</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">stored</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">el</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"></span>
-<span class="w">            </span><span class="n">the</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">columns</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">yh</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">being</span><span class="w"> </span><span class="n">used</span><span class="o">.</span><span class="w"></span>
-<span class="w">   </span><span class="n">nqwait</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="n">controlling</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">frequency</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="n">changes</span><span class="o">.</span><span class="w"></span>
-<span class="w">            </span><span class="n">an</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="n">change</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">about</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">considered</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">nqwait</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"></span>
-</code></pre></div>
+  <p>dvset is called by <a href="../proc/dvstep.html">dvstep</a> and sets coefficients for use there.</p>
+<p>for each order <code>nq</code>, the coefficients in <code>el</code> are calculated by use of
+ the generating polynomial <code>lambda(x)</code>, with coefficients <code>el(i)</code>.</p>
+<p>
+<script type="math/tex; mode=display"> \lambda(x) = \mathrm{el}(1) + \mathrm{el}(2) x + \cdots + \mathrm{el}(n_q+1)(x^n_q) </script>
+</p>
+<p>for the backward differentiation formulas,</p>
+<p>
+<script type="math/tex; mode=display"> \lambda(x) = \left(1 + x/x_i \cdot (n_q) \right) \prod_{i=1}^{n_q-1} \left(1 + x/x_i(i) \right) </script>
+</p>
+<p>for the adams formulas,</p>
+<p>
+<script type="math/tex; mode=display"> \frac{d}{dx} \lambda(x) = c  \prod_{i=1}^{n_q-1} \left(1 + x/x_i(i) \right)  </script>
+<script type="math/tex; mode=display"> \lambda(-1) = 0 , \lambda(0) = 1 </script>
+</p>
+<p>where <code>c</code> is a normalization constant.
+ in both cases, <script type="math/tex">x_i(i)</script> is defined by</p>
+<p>
+<script type="math/tex; mode=display"> \begin{align} 
+   h x_i(i) &= t_n  -  t_{n-i} \\
+            &= h + \tau(1) + \tau(2) + \cdots + \tau(i-1)
+    \end{align} </script>
+</p>
+<p>in addition to variables described previously, communication
+ with <a href="../proc/dvset.html">dvset</a> uses the following class variables:</p>
+<ul>
+<li><code>tau</code>    = a vector of length 13 containing the past <code>nq</code> values
+               of h.</li>
+<li><code>el</code>     = a vector of length 13 in which vset stores the
+               coefficients for the corrector formula.</li>
+<li><code>tq</code>     = a vector of length 5 in which vset stores constants
+               used for the convergence test, the error test, and the
+               selection of <code>h</code> at a new order.</li>
+<li><code>meth</code>   = the basic method indicator.</li>
+<li><code>nq</code>     = the current order.</li>
+<li><code>l</code>      = <code>nq + 1</code>, the length of the vector stored in el, and
+               the number of columns of the <code>yh</code> array being used.</li>
+<li><code>nqwait</code> = a counter controlling the frequency of order changes.
+               an order change is about to be considered if <code>nqwait = 1</code>.</li>
+</ul>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -3404,18 +3378,8 @@ will be unchanged, and <code>ivalue</code> is a dummy argument.</p>
 <p>subroutines <a href="../proc/xerrwd.html">xerrwd</a>, <a href="../proc/xsetf.html">xsetf</a>, <a href="../proc/xsetun.html">xsetun</a>, and the function routine <a href="../proc/ixsav.html">ixsav</a>,
   as given here, constitute a simplified version of the slatec error
   handling package.</p>
-<p>all arguments are input arguments.</p>
-<p>msg    = the message (character array).
-  nmes   = the length of msg (number of characters).
-  nerr   = the error number (not used).
-  level  = the error level..
-           0 or 1 means recoverable (control returns to caller).
-           2 means fatal (run is aborted--see note below).
-  ni     = number of integers (0, 1, or 2) to be printed with message.
-  i1,i2  = integers to be printed, depending on ni.
-  nr     = number of reals (0, 1, or 2) to be printed with message.
-  r1,r2  = reals to be printed, depending on nr.</p>
-<p>Note: this routine is machine-dependent and specialized for use
+<h3>Note</h3>
+<p>This routine is machine-dependent and specialized for use
   in limited context, in the following ways:</p>
 <ol>
 <li>the argument msg is assumed to be of type character, and
@@ -3442,8 +3406,7 @@ will be unchanged, and <code>ivalue</code> is a dummy argument.</p>
 <h3>internal notes:</h3>
 <p>for a different default logical unit number, <a href="../proc/ixsav.html">ixsav</a> (or a subsidiary
   routine that it calls) will need to be modified.
-  for a different run-abort command, change the statement following
-  statement 100 at the end.</p>
+  for a different run-abort command, change the statement at the end.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -3483,142 +3446,142 @@ will be unchanged, and <code>ivalue</code> is a dummy argument.</p>
             <td>::</td>
             <td><strong>msg</strong></td>
             <td>
-
+<p>the message (character array).</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>nmes</strong></td>
             <td>
-
+<p>the length of msg (number of characters).</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>nerr</strong></td>
             <td>
-
+<p>the error number (not used).</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>level</strong></td>
             <td>
-
+<p>the error level:</p><a href="../proc/xerrwd.html#variable-level" class="pull-right"><emph>Read more&hellip;</emph></a>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ni</strong></td>
             <td>
-
+<p>number of integers (0, 1, or 2) to be printed with message.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>i1</strong></td>
             <td>
-
+<p>integer to be printed, depending on <code>ni</code>.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>i2</strong></td>
             <td>
-
+<p>integer to be printed, depending on <code>ni</code>.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>nr</strong></td>
             <td>
-
+<p>number of reals (0, 1, or 2) to be printed with message.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>r1</strong></td>
             <td>
-
+<p>real to be printed, depending on <code>nr</code>.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>r2</strong></td>
             <td>
-
+<p>real to be printed, depending on <code>nr</code>.</p>
             </td>
         </tr>
     </tbody>
@@ -3660,10 +3623,27 @@ will be unchanged, and <code>ivalue</code> is a dummy argument.</p>
 
 <span class="k">      procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">solve</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dvode</span><span class="w"></span>
-<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xsetun</span><span class="w"></span>
-<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xsetf</span><span class="w"></span>
-<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvsrco</span><span class="w"></span>
-<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvindy</span><span class="w"></span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xsetun</span><span class="w"> </span><span class="c">!! set the logical unit number, lun, for</span>
+<span class="w">                                 </span><span class="c">!! output of messages from dvode, if</span>
+<span class="w">                                 </span><span class="c">!! the default is not desired.</span>
+<span class="w">                                 </span><span class="c">!! the default value of lun is 6.</span>
+<span class="w">                                 </span><span class="c">!! this call may be made at any time and will take effect immediately.</span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xsetf</span><span class="w"> </span><span class="c">!! set a flag to control the printing of</span>
+<span class="w">                                </span><span class="c">!! messages by dvode.</span>
+<span class="w">                                </span><span class="c">!! mflag = 0 means do not print. (danger:</span>
+<span class="w">                                </span><span class="c">!! this risks losing valuable information.)</span>
+<span class="w">                                </span><span class="c">!! mflag = 1 means print (the default).</span>
+<span class="w">                                </span><span class="c">!! this call may be made at any time and will take effect immediately.</span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvsrco</span><span class="w"> </span><span class="c">!! saves and restores the contents of</span>
+<span class="w">                                 </span><span class="c">!! the internal variables used by dvode.</span>
+<span class="w">                                 </span><span class="c">!! [[dvsrco]] is useful if one is</span>
+<span class="w">                                 </span><span class="c">!! interrupting a run and restarting</span>
+<span class="w">                                 </span><span class="c">!! later, or alternating between two or</span>
+<span class="w">                                 </span><span class="c">!! more problems solved with [[dvode]].</span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvindy</span><span class="w"> </span><span class="c">!! provide derivatives of y, of various</span>
+<span class="w">                                 </span><span class="c">!! orders, at a specified point t, if</span>
+<span class="w">                                 </span><span class="c">!! desired.  it may be called only after</span>
+<span class="w">                                 </span><span class="c">!! a successful return from dvode.</span>
 
 <span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvhin</span><span class="w"></span>
 <span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvstep</span><span class="w"></span>

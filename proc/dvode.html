@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="23.7% of total for procedures.">472 statements</a>
+               title="23.5% of total for procedures.">472 statements</a>
           </li>
 
             <li id="source-file">
@@ -368,7 +368,7 @@
 <span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="n">quantities</span><span class="w"> </span><span class="n">computed</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">routine</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">needed</span><span class="w"></span>
 <span class="w">          </span><span class="n">externally</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">dvode</span><span class="p">,</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">extra</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">made</span><span class="w"></span>
 <span class="w">          </span><span class="k">for</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">purpose</span><span class="p">,</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">consistent</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">accurate</span><span class="w"> </span><span class="n">results</span><span class="o">.</span><span class="w"></span>
-<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">derivative</span><span class="w"> </span><span class="n">dy</span><span class="o">/</span><span class="n">dt</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">needed</span><span class="p">,</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">dvindy</span><span class="w"> </span><span class="n">instead</span><span class="o">.</span><span class="w"></span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">derivative</span><span class="w"> </span><span class="n">dy</span><span class="o">/</span><span class="n">dt</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">needed</span><span class="p">,</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="p">[[</span><span class="n">dvindy</span><span class="p">]]</span><span class="w"> </span><span class="n">instead</span><span class="o">.</span><span class="w"></span>
 
 <span class="w"> </span><span class="n">neq</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">ode</span><span class="w"> </span><span class="n">system</span><span class="w"> </span><span class="p">(</span><span class="n">number</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="n">order</span><span class="w"></span>
 <span class="w">          </span><span class="n">ordinary</span><span class="w"> </span><span class="n">differential</span><span class="w"> </span><span class="n">equations</span><span class="p">)</span><span class="o">.</span><span class="w">  </span><span class="n">used</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">input</span><span class="o">.</span><span class="w"></span>
@@ -834,13 +834,13 @@
 <span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">interrupted</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">alternating</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">ode</span><span class="w"> </span><span class="n">problems</span><span class="p">,</span><span class="w"></span>
 <span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">save</span><span class="p">,</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="n">call</span><span class="w"></span>
 <span class="w"> </span><span class="n">prior</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">interruption</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">contents</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"></span>
-<span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">internal</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">later</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">these</span><span class="w"></span>
+<span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">internal</span><span class="w"> </span><span class="n">variables</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">later</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">these</span><span class="w"></span>
 <span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="n">before</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">next</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">problem</span><span class="o">.</span><span class="w">  </span><span class="n">to</span><span class="w"> </span><span class="n">save</span><span class="w"></span>
-<span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="p">,</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="n">dvsrco</span><span class="p">,</span><span class="w"> </span><span class="k">as</span><span class="w"></span>
+<span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">variables</span><span class="p">,</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">subroutine</span><span class="w"> </span><span class="p">[[</span><span class="n">dvsrco</span><span class="p">]],</span><span class="w"> </span><span class="k">as</span><span class="w"></span>
 <span class="w"> </span><span class="n">described</span><span class="w"> </span><span class="n">below</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="n">ii</span><span class="o">.</span><span class="w"></span>
 
 <span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">addition</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">non</span><span class="o">-</span><span class="n">default</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">either</span><span class="w"> </span><span class="n">lun</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">mflag</span><span class="w"> </span><span class="n">are</span><span class="w"></span>
-<span class="w"> </span><span class="n">desired</span><span class="p">,</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">extra</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">xsetun</span><span class="w"> </span><span class="ow">and</span><span class="o">/</span><span class="ow">or</span><span class="w"> </span><span class="n">xsetf</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">made</span><span class="w"> </span><span class="n">just</span><span class="w"></span>
+<span class="w"> </span><span class="n">desired</span><span class="p">,</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">extra</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="p">[[</span><span class="n">xsetun</span><span class="p">]]</span><span class="w"> </span><span class="ow">and</span><span class="o">/</span><span class="ow">or</span><span class="w"> </span><span class="p">[[</span><span class="n">xsetf</span><span class="p">]]</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">made</span><span class="w"> </span><span class="n">just</span><span class="w"></span>
 <span class="w"> </span><span class="n">before</span><span class="w"> </span><span class="n">continuing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">integration</span><span class="o">.</span><span class="w">  </span><span class="n">see</span><span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="n">ii</span><span class="w"> </span><span class="n">below</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">details</span><span class="o">.</span><span class="w"></span>
 
 <span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
@@ -848,84 +848,13 @@
 
 <span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">optional</span><span class="w"> </span><span class="n">calls</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">make</span><span class="w"> </span><span class="n">to</span><span class="w"></span>
 <span class="w"> </span><span class="n">gain</span><span class="w"> </span><span class="n">additional</span><span class="w"> </span><span class="n">capabilities</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">conjunction</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvode</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="p">(</span><span class="n">the</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">xsetun</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">xsetf</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">designed</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">conform</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
+<span class="w"> </span><span class="p">(</span><span class="n">the</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="p">[[</span><span class="n">xsetun</span><span class="p">]]</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">[[</span><span class="n">xsetf</span><span class="p">]]</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">designed</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">conform</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
 <span class="w"> </span><span class="n">slatec</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">handling</span><span class="w"> </span><span class="n">package</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">     </span><span class="n">form</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">call</span><span class="w">                  </span><span class="n">function</span><span class="w"></span>
-<span class="w">  </span><span class="n">call</span><span class="w"> </span><span class="n">xsetun</span><span class="p">(</span><span class="n">lun</span><span class="p">)</span><span class="w">           </span><span class="n">set</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">logical</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="n">number</span><span class="p">,</span><span class="w"> </span><span class="n">lun</span><span class="p">,</span><span class="w"> </span><span class="k">for</span><span class="w"></span>
-<span class="w">                             </span><span class="n">output</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">messages</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">dvode</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="w"></span>
-<span class="w">                             </span><span class="n">the</span><span class="w"> </span><span class="n">default</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">desired</span><span class="o">.</span><span class="w"></span>
-<span class="w">                             </span><span class="n">the</span><span class="w"> </span><span class="n">default</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">lun</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="mf">6.</span><span class="w"></span>
-
-<span class="w">  </span><span class="n">call</span><span class="w"> </span><span class="n">xsetf</span><span class="p">(</span><span class="n">mflag</span><span class="p">)</span><span class="w">          </span><span class="n">set</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">control</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">printing</span><span class="w"> </span><span class="n">of</span><span class="w"></span>
-<span class="w">                             </span><span class="n">messages</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvode</span><span class="o">.</span><span class="w"></span>
-<span class="w">                             </span><span class="n">mflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nb">print</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="n">danger</span><span class="p">:</span><span class="w"></span>
-<span class="w">                             </span><span class="n">this</span><span class="w"> </span><span class="n">risks</span><span class="w"> </span><span class="n">losing</span><span class="w"> </span><span class="n">valuable</span><span class="w"> </span><span class="n">information</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
-<span class="w">                             </span><span class="n">mflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="nb">print</span><span class="w"> </span><span class="p">(</span><span class="n">the</span><span class="w"> </span><span class="n">default</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-
-<span class="w">                             </span><span class="n">either</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">above</span><span class="w"> </span><span class="n">calls</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">made</span><span class="w"> </span><span class="n">at</span><span class="w"></span>
-<span class="w">                             </span><span class="n">any</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">take</span><span class="w"> </span><span class="n">effect</span><span class="w"> </span><span class="n">immediately</span><span class="o">.</span><span class="w"></span>
-
-<span class="w">  </span><span class="n">call</span><span class="w"> </span><span class="n">dvsrco</span><span class="p">(</span><span class="n">rsav</span><span class="p">,</span><span class="n">isav</span><span class="p">,</span><span class="n">job</span><span class="p">)</span><span class="w"> </span><span class="n">saves</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">restores</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">contents</span><span class="w"> </span><span class="n">of</span><span class="w"></span>
-<span class="w">                             </span><span class="n">the</span><span class="w"> </span><span class="n">internal</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="n">by</span><span class="w"></span>
-<span class="w">                             </span><span class="n">dvode</span><span class="o">.</span><span class="w"> </span><span class="p">(</span><span class="n">see</span><span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="n">iii</span><span class="w"> </span><span class="n">below</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
-<span class="w">                             </span><span class="n">rsav</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">49</span><span class="w"></span>
-<span class="w">                             </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">isav</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">integer</span><span class="w"></span>
-<span class="w">                             </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="mi">40</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="o">.</span><span class="w"></span>
-<span class="w">                             </span><span class="n">job</span><span class="o">=</span><span class="mi">1</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">save</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="n">rsav</span><span class="o">/</span><span class="n">isav</span><span class="o">.</span><span class="w"></span>
-<span class="w">                             </span><span class="n">job</span><span class="o">=</span><span class="mi">2</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">rsav</span><span class="o">/</span><span class="n">isav</span><span class="o">.</span><span class="w"></span>
-<span class="w">                                </span><span class="n">dvsrco</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">useful</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="k">is</span><span class="w"></span>
-<span class="w">                             </span><span class="n">interrupting</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">restarting</span><span class="w"></span>
-<span class="w">                             </span><span class="n">later</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">alternating</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="ow">or</span><span class="w"></span>
-<span class="w">                             </span><span class="n">more</span><span class="w"> </span><span class="n">problems</span><span class="w"> </span><span class="n">solved</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvode</span><span class="o">.</span><span class="w"></span>
-
-<span class="w">  </span><span class="n">call</span><span class="w"> </span><span class="n">dvindy</span><span class="p">(,,,,,)</span><span class="w">         </span><span class="n">provide</span><span class="w"> </span><span class="n">derivatives</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">various</span><span class="w"></span>
-<span class="w">        </span><span class="p">(</span><span class="n">see</span><span class="w"> </span><span class="n">below</span><span class="o">.</span><span class="p">)</span><span class="w">         </span><span class="n">orders</span><span class="p">,</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">specified</span><span class="w"> </span><span class="n">point</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="w"></span>
-<span class="w">                             </span><span class="n">desired</span><span class="o">.</span><span class="w">  </span><span class="n">it</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">only</span><span class="w"> </span><span class="n">after</span><span class="w"></span>
-<span class="w">                             </span><span class="n">a</span><span class="w"> </span><span class="n">successful</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">dvode</span><span class="o">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">detailed</span><span class="w"> </span><span class="n">instructions</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">dvindy</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">follows</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">form</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="k">is</span><span class="p">:</span><span class="w"></span>
-
-<span class="w">  </span><span class="n">call</span><span class="w"> </span><span class="n">dvindy</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">rwork</span><span class="p">(</span><span class="mi">21</span><span class="p">),</span><span class="w"> </span><span class="n">nyh</span><span class="p">,</span><span class="w"> </span><span class="n">dky</span><span class="p">,</span><span class="w"> </span><span class="n">iflag</span><span class="p">)</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="n">are</span><span class="p">:</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">t</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">independent</span><span class="w"> </span><span class="n">variable</span><span class="w"> </span><span class="n">where</span><span class="w"> </span><span class="n">answers</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">desired</span><span class="w"></span>
-<span class="w">             </span><span class="p">(</span><span class="n">normally</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">same</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="n">returned</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvode</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w">             </span><span class="k">for</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="n">results</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">lie</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">tcur</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">hu</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">tcur</span><span class="o">.</span><span class="w"></span>
-<span class="w">             </span><span class="p">(</span><span class="n">see</span><span class="w"> </span><span class="n">optional</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">tcur</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">hu</span><span class="o">.</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span><span class="n">k</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">derivative</span><span class="w"> </span><span class="n">desired</span><span class="o">.</span><span class="w">  </span><span class="n">k</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">satisfy</span><span class="w"></span>
-<span class="w">             </span><span class="mi">0</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">nqcur</span><span class="p">,</span><span class="w"> </span><span class="n">where</span><span class="w"> </span><span class="n">nqcur</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="n">order</span><span class="w"></span>
-<span class="w">             </span><span class="p">(</span><span class="n">see</span><span class="w"> </span><span class="n">optional</span><span class="w"> </span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="w">  </span><span class="n">the</span><span class="w"> </span><span class="n">capability</span><span class="w"> </span><span class="n">corresponding</span><span class="w"></span>
-<span class="w">             </span><span class="n">to</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span><span class="w"> </span><span class="n">computing</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">t</span><span class="p">),</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">already</span><span class="w"> </span><span class="n">provided</span><span class="w"></span>
-<span class="w">             </span><span class="n">by</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="n">directly</span><span class="o">.</span><span class="w">  </span><span class="n">since</span><span class="w"> </span><span class="n">nqcur</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">first</span><span class="w"></span>
-<span class="w">             </span><span class="n">derivative</span><span class="w"> </span><span class="n">dy</span><span class="o">/</span><span class="n">dt</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">always</span><span class="w"> </span><span class="n">available</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">dvindy</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">rwork</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">base</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">history</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">yh</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">nyh</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">equal</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">initial</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">neq</span><span class="o">.</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="n">are</span><span class="p">:</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">dky</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">real</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="n">neq</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">computed</span><span class="w"> </span><span class="n">value</span><span class="w"></span>
-<span class="w">             </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">k</span><span class="o">-</span><span class="n">th</span><span class="w"> </span><span class="n">derivative</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="n">iflag</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">flag</span><span class="p">,</span><span class="w"> </span><span class="n">returned</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">were</span><span class="w"> </span><span class="n">legal</span><span class="p">,</span><span class="w"></span>
-<span class="w">             </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">illegal</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">illegal</span><span class="o">.</span><span class="w"></span>
-<span class="w">             </span><span class="n">on</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="k">return</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">written</span><span class="o">.</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-<span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="n">iii</span><span class="o">.</span><span class="w">  </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="o">.</span><span class="w"></span>
-<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">overlay</span><span class="w"> </span><span class="n">situation</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"></span>
-<span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">declare</span><span class="p">,</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">primary</span><span class="w"> </span><span class="n">overlay</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="ow">in</span><span class="p">:</span><span class="w"></span>
-<span class="w">   </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">dvode</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">internal</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="w"></span>
-<span class="w">         </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w">  </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w">  </span><span class="mi">81</span><span class="w">  </span><span class="p">(</span><span class="mi">48</span><span class="w"> </span><span class="n">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">words</span><span class="w"></span>
-<span class="w">                         </span><span class="n">followed</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="mi">33</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">words</span><span class="p">),</span><span class="w"></span>
-<span class="w">         </span><span class="o">/</span><span class="n">dvod02</span><span class="o">/</span><span class="w">  </span><span class="n">of</span><span class="w"> </span><span class="n">length</span><span class="w">  </span><span class="mi">9</span><span class="w">  </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="n">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="n">word</span><span class="w"></span>
-<span class="w">                         </span><span class="n">followed</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">words</span><span class="p">),</span><span class="w"></span>
-
-<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">system</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">contents</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">internal</span><span class="w"></span>
-<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">preserved</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">calls</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="n">should</span><span class="w"></span>
-<span class="w"> </span><span class="n">declare</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">above</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">blocks</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">his</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="n">program</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">insure</span><span class="w"></span>
-<span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">their</span><span class="w"> </span><span class="n">contents</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">preserved</span><span class="o">.</span><span class="w"></span>
+<span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="p">[[</span><span class="n">xsetun</span><span class="p">]]</span><span class="w"></span>
+<span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="p">[[</span><span class="n">xsetf</span><span class="p">]]</span><span class="w"></span>
+<span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="p">[[</span><span class="n">dvsrco</span><span class="p">]]</span><span class="w"></span>
+<span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="p">[[</span><span class="n">dvindy</span><span class="p">]]</span><span class="w"></span>
 
 <span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
 <span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="n">iv</span><span class="o">.</span><span class="w">  </span><span class="n">optionally</span><span class="w"> </span><span class="n">replaceable</span><span class="w"> </span><span class="n">solver</span><span class="w"> </span><span class="n">routines</span><span class="o">.</span><span class="w"></span>
@@ -1047,136 +976,165 @@
         <tr>
             <td>
               <span class="anchor" id="variable-neq"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>neq</strong></td>
             <td>
-                
+                <p>number of first order odes.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-y~5"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-y"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>y</strong>(*)</td>
             <td>
-                
+                <p><strong>input:</strong> array of initial values, of length <code>neq</code>. 
+<strong>outout:</strong> array of computed values of <code>y(t)</code> vector.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-t"></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>t</strong></td>
             <td>
-                
+                <p><strong>input:</strong> the initial value of the independent variable.
+<strong>outout:</strong> corresponding value of independent variable (normally <code>tout</code>).</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-tout~2"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-tout"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>tout</strong></td>
             <td>
-                
+                <p>first point where output is desired (/= t).</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-itol~2"></span>
-              integer
+              <span class="anchor" id="variable-itol"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>itol</strong></td>
             <td>
-                
+                <p>1 or 2 according as <code>atol</code> is a scalar or array.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-rtol"></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>rtol</strong>(*)</td>
             <td>
-                
+                <p>relative tolerance parameter (scalar).</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-atol~2"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-atol"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>atol</strong>(*)</td>
             <td>
-                
+                <p>absolute tolerance parameter (scalar or array).
+ the estimated local error in y(i) will be controlled so as
+ to be roughly less (in magnitude) than</p>
+<div class="codehilite"><pre><span></span><code> <span class="nv">ewt</span><span class="ss">(</span><span class="nv">i</span><span class="ss">)</span> <span class="o">=</span> <span class="nv">rtol</span><span class="o">*</span><span class="nv">abs</span><span class="ss">(</span><span class="nv">y</span><span class="ss">(</span><span class="nv">i</span><span class="ss">))</span> <span class="o">+</span> <span class="nv">atol</span>    <span class="k">if</span> <span class="nv">itol</span> <span class="o">=</span> <span class="mi">1</span> 
+ <span class="nv">ewt</span><span class="ss">(</span><span class="nv">i</span><span class="ss">)</span> <span class="o">=</span> <span class="nv">rtol</span><span class="o">*</span><span class="nv">abs</span><span class="ss">(</span><span class="nv">y</span><span class="ss">(</span><span class="nv">i</span><span class="ss">))</span> <span class="o">+</span> <span class="nv">atol</span><span class="ss">(</span><span class="nv">i</span><span class="ss">)</span> <span class="k">if</span> <span class="nv">itol</span> <span class="o">=</span> <span class="mi">2</span> 
+</code></pre></div>
+
+<p>thus the local error test passes if, in each component,
+ either the absolute error is less than atol (or atol(i)),
+ or the relative error is less than rtol.
+ use rtol = 0.0 for pure absolute error control, and
+ use atol = 0.0 (or atol(i) = 0.0) for pure relative error
+ control.  caution: actual (global) errors may exceed these
+ local tolerances, so choose them conservatively.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-itask"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>itask</strong></td>
             <td>
-                
+                <p>1 for normal computation of output values of y at t = tout.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-istate"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>istate</strong></td>
             <td>
-                
+                <p>integer flag (input and output):</p>
+<ul>
+<li><strong>input:</strong> set istate = 1. </li>
+<li><strong>output:</strong>  2  if dvode was successful, negative otherwise.<ul>
+<li>-1 means excess work done on this call. (perhaps wrong mf.)</li>
+<li>-2 means excess accuracy requested. (tolerances too small.)</li>
+<li>-3 means illegal input detected. (see printed message.)</li>
+<li>-4 means repeated error test failures. (check all input.)</li>
+<li>-5 means repeated convergence failures. (perhaps bad
+     jacobian supplied or wrong choice of mf or tolerances.)</li>
+<li>-6 means error weight became zero during problem. (solution
+     component i vanished, and atol or atol(i) = 0.)</li>
+</ul>
+</li>
+</ul>
             </td>
         </tr>
         <tr>
@@ -1206,22 +1164,27 @@
             <td>::</td>
             <td><strong>rwork</strong>(lrw)</td>
             <td>
-                
+                <p>real work array of length at least:</p>
+<ul>
+<li>20 + 16*neq                      for mf = 10,</li>
+<li>22 +  9<em>neq + 2</em>neq**2           for mf = 21 or 22,</li>
+<li>22 + 11<em>neq + (3</em>ml + 2<em>mu)</em>neq  for mf = 24 or 25.</li>
+</ul>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-lrw"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>lrw</strong></td>
             <td>
-                
+                <p>declared length of <code>rwork</code> (in user's dimension statement).</p>
             </td>
         </tr>
         <tr>
@@ -1310,48 +1273,48 @@
 <path fill="none" stroke="#000000" d="M44.97,-87.15C57.99,-96.47 76.18,-109.49 90.89,-120.02"/>
 <polygon fill="#000000" stroke="#000000" points="88.92,-122.91 99.08,-125.89 92.99,-117.22 88.92,-122.91"/>
 </g>
-<!-- proc~dewset -->
-<g id="proc~~dvode~~CallsGraph_node3" class="node">
-<title>proc~dewset</title>
-<g id="a_proc~~dvode~~CallsGraph_node3"><a xlink:href=".././proc/dewset.html" xlink:title="dewset">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-108 90,-108 90,-84 144,-84 144,-108"/>
-<text text-anchor="middle" x="117" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dewset</text>
-</a>
-</g>
-</g>
-<!-- proc~dvode&#45;&gt;proc~dewset -->
-<g id="proc~~dvode~~CallsGraph_edge3" class="edge">
-<title>proc~dvode&#45;&gt;proc~dewset</title>
-<path fill="none" stroke="#000000" d="M54.4,-81.3C62.48,-83.23 71.51,-85.38 80.1,-87.43"/>
-<polygon fill="#000000" stroke="#000000" points="79.38,-90.86 89.92,-89.78 81,-84.05 79.38,-90.86"/>
-</g>
 <!-- proc~dvnorm -->
-<g id="proc~~dvode~~CallsGraph_node4" class="node">
+<g id="proc~~dvode~~CallsGraph_node3" class="node">
 <title>proc~dvnorm</title>
-<g id="a_proc~~dvode~~CallsGraph_node4"><a xlink:href=".././proc/dvnorm.html" xlink:title="dvnorm">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
-<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvnorm</text>
+<g id="a_proc~~dvode~~CallsGraph_node3"><a xlink:href=".././proc/dvnorm.html" xlink:title="dvnorm">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="144,-108 90,-108 90,-84 144,-84 144,-108"/>
+<text text-anchor="middle" x="117" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvnorm</text>
 </a>
 </g>
 </g>
 <!-- proc~dvode&#45;&gt;proc~dvnorm -->
 <g id="proc~~dvode~~CallsGraph_edge2" class="edge">
 <title>proc~dvode&#45;&gt;proc~dvnorm</title>
-<path fill="none" stroke="#000000" d="M54.4,-68.7C62.48,-66.77 71.51,-64.62 80.1,-62.57"/>
-<polygon fill="#000000" stroke="#000000" points="81,-65.95 89.92,-60.22 79.38,-59.14 81,-65.95"/>
+<path fill="none" stroke="#000000" d="M54.4,-81.3C62.48,-83.23 71.51,-85.38 80.1,-87.43"/>
+<polygon fill="#000000" stroke="#000000" points="79.38,-90.86 89.92,-89.78 81,-84.05 79.38,-90.86"/>
 </g>
 <!-- proc~dscal -->
-<g id="proc~~dvode~~CallsGraph_node5" class="node">
+<g id="proc~~dvode~~CallsGraph_node4" class="node">
 <title>proc~dscal</title>
-<g id="a_proc~~dvode~~CallsGraph_node5"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
-<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
+<g id="a_proc~~dvode~~CallsGraph_node4"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
+<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
 </a>
 </g>
 </g>
 <!-- proc~dvode&#45;&gt;proc~dscal -->
-<g id="proc~~dvode~~CallsGraph_edge4" class="edge">
+<g id="proc~~dvode~~CallsGraph_edge3" class="edge">
 <title>proc~dvode&#45;&gt;proc~dscal</title>
+<path fill="none" stroke="#000000" d="M54.4,-68.7C62.48,-66.77 71.51,-64.62 80.1,-62.57"/>
+<polygon fill="#000000" stroke="#000000" points="81,-65.95 89.92,-60.22 79.38,-59.14 81,-65.95"/>
+</g>
+<!-- proc~dewset -->
+<g id="proc~~dvode~~CallsGraph_node5" class="node">
+<title>proc~dewset</title>
+<g id="a_proc~~dvode~~CallsGraph_node5"><a xlink:href=".././proc/dewset.html" xlink:title="dewset">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
+<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dewset</text>
+</a>
+</g>
+</g>
+<!-- proc~dvode&#45;&gt;proc~dewset -->
+<g id="proc~~dvode~~CallsGraph_edge4" class="edge">
+<title>proc~dvode&#45;&gt;proc~dewset</title>
 <path fill="none" stroke="#000000" d="M44.97,-62.85C57.99,-53.53 76.18,-40.51 90.89,-29.98"/>
 <polygon fill="#000000" stroke="#000000" points="92.99,-32.78 99.08,-24.11 88.92,-27.09 92.99,-32.78"/>
 </g>
@@ -1466,18 +1429,70 @@
     <div class="highlight"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">dvode</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">neq</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">tout</span><span class="p">,</span><span class="n">itol</span><span class="p">,</span><span class="n">rtol</span><span class="p">,</span><span class="n">atol</span><span class="p">,</span><span class="n">itask</span><span class="p">,</span><span class="n">istate</span><span class="p">,</span><span class="n">iopt</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
 <span class="w">                    </span><span class="n">rwork</span><span class="p">,</span><span class="n">lrw</span><span class="p">,</span><span class="n">iwork</span><span class="p">,</span><span class="n">liw</span><span class="p">,</span><span class="n">mf</span><span class="p">)</span><span class="w"></span>
 
+<span class="c">! iopt   = 0 to indicate no optional input used.</span>
+<span class="c">! rwork  = real work array of length at least:</span>
+<span class="c">!             20 + 16*neq                      for mf = 10,</span>
+<span class="c">!             22 +  9*neq + 2*neq**2           for mf = 21 or 22,</span>
+<span class="c">!             22 + 11*neq + (3*ml + 2*mu)*neq  for mf = 24 or 25.</span>
+<span class="c">! lrw    = declared length of rwork (in user&#39;s dimension statement).</span>
+<span class="c">! iwork  = integer work array of length at least:</span>
+<span class="c">!             30        for mf = 10,</span>
+<span class="c">!             30 + neq  for mf = 21, 22, 24, or 25.</span>
+<span class="c">!          if mf = 24 or 25, input in iwork(1),iwork(2) the lower</span>
+<span class="c">!          and upper half-bandwidths ml,mu.</span>
+<span class="c">! liw    = declared length of iwork (in user&#39;s dimension statement).</span>
+<span class="c">! jac    = name of subroutine for jacobian matrix (mf = 21 or 24).</span>
+<span class="c">!          if used, this name must be declared external in calling</span>
+<span class="c">!          program.  if not used, pass a dummy name.</span>
+<span class="c">! mf     = method flag.  standard values are:</span>
+<span class="c">!          10 for nonstiff (adams) method, no jacobian used.</span>
+<span class="c">!          21 for stiff (bdf) method, user-supplied full jacobian.</span>
+<span class="c">!          22 for stiff method, internally generated full jacobian.</span>
+<span class="c">!          24 for stiff method, user-supplied banded jacobian.</span>
+<span class="c">!          25 for stiff method, internally generated banded jacobian.</span>
+<span class="c">!</span>
 <span class="w">      </span><span class="k">class</span><span class="p">(</span><span class="n">dvode_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tout</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rtol</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">atol</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lrw</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rwork</span><span class="p">(</span><span class="n">lrw</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">neq</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">itol</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">itask</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">istate</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">y</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! **input:** array of initial values, of length `neq`. </span>
+<span class="w">                                     </span><span class="c">!! **outout:** array of computed values of `y(t)` vector.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="c">!! **input:** the initial value of the independent variable.</span>
+<span class="w">                                  </span><span class="c">!! **outout:** corresponding value of independent variable (normally `tout`).</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tout</span><span class="w"> </span><span class="c">!! first point where output is desired (/= t).</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rtol</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! relative tolerance parameter (scalar).</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">atol</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! absolute tolerance parameter (scalar or array).</span>
+<span class="w">                                     </span><span class="c">!! the estimated local error in y(i) will be controlled so as</span>
+<span class="w">                                     </span><span class="c">!! to be roughly less (in magnitude) than</span>
+<span class="w">                                     </span><span class="c">!!```</span>
+<span class="w">                                     </span><span class="c">!! ewt(i) = rtol*abs(y(i)) + atol    if itol = 1 </span>
+<span class="w">                                     </span><span class="c">!! ewt(i) = rtol*abs(y(i)) + atol(i) if itol = 2 </span>
+<span class="w">                                     </span><span class="c">!!```</span>
+<span class="w">                                     </span><span class="c">!! thus the local error test passes if, in each component,</span>
+<span class="w">                                     </span><span class="c">!! either the absolute error is less than atol (or atol(i)),</span>
+<span class="w">                                     </span><span class="c">!! or the relative error is less than rtol.</span>
+<span class="w">                                     </span><span class="c">!! use rtol = 0.0 for pure absolute error control, and</span>
+<span class="w">                                     </span><span class="c">!! use atol = 0.0 (or atol(i) = 0.0) for pure relative error</span>
+<span class="w">                                     </span><span class="c">!! control.  caution: actual (global) errors may exceed these</span>
+<span class="w">                                     </span><span class="c">!! local tolerances, so choose them conservatively.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lrw</span><span class="w"> </span><span class="c">!! declared length of `rwork` (in user&#39;s dimension statement).</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rwork</span><span class="p">(</span><span class="n">lrw</span><span class="p">)</span><span class="w"> </span><span class="c">!! real work array of length at least:</span>
+<span class="w">                             </span><span class="c">!!</span>
+<span class="w">                             </span><span class="c">!!  * 20 + 16*neq                      for mf = 10,</span>
+<span class="w">                             </span><span class="c">!!  * 22 +  9*neq + 2*neq**2           for mf = 21 or 22,</span>
+<span class="w">                             </span><span class="c">!!  * 22 + 11*neq + (3*ml + 2*mu)*neq  for mf = 24 or 25.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">neq</span><span class="w"> </span><span class="c">!! number of first order odes.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">itol</span><span class="w"> </span><span class="c">!! 1 or 2 according as `atol` is a scalar or array.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">itask</span><span class="w"> </span><span class="c">!! 1 for normal computation of output values of y at t = tout.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">istate</span><span class="w"> </span><span class="c">!! integer flag (input and output):</span>
+<span class="w">                                      </span><span class="c">!!</span>
+<span class="w">                                      </span><span class="c">!!  * **input:** set istate = 1. </span>
+<span class="w">                                      </span><span class="c">!!  * **output:**  2  if dvode was successful, negative otherwise.</span>
+<span class="w">                                      </span><span class="c">!!     * -1 means excess work done on this call. (perhaps wrong mf.)</span>
+<span class="w">                                      </span><span class="c">!!     * -2 means excess accuracy requested. (tolerances too small.)</span>
+<span class="w">                                      </span><span class="c">!!     * -3 means illegal input detected. (see printed message.)</span>
+<span class="w">                                      </span><span class="c">!!     * -4 means repeated error test failures. (check all input.)</span>
+<span class="w">                                      </span><span class="c">!!     * -5 means repeated convergence failures. (perhaps bad</span>
+<span class="w">                                      </span><span class="c">!!          jacobian supplied or wrong choice of mf or tolerances.)</span>
+<span class="w">                                      </span><span class="c">!!     * -6 means error weight became zero during problem. (solution</span>
+<span class="w">                                      </span><span class="c">!!          component i vanished, and atol or atol(i) = 0.)</span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iopt</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">liw</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iwork</span><span class="p">(</span><span class="n">liw</span><span class="p">)</span><span class="w"></span>

@@ -159,16 +159,7 @@
   is called within the package with k = 0 and t = tout, but may
   also be called by the user for any k up to the current order.
   (see detailed instructions in the usage documentation.)</p>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">yh</span><span class="p">,</span><span class="w"> </span><span class="n">ldyh</span><span class="w"></span>
-<span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">sequence</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">dky</span><span class="p">,</span><span class="w"> </span><span class="n">iflag</span><span class="w"></span>
-<span class="w"> </span><span class="n">common</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">accessed</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="o">/</span><span class="n">dvod01</span><span class="o">/</span><span class="w"> </span><span class="o">--</span><span class="w">  </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">tn</span><span class="p">,</span><span class="w"> </span><span class="n">uround</span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">nq</span><span class="w"></span>
-<span class="w">     </span><span class="o">/</span><span class="n">dvod02</span><span class="o">/</span><span class="w"> </span><span class="o">--</span><span class="w">  </span><span class="n">hu</span><span class="w"></span>
-
-<span class="w"> </span><span class="n">subroutines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvindy</span><span class="p">:</span><span class="w"> </span><span class="n">dscal</span><span class="p">,</span><span class="w"> </span><span class="n">xerrwd</span><span class="w"></span>
-<span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">routines</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">dvindy</span><span class="p">:</span><span class="w"> </span><span class="n">none</span><span class="w"></span>
-<span class="o">-----------------------------------------------------------------------</span><span class="w"></span>
-<span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">computed</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">dky</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">gotten</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">interpolation</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">computed</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">dky</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">gotten</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">interpolation</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
 <span class="w"> </span><span class="n">nordsieck</span><span class="w"> </span><span class="n">history</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">yh</span><span class="o">.</span><span class="w">  </span><span class="n">this</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="n">corresponds</span><span class="w"> </span><span class="n">uniquely</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
 <span class="w"> </span><span class="n">vector</span><span class="o">-</span><span class="n">valued</span><span class="w"> </span><span class="n">polynomial</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">degree</span><span class="w"> </span><span class="n">nqcur</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">less</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">dky</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">set</span><span class="w"></span>
 <span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">k</span><span class="o">-</span><span class="n">th</span><span class="w"> </span><span class="n">derivative</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">polynomial</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">t</span><span class="o">.</span><span class="w"></span>
@@ -213,91 +204,102 @@
         <tr>
             <td>
               <span class="anchor" id="variable-t~2"></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>t</strong></td>
             <td>
-                
+                <p>value of independent variable where answers are desired
+(normally the same as the t last returned by <a href="../proc/dvode.html">dvode</a>).
+for valid results, t must lie between tcur - hu and tcur.
+(see optional output for tcur and hu.)</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-k"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>k</strong></td>
             <td>
-                
+                <p>integer order of the derivative desired.  k must satisfy
+0 &lt;= k &lt;= nqcur, where nqcur is the current order
+(see optional output).  the capability corresponding
+to k = 0, i.e. computing y(t), is already provided
+by <a href="../proc/dvode.html">dvode</a> directly.  since nqcur &gt;= 1, the first
+derivative dy/dt is always available with <a href="../proc/dvindy.html">dvindy</a>.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-yh~4"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-yh"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>yh</strong>(ldyh,*)</td>
             <td>
-                
+                <p>the history array yh</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ldyh~5"></span>
-              integer
+              <span class="anchor" id="variable-ldyh"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>ldyh</strong></td>
             <td>
-                
+                <p>column length of yh, equal to the initial value of neq.</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-dky"></span>
-              real(kind=wp)
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>dky</strong>(*)</td>
             <td>
-                
+                <p>a real array of length neq containing the computed value
+of the k-th derivative of y(t).</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-iflag"></span>
-              integer
+              integer,
             </td>
-<td></td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>iflag</strong></td>
             <td>
-                
+                <p>integer flag, returned as 0 if k and t were legal,
+-1 if k was illegal, and -2 if t was illegal.
+on an error return, a message is also written.</p>
             </td>
         </tr>
     </tbody>
@@ -452,12 +454,23 @@
     <div class="highlight"><pre><span></span><span class="w">      </span><span class="k">subroutine </span><span class="n">dvindy</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">yh</span><span class="p">,</span><span class="n">ldyh</span><span class="p">,</span><span class="n">dky</span><span class="p">,</span><span class="n">iflag</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">      </span><span class="k">class</span><span class="p">(</span><span class="n">dvode_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">ldyh</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dky</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">k</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ldyh</span><span class="w"></span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iflag</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="c">!! value of independent variable where answers are desired</span>
+<span class="w">                               </span><span class="c">!! (normally the same as the t last returned by [[dvode]]).</span>
+<span class="w">                               </span><span class="c">!! for valid results, t must lie between tcur - hu and tcur.</span>
+<span class="w">                               </span><span class="c">!! (see optional output for tcur and hu.)</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="c">!! integer order of the derivative desired.  k must satisfy</span>
+<span class="w">                              </span><span class="c">!! 0 &lt;= k &lt;= nqcur, where nqcur is the current order</span>
+<span class="w">                              </span><span class="c">!! (see optional output).  the capability corresponding</span>
+<span class="w">                              </span><span class="c">!! to k = 0, i.e. computing y(t), is already provided</span>
+<span class="w">                              </span><span class="c">!! by [[dvode]] directly.  since nqcur &gt;= 1, the first</span>
+<span class="w">                              </span><span class="c">!! derivative dy/dt is always available with [[dvindy]].</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ldyh</span><span class="w"> </span><span class="c">!! column length of yh, equal to the initial value of neq.</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">yh</span><span class="p">(</span><span class="n">ldyh</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! the history array yh</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dky</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! a real array of length neq containing the computed value</span>
+<span class="w">                                     </span><span class="c">!! of the k-th derivative of y(t).</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iflag</span><span class="w"> </span><span class="c">!! integer flag, returned as 0 if k and t were legal,</span>
+<span class="w">                                   </span><span class="c">!! -1 if k was illegal, and -2 if t was illegal.</span>
+<span class="w">                                   </span><span class="c">!! on an error return, a message is also written.</span>
 
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">tfuzz</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">tn1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">tp</span><span class="w"></span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ic</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">jb</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">jb2</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">jj</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">jj1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">jp1</span><span class="w"></span>
