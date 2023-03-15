@@ -158,10 +158,27 @@ module dvode_module
 
       procedure,public :: initialize
       procedure,public :: solve => dvode
-      procedure,public :: xsetun
-      procedure,public :: xsetf
-      procedure,public :: dvsrco
-      procedure,public :: dvindy
+      procedure,public :: xsetun !! set the logical unit number, lun, for
+                                 !! output of messages from dvode, if
+                                 !! the default is not desired.
+                                 !! the default value of lun is 6.
+                                 !! this call may be made at any time and will take effect immediately.
+      procedure,public :: xsetf !! set a flag to control the printing of
+                                !! messages by dvode.
+                                !! mflag = 0 means do not print. (danger:
+                                !! this risks losing valuable information.)
+                                !! mflag = 1 means print (the default).
+                                !! this call may be made at any time and will take effect immediately.
+      procedure,public :: dvsrco !! saves and restores the contents of
+                                 !! the internal variables used by dvode.
+                                 !! [[dvsrco]] is useful if one is
+                                 !! interrupting a run and restarting
+                                 !! later, or alternating between two or
+                                 !! more problems solved with [[dvode]].
+      procedure,public :: dvindy !! provide derivatives of y, of various
+                                 !! orders, at a specified point t, if
+                                 !! desired.  it may be called only after
+                                 !! a successful return from dvode.
 
       procedure :: dvhin
       procedure :: dvstep
@@ -441,7 +458,7 @@ contains
 !          if quantities computed in the f routine are needed
 !          externally to dvode, an extra call to f should be made
 !          for this purpose, for consistent and accurate results.
-!          if only the derivative dy/dt is needed, use dvindy instead.
+!          if only the derivative dy/dt is needed, use [[dvindy]] instead.
 !
 ! neq    = the size of the ode system (number of first order
 !          ordinary differential equations).  used only for input.
@@ -907,13 +924,13 @@ contains
 ! an interrupted run or alternating between two or more ode problems,
 ! the user should save, following the return from the last dvode call
 ! prior to the interruption, the contents of the call sequence
-! variables and internal common blocks, and later restore these
+! variables and internal variables, and later restore these
 ! values before the next dvode call for that problem.  to save
-! and restore the common blocks, use subroutine dvsrco, as
+! and restore the variables, use subroutine [[dvsrco]], as
 ! described below in part ii.
 !
 ! in addition, if non-default values for either lun or mflag are
-! desired, an extra call to xsetun and/or xsetf should be made just
+! desired, an extra call to [[xsetun]] and/or [[xsetf]] should be made just
 ! before continuing the integration.  see part ii below for details.
 !
 !-----------------------------------------------------------------------
@@ -921,84 +938,13 @@ contains
 !
 ! the following are optional calls which the user may make to
 ! gain additional capabilities in conjunction with dvode.
-! (the routines xsetun and xsetf are designed to conform to the
+! (the routines [[xsetun]] and [[xsetf]] are designed to conform to the
 ! slatec error handling package.)
 !
-!     form of call                  function
-!  call xsetun(lun)           set the logical unit number, lun, for
-!                             output of messages from dvode, if
-!                             the default is not desired.
-!                             the default value of lun is 6.
-!
-!  call xsetf(mflag)          set a flag to control the printing of
-!                             messages by dvode.
-!                             mflag = 0 means do not print. (danger:
-!                             this risks losing valuable information.)
-!                             mflag = 1 means print (the default).
-!
-!                             either of the above calls may be made at
-!                             any time and will take effect immediately.
-!
-!  call dvsrco(rsav,isav,job) saves and restores the contents of
-!                             the internal common blocks used by
-!                             dvode. (see part iii below.)
-!                             rsav must be a real array of length 49
-!                             or more, and isav must be an integer
-!                             array of length 40 or more.
-!                             job=1 means save common into rsav/isav.
-!                             job=2 means restore common from rsav/isav.
-!                                dvsrco is useful if one is
-!                             interrupting a run and restarting
-!                             later, or alternating between two or
-!                             more problems solved with dvode.
-!
-!  call dvindy(,,,,,)         provide derivatives of y, of various
-!        (see below.)         orders, at a specified point t, if
-!                             desired.  it may be called only after
-!                             a successful return from dvode.
-!
-! the detailed instructions for using dvindy are as follows.
-! the form of the call is:
-!
-!  call dvindy (t, k, rwork(21), nyh, dky, iflag)
-!
-! the input parameters are:
-!
-! t         = value of independent variable where answers are desired
-!             (normally the same as the t last returned by dvode).
-!             for valid results, t must lie between tcur - hu and tcur.
-!             (see optional output for tcur and hu.)
-! k         = integer order of the derivative desired.  k must satisfy
-!             0 <= k <= nqcur, where nqcur is the current order
-!             (see optional output).  the capability corresponding
-!             to k = 0, i.e. computing y(t), is already provided
-!             by dvode directly.  since nqcur >= 1, the first
-!             derivative dy/dt is always available with dvindy.
-! rwork(21) = the base address of the history array yh.
-! nyh       = column length of yh, equal to the initial value of neq.
-!
-! the output parameters are:
-!
-! dky       = a real array of length neq containing the computed value
-!             of the k-th derivative of y(t).
-! iflag     = integer flag, returned as 0 if k and t were legal,
-!             -1 if k was illegal, and -2 if t was illegal.
-!             on an error return, a message is also written.
-!-----------------------------------------------------------------------
-! part iii.  common blocks.
-! if dvode is to be used in an overlay situation, the user
-! must declare, in the primary overlay, the variables in:
-!   (1) the call sequence to dvode,
-!   (2) the two internal common blocks
-!         /dvod01/  of length  81  (48 real(wp) words
-!                         followed by 33 integer words),
-!         /dvod02/  of length  9  (1 real(wp) word
-!                         followed by 8 integer words),
-!
-! if dvode is used on a system in which the contents of internal
-! common blocks are not preserved between calls, the user should
-! declare the above two common blocks in his main program to insure
-! that their contents are preserved.
+!  * [[xsetun]]
+!  * [[xsetf]]
+!  * [[dvsrco]]
+!  * [[dvindy]]
 !
 !-----------------------------------------------------------------------
 ! part iv.  optionally replaceable solver routines.
@@ -1092,18 +1038,70 @@ contains
    subroutine dvode(me,neq,y,t,tout,itol,rtol,atol,itask,istate,iopt, &
                     rwork,lrw,iwork,liw,mf)
 
+! iopt   = 0 to indicate no optional input used.
+! rwork  = real work array of length at least:
+!             20 + 16*neq                      for mf = 10,
+!             22 +  9*neq + 2*neq**2           for mf = 21 or 22,
+!             22 + 11*neq + (3*ml + 2*mu)*neq  for mf = 24 or 25.
+! lrw    = declared length of rwork (in user's dimension statement).
+! iwork  = integer work array of length at least:
+!             30        for mf = 10,
+!             30 + neq  for mf = 21, 22, 24, or 25.
+!          if mf = 24 or 25, input in iwork(1),iwork(2) the lower
+!          and upper half-bandwidths ml,mu.
+! liw    = declared length of iwork (in user's dimension statement).
+! jac    = name of subroutine for jacobian matrix (mf = 21 or 24).
+!          if used, this name must be declared external in calling
+!          program.  if not used, pass a dummy name.
+! mf     = method flag.  standard values are:
+!          10 for nonstiff (adams) method, no jacobian used.
+!          21 for stiff (bdf) method, user-supplied full jacobian.
+!          22 for stiff method, internally generated full jacobian.
+!          24 for stiff method, user-supplied banded jacobian.
+!          25 for stiff method, internally generated banded jacobian.
+!
       class(dvode_t),intent(inout) :: me
-      real(wp) :: y(*)
-      real(wp) :: t
-      real(wp) :: tout
-      real(wp) :: rtol(*)
-      real(wp) :: atol(*)
-      integer :: lrw
-      real(wp) :: rwork(lrw)
-      integer :: neq
-      integer :: itol
-      integer :: itask
-      integer :: istate
+      real(wp),intent(inout) :: y(*) !! **input:** array of initial values, of length `neq`. 
+                                     !! **outout:** array of computed values of `y(t)` vector.
+      real(wp),intent(inout) :: t !! **input:** the initial value of the independent variable.
+                                  !! **outout:** corresponding value of independent variable (normally `tout`).
+      real(wp),intent(in) :: tout !! first point where output is desired (/= t).
+      real(wp),intent(in) :: rtol(*) !! relative tolerance parameter (scalar).
+      real(wp),intent(in) :: atol(*) !! absolute tolerance parameter (scalar or array).
+                                     !! the estimated local error in y(i) will be controlled so as
+                                     !! to be roughly less (in magnitude) than
+                                     !!```
+                                     !! ewt(i) = rtol*abs(y(i)) + atol    if itol = 1 
+                                     !! ewt(i) = rtol*abs(y(i)) + atol(i) if itol = 2 
+                                     !!```
+                                     !! thus the local error test passes if, in each component,
+                                     !! either the absolute error is less than atol (or atol(i)),
+                                     !! or the relative error is less than rtol.
+                                     !! use rtol = 0.0 for pure absolute error control, and
+                                     !! use atol = 0.0 (or atol(i) = 0.0) for pure relative error
+                                     !! control.  caution: actual (global) errors may exceed these
+                                     !! local tolerances, so choose them conservatively.
+      integer,intent(in) :: lrw !! declared length of `rwork` (in user's dimension statement).
+      real(wp) :: rwork(lrw) !! real work array of length at least:
+                             !!
+                             !!  * 20 + 16*neq                      for mf = 10,
+                             !!  * 22 +  9*neq + 2*neq**2           for mf = 21 or 22,
+                             !!  * 22 + 11*neq + (3*ml + 2*mu)*neq  for mf = 24 or 25.
+      integer,intent(in) :: neq !! number of first order odes.
+      integer,intent(in) :: itol !! 1 or 2 according as `atol` is a scalar or array.
+      integer,intent(in) :: itask !! 1 for normal computation of output values of y at t = tout.
+      integer,intent(inout) :: istate !! integer flag (input and output):
+                                      !!
+                                      !!  * **input:** set istate = 1. 
+                                      !!  * **output:**  2  if dvode was successful, negative otherwise.
+                                      !!     * -1 means excess work done on this call. (perhaps wrong mf.)
+                                      !!     * -2 means excess accuracy requested. (tolerances too small.)
+                                      !!     * -3 means illegal input detected. (see printed message.)
+                                      !!     * -4 means repeated error test failures. (check all input.)
+                                      !!     * -5 means repeated convergence failures. (perhaps bad
+                                      !!          jacobian supplied or wrong choice of mf or tolerances.)
+                                      !!     * -6 means error weight became zero during problem. (solution
+                                      !!          component i vanished, and atol or atol(i) = 0.)
       integer :: iopt
       integer :: liw
       integer :: iwork(liw)
@@ -1825,15 +1823,6 @@ contains
 !  (see detailed instructions in the usage documentation.)
 !
 !```
-! call sequence input -- t, k, yh, ldyh
-! call sequence output -- dky, iflag
-! common block variables accessed:
-!     /dvod01/ --  h, tn, uround, l, n, nq
-!     /dvod02/ --  hu
-!
-! subroutines called by dvindy: dscal, xerrwd
-! function routines called by dvindy: none
-!-----------------------------------------------------------------------
 ! the computed values in dky are gotten by interpolation using the
 ! nordsieck history array yh.  this array corresponds uniquely to a
 ! vector-valued polynomial of degree nqcur or less, and dky is set
@@ -1853,12 +1842,23 @@ contains
       subroutine dvindy(me,t,k,yh,ldyh,dky,iflag)
 
       class(dvode_t),intent(inout) :: me
-      real(wp) :: t
-      real(wp) :: yh(ldyh,*)
-      real(wp) :: dky(*)
-      integer :: k
-      integer :: ldyh
-      integer :: iflag
+      real(wp),intent(in) :: t !! value of independent variable where answers are desired
+                               !! (normally the same as the t last returned by [[dvode]]).
+                               !! for valid results, t must lie between tcur - hu and tcur.
+                               !! (see optional output for tcur and hu.)
+      integer,intent(in) :: k !! integer order of the derivative desired.  k must satisfy
+                              !! 0 <= k <= nqcur, where nqcur is the current order
+                              !! (see optional output).  the capability corresponding
+                              !! to k = 0, i.e. computing y(t), is already provided
+                              !! by [[dvode]] directly.  since nqcur >= 1, the first
+                              !! derivative dy/dt is always available with [[dvindy]].
+      integer,intent(in) :: ldyh !! column length of yh, equal to the initial value of neq.
+      real(wp),intent(in) :: yh(ldyh,*) !! the history array yh
+      real(wp),intent(out) :: dky(*) !! a real array of length neq containing the computed value
+                                     !! of the k-th derivative of y(t).
+      integer,intent(out) :: iflag !! integer flag, returned as 0 if k and t were legal,
+                                   !! -1 if k was illegal, and -2 if t was illegal.
+                                   !! on an error return, a message is also written.
 
       real(wp) :: c , r , s , tfuzz , tn1 , tp
       integer :: i , ic , j , jb , jb2 , jj , jj1 , jp1
@@ -2025,6 +2025,7 @@ contains
          me%dat%newh = 1
       endif
  100  if ( me%dat%newh==0 ) goto 400
+
       if ( me%dat%newq==me%dat%nq ) goto 300
       if ( me%dat%newq<me%dat%nq ) then
          call me%dvjust(yh,ldyh,-1)
@@ -2088,6 +2089,7 @@ contains
       me%dat%newh = 1
       me%dat%nqwait = me%dat%l
       if ( me%dat%newq<=me%dat%maxord ) goto 100
+
       ! rescale the history array for a change in h by a factor of eta. ------
  300  r = one
       do j = 2 , me%dat%l
@@ -2098,6 +2100,7 @@ contains
       me%dat%hscal = me%dat%h
       me%dat%rc = me%dat%rc*me%dat%eta
       me%dat%nqnyh = me%dat%nq*ldyh
+      
       !-----------------------------------------------------------------------
       ! this section computes the predicted values by effectively
       ! multiplying the yh array by the pascal triangle matrix.
@@ -2330,42 +2333,46 @@ contains
 
 !*****************************************************************************************
 !>
-!  dvset is called by dvstep and sets coefficients for use there.
+!  dvset is called by [[dvstep]] and sets coefficients for use there.
 !
-!```
-! for each order nq, the coefficients in el are calculated by use of
-!  the generating polynomial lambda(x), with coefficients el(i).
-!      lambda(x) = el(1) + el(2)*x + ... + el(nq+1)*(x**nq).
-! for the backward differentiation formulas,
-!                                     nq-1
-!      lambda(x) = (1 + x/xi*(nq)) * product (1 + x/xi(i) ) .
-!                                     i = 1
+!  for each order `nq`, the coefficients in `el` are calculated by use of
+!  the generating polynomial `lambda(x)`, with coefficients `el(i)`.
+!
+!  $$ \lambda(x) = \mathrm{el}(1) + \mathrm{el}(2) x + \cdots + \mathrm{el}(n_q+1)(x^n_q) $$
+!
+!  for the backward differentiation formulas,
+!
+!  $$ \lambda(x) = \left(1 + x/x_i \cdot (n_q) \right) \prod_{i=1}^{n_q-1} \left(1 + x/x_i(i) \right) $$
+! 
 ! for the adams formulas,
-!                              nq-1
-!      (d/dx) lambda(x) = c * product (1 + x/xi(i) ) ,
-!                              i = 1
-!      lambda(-1) = 0,    lambda(0) = 1,
-! where c is a normalization constant.
-! in both cases, xi(i) is defined by
-!      h*xi(i) = t sub n  -  t sub (n-i)
-!              = h + tau(1) + tau(2) + ... tau(i-1).
 !
-! in addition to variables described previously, communication
-! with dvset uses the following:
-!   tau    = a vector of length 13 containing the past nq values
-!            of h.
-!   el     = a vector of length 13 in which vset stores the
-!            coefficients for the corrector formula.
-!   tq     = a vector of length 5 in which vset stores constants
-!            used for the convergence test, the error test, and the
-!            selection of h at a new order.
-!   meth   = the basic method indicator.
-!   nq     = the current order.
-!   l      = nq + 1, the length of the vector stored in el, and
-!            the number of columns of the yh array being used.
-!   nqwait = a counter controlling the frequency of order changes.
-!            an order change is about to be considered if nqwait = 1.
-!```
+!  $$ \frac{d}{dx} \lambda(x) = c  \prod_{i=1}^{n_q-1} \left(1 + x/x_i(i) \right)  $$
+!  $$ \lambda(-1) = 0 , \lambda(0) = 1 $$
+!
+!  where `c` is a normalization constant.
+!  in both cases, \(x_i(i)\) is defined by
+!
+!  $$ \begin{align} 
+!    h x_i(i) &= t_n  -  t_{n-i} \\
+!             &= h + \tau(1) + \tau(2) + \cdots + \tau(i-1)
+!     \end{align} $$
+!
+!  in addition to variables described previously, communication
+!  with [[dvset]] uses the following class variables:
+!
+!   * `tau`    = a vector of length 13 containing the past `nq` values
+!                of h.
+!   * `el`     = a vector of length 13 in which vset stores the
+!                coefficients for the corrector formula.
+!   * `tq`     = a vector of length 5 in which vset stores constants
+!                used for the convergence test, the error test, and the
+!                selection of `h` at a new order.
+!   * `meth`   = the basic method indicator.
+!   * `nq`     = the current order.
+!   * `l`      = `nq + 1`, the length of the vector stored in el, and
+!                the number of columns of the `yh` array being used.
+!   * `nqwait` = a counter controlling the frequency of order changes.
+!                an order change is about to be considered if `nqwait = 1`.
 
    subroutine dvset(me)
 
@@ -3259,20 +3266,9 @@ contains
 !  as given here, constitute a simplified version of the slatec error
 !  handling package.
 !
-!  all arguments are input arguments.
+!### Note
 !
-!  msg    = the message (character array).
-!  nmes   = the length of msg (number of characters).
-!  nerr   = the error number (not used).
-!  level  = the error level..
-!           0 or 1 means recoverable (control returns to caller).
-!           2 means fatal (run is aborted--see note below).
-!  ni     = number of integers (0, 1, or 2) to be printed with message.
-!  i1,i2  = integers to be printed, depending on ni.
-!  nr     = number of reals (0, 1, or 2) to be printed with message.
-!  r1,r2  = reals to be printed, depending on nr.
-!
-!  Note: this routine is machine-dependent and specialized for use
+!  This routine is machine-dependent and specialized for use
 !  in limited context, in the following ways:
 !
 !   1. the argument msg is assumed to be of type character, and
@@ -3298,24 +3294,25 @@ contains
 !
 !  for a different default logical unit number, [[ixsav]] (or a subsidiary
 !  routine that it calls) will need to be modified.
-!  for a different run-abort command, change the statement following
-!  statement 100 at the end.
+!  for a different run-abort command, change the statement at the end.
 
    subroutine xerrwd(me,msg,nmes,nerr,level,ni,i1,i2,nr,r1,r2)
 
       class(dvode_t),intent(inout) :: me
-      real(wp) :: r1
-      real(wp) :: r2
-      integer :: nmes
-      integer :: nerr
-      integer :: level
-      integer :: ni
-      integer :: i1
-      integer :: i2
-      integer :: nr
-      character(len=*),intent(in) :: msg
+      character(len=*),intent(in) :: msg !! the message (character array).
+      integer,intent(in) :: nmes !! the length of msg (number of characters).
+      integer,intent(in) :: nerr !! the error number (not used).
+      integer,intent(in) :: level !! the error level:
+                                  !!
+                                  !!  * 0 or 1 means recoverable (control returns to caller).
+                                  !!  * 2 means fatal (run is aborted).
+      integer,intent(in) :: ni !! number of integers (0, 1, or 2) to be printed with message.
+      integer,intent(in) :: i1 !! integer to be printed, depending on `ni`.
+      integer,intent(in) :: i2 !! integer to be printed, depending on `ni`.
+      integer,intent(in) :: nr !! number of reals (0, 1, or 2) to be printed with message.
+      real(wp),intent(in) :: r1 !! real to be printed, depending on `nr`.
+      real(wp),intent(in) :: r2 !! real to be printed, depending on `nr`.
 
-      ! declare local variables.
       integer :: lunit , mesflg
 
       ! get logical unit number and message print flag.

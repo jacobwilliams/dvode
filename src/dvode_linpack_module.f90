@@ -75,7 +75,7 @@
 
             ! zero pivot implies this column already triangularized
 
-             if ( a(l,k)==0.0d0 ) then
+             if ( a(l,k)==0.0_wp ) then
                 info = k
              else
 
@@ -89,7 +89,7 @@
 
                ! compute multipliers
 
-                t = -1.0d0/a(k,k)
+                t = -1.0_wp/a(k,k)
                 call dscal(n-k,t,a(k+1,k),1)
 
                ! row elimination with column indexing
@@ -106,7 +106,7 @@
           enddo
        endif
        ipvt(n) = n
-       if ( a(n,n)==0.0d0 ) info = n
+       if ( a(n,n)==0.0_wp ) info = n
 
    end subroutine dgefa
 
@@ -302,7 +302,7 @@
           do jz = j0 , j1
              i0 = m + 1 - jz
              do i = i0 , ml
-                abd(i,jz) = 0.0d0
+                abd(i,jz) = 0.0_wp
              enddo
           enddo
        endif
@@ -322,7 +322,7 @@
              if ( jz<=n ) then
                 if ( ml>=1 ) then
                    do i = 1 , ml
-                      abd(i,jz) = 0.0d0
+                      abd(i,jz) = 0.0_wp
                    enddo
                 endif
              endif
@@ -335,7 +335,7 @@
 
             ! zero pivot implies this column already triangularized
 
-             if ( abd(l,k)==0.0d0 ) then
+             if ( abd(l,k)==0.0_wp ) then
                 info = k
              else
 
@@ -349,7 +349,7 @@
 
                ! compute multipliers
 
-                t = -1.0d0/abd(m,k)
+                t = -1.0_wp/abd(m,k)
                 call dscal(lm,t,abd(m+1,k),1)
 
                ! row elimination with column indexing
@@ -372,7 +372,7 @@
           enddo
        endif
        ipvt(n) = n
-       if ( abd(m,n)==0.0d0 ) info = n
+       if ( abd(m,n)==0.0_wp ) info = n
 
    end subroutine dgbfa
 

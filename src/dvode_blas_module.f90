@@ -35,8 +35,14 @@
       subroutine daxpy(n,da,dx,incx,dy,incy)
       implicit none
 
-      real(wp) :: dx(*) , dy(*) , da
-      integer :: i , incx , incy , ix , iy , m , mp1 , n
+      integer,intent(in) :: n
+      real(wp),intent(in) :: da
+      real(wp),intent(in)  :: dx(*) 
+      integer,intent(in)  :: incx  
+      real(wp),intent(inout) :: dy(*)
+      integer,intent(in)  :: incy
+
+      integer :: i , ix , iy , m , mp1
 
       if ( n<=0 ) return
       if ( da==zero ) return
@@ -93,8 +99,13 @@
 
       implicit none
 
-      real(wp) :: dx(*) , dy(*)
-      integer :: i , incx , incy , ix , iy , m , mp1 , n
+      integer,intent(in) :: n 
+      real(wp),intent(in) :: dx(*) 
+      integer,intent(in) :: incx 
+      real(wp),intent(inout) :: dy(*)
+      integer,intent(in) :: incy 
+
+      integer :: i , ix , iy , m , mp1 
 
       if ( n<=0 ) return
       if ( incx==1 .and. incy==1 ) then
@@ -153,8 +164,14 @@
 
       implicit none
 
-      real(wp) :: dx(*) , dy(*) , dtemp
-      integer :: i , incx , incy , ix , iy , m , mp1 , n
+      integer,intent(in) :: n
+      real(wp),intent(in) :: dx(*)
+      integer,intent(in) :: incx
+      real(wp),intent(in) :: dy(*)
+      integer,intent(in) :: incy
+
+      real(wp) :: dtemp
+      integer :: i , ix , iy , m , mp1
 
       ddot = zero
       dtemp = zero
@@ -270,8 +287,12 @@
 
       implicit none
 
-      real(wp) :: da , dx(*)
-      integer :: i , incx , m , mp1 , n , nincx
+      integer,intent(in) :: n
+      real(wp),intent(in) :: da 
+      real(wp),intent(inout) :: dx(*)
+      integer,intent(in) :: incx
+
+      integer :: i , m , mp1 , nincx
 
       if ( n<=0 .or. incx<=0 ) return
       if ( incx==1 ) then
