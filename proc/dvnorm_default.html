@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,7 +8,7 @@
     <meta name="author" content="Jacob Williams" >
     <link rel="icon" href="../favicon.png">
 
-    <title>f_func &ndash; dvode</title>
+    <title>dvnorm_default &ndash; dvode</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -79,8 +78,8 @@
 
     <div class="container">
   <div class="row">
-    <h1>f_func
-      <small>Abstract Interface</small>
+    <h1>dvnorm_default
+      <small>Function</small>
       
     </h1>
       <div class="row" id="info-bar">
@@ -91,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="25.0% of total for abstract interfaces.">39 statements</a>
+               title=" 0.6% of total for procedures.">13 statements</a>
           </li>
 
             <li id="source-file">
@@ -102,7 +101,7 @@
         <ol class="breadcrumb in-well text-right">
               <li><a href='../sourcefile/dvode_module.f90.html'>dvode_module.f90</a></li>
               <li><a href='../module/dvode_module.html'>dvode_module</a></li>
-          <li class="active">f_func</li>
+          <li class="active">dvnorm_default</li>
         </ol>
       </div>
     </div>
@@ -138,19 +137,41 @@
   
   
   
+    <div class="panel panel-primary">
+      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../proc/dvnorm_default.html#src">dvnorm_default</a>
+      </div>
+    </div>
 
-    <em>None</em>
 
   </div>
 
     </div>
     
     <div class="col-md-9" id='text'>
-      <h2>abstract interface <br>
-      private  subroutine f_func(me, neq, t, y, ydot)  
-</h2>    
-
+    <h2>private  function dvnorm_default(me, n, v, w)  
+</h2>
     
+
+    <p>weighted root-mean-square vector norm.</p>
+<p>this function routine computes the weighted root-mean-square norm
+  of the vector of length n contained in the array v, with weights
+  contained in the array w of length n:</p>
+<div class="codehilite"><pre><span></span><code>    dvnorm = sqrt( (1/n) * sum( v(i)*w(i) )**2 )
+</code></pre></div>
+
+<h3>Author</h3>
+<ul>
+<li>hindmarsh, alan c., (llnl)</li>
+</ul>
+<h3>Revision history</h3>
+<ul>
+<li>791129  date written</li>
+<li>890501  modified prologue to slatec/ldoc format.  (fnf)</li>
+<li>890503  minor cosmetic changes.  (fnf)</li>
+<li>930809  renamed to allow single/real(wp) versions. (ach)</li>
+</ul>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -165,7 +186,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-me~17"></span>
+              <span class="anchor" id="variable-me~20"></span>
               class(<a href='../type/dvode_t.html'>dvode_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -180,60 +201,45 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-neq~2"></span>
-              integer
+              <span class="anchor" id="variable-n~10"></span>
+              integer,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>neq</strong></td>
+            <td><strong>n</strong></td>
             <td>
                 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-t~3"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-v~2"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>t</strong></td>
+            <td><strong>v</strong>(n)</td>
             <td>
                 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-y~6"></span>
-              real(kind=wp)
+              <span class="anchor" id="variable-w~2"></span>
+              real(kind=wp),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>y</strong>(neq)</td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-ydot~2"></span>
-              real(kind=wp)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ydot</strong>(neq)</td>
+            <td><strong>w</strong>(n)</td>
             <td>
                 
             </td>
@@ -241,10 +247,82 @@
     </tbody>
   </table>
 
+      <h3>Return Value
+        <small>
+          <span class="anchor" id="variable-dvnorm_default"></span>
+          real(kind=wp)
+        </small>
+      </h3>
+      
     <br>
 
- </div>
-</div>
+    <section class="visible-xs visible-sm hidden-md">
+        <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <div class="panel panel-primary">
+      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../proc/dvnorm_default.html#src">dvnorm_default</a>
+      </div>
+    </div>
+
+
+    </section>
+    <br class="visible-xs visible-sm hidden-md">
+
+
+    
+    
+
+    
+    
+
+
+    
+    <section>
+    <h2><span class="anchor" id="src"></span>Source Code</h2>
+    <div class="highlight"><pre><span></span><span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="k">function </span><span class="n">dvnorm_default</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">w</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">class</span><span class="p">(</span><span class="n">dvode_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span><span class="w"></span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">v</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">w</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"></span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">sum</span>
+
+<span class="nb">      sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span><span class="w"></span>
+<span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
+<span class="w">         </span><span class="nb">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sum</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="n">w</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="w"></span>
+<span class="w">      </span><span class="k">enddo</span>
+<span class="k">      </span><span class="n">dvnorm_default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">end function </span><span class="n">dvnorm_default</span><span class="w"></span>
+</pre></div>
+
+    </section>
+    <br>
+    
+    </div>
+  </div>
 
     <hr>    
     </div> <!-- /container -->

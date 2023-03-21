@@ -1,6 +1,17 @@
-module dvode_module
+!*******************************************************************************
+!>
+!  Module for the refactored DVODE.
+!
+!### See also
+!  * The original DVODE.f (1989-2002) can be found
+!    [here](https://computing.llnl.gov/projects/odepack/software)
+!
+!### History
+!  * Translated into modern Fortran by Jacob Williams.
+!
+!@todo Replace GOTO statements
 
-   ! TODO: replace GOTO, SAVE
+module dvode_module
 
     use dvode_blas_module
     use dvode_linpack_module
@@ -131,9 +142,103 @@ module dvode_module
 
    end type  dvode_data_t
 
-   type,public :: dvode_t
+!*****************************************************************************************
+!>
+!  Main DVODE class.
+!
+!### Summary of usage.
+!
+! communication between the user and the dvode package, for normal
+! situations, is summarized here.  this summary describes only a subset
+! of the full set of options available.  see the full description under
+! [[dvode]] for details, including optional communication, nonstandard
+! options,  and instructions for special situations.
+!
+! 1. first provide a subroutine `f` of the form [[f_func]]:
+!    which supplies the vector function f by loading ydot(i) with f(i).
+!
+! 2. next determine (or guess) whether or not the problem is stiff.
+!    stiffness occurs when the jacobian matrix df/dy has an eigenvalue
+!    whose real part is negative and large in magnitude, compared to the
+!    reciprocal of the t span of interest.  if the problem is nonstiff,
+!    use a method flag mf = 10.  if it is stiff, there are four standard
+!    choices for mf (21, 22, 24, 25), and dvode requires the jacobian
+!    matrix in some form.  in these cases (mf > 0), dvode will use a
+!    saved copy of the jacobian matrix.  if this is undesirable because of
+!    storage limitations, set mf to the corresponding negative value
+!    (-21, -22, -24, -25).  (see full description of mf below.)
+!    the jacobian matrix is regarded either as full (mf = 21 or 22),
+!    or banded (mf = 24 or 25).  in the banded case, dvode requires two
+!    half-bandwidth parameters ml and mu.  these are, respectively, the
+!    widths of the lower and upper parts of the band, excluding the main
+!    diagonal.  thus the band consists of the locations (i,j) with
+!    i-ml <= j <= i+mu, and the full bandwidth is ml+mu+1.
+!
+! 3. if the problem is stiff, you are encouraged to supply the jacobian
+!    directly (mf = 21 or 24), but if this is not feasible, dvode will
+!    compute it internally by difference quotients (mf = 22 or 25).
+!    if you are supplying the jacobian, provide a subroutine of the form [[f_jac]]
+!    which supplies df/dy by loading pd as follows (in either case, only nonzero elements need be loaded):
+!
+!      * for a full jacobian (mf = 21), load pd(i,j) with df(i)/dy(j),
+!        the partial derivative of f(i) with respect to y(j).  (ignore the
+!        ml and mu arguments in this case.)
+!      * for a banded jacobian (mf = 24), load pd(i-j+mu+1,j) with
+!        df(i)/dy(j), i.e. load the diagonal lines of df/dy into the rows of
+!        pd from the top down.
+!
+! 4. write a main program which calls subroutine dvode once for
+!    each point at which answers are desired.  this should also provide
+!    for possible use of logical unit 6 for output of error messages
+!    by dvode.  on the first call to dvode, supply arguments as follows:
+!
+!      * f      = name of subroutine for right-hand side vector f.
+!      * jac    = name of subroutine for jacobian matrix (mf = 21 or 24).
+!      * neq    = number of first order odes.
+!      * y      = array of initial values, of length neq.
+!      * t      = the initial value of the independent variable.
+!      * tout   = first point where output is desired (/= t).
+!      * itol   = 1 or 2 according as atol (below) is a scalar or array.
+!      * rtol   = relative tolerance parameter.
+!      * atol   = absolute tolerance parameter.
+!      * itask  = 1 for normal computation of output values of y at t = tout.
+!      * istate = integer flag (input and output).  set istate = 1.
+!      * iopt   = 0 to indicate no optional input used.
+!      * rwork  = real work array
+!      * lrw    = declared length of rwork.
+!      * iwork  = integer work array.
+!      * liw    = declared length of iwork (in user's dimension statement).
+!      * mf     = method flag.
+!
+! 5. the output from the first call (or any call) is:
+!    * y = array of computed values of y(t) vector.
+!    * t = corresponding value of independent variable (normally tout).
+!    * istate = 2  if dvode was successful, negative otherwise.
+!        * -1 means excess work done on this call. (perhaps wrong mf.)
+!        * -2 means excess accuracy requested. (tolerances too small.)
+!        * -3 means illegal input detected. (see printed message.)
+!        * -4 means repeated error test failures. (check all input.)
+!        * -5 means repeated convergence failures. (perhaps bad
+!             jacobian supplied or wrong choice of mf or tolerances.)
+!        * -6 means error weight became zero during problem. (solution
+!             component i vanished, and atol or atol(i) = 0.)
+!
+! 6. to continue the integration after a successful return, simply
+!    reset tout and call [[dvode]] again.  no other parameters need be reset.
+!
+!### Other routines callable
+!
+! the following are optional calls which the user may make to
+! gain additional capabilities in conjunction with dvode.
+! (the routines [[xsetun]] and [[xsetf]] are designed to conform to the
+! slatec error handling package.)
+!
+!  * [[xsetun]]
+!  * [[xsetf]]
+!  * [[dvsrco]]
+!  * [[dvindy]]
 
-      !! Main DVODE class.
+   type,public :: dvode_t
 
       private
 
@@ -151,13 +256,15 @@ module dvode_module
 
       procedure(f_func),pointer :: f => null()
       procedure(f_jac),pointer :: jac => null()
+      procedure(f_dewset),pointer :: dewset => null()
+      procedure(f_dvnorm),pointer :: dvnorm => null()
 
       contains
 
       private
 
-      procedure,public :: initialize
-      procedure,public :: solve => dvode
+      procedure,public :: initialize !! this routine must be called first before using the solver.
+      procedure,public :: solve => dvode !! main solver routine.
       procedure,public :: xsetun !! set the logical unit number, lun, for
                                  !! output of messages from dvode, if
                                  !! the default is not desired.
@@ -211,6 +318,25 @@ module dvode_module
          real(wp) :: t, y(neq), pd(nrowpd,neq)
          integer :: ml, mu
       end subroutine f_jac
+      subroutine f_dewset(me,n,itol,rtol,atol,ycur,ewt)
+         import :: dvode_t, wp
+         implicit none
+         class(dvode_t),intent(inout) :: me
+         integer,intent(in) :: n
+         integer,intent(in) :: itol
+         real(wp),intent(in) :: rtol(*)
+         real(wp),intent(in) :: atol(*)
+         real(wp),intent(in) :: ycur(n)
+         real(wp),intent(out) :: ewt(n)
+      end subroutine f_dewset
+      real(wp) function f_dvnorm(me,n,v,w)
+         import :: dvode_t, wp
+         implicit none
+         class(dvode_t),intent(inout) :: me
+         integer,intent(in) :: n
+         real(wp),intent(in) :: v(n)
+         real(wp),intent(in) :: w(n)
+      end function f_dvnorm
    end interface
 
    public :: dvode
@@ -220,14 +346,129 @@ contains
 !*****************************************************************************************
 !>
 !  Set the function pointers.
+!
+!### optionally replaceable solver routines
+!
+!  The two routines (`dewset` and `dvnorm`) relate to the measurement of errors.
+!  either routine can be replaced by a user-supplied version, if desired.
+!  however, since such a replacement may have a major impact on performance,
+!  it should be done only when absolutely necessary, and only with great caution.
+!  (note: the means by which the package version of a routine is
+!  superseded by the user's version may be system-dependent.)
+!  If not changed by the users, the defaults are used:
+!
+!   * [[dewset_default]]
+!   * [[dvnorm_default]]
 
-   subroutine initialize(me,f,jac)
+   subroutine initialize(me,f,jac,dewset,dvnorm)
 
    implicit none
 
    class(dvode_t),intent(inout) :: me
-   procedure(f_func) :: f
-   procedure(f_jac),optional :: jac
+   procedure(f_func) :: f !! the name of the user-supplied subroutine defining the
+                          !! ode system.  the system must be put in the first-order
+                          !! form dy/dt = f(t,y), where f is a vector-valued function
+                          !! of the scalar t and the vector y.  subroutine f is to
+                          !! compute the function f.  it is to have the form
+                          !!      subroutine f (neq, t, y, ydot)
+                          !!      real(wp) t, y(neq), ydot(neq)
+                          !! where neq, t, and y are input, and the array ydot = f(t,y)
+                          !! is output.  y and ydot are arrays of length neq.
+                          !! subroutine f should not alter y(1),...,y(neq).
+                          !! f must be declared external in the calling program.
+                          !!
+                          !! if quantities computed in the f routine are needed
+                          !! externally to dvode, an extra call to f should be made
+                          !! for this purpose, for consistent and accurate results.
+                          !! if only the derivative dy/dt is needed, use [[dvindy]] instead.
+   procedure(f_jac),optional :: jac !! the name of the user-supplied routine (miter = 1 or 4) to
+                                    !! compute the jacobian matrix, df/dy, as a function of
+                                    !! the scalar t and the vector y.  it is to have the form [[f_jac]],
+                                    !! where neq, t, y, ml, mu, and nrowpd are input and the array
+                                    !! pd is to be loaded with partial derivatives (elements of the
+                                    !! jacobian matrix) in the output.  pd must be given a first
+                                    !! dimension of nrowpd.  t and y have the same meaning as in
+                                    !! subroutine f.
+                                    !!
+                                    !!  * in the full matrix case (miter = 1), ml and mu are
+                                    !!    ignored, and the jacobian is to be loaded into pd in
+                                    !!    columnwise manner, with df(i)/dy(j) loaded into pd(i,j).
+                                    !!
+                                    !!  * in the band matrix case (miter = 4), the elements
+                                    !!    within the band are to be loaded into pd in columnwise
+                                    !!    manner, with diagonal lines of df/dy loaded into the rows
+                                    !!    of pd. thus df(i)/dy(j) is to be loaded into pd(i-j+mu+1,j).
+                                    !!    ml and mu are the half-bandwidth parameters. (see iwork).
+                                    !!    the locations in pd in the two triangular areas which
+                                    !!    correspond to nonexistent matrix elements can be ignored
+                                    !!    or loaded arbitrarily, as they are overwritten by dvode.
+                                    !!
+                                    !! jac need not provide df/dy exactly.  a crude
+                                    !! approximation (possibly with a smaller bandwidth) will do.
+                                    !!
+                                    !! in either case, pd is preset to zero by the solver,
+                                    !! so that only the nonzero elements need be loaded by jac.
+                                    !! each call to jac is preceded by a call to f with the same
+                                    !! arguments neq, t, and y.  thus to gain some efficiency,
+                                    !! intermediate quantities shared by both calculations may be
+                                    !! saved in a user common block by f and not recomputed by jac,
+                                    !! if desired.  also, jac may alter the y array, if desired.
+                                    !! jac must be declared external in the calling program.
+   procedure(f_dewset),optional :: dewset !! the following subroutine is called just before each internal
+                                          !! integration step, and sets the array of error weights, ewt, as
+                                          !! described under itol/rtol/atol above:
+                                          !! `subroutine dewset (neq, itol, rtol, atol, ycur, ewt)`
+                                          !! where neq, itol, rtol, and atol are as in the [[dvode]] call sequence,
+                                          !! ycur contains the current dependent variable vector, and
+                                          !! ewt is the array of weights set by dewset.
+                                          !!
+                                          !! if the user supplies this subroutine, it must return in ewt(i)
+                                          !! (i = 1,...,neq) a positive quantity suitable for comparison with
+                                          !! errors in y(i).  the ewt array returned by dewset is passed to the
+                                          !! dvnorm routine (see below.), and also used by dvode in the computation
+                                          !! of the optional output imxer, the diagonal jacobian approximation,
+                                          !! and the increments for difference quotient jacobians.
+                                          !!
+                                          !! in the user-supplied version of dewset, it may be desirable to use
+                                          !! the current values of derivatives of y.  derivatives up to order nq
+                                          !! are available from the history array yh, described above under
+                                          !! optional output.  in dewset, yh is identical to the ycur array,
+                                          !! extended to nq + 1 columns with a column length of nyh and scale
+                                          !! factors of h**j/factorial(j).  on the first call for the problem,
+                                          !! given by nst = 0, nq is 1 and h is temporarily set to 1.0.
+                                          !! nyh is the initial value of neq.  the quantities nq, h, and nst
+                                          !! can be obtained by including in dewset the statements:
+                                          !!```fortran
+                                          !!  type(dvode_data_t) :: sav
+                                          !!  call me%dvsrco(sav,job=1)
+                                          !!  nq = sav%nq
+                                          !!  h = sav%h
+                                          !!  nst = sav%nst
+                                          !!```
+                                          !! thus, for example, the current value of dy/dt can be obtained as
+                                          !! `ycur(nyh+i)/h  (i=1,...,neq)`  (and the division by h is
+                                          !! unnecessary when nst = 0).
+   procedure(f_dvnorm),optional :: dvnorm !! the following is a real function routine which computes the weighted
+                                          !! root-mean-square norm of a vector v:
+                                          !! `d = dvnorm (n, v, w)`
+                                          !! where:
+                                          !!
+                                          !!   * n = the length of the vector,
+                                          !!   * v = real array of length n containing the vector,
+                                          !!   * w = real array of length n containing weights,
+                                          !!   * d = `sqrt( (1/n) * sum(v(i)*w(i))**2 )`.
+                                          !!
+                                          !! dvnorm is called with n = neq and with w(i) = 1.0/ewt(i), where
+                                          !! ewt is as set by subroutine dewset.
+                                          !!
+                                          !! if the user supplies this function, it should return a non-negative
+                                          !! value of dvnorm suitable for use in the error control in dvode.
+                                          !! none of the arguments should be altered by dvnorm.
+                                          !! for example, a user-supplied dvnorm routine might:
+                                          !!
+                                          !!   * substitute a max-norm of (v(i)*w(i)) for the rms-norm, or
+                                          !!   * ignore some components of v in the norm, with the effect of
+                                          !!     suppressing the error control on those components of y.
 
    me%f => f
 
@@ -235,6 +476,16 @@ contains
       me%jac => jac
    else
       me%jac => null()
+   end if
+   if (present(dewset)) then
+      me%dewset => dewset
+   else
+      me%dewset => dewset_default
+   end if
+   if (present(dvnorm)) then
+      me%dvnorm => dvnorm
+   else
+      me%dvnorm => dvnorm_default
    end if
 
    end subroutine initialize
@@ -254,547 +505,23 @@ contains
 !  dvode is a package based on the `episode` and `episodeb` packages, and
 !  on the `odepack` user interface standard, with minor modifications.
 !
-!### Authors:
-!  * peter n. brown and alan c. hindmarsh,
-!    center for applied scientific computing, l-561,
-!    lawrence livermore national laboratory,
-!    livermore, ca 94551
-!  * george d. byrne,
-!    illinois institute of technology,
-!    chicago, il 60616
+!### Optional input.
 !
-!### References
-!
-!  1. p. n. brown, g. d. byrne, and a. c. hindmarsh, "vode: a variable
-!     coefficient ode solver," siam j. sci. stat. comput., 10 (1989),
-!     pp. 1038-1051.  also, llnl report ucrl-98412, june 1988.
-!  2. g. d. byrne and a. c. hindmarsh, "a polyalgorithm for the
-!     numerical solution of ordinary differential equations,"
-!     acm trans. math. software, 1 (1975), pp. 71-96.
-!  3. a. c. hindmarsh and g. d. byrne, "episode: an effective package
-!     for the integration of systems of ordinary differential
-!     equations," llnl report ucid-30112, rev. 1, april 1977.
-!  4. g. d. byrne and a. c. hindmarsh, "episodeb: an experimental
-!     package for the integration of systems of ordinary differential
-!     equations with banded jacobians," llnl report ucid-30132, april
-!     1976.
-!  5. a. c. hindmarsh, "odepack, a systematized collection of ode
-!     solvers," in scientific computing, r. s. stepleman et al., eds.,
-!     north-holland, amsterdam, 1983, pp. 55-64.
-!  6. k. r. jackson and r. sacks-davis, "an alternative implementation
-!     of variable step-size multistep formulas for stiff odes," acm
-!     trans. math. software, 6 (1980), pp. 295-318.
-!
-!```
-!-----------------------------------------------------------------------
-! summary of usage.
-!
-! communication between the user and the dvode package, for normal
-! situations, is summarized here.  this summary describes only a subset
-! of the full set of options available.  see the full description for
-! details, including optional communication, nonstandard options,
-! and instructions for special situations.  see also the example
-! problem (with program and output) following this summary.
-!
-! a. first provide a subroutine of the form:
-!           subroutine f (neq, t, y, ydot)
-!           real(wp) t, y(neq), ydot(neq)
-! which supplies the vector function f by loading ydot(i) with f(i).
-!
-! b. next determine (or guess) whether or not the problem is stiff.
-! stiffness occurs when the jacobian matrix df/dy has an eigenvalue
-! whose real part is negative and large in magnitude, compared to the
-! reciprocal of the t span of interest.  if the problem is nonstiff,
-! use a method flag mf = 10.  if it is stiff, there are four standard
-! choices for mf (21, 22, 24, 25), and dvode requires the jacobian
-! matrix in some form.  in these cases (mf > 0), dvode will use a
-! saved copy of the jacobian matrix.  if this is undesirable because of
-! storage limitations, set mf to the corresponding negative value
-! (-21, -22, -24, -25).  (see full description of mf below.)
-! the jacobian matrix is regarded either as full (mf = 21 or 22),
-! or banded (mf = 24 or 25).  in the banded case, dvode requires two
-! half-bandwidth parameters ml and mu.  these are, respectively, the
-! widths of the lower and upper parts of the band, excluding the main
-! diagonal.  thus the band consists of the locations (i,j) with
-! i-ml <= j <= i+mu, and the full bandwidth is ml+mu+1.
-!
-! c. if the problem is stiff, you are encouraged to supply the jacobian
-! directly (mf = 21 or 24), but if this is not feasible, dvode will
-! compute it internally by difference quotients (mf = 22 or 25).
-! if you are supplying the jacobian, provide a subroutine of the form:
-!           subroutine jac (neq, t, y, ml, mu, pd, nrowpd)
-!           real(wp) t, y(neq), pd(nrowpd,neq)
-! which supplies df/dy by loading pd as follows:
-!     for a full jacobian (mf = 21), load pd(i,j) with df(i)/dy(j),
-! the partial derivative of f(i) with respect to y(j).  (ignore the
-! ml and mu arguments in this case.)
-!     for a banded jacobian (mf = 24), load pd(i-j+mu+1,j) with
-! df(i)/dy(j), i.e. load the diagonal lines of df/dy into the rows of
-! pd from the top down.
-!     in either case, only nonzero elements need be loaded.
-!
-! d. write a main program which calls subroutine dvode once for
-! each point at which answers are desired.  this should also provide
-! for possible use of logical unit 6 for output of error messages
-! by dvode.  on the first call to dvode, supply arguments as follows:
-! f      = name of subroutine for right-hand side vector f.
-!          this name must be declared external in calling program.
-! neq    = number of first order odes.
-! y      = array of initial values, of length neq.
-! t      = the initial value of the independent variable.
-! tout   = first point where output is desired (/= t).
-! itol   = 1 or 2 according as atol (below) is a scalar or array.
-! rtol   = relative tolerance parameter (scalar).
-! atol   = absolute tolerance parameter (scalar or array).
-!          the estimated local error in y(i) will be controlled so as
-!          to be roughly less (in magnitude) than
-!             ewt(i) = rtol*abs(y(i)) + atol     if itol = 1, or
-!             ewt(i) = rtol*abs(y(i)) + atol(i)  if itol = 2.
-!          thus the local error test passes if, in each component,
-!          either the absolute error is less than atol (or atol(i)),
-!          or the relative error is less than rtol.
-!          use rtol = 0.0 for pure absolute error control, and
-!          use atol = 0.0 (or atol(i) = 0.0) for pure relative error
-!          control.  caution: actual (global) errors may exceed these
-!          local tolerances, so choose them conservatively.
-! itask  = 1 for normal computation of output values of y at t = tout.
-! istate = integer flag (input and output).  set istate = 1.
-! iopt   = 0 to indicate no optional input used.
-! rwork  = real work array of length at least:
-!             20 + 16*neq                      for mf = 10,
-!             22 +  9*neq + 2*neq**2           for mf = 21 or 22,
-!             22 + 11*neq + (3*ml + 2*mu)*neq  for mf = 24 or 25.
-! lrw    = declared length of rwork (in user's dimension statement).
-! iwork  = integer work array of length at least:
-!             30        for mf = 10,
-!             30 + neq  for mf = 21, 22, 24, or 25.
-!          if mf = 24 or 25, input in iwork(1),iwork(2) the lower
-!          and upper half-bandwidths ml,mu.
-! liw    = declared length of iwork (in user's dimension statement).
-! jac    = name of subroutine for jacobian matrix (mf = 21 or 24).
-!          if used, this name must be declared external in calling
-!          program.  if not used, pass a dummy name.
-! mf     = method flag.  standard values are:
-!          10 for nonstiff (adams) method, no jacobian used.
-!          21 for stiff (bdf) method, user-supplied full jacobian.
-!          22 for stiff method, internally generated full jacobian.
-!          24 for stiff method, user-supplied banded jacobian.
-!          25 for stiff method, internally generated banded jacobian.
-!
-! note that the main program must declare arrays y, rwork, iwork,
-! and possibly atol.
-!
-! e. the output from the first call (or any call) is:
-!      y = array of computed values of y(t) vector.
-!      t = corresponding value of independent variable (normally tout).
-! istate = 2  if dvode was successful, negative otherwise.
-!          -1 means excess work done on this call. (perhaps wrong mf.)
-!          -2 means excess accuracy requested. (tolerances too small.)
-!          -3 means illegal input detected. (see printed message.)
-!          -4 means repeated error test failures. (check all input.)
-!          -5 means repeated convergence failures. (perhaps bad
-!             jacobian supplied or wrong choice of mf or tolerances.)
-!          -6 means error weight became zero during problem. (solution
-!             component i vanished, and atol or atol(i) = 0.)
-!
-! f. to continue the integration after a successful return, simply
-! reset tout and call dvode again.  no other parameters need be reset.
-!
-!-----------------------------------------------------------------------
-! full description of user interface to dvode.
-!
-! the user interface to dvode consists of the following parts.
-!
-! i.   the call sequence to subroutine dvode, which is a driver
-!      routine for the solver.  this includes descriptions of both
-!      the call sequence arguments and of user-supplied routines.
-!      following these descriptions is
-!        * a description of optional input available through the
-!          call sequence,
-!        * a description of optional output (in the work arrays), and
-!        * instructions for interrupting and restarting a solution.
-!
-! ii.  descriptions of other routines in the dvode package that may be
-!      (optionally) called by the user.  these provide the ability to
-!      alter error message handling, save and restore the internal
-!      common, and obtain specified derivatives of the solution y(t).
-!
-! iii. descriptions of common blocks to be declared in overlay
-!      or similar environments.
-!
-! iv.  description of two routines in the dvode package, either of
-!      which the user may replace with his own version, if desired.
-!      these relate to the measurement of errors.
-!
-!-----------------------------------------------------------------------
-! part i.  call sequence.
-!
-! the call sequence parameters used for input only are
-!     f, neq, tout, itol, rtol, atol, itask, iopt, lrw, liw, jac, mf,
-! and those used for both input and output are
-!     y, t, istate.
-! the work arrays rwork and iwork are also used for conditional and
+! the work arrays `rwork` and `iwork` are also used for conditional and
 ! optional input and optional output.  (the term output here refers
 ! to the return from subroutine dvode to the user's calling program.)
-!
-! the legality of input parameters will be thoroughly checked on the
-! initial call for the problem, but not checked thereafter unless a
-! change in input parameters is flagged by istate = 3 in the input.
-!
-! the descriptions of the call arguments are as follows.
-!
-! f      = the name of the user-supplied subroutine defining the
-!          ode system.  the system must be put in the first-order
-!          form dy/dt = f(t,y), where f is a vector-valued function
-!          of the scalar t and the vector y.  subroutine f is to
-!          compute the function f.  it is to have the form
-!               subroutine f (neq, t, y, ydot)
-!               real(wp) t, y(neq), ydot(neq)
-!          where neq, t, and y are input, and the array ydot = f(t,y)
-!          is output.  y and ydot are arrays of length neq.
-!          subroutine f should not alter y(1),...,y(neq).
-!          f must be declared external in the calling program.
-!
-!          if quantities computed in the f routine are needed
-!          externally to dvode, an extra call to f should be made
-!          for this purpose, for consistent and accurate results.
-!          if only the derivative dy/dt is needed, use [[dvindy]] instead.
-!
-! neq    = the size of the ode system (number of first order
-!          ordinary differential equations).  used only for input.
-!          neq may not be increased during the problem, but
-!          can be decreased (with istate = 3 in the input).
-!
-! y      = a real array for the vector of dependent variables, of
-!          length neq or more.  used for both input and output on the
-!          first call (istate = 1), and only for output on other calls.
-!          on the first call, y must contain the vector of initial
-!          values.  in the output, y contains the computed solution
-!          evaluated at t.  if desired, the y array may be used
-!          for other purposes between calls to the solver.
-!
-!          this array is passed as the y argument in all calls to
-!          f and jac.
-!
-! t      = the independent variable.  in the input, t is used only on
-!          the first call, as the initial point of the integration.
-!          in the output, after each call, t is the value at which a
-!          computed solution y is evaluated (usually the same as tout).
-!          on an error return, t is the farthest point reached.
-!
-! tout   = the next value of t at which a computed solution is desired.
-!          used only for input.
-!
-!          when starting the problem (istate = 1), tout may be equal
-!          to t for one call, then should /= t for the next call.
-!          for the initial t, an input value of tout /= t is used
-!          in order to determine the direction of the integration
-!          (i.e. the algebraic sign of the step sizes) and the rough
-!          scale of the problem.  integration in either direction
-!          (forward or backward in t) is permitted.
-!
-!          if itask = 2 or 5 (one-step modes), tout is ignored after
-!          the first call (i.e. the first call with tout /= t).
-!          otherwise, tout is required on every call.
-!
-!          if itask = 1, 3, or 4, the values of tout need not be
-!          monotone, but a value of tout which backs up is limited
-!          to the current internal t interval, whose endpoints are
-!          tcur - hu and tcur.  (see optional output, below, for
-!          tcur and hu.)
-!
-! itol   = an indicator for the type of error control.  see
-!          description below under atol.  used only for input.
-!
-! rtol   = a relative error tolerance parameter, either a scalar or
-!          an array of length neq.  see description below under atol.
-!          input only.
-!
-! atol   = an absolute error tolerance parameter, either a scalar or
-!          an array of length neq.  input only.
-!
-!          the input parameters itol, rtol, and atol determine
-!          the error control performed by the solver.  the solver will
-!          control the vector e = (e(i)) of estimated local errors
-!          in y, according to an inequality of the form
-!                      rms-norm of ( e(i)/ewt(i) )   <=   1,
-!          where       ewt(i) = rtol(i)*abs(y(i)) + atol(i),
-!          and the rms-norm (root-mean-square norm) here is
-!          rms-norm(v) = sqrt(sum v(i)**2 / neq).  here ewt = (ewt(i))
-!          is a vector of weights which must always be positive, and
-!          the values of rtol and atol should all be non-negative.
-!          the following table gives the types (scalar/array) of
-!          rtol and atol, and the corresponding form of ewt(i).
-!
-!             itol    rtol       atol          ewt(i)
-!              1     scalar     scalar     rtol*abs(y(i)) + atol
-!              2     scalar     array      rtol*abs(y(i)) + atol(i)
-!              3     array      scalar     rtol(i)*abs(y(i)) + atol
-!              4     array      array      rtol(i)*abs(y(i)) + atol(i)
-!
-!          when either of these parameters is a scalar, it need not
-!          be dimensioned in the user's calling program.
-!
-!          if none of the above choices (with itol, rtol, and atol
-!          fixed throughout the problem) is suitable, more general
-!          error controls can be obtained by substituting
-!          user-supplied routines for the setting of ewt and/or for
-!          the norm calculation.  see part iv below.
-!
-!          if global errors are to be estimated by making a repeated
-!          run on the same problem with smaller tolerances, then all
-!          components of rtol and atol (i.e. of ewt) should be scaled
-!          down uniformly.
-!
-! itask  = an index specifying the task to be performed.
-!          input only.  itask has the following values and meanings.
-!          1  means normal computation of output values of y(t) at
-!             t = tout (by overshooting and interpolating).
-!          2  means take one step only and return.
-!          3  means stop at the first internal mesh point at or
-!             beyond t = tout and return.
-!          4  means normal computation of output values of y(t) at
-!             t = tout but without overshooting t = tcrit.
-!             tcrit must be input as rwork(1).  tcrit may be equal to
-!             or beyond tout, but not behind it in the direction of
-!             integration.  this option is useful if the problem
-!             has a singularity at or beyond t = tcrit.
-!          5  means take one step, without passing tcrit, and return.
-!             tcrit must be input as rwork(1).
-!
-!          note:  if itask = 4 or 5 and the solver reaches tcrit
-!          (within roundoff), it will return t = tcrit (exactly) to
-!          indicate this (unless itask = 4 and tout comes before tcrit,
-!          in which case answers at t = tout are returned first).
-!
-! istate = an index used for input and output to specify the
-!          the state of the calculation.
-!
-!          in the input, the values of istate are as follows.
-!          1  means this is the first call for the problem
-!             (initializations will be done).  see note below.
-!          2  means this is not the first call, and the calculation
-!             is to continue normally, with no change in any input
-!             parameters except possibly tout and itask.
-!             (if itol, rtol, and/or atol are changed between calls
-!             with istate = 2, the new values will be used but not
-!             tested for legality.)
-!          3  means this is not the first call, and the
-!             calculation is to continue normally, but with
-!             a change in input parameters other than
-!             tout and itask.  changes are allowed in
-!             neq, itol, rtol, atol, iopt, lrw, liw, mf, ml, mu,
-!             and any of the optional input except h0.
-!             (see iwork description for ml and mu.)
-!          note:  a preliminary call with tout = t is not counted
-!          as a first call here, as no initialization or checking of
-!          input is done.  (such a call is sometimes useful to include
-!          the initial conditions in the output.)
-!          thus the first call for which tout /= t requires
-!          istate = 1 in the input.
-!
-!          in the output, istate has the following values and meanings.
-!           1  means nothing was done, as tout was equal to t with
-!              istate = 1 in the input.
-!           2  means the integration was performed successfully.
-!          -1  means an excessive amount of work (more than mxstep
-!              steps) was done on this call, before completing the
-!              requested task, but the integration was otherwise
-!              successful as far as t.  (mxstep is an optional input
-!              and is normally 500.)  to continue, the user may
-!              simply reset istate to a value > 1 and call again.
-!              (the excess work step counter will be reset to 0.)
-!              in addition, the user may increase mxstep to avoid
-!              this error return.  (see optional input below.)
-!          -2  means too much accuracy was requested for the precision
-!              of the machine being used.  this was detected before
-!              completing the requested task, but the integration
-!              was successful as far as t.  to continue, the tolerance
-!              parameters must be reset, and istate must be set
-!              to 3.  the optional output tolsf may be used for this
-!              purpose.  (note: if this condition is detected before
-!              taking any steps, then an illegal input return
-!              (istate = -3) occurs instead.)
-!          -3  means illegal input was detected, before taking any
-!              integration steps.  see written message for details.
-!              note:  if the solver detects an infinite loop of calls
-!              to the solver with illegal input, it will cause
-!              the run to stop.
-!          -4  means there were repeated error test failures on
-!              one attempted step, before completing the requested
-!              task, but the integration was successful as far as t.
-!              the problem may have a singularity, or the input
-!              may be inappropriate.
-!          -5  means there were repeated convergence test failures on
-!              one attempted step, before completing the requested
-!              task, but the integration was successful as far as t.
-!              this may be caused by an inaccurate jacobian matrix,
-!              if one is being used.
-!          -6  means ewt(i) became zero for some i during the
-!              integration.  pure relative error control (atol(i)=0.0)
-!              was requested on a variable which has now vanished.
-!              the integration was successful as far as t.
-!
-!          note:  since the normal output value of istate is 2,
-!          it does not need to be reset for normal continuation.
-!          also, since a negative input value of istate will be
-!          regarded as illegal, a negative output value requires the
-!          user to change it, and possibly other input, before
-!          calling the solver again.
-!
-! iopt   = an integer flag to specify whether or not any optional
-!          input is being used on this call.  input only.
-!          the optional input is listed separately below.
-!          iopt = 0 means no optional input is being used.
-!                   default values will be used in all cases.
-!          iopt = 1 means optional input is being used.
-!
-! rwork  = a real working array (real(wp)).
-!          the length of rwork must be at least
-!             20 + nyh*(maxord + 1) + 3*neq + lwm    where
-!          nyh    = the initial value of neq,
-!          maxord = 12 (if meth = 1) or 5 (if meth = 2) (unless a
-!                   smaller value is given as an optional input),
-!          lwm = length of work space for matrix-related data:
-!          lwm = 0             if miter = 0,
-!          lwm = 2*neq**2 + 2  if miter = 1 or 2, and mf>0,
-!          lwm = neq**2 + 2    if miter = 1 or 2, and mf<0,
-!          lwm = neq + 2       if miter = 3,
-!          lwm = (3*ml+2*mu+2)*neq + 2 if miter = 4 or 5, and mf>0,
-!          lwm = (2*ml+mu+1)*neq + 2   if miter = 4 or 5, and mf<0.
-!          (see the mf description for meth and miter.)
-!          thus if maxord has its default value and neq is constant,
-!          this length is:
-!             20 + 16*neq                    for mf = 10,
-!             22 + 16*neq + 2*neq**2         for mf = 11 or 12,
-!             22 + 16*neq + neq**2           for mf = -11 or -12,
-!             22 + 17*neq                    for mf = 13,
-!             22 + 18*neq + (3*ml+2*mu)*neq  for mf = 14 or 15,
-!             22 + 17*neq + (2*ml+mu)*neq    for mf = -14 or -15,
-!             20 +  9*neq                    for mf = 20,
-!             22 +  9*neq + 2*neq**2         for mf = 21 or 22,
-!             22 +  9*neq + neq**2           for mf = -21 or -22,
-!             22 + 10*neq                    for mf = 23,
-!             22 + 11*neq + (3*ml+2*mu)*neq  for mf = 24 or 25.
-!             22 + 10*neq + (2*ml+mu)*neq    for mf = -24 or -25.
-!          the first 20 words of rwork are reserved for conditional
-!          and optional input and optional output.
-!
-!          the following word in rwork is a conditional input:
-!            rwork(1) = tcrit = critical value of t which the solver
-!                       is not to overshoot.  required if itask is
-!                       4 or 5, and ignored otherwise.  (see itask.)
-!
-! lrw    = the length of the array rwork, as declared by the user.
-!          (this will be checked by the solver.)
-!
-! iwork  = an integer work array.  the length of iwork must be at least
-!             30        if miter = 0 or 3 (mf = 10, 13, 20, 23), or
-!             30 + neq  otherwise (abs(mf) = 11,12,14,15,21,22,24,25).
-!          the first 30 words of iwork are reserved for conditional and
-!          optional input and optional output.
-!
-!          the following 2 words in iwork are conditional input:
-!            iwork(1) = ml     these are the lower and upper
-!            iwork(2) = mu     half-bandwidths, respectively, of the
-!                       banded jacobian, excluding the main diagonal.
-!                       the band is defined by the matrix locations
-!                       (i,j) with i-ml <= j <= i+mu.  ml and mu
-!                       must satisfy  0 <=  ml,mu  <= neq-1.
-!                       these are required if miter is 4 or 5, and
-!                       ignored otherwise.  ml and mu may in fact be
-!                       the band parameters for a matrix to which
-!                       df/dy is only approximately equal.
-!
-! liw    = the length of the array iwork, as declared by the user.
-!          (this will be checked by the solver.)
-!
-! note:  the work arrays must not be altered between calls to dvode
-! for the same problem, except possibly for the conditional and
-! optional input, and except for the last 3*neq words of rwork.
-! the latter space is used for internal scratch space, and so is
-! available for use by the user outside dvode between calls, if
-! desired (but not for use by f or jac).
-!
-! jac    = the name of the user-supplied routine (miter = 1 or 4) to
-!          compute the jacobian matrix, df/dy, as a function of
-!          the scalar t and the vector y.  it is to have the form
-!               subroutine jac (neq, t, y, ml, mu, pd, nrowpd)
-!               real(wp) t, y(neq), pd(nrowpd,neq)
-!          where neq, t, y, ml, mu, and nrowpd are input and the array
-!          pd is to be loaded with partial derivatives (elements of the
-!          jacobian matrix) in the output.  pd must be given a first
-!          dimension of nrowpd.  t and y have the same meaning as in
-!          subroutine f.
-!               in the full matrix case (miter = 1), ml and mu are
-!          ignored, and the jacobian is to be loaded into pd in
-!          columnwise manner, with df(i)/dy(j) loaded into pd(i,j).
-!               in the band matrix case (miter = 4), the elements
-!          within the band are to be loaded into pd in columnwise
-!          manner, with diagonal lines of df/dy loaded into the rows
-!          of pd. thus df(i)/dy(j) is to be loaded into pd(i-j+mu+1,j).
-!          ml and mu are the half-bandwidth parameters. (see iwork).
-!          the locations in pd in the two triangular areas which
-!          correspond to nonexistent matrix elements can be ignored
-!          or loaded arbitrarily, as they are overwritten by dvode.
-!               jac need not provide df/dy exactly.  a crude
-!          approximation (possibly with a smaller bandwidth) will do.
-!               in either case, pd is preset to zero by the solver,
-!          so that only the nonzero elements need be loaded by jac.
-!          each call to jac is preceded by a call to f with the same
-!          arguments neq, t, and y.  thus to gain some efficiency,
-!          intermediate quantities shared by both calculations may be
-!          saved in a user common block by f and not recomputed by jac,
-!          if desired.  also, jac may alter the y array, if desired.
-!          jac must be declared external in the calling program.
-!
-! mf     = the method flag.  used only for input.  the legal values of
-!          mf are 10, 11, 12, 13, 14, 15, 20, 21, 22, 23, 24, 25,
-!          -11, -12, -14, -15, -21, -22, -24, -25.
-!          mf is a signed two-digit integer, mf = jsv*(10*meth + miter).
-!          jsv = sign(mf) indicates the jacobian-saving strategy:
-!            jsv =  1 means a copy of the jacobian is saved for reuse
-!                     in the corrector iteration algorithm.
-!            jsv = -1 means a copy of the jacobian is not saved
-!                     (valid only for miter = 1, 2, 4, or 5).
-!          meth indicates the basic linear multistep method:
-!            meth = 1 means the implicit adams method.
-!            meth = 2 means the method based on backward
-!                     differentiation formulas (bdf-s).
-!          miter indicates the corrector iteration method:
-!            miter = 0 means functional iteration (no jacobian matrix
-!                      is involved).
-!            miter = 1 means chord iteration with a user-supplied
-!                      full (neq by neq) jacobian.
-!            miter = 2 means chord iteration with an internally
-!                      generated (difference quotient) full jacobian
-!                      (using neq extra calls to f per df/dy value).
-!            miter = 3 means chord iteration with an internally
-!                      generated diagonal jacobian approximation
-!                      (using 1 extra call to f per df/dy evaluation).
-!            miter = 4 means chord iteration with a user-supplied
-!                      banded jacobian.
-!            miter = 5 means chord iteration with an internally
-!                      generated banded jacobian (using ml+mu+1 extra
-!                      calls to f per df/dy evaluation).
-!          if miter = 1 or 4, the user must supply a subroutine jac
-!          (the name is arbitrary) as described above under jac.
-!          for other values of miter, a dummy argument can be used.
-!
-!-----------------------------------------------------------------------
-! optional input.
 !
 ! the following is a list of the optional input provided for in the
 ! call sequence.  (see also part ii.)  for each such input variable,
 ! this table lists its name as used in this documentation, its
 ! location in the call sequence, its meaning, and the default value.
-! the use of any of this input requires iopt = 1, and in that
+! the use of any of this input requires `iopt = 1`, and in that
 ! case all of this input is examined.  a value of zero for any
 ! of these optional input variables will cause the default value to be
 ! used.  thus to use a subset of the optional input, simply preload
 ! locations 5 to 10 in rwork and iwork to 0.0 and 0 respectively, and
 ! then set those of interest to nonzero values.
-!
+!```
 ! name    location      meaning and default value
 !
 ! h0      rwork(5)  the step size to be attempted on the first step.
@@ -823,9 +550,8 @@ contains
 !                   warning that t + h = t on a step (h = step size).
 !                   this must be positive to result in a non-default
 !                   value.  the default value is 10.
-!
-!-----------------------------------------------------------------------
-! optional output.
+!```
+!### Optional output
 !
 ! as optional additional output from dvode, the variables listed
 ! below are quantities related to the performance of dvode
@@ -838,7 +564,7 @@ contains
 ! (if any), except possibly for tolsf, lenrw, and leniw.
 ! on any error return, output relevant to the error will be defined,
 ! as noted below.
-!
+!```
 ! name    location      meaning
 !
 ! hu      rwork(11) the step size in t last used (successfully).
@@ -893,12 +619,12 @@ contains
 !
 ! netf    iwork(22) the number of error test failures of the integrator
 !                   so far.
-!
+!```
 ! the following two arrays are segments of the rwork array which
 ! may also be of interest to the user as optional output.
 ! for each array, the table below gives its internal name,
 ! its base address in rwork, and its description.
-!
+!```
 ! name    base address      description
 !
 ! yh      21             the nordsieck history array, of size nyh by
@@ -915,9 +641,9 @@ contains
 !                        on the last step.  this is the vector e in
 !                        the description of the error control.  it is
 !                        defined only on a successful return from dvode.
+!```
 !
-!-----------------------------------------------------------------------
-! interrupting and restarting
+!### Interrupting and restarting
 !
 ! if the integration of a given problem by dvode is to be
 ! interrrupted and then later continued, such as when restarting
@@ -933,86 +659,38 @@ contains
 ! desired, an extra call to [[xsetun]] and/or [[xsetf]] should be made just
 ! before continuing the integration.  see part ii below for details.
 !
-!-----------------------------------------------------------------------
-! part ii.  other routines callable.
+!### Authors:
+!  * peter n. brown and alan c. hindmarsh,
+!    center for applied scientific computing, l-561,
+!    lawrence livermore national laboratory,
+!    livermore, ca 94551
+!  * george d. byrne,
+!    illinois institute of technology,
+!    chicago, il 60616
 !
-! the following are optional calls which the user may make to
-! gain additional capabilities in conjunction with dvode.
-! (the routines [[xsetun]] and [[xsetf]] are designed to conform to the
-! slatec error handling package.)
+!### References
 !
-!  * [[xsetun]]
-!  * [[xsetf]]
-!  * [[dvsrco]]
-!  * [[dvindy]]
+!  1. p. n. brown, g. d. byrne, and a. c. hindmarsh, "vode: a variable
+!     coefficient ode solver," siam j. sci. stat. comput., 10 (1989),
+!     pp. 1038-1051.  also, llnl report ucrl-98412, june 1988.
+!  2. g. d. byrne and a. c. hindmarsh, "a polyalgorithm for the
+!     numerical solution of ordinary differential equations,"
+!     acm trans. math. software, 1 (1975), pp. 71-96.
+!  3. a. c. hindmarsh and g. d. byrne, "episode: an effective package
+!     for the integration of systems of ordinary differential
+!     equations," llnl report ucid-30112, rev. 1, april 1977.
+!  4. g. d. byrne and a. c. hindmarsh, "episodeb: an experimental
+!     package for the integration of systems of ordinary differential
+!     equations with banded jacobians," llnl report ucid-30132, april
+!     1976.
+!  5. a. c. hindmarsh, "odepack, a systematized collection of ode
+!     solvers," in scientific computing, r. s. stepleman et al., eds.,
+!     north-holland, amsterdam, 1983, pp. 55-64.
+!  6. k. r. jackson and r. sacks-davis, "an alternative implementation
+!     of variable step-size multistep formulas for stiff odes," acm
+!     trans. math. software, 6 (1980), pp. 295-318.
 !
-!-----------------------------------------------------------------------
-! part iv.  optionally replaceable solver routines.
-!
-! below are descriptions of two routines in the dvode package which
-! relate to the measurement of errors.  either routine can be
-! replaced by a user-supplied version, if desired.  however, since such
-! a replacement may have a major impact on performance, it should be
-! done only when absolutely necessary, and only with great caution.
-! (note: the means by which the package version of a routine is
-! superseded by the user's version may be system-dependent.)
-!
-! (a) dewset.
-! the following subroutine is called just before each internal
-! integration step, and sets the array of error weights, ewt, as
-! described under itol/rtol/atol above:
-!     subroutine dewset (neq, itol, rtol, atol, ycur, ewt)
-! where neq, itol, rtol, and atol are as in the dvode call sequence,
-! ycur contains the current dependent variable vector, and
-! ewt is the array of weights set by dewset.
-!
-! if the user supplies this subroutine, it must return in ewt(i)
-! (i = 1,...,neq) a positive quantity suitable for comparison with
-! errors in y(i).  the ewt array returned by dewset is passed to the
-! dvnorm routine (see below.), and also used by dvode in the computation
-! of the optional output imxer, the diagonal jacobian approximation,
-! and the increments for difference quotient jacobians.
-!
-! in the user-supplied version of dewset, it may be desirable to use
-! the current values of derivatives of y.  derivatives up to order nq
-! are available from the history array yh, described above under
-! optional output.  in dewset, yh is identical to the ycur array,
-! extended to nq + 1 columns with a column length of nyh and scale
-! factors of h**j/factorial(j).  on the first call for the problem,
-! given by nst = 0, nq is 1 and h is temporarily set to 1.0.
-! nyh is the initial value of neq.  the quantities nq, h, and nst
-! can be obtained by including in dewset the statements:
-!     real(wp) rvod, h, hu
-!     common /dvod01/ rvod(48), ivod(33)
-!     common /dvod02/ hu, ncfn, netf, nfe, nje, nlu, nni, nqu, nst
-!     nq = ivod(28)
-!     h = rvod(21)
-! thus, for example, the current value of dy/dt can be obtained as
-! ycur(nyh+i)/h  (i=1,...,neq)  (and the division by h is
-! unnecessary when nst = 0).
-!
-! (b) dvnorm.
-! the following is a real function routine which computes the weighted
-! root-mean-square norm of a vector v:
-!     d = dvnorm (n, v, w)
-! where:
-!   n = the length of the vector,
-!   v = real array of length n containing the vector,
-!   w = real array of length n containing weights,
-!   d = sqrt( (1/n) * sum(v(i)*w(i))**2 ).
-! dvnorm is called with n = neq and with w(i) = 1.0/ewt(i), where
-! ewt is as set by subroutine dewset.
-!
-! if the user supplies this function, it should return a non-negative
-! value of dvnorm suitable for use in the error control in dvode.
-! none of the arguments should be altered by dvnorm.
-! for example, a user-supplied dvnorm routine might:
-!   -substitute a max-norm of (v(i)*w(i)) for the rms-norm, or
-!   -ignore some components of v in the norm, with the effect of
-!    suppressing the error control on those components of y.
-!```
-! 
-!### Revision history 
+!### Revision history
 !  * 19890615  date written.  initial release.
 !  * 19890922  added interrupt/restart ability, minor changes throughout.
 !  * 19910228  minor revisions in line format,  prologue, etc.
@@ -1033,79 +711,336 @@ contains
 !  * 20020430  various upgrades (ach): use odepack error handler package.
 !              replaced d1mach by dumach.  various changes to main
 !              prologue and other routine prologues.
-!```
+!
+!@note the legality of input parameters will be thoroughly checked on the
+!      initial call for the problem, but not checked thereafter unless a
+!      change in input parameters is flagged by istate = 3 in the input.
+!
+!@note  the work arrays must not be altered between calls to dvode
+!       for the same problem, except possibly for the conditional and
+!       optional input, and except for the last 3*neq words of rwork.
+!       the latter space is used for internal scratch space, and so is
+!       available for use by the user outside dvode between calls, if
+!       desired (but not for use by f or jac).
 
    subroutine dvode(me,neq,y,t,tout,itol,rtol,atol,itask,istate,iopt, &
                     rwork,lrw,iwork,liw,mf)
 
-! iopt   = 0 to indicate no optional input used.
-! rwork  = real work array of length at least:
-!             20 + 16*neq                      for mf = 10,
-!             22 +  9*neq + 2*neq**2           for mf = 21 or 22,
-!             22 + 11*neq + (3*ml + 2*mu)*neq  for mf = 24 or 25.
-! lrw    = declared length of rwork (in user's dimension statement).
-! iwork  = integer work array of length at least:
-!             30        for mf = 10,
-!             30 + neq  for mf = 21, 22, 24, or 25.
-!          if mf = 24 or 25, input in iwork(1),iwork(2) the lower
-!          and upper half-bandwidths ml,mu.
-! liw    = declared length of iwork (in user's dimension statement).
-! jac    = name of subroutine for jacobian matrix (mf = 21 or 24).
-!          if used, this name must be declared external in calling
-!          program.  if not used, pass a dummy name.
-! mf     = method flag.  standard values are:
-!          10 for nonstiff (adams) method, no jacobian used.
-!          21 for stiff (bdf) method, user-supplied full jacobian.
-!          22 for stiff method, internally generated full jacobian.
-!          24 for stiff method, user-supplied banded jacobian.
-!          25 for stiff method, internally generated banded jacobian.
-!
       class(dvode_t),intent(inout) :: me
-      real(wp),intent(inout) :: y(*) !! **input:** array of initial values, of length `neq`. 
-                                     !! **outout:** array of computed values of `y(t)` vector.
-      real(wp),intent(inout) :: t !! **input:** the initial value of the independent variable.
-                                  !! **outout:** corresponding value of independent variable (normally `tout`).
-      real(wp),intent(in) :: tout !! first point where output is desired (/= t).
-      real(wp),intent(in) :: rtol(*) !! relative tolerance parameter (scalar).
-      real(wp),intent(in) :: atol(*) !! absolute tolerance parameter (scalar or array).
-                                     !! the estimated local error in y(i) will be controlled so as
-                                     !! to be roughly less (in magnitude) than
+      real(wp),intent(inout) :: y(*) !! a real array for the vector of dependent variables, of
+                                     !! length `neq` or more.  used for both input and output on the
+                                     !! first call (`istate = 1`), and only for output on other calls.
+                                     !! on the first call, `y` must contain the vector of initial
+                                     !! values.  in the output, `y` contains the computed solution
+                                     !! evaluated at `t`.  if desired, the `y` array may be used
+                                     !! for other purposes between calls to the solver.
+                                     !!
+                                     !! this array is passed as the `y` argument in all calls to
+                                     !! `f` and `jac`.
+      real(wp),intent(inout) :: t !! the independent variable.  in the input, `t` is used only on
+                                  !! the first call, as the initial point of the integration.
+                                  !! in the output, after each call, `t` is the value at which a
+                                  !! computed solution `y` is evaluated (usually the same as `tout`).
+                                  !! on an error return, `t` is the farthest point reached.
+      real(wp),intent(in) :: tout !! the next value of `t` at which a computed solution is desired.
+                                  !!
+                                  !! when starting the problem (`istate = 1`), `tout` may be equal
+                                  !! to `t` for one call, then should `/= t` for the next call.
+                                  !! for the initial `t`, an input value of `tout /= t` is used
+                                  !! in order to determine the direction of the integration
+                                  !! (i.e. the algebraic sign of the step sizes) and the rough
+                                  !! scale of the problem.  integration in either direction
+                                  !! (forward or backward in `t`) is permitted.
+                                  !!
+                                  !! if `itask = 2 or 5` (one-step modes), `tout` is ignored after
+                                  !! the first call (i.e. the first call with `tout /= t`).
+                                  !! otherwise, `tout` is required on every call.
+                                  !!
+                                  !! if `itask = 1, 3, or 4`, the values of `tout` need not be
+                                  !! monotone, but a value of `tout` which backs up is limited
+                                  !! to the current internal `t` interval, whose endpoints are
+                                  !! `tcur - hu` and `tcur`.  (see optional output, below, for
+                                  !! `tcur` and `hu`.)
+      real(wp),intent(in) :: rtol(*) !! a relative error tolerance parameter, either a scalar or
+                                     !! an array of length `neq`.  see description under `atol`.
+      real(wp),intent(in) :: atol(*) !! an absolute error tolerance parameter, either a scalar or
+                                     !! an array of length `neq`.
+                                     !!
+                                     !! the input parameters itol, rtol, and atol determine
+                                     !! the error control performed by the solver.  the solver will
+                                     !! control the vector e = (e(i)) of estimated local errors
+                                     !! in y, according to an inequality of the form
                                      !!```
-                                     !! ewt(i) = rtol*abs(y(i)) + atol    if itol = 1 
-                                     !! ewt(i) = rtol*abs(y(i)) + atol(i) if itol = 2 
+                                     !!             rms-norm of ( e(i)/ewt(i) )   <=   1,
+                                     !! where       ewt(i) = rtol(i)*abs(y(i)) + atol(i),
                                      !!```
-                                     !! thus the local error test passes if, in each component,
-                                     !! either the absolute error is less than atol (or atol(i)),
-                                     !! or the relative error is less than rtol.
+                                     !! and the rms-norm (root-mean-square norm) here is
+                                     !! rms-norm(v) = sqrt(sum v(i)**2 / neq).  here ewt = (ewt(i))
+                                     !! is a vector of weights which must always be positive, and
+                                     !! the values of rtol and atol should all be non-negative.
+                                     !! the following table gives the types (scalar/array) of
+                                     !! rtol and atol, and the corresponding form of ewt(i).
+                                     !!
+                                     !!```
+                                     !!    itol    rtol       atol          ewt(i)
+                                     !!     1     scalar     scalar     rtol*abs(y(i)) + atol
+                                     !!     2     scalar     array      rtol*abs(y(i)) + atol(i)
+                                     !!     3     array      scalar     rtol(i)*abs(y(i)) + atol
+                                     !!     4     array      array      rtol(i)*abs(y(i)) + atol(i)
+                                     !!```
+                                     !!
+                                     !! when either of these parameters is a scalar, it need not
+                                     !! be dimensioned in the user's calling program.
+                                     !!
+                                     !! if none of the above choices (with itol, rtol, and atol
+                                     !! fixed throughout the problem) is suitable, more general
+                                     !! error controls can be obtained by substituting
+                                     !! user-supplied routines for the setting of ewt and/or for
+                                     !! the norm calculation.  see part iv below.
+                                     !!
+                                     !! if global errors are to be estimated by making a repeated
+                                     !! run on the same problem with smaller tolerances, then all
+                                     !! components of rtol and atol (i.e. of ewt) should be scaled
+                                     !! down uniformly.
+                                     !!
                                      !! use rtol = 0.0 for pure absolute error control, and
                                      !! use atol = 0.0 (or atol(i) = 0.0) for pure relative error
                                      !! control.  caution: actual (global) errors may exceed these
                                      !! local tolerances, so choose them conservatively.
-      integer,intent(in) :: lrw !! declared length of `rwork` (in user's dimension statement).
-      real(wp) :: rwork(lrw) !! real work array of length at least:
+      integer,intent(in) :: lrw !! the length of the array rwork, as declared by the user.
+                                !! (this will be checked by the solver.)
+      real(wp) :: rwork(lrw) !! a real working array.
+                             !! the length of `rwork` must be at least
+                             !! `20 + nyh*(maxord + 1) + 3*neq + lwm` where:
                              !!
-                             !!  * 20 + 16*neq                      for mf = 10,
-                             !!  * 22 +  9*neq + 2*neq**2           for mf = 21 or 22,
-                             !!  * 22 + 11*neq + (3*ml + 2*mu)*neq  for mf = 24 or 25.
-      integer,intent(in) :: neq !! number of first order odes.
-      integer,intent(in) :: itol !! 1 or 2 according as `atol` is a scalar or array.
-      integer,intent(in) :: itask !! 1 for normal computation of output values of y at t = tout.
-      integer,intent(inout) :: istate !! integer flag (input and output):
+                             !!  * nyh    = the initial value of neq,
+                             !!  * maxord = 12 (if meth = 1) or 5 (if meth = 2) (unless a
+                             !!             smaller value is given as an optional input),
+                             !!  * lwm = length of work space for matrix-related data:
+                             !!
+                             !!      * `lwm = 0                    ` if miter = 0,
+                             !!      * `lwm = 2*neq**2 + 2         ` if miter = 1 or 2, and mf>0,
+                             !!      * `lwm = neq**2 + 2           ` if miter = 1 or 2, and mf<0,
+                             !!      * `lwm = neq + 2              ` if miter = 3,
+                             !!      * `lwm = (3*ml+2*mu+2)*neq + 2` if miter = 4 or 5, and mf>0,
+                             !!      * `lwm = (2*ml+mu+1)*neq + 2  ` if miter = 4 or 5, and mf<0.
+                             !!
+                             !! (see the mf description for meth and miter.)
+                             !! thus if maxord has its default value and neq is constant,
+                             !! this length is:
+                             !!
+                             !!  * `20 + 16*neq                  `  for mf = 10,
+                             !!  * `22 + 16*neq + 2*neq**2       `  for mf = 11 or 12,
+                             !!  * `22 + 16*neq + neq**2         `  for mf = -11 or -12,
+                             !!  * `22 + 17*neq                  `  for mf = 13,
+                             !!  * `22 + 18*neq + (3*ml+2*mu)*neq`  for mf = 14 or 15,
+                             !!  * `22 + 17*neq + (2*ml+mu)*neq  `  for mf = -14 or -15,
+                             !!  * `20 +  9*neq                  `  for mf = 20,
+                             !!  * `22 +  9*neq + 2*neq**2       `  for mf = 21 or 22,
+                             !!  * `22 +  9*neq + neq**2         `  for mf = -21 or -22,
+                             !!  * `22 + 10*neq                  `  for mf = 23,
+                             !!  * `22 + 11*neq + (3*ml+2*mu)*neq`  for mf = 24 or 25.
+                             !!  * `22 + 10*neq + (2*ml+mu)*neq  `  for mf = -24 or -25.
+                             !!
+                             !! the first 20 words of rwork are reserved for conditional
+                             !! and optional input and optional output.
+                             !!
+                             !! the following word in rwork is a conditional input:
+                             !!   rwork(1) = tcrit = critical value of t which the solver
+                             !!              is not to overshoot.  required if itask is
+                             !!              4 or 5, and ignored otherwise.  (see itask.)
+
+
+
+
+      integer,intent(in) :: neq !! the size of the ode system (number of first order
+                                !! ordinary differential equations).
+                                !! `neq` may not be increased during the problem, but
+                                !! can be decreased (with `istate = 3` in the input).
+      integer,intent(in) :: itol !! an indicator for the type of error control.
+                                 !! 1 or 2 according as `atol` is a scalar or array.
+                                 !! see description under `atol`.
+      integer,intent(in) :: itask !! an index specifying the task to be performed.
+                                  !! input only.  itask has the following values and meanings:
+                                  !!
+                                  !!  * 1  means normal computation of output values of y(t) at
+                                  !!       t = tout (by overshooting and interpolating).
+                                  !! * 2  means take one step only and return.
+                                  !! * 3  means stop at the first internal mesh point at or
+                                  !!      beyond t = tout and return.
+                                  !! * 4  means normal computation of output values of y(t) at
+                                  !!      t = tout but without overshooting t = tcrit.
+                                  !!      tcrit must be input as rwork(1).  tcrit may be equal to
+                                  !!      or beyond tout, but not behind it in the direction of
+                                  !!      integration.  this option is useful if the problem
+                                  !!      has a singularity at or beyond t = tcrit.
+                                  !! * 5  means take one step, without passing tcrit, and return.
+                                  !!      tcrit must be input as rwork(1).
+                                  !!
+                                  !! note:  if itask = 4 or 5 and the solver reaches tcrit
+                                  !! (within roundoff), it will return t = tcrit (exactly) to
+                                  !! indicate this (unless itask = 4 and tout comes before tcrit,
+                                  !! in which case answers at t = tout are returned first).
+      integer,intent(inout) :: istate !! an index used for input and output to specify the
+                                      !! the state of the calculation.
                                       !!
-                                      !!  * **input:** set istate = 1. 
-                                      !!  * **output:**  2  if dvode was successful, negative otherwise.
-                                      !!     * -1 means excess work done on this call. (perhaps wrong mf.)
-                                      !!     * -2 means excess accuracy requested. (tolerances too small.)
-                                      !!     * -3 means illegal input detected. (see printed message.)
-                                      !!     * -4 means repeated error test failures. (check all input.)
-                                      !!     * -5 means repeated convergence failures. (perhaps bad
-                                      !!          jacobian supplied or wrong choice of mf or tolerances.)
-                                      !!     * -6 means error weight became zero during problem. (solution
-                                      !!          component i vanished, and atol or atol(i) = 0.)
-      integer :: iopt
-      integer :: liw
-      integer :: iwork(liw)
-      integer :: mf
+                                      !! in the input, the values of istate are as follows:
+                                      !!
+                                      !!  1.  means this is the first call for the problem
+                                      !!      (initializations will be done).  see note below.
+                                      !!  2.  means this is not the first call, and the calculation
+                                      !!      is to continue normally, with no change in any input
+                                      !!      parameters except possibly tout and itask.
+                                      !!      (if itol, rtol, and/or atol are changed between calls
+                                      !!      with istate = 2, the new values will be used but not
+                                      !!      tested for legality.)
+                                      !!  3.  means this is not the first call, and the
+                                      !!      calculation is to continue normally, but with
+                                      !!      a change in input parameters other than
+                                      !!      tout and itask.  changes are allowed in
+                                      !!      neq, itol, rtol, atol, iopt, lrw, liw, mf, ml, mu,
+                                      !!      and any of the optional input except h0.
+                                      !!      (see iwork description for ml and mu.)
+                                      !!
+                                      !! note:  a preliminary call with tout = t is not counted
+                                      !! as a first call here, as no initialization or checking of
+                                      !! input is done.  (such a call is sometimes useful to include
+                                      !! the initial conditions in the output.)
+                                      !! thus the first call for which tout /= t requires
+                                      !! istate = 1 in the input.
+                                      !!
+                                      !! in the output, istate has the following values and meanings:
+                                      !!
+                                      !!  * 1  means nothing was done, as tout was equal to t with
+                                      !!      istate = 1 in the input.
+                                      !!  * 2  means the integration was performed successfully.
+                                      !!  * -1  means an excessive amount of work (more than mxstep
+                                      !!       steps) was done on this call, before completing the
+                                      !!       requested task, but the integration was otherwise
+                                      !!       successful as far as t.  (mxstep is an optional input
+                                      !!       and is normally 500.)  to continue, the user may
+                                      !!       simply reset istate to a value > 1 and call again.
+                                      !!       (the excess work step counter will be reset to 0.)
+                                      !!       in addition, the user may increase mxstep to avoid
+                                      !!       this error return.  (see optional input below.)
+                                      !!  * -2  means too much accuracy was requested for the precision
+                                      !!       of the machine being used.  this was detected before
+                                      !!       completing the requested task, but the integration
+                                      !!       was successful as far as t.  to continue, the tolerance
+                                      !!       parameters must be reset, and istate must be set
+                                      !!       to 3.  the optional output tolsf may be used for this
+                                      !!       purpose.  (note: if this condition is detected before
+                                      !!       taking any steps, then an illegal input return
+                                      !!       (istate = -3) occurs instead.)
+                                      !!  * -3  means illegal input was detected, before taking any
+                                      !!       integration steps.  see written message for details.
+                                      !!       note:  if the solver detects an infinite loop of calls
+                                      !!       to the solver with illegal input, it will cause
+                                      !!       the run to stop.
+                                      !!  * -4  means there were repeated error test failures on
+                                      !!       one attempted step, before completing the requested
+                                      !!       task, but the integration was successful as far as t.
+                                      !!       the problem may have a singularity, or the input
+                                      !!       may be inappropriate.
+                                      !!  * -5  means there were repeated convergence test failures on
+                                      !!       one attempted step, before completing the requested
+                                      !!       task, but the integration was successful as far as t.
+                                      !!       this may be caused by an inaccurate jacobian matrix,
+                                      !!       if one is being used.
+                                      !!  * -6  means ewt(i) became zero for some i during the
+                                      !!       integration.  pure relative error control (atol(i)=0.0)
+                                      !!       was requested on a variable which has now vanished.
+                                      !!       the integration was successful as far as t.
+                                      !!
+                                      !! note:  since the normal output value of istate is 2,
+                                      !! it does not need to be reset for normal continuation.
+                                      !! also, since a negative input value of istate will be
+                                      !! regarded as illegal, a negative output value requires the
+                                      !! user to change it, and possibly other input, before
+                                      !! calling the solver again.
+
+      integer,intent(in) :: iopt !! an integer flag to specify whether or not any optional
+                                 !! input is being used on this call.
+                                 !! the optional input is listed separately below.
+                                 !!
+                                 !!  * iopt = 0 means no optional input is being used.
+                                 !!    default values will be used in all cases.
+                                 !!  * iopt = 1 means optional input is being used.
+
+      integer,intent(in) :: liw !! the length of the array iwork, as declared by the user.
+                                !! (this will be checked by the solver.)
+      integer :: iwork(liw) !! an integer work array.  the length of iwork must be at least:
+                            !!
+                            !!  * `30`        if miter = 0 or 3 (mf = 10, 13, 20, 23), or
+                            !!  * `30 + neq`  otherwise (abs(mf) = 11,12,14,15,21,22,24,25).
+                            !!
+                            !! the first 30 words of `iwork` are reserved for conditional and
+                            !! optional input and optional output.
+                            !!
+                            !! the following 2 words in `iwork` are conditional input:
+                            !!
+                            !!  * `iwork(1) = ml`
+                            !!  * `iwork(2) = mu`
+                            !!
+                            !! these are the lower and upper
+                            !! half-bandwidths, respectively, of the
+                            !! banded jacobian, excluding the main diagonal.
+                            !! the band is defined by the matrix locations
+                            !! `(i,j)` with `i-ml <= j <= i+mu`.  `ml` and `mu`
+                            !! must satisfy  `0 <=  ml,mu  <= neq-1`.
+                            !! these are required if `miter` is 4 or 5, and
+                            !! ignored otherwise.  `ml` and `mu` may in fact be
+                            !! the band parameters for a matrix to which
+                            !! `df/dy` is only approximately equal.
+
+      integer,intent(in) :: mf !! method flag.  standard values are:
+                               !!
+                               !!  * 10 for nonstiff (adams) method, no jacobian used.
+                               !!  * 21 for stiff (bdf) method, user-supplied full jacobian.
+                               !!  * 22 for stiff method, internally generated full jacobian.
+                               !!  * 24 for stiff method, user-supplied banded jacobian.
+                               !!  * 25 for stiff method, internally generated banded jacobian.
+                               !!
+                               !! the complete set of legal values of
+                               !! mf are 10, 11, 12, 13, 14, 15, 20, 21, 22, 23, 24, 25,
+                               !! -11, -12, -14, -15, -21, -22, -24, -25.
+                               !!
+                               !! `mf` is a signed two-digit integer, `mf = jsv*(10*meth + miter)`
+                               !!
+                               !! `jsv = sign(mf)` indicates the jacobian-saving strategy:
+                               !!
+                               !!  * jsv =  1 means a copy of the jacobian is saved for reuse
+                               !!           in the corrector iteration algorithm.
+                               !!  * jsv = -1 means a copy of the jacobian is not saved
+                               !!          (valid only for miter = 1, 2, 4, or 5).
+                               !!
+                               !! `meth` indicates the basic linear multistep method:
+                               !!
+                               !!  * meth = 1 means the implicit adams method.
+                               !!  * meth = 2 means the method based on backward
+                               !!           differentiation formulas (bdf-s).
+                               !!
+                               !! `miter` indicates the corrector iteration method:
+                               !!
+                               !!  * miter = 0 means functional iteration (no jacobian matrix
+                               !!    is involved).
+                               !!  * miter = 1 means chord iteration with a user-supplied
+                               !!    full (neq by neq) jacobian.
+                               !!  * miter = 2 means chord iteration with an internally
+                               !!    generated (difference quotient) full jacobian
+                               !!    (using neq extra calls to f per df/dy value).
+                               !!  * miter = 3 means chord iteration with an internally
+                               !!    generated diagonal jacobian approximation
+                               !!    (using 1 extra call to f per df/dy evaluation).
+                               !!  * miter = 4 means chord iteration with a user-supplied
+                               !!    banded jacobian.
+                               !!  * miter = 5 means chord iteration with an internally
+                               !!    generated banded jacobian (using ml+mu+1 extra
+                               !!    calls to f per df/dy evaluation).
+                               !!
+                               !! if miter = 1 or 4, the user must supply a subroutine `jac`
+                               !! (the name is arbitrary) as described above under `jac`.
+                               !! for other values of miter, a dummy argument can be used.
 
       logical :: ihit
       real(wp) :: atoli , big , ewti , h0 , hmax , hmx , &
@@ -1363,8 +1298,8 @@ contains
                         ! load and invert the ewt array.  (h is temporarily set to 1.0.) -------
                         me%dat%nq = 1
                         me%dat%h = one
-                        call dewset(me%dat%n,itol,rtol,atol,rwork(me%dat%lyh), &
-                                    rwork(me%dat%lewt))
+                        call me%dewset(me%dat%n,itol,rtol(1:me%dat%n),atol(1:me%dat%n),&
+                                       rwork(me%dat%lyh), rwork(me%dat%lewt))
                         do i = 1 , me%dat%n
                            if ( rwork(i+me%dat%lewt-1)<=zero ) goto 1100
                            rwork(i+me%dat%lewt-1) = one/rwork(i+me%dat%lewt-1)
@@ -1479,13 +1414,14 @@ contains
          istate = -1
          goto 700
       else
-         call dewset(me%dat%n,itol,rtol,atol,rwork(me%dat%lyh),rwork(me%dat%lewt))
+         call me%dewset(me%dat%n,itol,rtol(1:me%dat%n),atol(1:me%dat%n),&
+                        rwork(me%dat%lyh),rwork(me%dat%lewt))
          do i = 1 , me%dat%n
             if ( rwork(i+me%dat%lewt-1)<=zero ) goto 500
             rwork(i+me%dat%lewt-1) = one/rwork(i+me%dat%lewt-1)
          enddo
       endif
- 200  tolsf = me%dat%uround*dvnorm(me%dat%n,rwork(me%dat%lyh),rwork(me%dat%lewt))
+ 200  tolsf = me%dat%uround*me%dvnorm(me%dat%n,rwork(me%dat%lyh),rwork(me%dat%lewt))
       if ( tolsf<=one ) then
          if ( (me%dat%tn+me%dat%h)==me%dat%tn ) then
             me%dat%nhnil = me%dat%nhnil + 1
@@ -1772,7 +1708,7 @@ contains
                do i = 1 , n
                   temp(i) = (temp(i)-ydot(i))/h
                enddo
-               yddnrm = dvnorm(n,temp,ewt)
+               yddnrm = me%dvnorm(n,temp,ewt(1:n))
                ! get the corresponding new value of h. --------------------------------
                if ( yddnrm*hub*hub>two ) then
                   hnew = sqrt(two/yddnrm)
@@ -1962,7 +1898,7 @@ contains
       real(wp) :: wm(*) !! real work array associated with matrix
                         !! operations in [[dvnlsd]].
       integer :: iwm(*) !! integer work array associated with matrix
-                        !! operations in [[dvnlsd]]. 
+                        !! operations in [[dvnlsd]].
 
       real(wp) :: cnquot , ddn , dsm , dup , etaqp1 , &
                   flotl , r , told
@@ -1990,27 +1926,80 @@ contains
       ncf = 0
       me%dat%jcur = 0
       nflag = 0
+
       if ( me%dat%jstart<=0 ) then
-         if ( me%dat%jstart==-1 ) goto 200
-         !-----------------------------------------------------------------------
-         ! on the first call, the order is set to 1, and other variables are
-         ! initialized.  etamax is the maximum ratio by which h can be increased
-         ! in a single step.  it is normally 10, but is larger during the
-         ! first step to compensate for the small initial h.  if a failure
-         ! occurs (in corrector convergence or error test), etamax is set to 1
-         ! for the next increase.
-         !-----------------------------------------------------------------------
-         me%dat%lmax = me%dat%maxord + 1
-         me%dat%nq = 1
-         me%dat%l = 2
-         me%dat%nqnyh = me%dat%nq*ldyh
-         me%dat%tau(1) = me%dat%h
-         me%dat%prl1 = one
-         me%dat%rc = zero
-         me%dat%etamax = etamx1
-         me%dat%nqwait = 2
-         me%dat%hscal = me%dat%h
-         goto 400
+         if ( me%dat%jstart==-1 ) then
+            !-----------------------------------------------------------------------
+            ! the following block handles preliminaries needed when jstart = -1.
+            ! if n was reduced, zero out part of yh to avoid undefined references.
+            ! if maxord was reduced to a value less than the tentative order newq,
+            ! then nq is set to maxord, and a new h ratio eta is chosen.
+            ! otherwise, we take the same preliminary actions as for jstart > 0.
+            ! in any case, nqwait is reset to l = nq + 1 to prevent further
+            ! changes in order for that many steps.
+            ! the new h ratio eta is limited by the input h if kuth = 1,
+            ! by hmin if kuth = 0, and by hmxi in any case.
+            ! finally, the history array yh is rescaled.
+            !-----------------------------------------------------------------------
+            me%dat%lmax = me%dat%maxord + 1
+            if ( me%dat%n/=ldyh ) then
+               i1 = 1 + (me%dat%newq+1)*ldyh
+               i2 = (me%dat%maxord+1)*ldyh
+               if ( i1<=i2 ) then
+                  do i = i1 , i2
+                     yh1(i) = zero
+                  enddo
+               endif
+            endif
+            if ( me%dat%newq>me%dat%maxord ) then
+               flotl = real(me%dat%lmax,wp)
+               if ( me%dat%maxord<me%dat%nq-1 ) then
+                  ddn = me%dvnorm(me%dat%n,savf(1:me%dat%n),ewt(1:me%dat%n))/me%dat%tq(1)
+                  me%dat%eta = one/((bias1*ddn)**(one/flotl)+addon)
+               endif
+               if ( me%dat%maxord==me%dat%nq .and. me%dat%newq==me%dat%nq+1 ) me%dat%eta = me%etaq
+               if ( me%dat%maxord==me%dat%nq-1 .and. me%dat%newq==me%dat%nq+1 ) then
+                  me%dat%eta = me%etaqm1
+                  call me%dvjust(yh,ldyh,-1)
+               endif
+               if ( me%dat%maxord==me%dat%nq-1 .and. me%dat%newq==me%dat%nq ) then
+                  ddn = me%dvnorm(me%dat%n,savf(1:me%dat%n),ewt(1:me%dat%n))/me%dat%tq(1)
+                  me%dat%eta = one/((bias1*ddn)**(one/flotl)+addon)
+                  call me%dvjust(yh,ldyh,-1)
+               endif
+               me%dat%eta = min(me%dat%eta,one)
+               me%dat%nq = me%dat%maxord
+               me%dat%l = me%dat%lmax
+            endif
+            if ( me%dat%kuth==1 ) me%dat%eta = min(me%dat%eta,abs(me%dat%h/me%dat%hscal))
+            if ( me%dat%kuth==0 ) me%dat%eta = max(me%dat%eta,me%dat%hmin/abs(me%dat%hscal))
+            me%dat%eta = me%dat%eta/max(one,abs(me%dat%hscal)*me%dat%hmxi*me%dat%eta)
+            me%dat%newh = 1
+            me%dat%nqwait = me%dat%l
+            if ( me%dat%newq>me%dat%maxord ) goto 300
+         else
+            !-----------------------------------------------------------------------
+            ! on the first call, the order is set to 1, and other variables are
+            ! initialized.  etamax is the maximum ratio by which h can be increased
+            ! in a single step.  it is normally 10, but is larger during the
+            ! first step to compensate for the small initial h.  if a failure
+            ! occurs (in corrector convergence or error test), etamax is set to 1
+            ! for the next increase.
+            !-----------------------------------------------------------------------
+            me%dat%lmax = me%dat%maxord + 1
+            me%dat%nq = 1
+            me%dat%l = 2
+            me%dat%nqnyh = me%dat%nq*ldyh
+            me%dat%tau(1) = me%dat%h
+            me%dat%prl1 = one
+            me%dat%rc = zero
+            me%dat%etamax = etamx1
+            me%dat%nqwait = 2
+            me%dat%hscal = me%dat%h
+            goto 400
+         end if
+
+      else if ( me%dat%kuth==1 ) then
          !-----------------------------------------------------------------------
          ! take preliminary actions on a normal continuation step (jstart>0).
          ! if the driver changed h, then eta must be reset and newh set to 1.
@@ -2020,75 +2009,23 @@ contains
          ! on an order increase, the history array is augmented by a column.
          ! on a change of step size h, the history array yh is rescaled.
          !-----------------------------------------------------------------------
-      else if ( me%dat%kuth==1 ) then
          me%dat%eta = min(me%dat%eta,me%dat%h/me%dat%hscal)
          me%dat%newh = 1
       endif
- 100  if ( me%dat%newh==0 ) goto 400
 
-      if ( me%dat%newq==me%dat%nq ) goto 300
+      if ( me%dat%newh==0 ) goto 400
+
       if ( me%dat%newq<me%dat%nq ) then
          call me%dvjust(yh,ldyh,-1)
          me%dat%nq = me%dat%newq
          me%dat%l = me%dat%nq + 1
          me%dat%nqwait = me%dat%l
-         goto 300
-      endif
-      if ( me%dat%newq>me%dat%nq ) then
+      else if ( me%dat%newq>me%dat%nq ) then
          call me%dvjust(yh,ldyh,1)
          me%dat%nq = me%dat%newq
          me%dat%l = me%dat%nq + 1
          me%dat%nqwait = me%dat%l
-         goto 300
       endif
-      !-----------------------------------------------------------------------
-      ! the following block handles preliminaries needed when jstart = -1.
-      ! if n was reduced, zero out part of yh to avoid undefined references.
-      ! if maxord was reduced to a value less than the tentative order newq,
-      ! then nq is set to maxord, and a new h ratio eta is chosen.
-      ! otherwise, we take the same preliminary actions as for jstart > 0.
-      ! in any case, nqwait is reset to l = nq + 1 to prevent further
-      ! changes in order for that many steps.
-      ! the new h ratio eta is limited by the input h if kuth = 1,
-      ! by hmin if kuth = 0, and by hmxi in any case.
-      ! finally, the history array yh is rescaled.
-      !-----------------------------------------------------------------------
- 200  me%dat%lmax = me%dat%maxord + 1
-      if ( me%dat%n/=ldyh ) then
-         i1 = 1 + (me%dat%newq+1)*ldyh
-         i2 = (me%dat%maxord+1)*ldyh
-         if ( i1<=i2 ) then
-            do i = i1 , i2
-               yh1(i) = zero
-            enddo
-         endif
-      endif
-      if ( me%dat%newq>me%dat%maxord ) then
-         flotl = real(me%dat%lmax,wp)
-         if ( me%dat%maxord<me%dat%nq-1 ) then
-            ddn = dvnorm(me%dat%n,savf,ewt)/me%dat%tq(1)
-            me%dat%eta = one/((bias1*ddn)**(one/flotl)+addon)
-         endif
-         if ( me%dat%maxord==me%dat%nq .and. me%dat%newq==me%dat%nq+1 ) me%dat%eta = me%etaq
-         if ( me%dat%maxord==me%dat%nq-1 .and. me%dat%newq==me%dat%nq+1 ) then
-            me%dat%eta = me%etaqm1
-            call me%dvjust(yh,ldyh,-1)
-         endif
-         if ( me%dat%maxord==me%dat%nq-1 .and. me%dat%newq==me%dat%nq ) then
-            ddn = dvnorm(me%dat%n,savf,ewt)/me%dat%tq(1)
-            me%dat%eta = one/((bias1*ddn)**(one/flotl)+addon)
-            call me%dvjust(yh,ldyh,-1)
-         endif
-         me%dat%eta = min(me%dat%eta,one)
-         me%dat%nq = me%dat%maxord
-         me%dat%l = me%dat%lmax
-      endif
-      if ( me%dat%kuth==1 ) me%dat%eta = min(me%dat%eta,abs(me%dat%h/me%dat%hscal))
-      if ( me%dat%kuth==0 ) me%dat%eta = max(me%dat%eta,me%dat%hmin/abs(me%dat%hscal))
-      me%dat%eta = me%dat%eta/max(one,abs(me%dat%hscal)*me%dat%hmxi*me%dat%eta)
-      me%dat%newh = 1
-      me%dat%nqwait = me%dat%l
-      if ( me%dat%newq<=me%dat%maxord ) goto 100
 
       ! rescale the history array for a change in h by a factor of eta. ------
  300  r = one
@@ -2100,7 +2037,7 @@ contains
       me%dat%hscal = me%dat%h
       me%dat%rc = me%dat%rc*me%dat%eta
       me%dat%nqnyh = me%dat%nq*ldyh
-      
+
       !-----------------------------------------------------------------------
       ! this section computes the predicted values by effectively
       ! multiplying the yh array by the pascal triangle matrix.
@@ -2239,7 +2176,7 @@ contains
                   me%etaqm1 = zero
                   if ( me%dat%nq/=1 ) then
                      ! compute ratio of new h to current h at the current order less one. ---
-                     ddn = dvnorm(me%dat%n,yh(1,me%dat%l),ewt)/me%dat%tq(1)
+                     ddn = me%dvnorm(me%dat%n,yh(1,me%dat%l),ewt(1:me%dat%n))/me%dat%tq(1)
                      me%etaqm1 = one/((bias1*ddn)**(one/(flotl-one))+addon)
                   endif
                   etaqp1 = zero
@@ -2249,7 +2186,7 @@ contains
                      do i = 1 , me%dat%n
                         savf(i) = acor(i) - cnquot*yh(i,me%dat%lmax)
                      enddo
-                     dup = dvnorm(me%dat%n,savf,ewt)/me%dat%tq(3)
+                     dup = me%dvnorm(me%dat%n,savf(1:me%dat%n),ewt(1:me%dat%n))/me%dat%tq(3)
                      etaqp1 = one/((bias3*dup)**(one/(flotl+one))+addon)
                   endif
                   if ( me%etaq<etaqp1 ) then
@@ -2276,6 +2213,7 @@ contains
  420        me%dat%eta = me%etaqm1
             me%dat%newq = me%dat%nq - 1
          endif
+
          ! test tentative new h against thresh, etamax, and hmxi, then exit. ----
  450     if ( me%dat%eta<thresh .or. me%dat%etamax==one ) then
             me%dat%newq = me%dat%nq
@@ -2323,10 +2261,12 @@ contains
             goto 300
          endif
       endif
+
  500  me%dat%etamax = etamx3
       if ( me%dat%nst<=10 ) me%dat%etamax = etamx2
       r = one/me%dat%tq(2)
       call dscal(me%dat%n,r,acor,1)
+
  600  me%dat%jstart = 1
 
    end subroutine dvstep
@@ -2343,7 +2283,7 @@ contains
 !  for the backward differentiation formulas,
 !
 !  $$ \lambda(x) = \left(1 + x/x_i \cdot (n_q) \right) \prod_{i=1}^{n_q-1} \left(1 + x/x_i(i) \right) $$
-! 
+!
 ! for the adams formulas,
 !
 !  $$ \frac{d}{dx} \lambda(x) = c  \prod_{i=1}^{n_q-1} \left(1 + x/x_i(i) \right)  $$
@@ -2352,7 +2292,7 @@ contains
 !  where `c` is a normalization constant.
 !  in both cases, \(x_i(i)\) is defined by
 !
-!  $$ \begin{align} 
+!  $$ \begin{align}
 !    h x_i(i) &= t_n  -  t_{n-i} \\
 !             &= h + \tau(1) + \tau(2) + \cdots + \tau(i-1)
 !     \end{align} $$
@@ -2718,7 +2658,7 @@ contains
          if ( me%dat%drc>ccmax .or. me%dat%nst>=me%dat%nslp+msbp ) me%dat%ipup = me%dat%miter
       end if
 
-      corrector : do 
+      corrector : do
          !-----------------------------------------------------------------------
          ! up to maxcor corrector iterations are taken.  a convergence test is
          ! made on the r.m.s. norm of each correction, weighted by the error
@@ -2768,7 +2708,7 @@ contains
                   cscale = two/(one+me%dat%rc)
                   call dscal(me%dat%n,cscale,y,1)
                endif
-               del = dvnorm(me%dat%n,y,ewt)
+               del = me%dvnorm(me%dat%n,y(1:me%dat%n),ewt(1:me%dat%n))
                call daxpy(me%dat%n,one,y,1,acor,1)
                do i = 1 , me%dat%n
                   y(i) = yh(i,1) + acor(i)
@@ -2784,7 +2724,7 @@ contains
                do i = 1 , me%dat%n
                   y(i) = savf(i) - acor(i)
                enddo
-               del = dvnorm(me%dat%n,y,ewt)
+               del = me%dvnorm(me%dat%n,y(1:me%dat%n),ewt(1:me%dat%n))
                do i = 1 , me%dat%n
                   y(i) = yh(i,1) + savf(i)
                enddo
@@ -2802,7 +2742,7 @@ contains
                me%dat%jcur = 0
                me%dat%icf = 0
                if ( m==0 ) me%dat%acnrm = del
-               if ( m>0 ) me%dat%acnrm = dvnorm(me%dat%n,acor,ewt)
+               if ( m>0 ) me%dat%acnrm = me%dvnorm(me%dat%n,acor(1:me%dat%n),ewt(1:me%dat%n))
                return
             else
                m = m + 1
@@ -2821,7 +2761,7 @@ contains
          if ( me%dat%miter/=0 .and. me%dat%jcur/=1 ) then
             me%dat%icf = 1
             me%dat%ipup = me%dat%miter
-         else 
+         else
             exit corrector
          endif
 
@@ -2911,7 +2851,7 @@ contains
          me%dat%nje = me%dat%nje + 1
          me%dat%nslj = me%dat%nst
          me%dat%jcur = 1
-         fac = dvnorm(me%dat%n,savf,ewt)
+         fac = me%dvnorm(me%dat%n,savf(1:me%dat%n),ewt(1:me%dat%n))
          r0 = thou*abs(me%dat%h)*me%dat%uround*real(me%dat%n,wp)*fac
          if ( r0==zero ) r0 = one
          srur = wm(1)
@@ -3011,7 +2951,7 @@ contains
          mba = min(mband,me%dat%n)
          meb1 = meband - 1
          srur = wm(1)
-         fac = dvnorm(me%dat%n,savf,ewt)
+         fac = me%dvnorm(me%dat%n,savf(1:me%dat%n),ewt(1:me%dat%n))
          r0 = thou*abs(me%dat%h)*me%dat%uround*real(me%dat%n,wp)*fac
          if ( r0==zero ) r0 = one
          do j = 1 , mba
@@ -3190,15 +3130,17 @@ contains
 !  * 890503  minor cosmetic changes.  (fnf)
 !  * 930809  renamed to allow single/real(wp) versions. (ach)
 
-   subroutine dewset(n,itol,rtol,atol,ycur,ewt)
+   subroutine dewset_default(me,n,itol,rtol,atol,ycur,ewt)
 
-      integer :: n
-      integer :: itol
+      class(dvode_t),intent(inout) :: me
+      integer,intent(in) :: n
+      integer,intent(in) :: itol
+      real(wp),intent(in) :: rtol(*)
+      real(wp),intent(in) :: atol(*)
+      real(wp),intent(in) :: ycur(n)
+      real(wp),intent(out) :: ewt(n)
+
       integer :: i
-      real(wp) :: rtol(*)
-      real(wp) :: atol(*)
-      real(wp) :: ycur(n)
-      real(wp) :: ewt(n)
 
       select case (itol)
       case (2)
@@ -3223,7 +3165,7 @@ contains
          ewt(i) = rtol(1)*abs(ycur(i)) + atol(1)
       enddo
 
-   end subroutine dewset
+   end subroutine dewset_default
 
 !*****************************************************************************************
 !>
@@ -3245,18 +3187,23 @@ contains
 !  * 890503  minor cosmetic changes.  (fnf)
 !  * 930809  renamed to allow single/real(wp) versions. (ach)
 
-      real(wp) function dvnorm(n,v,w)
+      real(wp) function dvnorm_default(me,n,v,w)
 
-      integer :: n , i
-      real(wp) :: v(n) , w(n) , sum
+      class(dvode_t),intent(inout) :: me
+      integer,intent(in) :: n
+      real(wp),intent(in) :: v(n)
+      real(wp),intent(in) :: w(n)
+
+      integer :: i
+      real(wp) :: sum
 
       sum = zero
       do i = 1 , n
          sum = sum + (v(i)*w(i))**2
       enddo
-      dvnorm = sqrt(sum/n)
+      dvnorm_default = sqrt(sum/n)
 
-      end function dvnorm
+      end function dvnorm_default
 
 !*****************************************************************************************
 !>
