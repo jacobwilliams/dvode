@@ -265,27 +265,31 @@ module dvode_module
 
       procedure,public :: initialize !! this routine must be called first before using the solver.
       procedure,public :: solve => dvode !! main solver routine.
-      procedure,public :: xsetun !! set the logical unit number, lun, for
-                                 !! output of messages from dvode, if
+      procedure,public :: xsetun !! set the logical unit number, `lun`, for
+                                 !! output of messages from [[dvode]], if
                                  !! the default is not desired.
-                                 !! the default value of lun is 6.
-                                 !! this call may be made at any time and will take effect immediately.
+                                 !! the default value of `lun` is `output_unit`.
+                                 !! this call may be made at any time and
+                                 !! will take effect immediately.
       procedure,public :: xsetf !! set a flag to control the printing of
-                                !! messages by dvode.
-                                !! mflag = 0 means do not print. (danger:
-                                !! this risks losing valuable information.)
-                                !! mflag = 1 means print (the default).
-                                !! this call may be made at any time and will take effect immediately.
+                                !! messages by [[dvode]]:
+                                !!
+                                !!  * `mflag = 0` means do not print. (danger:
+                                !!    this risks losing valuable information.)
+                                !!  * `mflag = 1` means print (the default).
+                                !!
+                                !! this call may be made at any time and
+                                !! will take effect immediately.
       procedure,public :: dvsrco !! saves and restores the contents of
-                                 !! the internal variables used by dvode.
+                                 !! the internal variables used by [[dvode]].
                                  !! [[dvsrco]] is useful if one is
                                  !! interrupting a run and restarting
                                  !! later, or alternating between two or
                                  !! more problems solved with [[dvode]].
       procedure,public :: dvindy !! provide derivatives of y, of various
-                                 !! orders, at a specified point t, if
+                                 !! orders, at a specified point `t`, if
                                  !! desired.  it may be called only after
-                                 !! a successful return from dvode.
+                                 !! a successful return from [[dvode]].
 
       procedure :: dvhin
       procedure :: dvstep
@@ -505,144 +509,6 @@ contains
 !  dvode is a package based on the `episode` and `episodeb` packages, and
 !  on the `odepack` user interface standard, with minor modifications.
 !
-!### Optional input.
-!
-! the work arrays `rwork` and `iwork` are also used for conditional and
-! optional input and optional output.  (the term output here refers
-! to the return from subroutine dvode to the user's calling program.)
-!
-! the following is a list of the optional input provided for in the
-! call sequence.  (see also part ii.)  for each such input variable,
-! this table lists its name as used in this documentation, its
-! location in the call sequence, its meaning, and the default value.
-! the use of any of this input requires `iopt = 1`, and in that
-! case all of this input is examined.  a value of zero for any
-! of these optional input variables will cause the default value to be
-! used.  thus to use a subset of the optional input, simply preload
-! locations 5 to 10 in rwork and iwork to 0.0 and 0 respectively, and
-! then set those of interest to nonzero values.
-!```
-! name    location      meaning and default value
-!
-! h0      rwork(5)  the step size to be attempted on the first step.
-!                   the default value is determined by the solver.
-!
-! hmax    rwork(6)  the maximum absolute step size allowed.
-!                   the default value is infinite.
-!
-! hmin    rwork(7)  the minimum absolute step size allowed.
-!                   the default value is 0.  (this lower bound is not
-!                   enforced on the final step before reaching tcrit
-!                   when itask = 4 or 5.)
-!
-! maxord  iwork(5)  the maximum order to be allowed.  the default
-!                   value is 12 if meth = 1, and 5 if meth = 2.
-!                   if maxord exceeds the default value, it will
-!                   be reduced to the default value.
-!                   if maxord is changed during the problem, it may
-!                   cause the current order to be reduced.
-!
-! mxstep  iwork(6)  maximum number of (internally defined) steps
-!                   allowed during one call to the solver.
-!                   the default value is 500.
-!
-! mxhnil  iwork(7)  maximum number of messages printed (per problem)
-!                   warning that t + h = t on a step (h = step size).
-!                   this must be positive to result in a non-default
-!                   value.  the default value is 10.
-!```
-!### Optional output
-!
-! as optional additional output from dvode, the variables listed
-! below are quantities related to the performance of dvode
-! which are available to the user.  these are communicated by way of
-! the work arrays, but also have internal mnemonic names as shown.
-! except where stated otherwise, all of this output is defined
-! on any successful return from dvode, and on any return with
-! istate = -1, -2, -4, -5, or -6.  on an illegal input return
-! (istate = -3), they will be unchanged from their existing values
-! (if any), except possibly for tolsf, lenrw, and leniw.
-! on any error return, output relevant to the error will be defined,
-! as noted below.
-!```
-! name    location      meaning
-!
-! hu      rwork(11) the step size in t last used (successfully).
-!
-! hcur    rwork(12) the step size to be attempted on the next step.
-!
-! tcur    rwork(13) the current value of the independent variable
-!                   which the solver has actually reached, i.e. the
-!                   current internal mesh point in t.  in the output,
-!                   tcur will always be at least as far from the
-!                   initial value of t as the current argument t,
-!                   but may be farther (if interpolation was done).
-!
-! tolsf   rwork(14) a tolerance scale factor, greater than 1.0,
-!                   computed when a request for too much accuracy was
-!                   detected (istate = -3 if detected at the start of
-!                   the problem, istate = -2 otherwise).  if itol is
-!                   left unaltered but rtol and atol are uniformly
-!                   scaled up by a factor of tolsf for the next call,
-!                   then the solver is deemed likely to succeed.
-!                   (the user may also ignore tolsf and alter the
-!                   tolerance parameters in any other way appropriate.)
-!
-! nst     iwork(11) the number of steps taken for the problem so far.
-!
-! nfe     iwork(12) the number of f evaluations for the problem so far.
-!
-! nje     iwork(13) the number of jacobian evaluations so far.
-!
-! nqu     iwork(14) the method order last used (successfully).
-!
-! nqcur   iwork(15) the order to be attempted on the next step.
-!
-! imxer   iwork(16) the index of the component of largest magnitude in
-!                   the weighted local error vector ( e(i)/ewt(i) ),
-!                   on an error return with istate = -4 or -5.
-!
-! lenrw   iwork(17) the length of rwork actually required.
-!                   this is defined on normal returns and on an illegal
-!                   input return for insufficient storage.
-!
-! leniw   iwork(18) the length of iwork actually required.
-!                   this is defined on normal returns and on an illegal
-!                   input return for insufficient storage.
-!
-! nlu     iwork(19) the number of matrix lu decompositions so far.
-!
-! nni     iwork(20) the number of nonlinear (newton) iterations so far.
-!
-! ncfn    iwork(21) the number of convergence failures of the nonlinear
-!                   solver so far.
-!
-! netf    iwork(22) the number of error test failures of the integrator
-!                   so far.
-!```
-! the following two arrays are segments of the rwork array which
-! may also be of interest to the user as optional output.
-! for each array, the table below gives its internal name,
-! its base address in rwork, and its description.
-!```
-! name    base address      description
-!
-! yh      21             the nordsieck history array, of size nyh by
-!                        (nqcur + 1), where nyh is the initial value
-!                        of neq.  for j = 0,1,...,nqcur, column j+1
-!                        of yh contains hcur**j/factorial(j) times
-!                        the j-th derivative of the interpolating
-!                        polynomial currently representing the
-!                        solution, evaluated at t = tcur.
-!
-! acor     lenrw-neq+1   array of size neq used for the accumulated
-!                        corrections on each step, scaled in the output
-!                        to represent the estimated local error in y
-!                        on the last step.  this is the vector e in
-!                        the description of the error control.  it is
-!                        defined only on a successful return from dvode.
-!```
-!
 !### Interrupting and restarting
 !
 ! if the integration of a given problem by dvode is to be
@@ -845,13 +711,83 @@ contains
                              !! the first 20 words of rwork are reserved for conditional
                              !! and optional input and optional output.
                              !!
-                             !! the following word in rwork is a conditional input:
-                             !!   rwork(1) = tcrit = critical value of t which the solver
-                             !!              is not to overshoot.  required if itask is
-                             !!              4 or 5, and ignored otherwise.  (see itask.)
-
-
-
+                             !! `rwork` can also used for conditional and
+                             !! optional input and optional output.
+                             !!
+                             !! the following word in `rwork` is a conditional input:
+                             !!
+                             !!  * `rwork(1) = tcrit` = critical value of `t` which the solver
+                             !!    is not to overshoot.  required if `itask` is
+                             !!    4 or 5, and ignored otherwise.  (see `itask`.)
+                             !!
+                             !! The following optional input requires `iopt = 1`, and in that
+                             !! case all of this input is examined.  a value of zero for any
+                             !! of these optional input variables will cause the default value to be
+                             !! used.  thus to use a subset of the optional input, simply preload
+                             !! locations 5 to 10 in `rwork` to 0.0, and
+                             !! then set those of interest to nonzero values:
+                             !!
+                             !!  * `rwork(5) = h0` = the step size to be attempted on the first step.
+                             !!    the default value is determined by the solver.
+                             !!
+                             !!  * `rwork(6) = hmax` = the maximum absolute step size allowed.
+                             !!    the default value is infinite.
+                             !!
+                             !!  * `rwork(7) = hmin` = the minimum absolute step size allowed.
+                             !!    the default value is 0.  (this lower bound is not
+                             !!    enforced on the final step before reaching `tcrit`
+                             !!    when `itask = 4 or 5`.)
+                             !!
+                             !! the following optional outputs
+                             !! below are quantities related to the performance of [[dvode]]
+                             !! which are available to the user.
+                             !! except where stated otherwise, all of this output is defined
+                             !! on any successful return from [[dvode]], and on any return with
+                             !! istate = -1, -2, -4, -5, or -6.  on an illegal input return
+                             !! (istate = -3), they will be unchanged from their existing values
+                             !! (if any), except possibly for `tolsf`.
+                             !! on any error return, output relevant to the error will be defined,
+                             !! as noted below:
+                             !!
+                             !!  * `rwork(11) = hu` = the step size in t last used (successfully).
+                             !!
+                             !!  * `rwork(12) = hcur` = the step size to be attempted on the next step.
+                             !!
+                             !!  * `rwork(13) = tcur` = the current value of the independent variable
+                             !!    which the solver has actually reached, i.e. the
+                             !!    current internal mesh point in t.  in the output,
+                             !!    tcur will always be at least as far from the
+                             !!    initial value of t as the current argument t,
+                             !!    but may be farther (if interpolation was done).
+                             !!
+                             !! * `rwork(14) = tolsf` = a tolerance scale factor, greater than 1.0,
+                             !!   computed when a request for too much accuracy was
+                             !!   detected (istate = -3 if detected at the start of
+                             !!   the problem, istate = -2 otherwise).  if itol is
+                             !!   left unaltered but rtol and atol are uniformly
+                             !!   scaled up by a factor of tolsf for the next call,
+                             !!   then the solver is deemed likely to succeed.
+                             !!   (the user may also ignore tolsf and alter the
+                             !!   tolerance parameters in any other way appropriate.)
+                             !!
+                             !! the following two arrays are segments of the `rwork` array which
+                             !! may also be of interest to the user as optional output:
+                             !!
+                             !!  * `rwork(21:) = yh` = the nordsieck history array, of size `nyh` by
+                             !!    `(nqcur + 1)`, where `nyh` is the initial value
+                             !!    of `neq`.  for `j = 0,1,...,nqcur`, column `j+1`
+                             !!    of `yh` contains `hcur**j/factorial(j)` times
+                             !!    the `j-th` derivative of the interpolating
+                             !!    polynomial currently representing the
+                             !!    solution, evaluated at `t = tcur`.
+                             !!
+                             !!  * `rwork(lenrw-neq+1:) = acor` = `lenrw-neq+1` array
+                             !!    of size `neq` used for the accumulated
+                             !!    corrections on each step, scaled in the output
+                             !!    to represent the estimated local error in `y`
+                             !!    on the last step.  this is the vector `e` in
+                             !!    the description of the error control.  it is
+                             !!    defined only on a successful return from [[dvode]].
 
       integer,intent(in) :: neq !! the size of the ode system (number of first order
                                 !! ordinary differential equations).
@@ -992,6 +928,61 @@ contains
                             !! ignored otherwise.  `ml` and `mu` may in fact be
                             !! the band parameters for a matrix to which
                             !! `df/dy` is only approximately equal.
+                            !!
+                            !! The following optional input requires `iopt = 1`, and in that
+                            !! case all of this input is examined.  a value of zero for any
+                            !! of these optional input variables will cause the default value to be
+                            !! used.  thus to use a subset of the optional input, simply preload
+                            !! locations 5 to 10 in `iwork` to 0, and
+                            !! then set those of interest to nonzero values.
+                            !!
+                            !!  * `iwork(5) = maxord` = the maximum order to be allowed.  the default
+                            !!    value is 12 if `meth = 1`, and 5 if `meth = 2`.
+                            !!    if `maxord` exceeds the default value, it will
+                            !!    be reduced to the default value.
+                            !!    if `maxord` is changed during the problem, it may
+                            !!    cause the current order to be reduced.
+                            !!
+                            !!  * `iwork(6) = mxstep` = maximum number of (internally defined) steps
+                            !!    allowed during one call to the solver.
+                            !!    the default value is 500.
+                            !!
+                            !!  * `iwork(7) = mxhnil` = maximum number of messages printed (per problem)
+                            !!    warning that `t + h = t` on a step (`h` = step size).
+                            !!    this must be positive to result in a non-default
+                            !!    value.  the default value is 10.
+                            !!
+                            !! as optional additional output from dvode, the variables listed
+                            !! below are quantities related to the performance of dvode
+                            !! which are available to the user.
+                            !! except where stated otherwise, all of this output is defined
+                            !! on any successful return from dvode, and on any return with
+                            !! istate = -1, -2, -4, -5, or -6.  on an illegal input return
+                            !! (istate = -3), they will be unchanged from their existing values
+                            !! (if any), except possibly for `lenrw`, and `leniw`.
+                            !! on any error return, output relevant to the error will be defined,
+                            !! as noted below:
+                            !!
+                            !!  * `iwork(11) = nst` = the number of steps taken for the problem so far.
+                            !!  * `iwork(12) = nfe` = the number of f evaluations for the problem so far.
+                            !!  * `iwork(13) = nje` = the number of jacobian evaluations so far.
+                            !!  * `iwork(14) = nqu` = the method order last used (successfully).
+                            !!  * `iwork(15) = nqcur` = the order to be attempted on the next step.
+                            !!  * `iwork(16) = imxer` = the index of the component of largest magnitude in
+                            !!    the weighted local error vector ( e(i)/ewt(i) ),
+                            !!    on an error return with istate = -4 or -5.
+                            !!  * `iwork(17) = lenrw` = the length of rwork actually required.
+                            !!    this is defined on normal returns and on an illegal
+                            !!    input return for insufficient storage.
+                            !!  * `iwork(18) = leniw` = the length of iwork actually required.
+                            !!     this is defined on normal returns and on an illegal
+                            !!     input return for insufficient storage.
+                            !!  * `iwork(19) = nlu` = the number of matrix lu decompositions so far.
+                            !!  * `iwork(20) = nni` = the number of nonlinear (newton) iterations so far.
+                            !!  * `iwork(21) = ncfn` = the number of convergence failures of the nonlinear
+                            !!    solver so far.
+                            !!  * `iwork(22) = netf` = the number of error test failures of the integrator
+                            !!    so far.
 
       integer,intent(in) :: mf !! method flag.  standard values are:
                                !!
@@ -1218,19 +1209,21 @@ contains
                   if ( istate==1 ) me%dat%nyh = me%dat%n
                   me%dat%lwm = me%dat%lyh + (me%dat%maxord+1)*me%dat%nyh
                   jco = max(0,me%dat%jsv)
-                  if ( me%dat%miter==0 ) lenwm = 0
-                  if ( me%dat%miter==1 .or. me%dat%miter==2 ) then
+                  select case (me%dat%miter)
+                  case(0)
+                     lenwm = 0
+                  case(1:2)
                      lenwm = 2 + (1+jco)*me%dat%n*me%dat%n
                      me%dat%locjs = me%dat%n*me%dat%n + 3
-                  endif
-                  if ( me%dat%miter==3 ) lenwm = 2 + me%dat%n
-                  if ( me%dat%miter==4 .or. me%dat%miter==5 ) then
+                  case(3)
+                     lenwm = 2 + me%dat%n
+                  case(4:5)
                      mband = ml + mu + 1
                      lenp = (mband+ml)*me%dat%n
                      lenj = mband*me%dat%n
                      lenwm = 2 + lenp + jco*lenj
                      me%dat%locjs = lenp + 3
-                  endif
+                  end select
                   me%dat%lewt = me%dat%lwm + lenwm
                   me%dat%lsavf = me%dat%lewt + me%dat%n
                   me%dat%lacor = me%dat%lsavf + me%dat%n
