@@ -20,7 +20,7 @@
 
     module dvode_kinds_module
 
-    use, intrinsic :: iso_fortran_env, only: real64
+    use, intrinsic :: iso_fortran_env 
 
     implicit none
 

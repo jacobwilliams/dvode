@@ -5,6 +5,8 @@
 !  These have been refactored into modern Fortran.
 
     module dvode_blas_module
+      
+#ifndef HAS_BLAS
 
     use dvode_kinds_module, only: wp => dvode_wp
 
@@ -411,6 +413,8 @@
 
     end function idamax
 !*******************************************************************************
+
+#endif
 
 !*******************************************************************************
     end module dvode_blas_module

@@ -11,9 +11,13 @@
     module dvode_linpack_module
 
     use dvode_kinds_module, only: wp => dvode_wp
+#ifndef HAS_BLAS
     use dvode_blas_module
+#endif
 
     implicit none
+
+    private
 
     public :: dgefa,dgesl,dgbfa,dgbsl
 
@@ -59,6 +63,11 @@
 
        real(wp) :: t
        integer :: j , k , kp1 , l , nm1
+
+#ifdef HAS_BLAS
+       ! user is linking against an external BLAS library
+       integer,external :: idamax 
+#endif
 
       ! gaussian elimination with partial pivoting
 
@@ -158,6 +167,11 @@
 
        real(wp) :: t
        integer :: k , kb , l , nm1
+       
+#ifdef HAS_BLAS
+       ! user is linking against an external BLAS library
+       double precision,external :: ddot 
+#endif
 
        nm1 = n - 1
        if ( job/=0 ) then
@@ -290,6 +304,11 @@
        real(wp) :: t
        integer :: i , i0 , j , ju , jz , j0 , j1 , k , kp1 , l , &
                   lm , m , mm , nm1
+
+#ifdef HAS_BLAS
+       ! user is linking against an external BLAS library
+       integer,external :: idamax 
+#endif
 
        m = ml + mu + 1
        info = 0
@@ -429,6 +448,11 @@
 
        real(wp) :: t
        integer :: k , kb , l , la , lb , lm , m , nm1
+
+#ifdef HAS_BLAS
+       ! user is linking against an external BLAS library
+       double precision,external :: ddot 
+#endif
 
        m = mu + ml + 1
        nm1 = n - 1

@@ -13,26 +13,30 @@
 !  a warning message is printed.  All output is on unit LOUT = 6.
 
       program dvdemo
-      use dvode_module
+      use dvode_module, wp => dvode_wp
+      use iso_fortran_env, only: output_unit
 
       implicit none
 
       type(dvode_t) :: solver
-      INTEGER i , iopar , iopt , iout , istate , itask ,      &
-            & itol , iwork , jsv , leniw , lenrw , liw , lout , lrw ,   &
-            & mband , meth , mf , miter , ml , mu , ncfn , neq , nerr , &
-            & netf , nfe , nfea , nje , nlu , nni , nout , nqu , nst
-      DOUBLE PRECISION atol(1) , dtout , er , erm , ero , hu ,   &
-                     & rtol(1) , rwork , t , tout , tout1 , y
+      INTEGER :: i , iopar , iopt , iout , istate , itask , &
+                 itol , iwork , jsv , leniw , lenrw , liw , lrw ,   &
+                 mband , meth , mf , miter , ml , mu , ncfn , neq , nerr , &
+                 netf , nfe , nfea , nje , nlu , nni , nout , nqu , nst
+      real(wp) :: atol(1) , er , erm , ero , hu , &
+                  rtol(1) , rwork , t , tout , y
       DIMENSION y(25) , rwork(847) , iwork(55)
-      DATA lout/6/ , tout1/1.39283880203D0/ , dtout/2.214773875D0/
+
+      real(wp),parameter :: tout1 = 1.39283880203_wp
+      real(wp),parameter :: dtout = 2.214773875_wp
+      integer,parameter :: lout = output_unit
 !
       rwork = 0
       iwork = 0
       nerr = 0
       itol = 1
-      rtol = 0.0D0
-      atol = 1.0D-6
+      rtol = 0.0_wp
+      atol = 1.0e-6_wp
       lrw = 847
       liw = 55
       iopt = 0
@@ -44,11 +48,11 @@
       call solver%initialize(f=f1, jac=jac1)
       WRITE (lout,99001) neq , itol , rtol , atol
 99001 FORMAT (' Demonstration program for DVODE package'//              &
-             &' Problem 1:   Van der Pol oscillator:'/                  &
-             &'   xdotdot - 3*(1 - x**2)*xdot + x = 0,',                &
-             &'   x(0) = 2, xdot(0) = 0'/'   NEQ =',I2/'   ITOL =',I3,  &
-             &'   RTOL =',D10.1,'   ATOL =',D10.1)
-!
+              ' Problem 1:   Van der Pol oscillator:'/                  &
+              '   xdotdot - 3*(1 - x**2)*xdot + x = 0,',                &
+              '   x(0) = 2, xdot(0) = 0'/'   NEQ =',I2/'   ITOL =',I3,  &
+              '   RTOL =',D10.1,'   ATOL =',D10.1)
+
       DO jsv = 1 , -1 , -2
          DO meth = 1 , 2
             DO miter = 0 , 3
@@ -57,18 +61,18 @@
                      mf = jsv*(10*meth+miter)
                      WRITE (lout,99002) mf
 99002                FORMAT (//70('*')//' Solution with MF =',I4//6X,   &
-                           & 't',15X,'x',15X,'xdot',7X,'NQ',6X,'H'/)
-                     t = 0.0D0
-                     y(1) = 2.0D0
-                     y(2) = 0.0D0
+                                        't',15X,'x',15X,'xdot',7X,'NQ',6X,'H'/)
+                     t = 0.0_wp
+                     y(1) = 2.0_wp
+                     y(2) = 0.0_wp
                      itask = 1
                      istate = 1
                      tout = tout1
-                     ero = 0.0D0
+                     ero = 0.0_wp
                      DO iout = 1 , nout
                         CALL solver%solve(neq,y,t,tout,itol,rtol,atol,  &
-                                 & itask,istate,iopt,rwork,lrw,iwork,   &
-                                 & liw,mf)
+                                          itask,istate,iopt,rwork,lrw,iwork, &
+                                          liw,mf)
                         hu = rwork(11)
                         nqu = iwork(14)
                         WRITE (lout,99003) t , y(1) , y(2) , nqu , hu
@@ -78,7 +82,7 @@
                         IF ( iopar==0 ) THEN
                            er = ABS(y(1))/atol(1)
                            ero = MAX(ero,er)
-                           IF ( er>=10000.0D0 ) THEN
+                           IF ( er>=10000.0_wp ) THEN
                               WRITE (lout,99008)
                               nerr = nerr + 1
                            ENDIF
@@ -119,11 +123,11 @@
       nout = 5
       WRITE (lout,99004) neq , ml , mu , itol , rtol , atol
 99004 FORMAT (//70('*')//' Demonstration program for DVODE package'//   &
-             &' Problem 2: ydot = A * y , where',                       &
-             &' A is a banded lower triangular matrix'/                 &
-             &'   derived from 2-D advection PDE'/'   NEQ =',I3,        &
-             &'   ML =',I2,'   MU =',I2/'   ITOL =',I3,'   RTOL =',     &
-            & D10.1,'   ATOL =',D10.1)
+              ' Problem 2: ydot = A * y , where',                       &
+              ' A is a banded lower triangular matrix'/                 &
+              '   derived from 2-D advection PDE'/'   NEQ =',I3,        &
+              '   ML =',I2,'   MU =',I2/'   ITOL =',I3,'   RTOL =',     &
+              D10.1,'   ATOL =',D10.1)
 !
       DO jsv = 1 , -1 , -2
          DO meth = 1 , 2
@@ -135,14 +139,14 @@
                         WRITE (lout,99005) mf
 99005                   FORMAT (//70('*')//' Solution with MF =',I4//6X,&
                                &'t',13X,'Max.Err.',5X,'NQ',6X,'H'/)
-                        t = 0.0D0
+                        t = 0.0_wp
                         DO i = 2 , neq
-                           y(i) = 0.0D0
+                           y(i) = 0.0_wp
                         ENDDO
-                        y(1) = 1.0D0
+                        y(1) = 1.0_wp
                         itask = 1
                         istate = 1
-                        tout = 0.01D0
+                        tout = 0.01_wp
                         ero = 0.0D0
                         DO iout = 1 , nout
                            CALL solver%solve(neq,y,t,tout,itol,rtol, &
@@ -156,11 +160,11 @@
                            IF ( istate<0 ) GOTO 4
                            er = erm/atol(1)
                            ero = MAX(ero,er)
-                           IF ( er>1000.0D0 ) THEN
+                           IF ( er>1000.0_wp ) THEN
                               WRITE (lout,99008)
                               nerr = nerr + 1
                            ENDIF
-                           tout = tout*10.0D0
+                           tout = tout*10.0_wp
                         ENDDO
  4                      IF ( istate<0 ) nerr = nerr + 1
                         nst = iwork(11)
@@ -202,42 +206,41 @@
       subroutine f1(me,neq,t,y,ydot)
 
       class(dvode_t),intent(inout) :: me
-      integer neq
-      double precision t , y , ydot
-      dimension y(neq) , ydot(neq)
+      integer :: neq
+      real(wp) :: t , y(neq) , ydot(neq)
 
       ydot(1) = y(2)
-      ydot(2) = 3.0d0*(1.0d0-y(1)*y(1))*y(2) - y(1)
+      ydot(2) = 3.0_wp*(1.0_wp-y(1)*y(1))*y(2) - y(1)
 
       end subroutine f1
 
       subroutine jac1(me,neq,t,y,ml,mu,pd,nrowpd)
 
       class(dvode_t),intent(inout) :: me
-      integer neq , ml , mu , nrowpd
-      double precision t , y , pd
-      dimension y(neq) , pd(nrowpd,neq)
+      integer :: neq , ml , mu , nrowpd
+      real(wp) :: t , y(neq) , pd(nrowpd,neq)
 
-      pd(1,1) = 0.0d0
-      pd(1,2) = 1.0d0
-      pd(2,1) = -6.0d0*y(1)*y(2) - 1.0d0
-      pd(2,2) = 3.0d0*(1.0d0-y(1)*y(1))
+      pd(1,1) = 0.0_wp
+      pd(1,2) = 1.0_wp
+      pd(2,1) = -6.0_wp*y(1)*y(2) - 1.0_wp
+      pd(2,2) = 3.0_wp*(1.0_wp-y(1)*y(1))
 
       end subroutine jac1
 
       subroutine f2(me,neq,t,y,ydot)
 
       class(dvode_t),intent(inout) :: me
-      integer neq , i , j , k , ng
-      double precision t , y , ydot , alph1 , alph2 , d
-      dimension y(neq) , ydot(neq)
+      integer :: neq , i , j , k 
+      real(wp) :: t , y(neq) , ydot(neq) , d
 
-      data alph1/1.0d0/ , alph2/1.0d0/ , ng/5/
+      real(wp),parameter :: alph1 = 1.0_wp 
+      real(wp),parameter :: alph2 = 1.0_wp 
+      integer,parameter :: ng = 5
 
       do j = 1 , ng
          do i = 1 , ng
             k = i + (j-1)*ng
-            d = -2.0d0*y(k)
+            d = -2.0_wp*y(k)
             if ( i/=1 ) d = d + y(k-1)*alph1
             if ( j/=1 ) d = d + y(k-ng)*alph2
             ydot(k) = d
@@ -249,40 +252,43 @@
       subroutine jac2(me,neq,t,y,ml,mu,pd,nrowpd)
 
       class(dvode_t),intent(inout) :: me
-      integer neq , ml , mu , nrowpd , j , mband , mu1 , mu2 , ng
-      double precision t , y , pd , alph1 , alph2
-      dimension y(neq) , pd(nrowpd,neq)
+      integer :: neq , ml , mu , nrowpd , j , mband , mu1 , mu2
+      real(wp) :: t , y(neq) , pd(nrowpd,neq)  
 
-      data alph1/1.0d0/ , alph2/1.0d0/ , ng/5/
+      real(wp),parameter :: alph1 = 1.0_wp 
+      real(wp),parameter :: alph2 = 1.0_wp 
+      integer,parameter :: ng = 5
 
       mband = ml + mu + 1
       mu1 = mu + 1
       mu2 = mu + 2
       do j = 1 , neq
-         pd(mu1,j) = -2.0d0
+         pd(mu1,j) = -2.0_wp
          pd(mu2,j) = alph1
          pd(mband,j) = alph2
       enddo
       do j = ng , neq , ng
-         pd(mu2,j) = 0.0d0
+         pd(mu2,j) = 0.0_wp
       enddo
 
       end subroutine jac2
 
       subroutine edit2(y,t,erm)
       implicit none
-      integer i , j , k , ng
-      double precision y , t , erm , alph1 , alph2 , a1 , a2 , er , ex ,&
-                     & yt
-      dimension y(25)
-      data alph1/1.0d0/ , alph2/1.0d0/ , ng/5/
-      erm = 0.0d0
-      if ( t==0.0d0 ) return
-      ex = 0.0d0
-      if ( t<=30.0d0 ) ex = exp(-2.0d0*t)
-      a2 = 1.0d0
+      integer :: i , j , k 
+      real(wp) :: y(25) , t , erm , a1 , a2 , er , ex , yt
+
+      real(wp),parameter :: alph1 = 1.0_wp 
+      real(wp),parameter :: alph2 = 1.0_wp 
+      integer,parameter :: ng = 5
+
+      erm = 0.0_wp
+      if ( t==0.0_wp ) return
+      ex = 0.0_wp
+      if ( t<=30.0_wp ) ex = exp(-2.0_wp*t)
+      a2 = 1.0_wp
       do j = 1 , ng
-         a1 = 1.0d0
+         a1 = 1.0_wp
          do i = 1 , ng
             k = i + (j-1)*ng
             yt = t**(i+j-2)*ex*a1*a2
