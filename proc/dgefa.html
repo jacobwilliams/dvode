@@ -95,11 +95,11 @@
 
             <li id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/dvode_linpack_module.f90"> Source File</a>
+              <a href="../src/dvode_linpack_module.F90"> Source File</a>
             </li>
         </ul>
         <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/dvode_linpack_module.f90.html'>dvode_linpack_module.f90</a></li>
+              <li><a href='../sourcefile/dvode_linpack_module.f90.html'>dvode_linpack_module.F90</a></li>
               <li><a href='../module/dvode_linpack_module.html'>dvode_linpack_module</a></li>
           <li class="active">dgefa</li>
         </ol>
@@ -571,6 +571,11 @@
 
 <span class="w">       </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t</span><span class="w"></span>
 <span class="w">       </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">kp1</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">nm1</span><span class="w"></span>
+
+<span class="cp">#ifdef HAS_BLAS</span>
+<span class="w">       </span><span class="c">! user is linking against an external BLAS library</span>
+<span class="w">       </span><span class="kt">integer</span><span class="p">,</span><span class="k">external</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">idamax</span><span class="w"> </span>
+<span class="cp">#endif</span>
 
 <span class="w">      </span><span class="c">! gaussian elimination with partial pivoting</span>
 

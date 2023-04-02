@@ -90,16 +90,16 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>30.9% of total for derived types.</p>Including implementation: 1571 statements, 96.0% of total for derived types.">29 statements</a>
+               title="<p>30.9% of total for derived types.</p>Including implementation: 1576 statements, 96.0% of total for derived types.">29 statements</a>
           </li>
 
             <li id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/dvode_module.f90"> Source File</a>
+              <a href="../src/dvode_module.F90"> Source File</a>
             </li>
         </ul>
         <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/dvode_module.f90.html'>dvode_module.f90</a></li>
+              <li><a href='../sourcefile/dvode_module.f90.html'>dvode_module.F90</a></li>
               <li><a href='../module/dvode_module.html'>dvode_module</a></li>
           <li class="active">dvode_t</li>
         </ol>
@@ -651,7 +651,7 @@ by a call to iumach (may be machine-dependent).</p>
     private  subroutine <a href='../proc/initialize.html'>initialize</a>(me, f, jac, dewset, dvnorm)  
 </h3>
     
-  <p>Set the function pointers.</p>
+  <p>Set the function pointers. This must be called before <a href="../proc/dvode.html">dvode</a> is called.</p>
 <h3>optionally replaceable solver routines</h3>
 <p>The two routines (<code>dewset</code> and <code>dvnorm</code>) relate to the measurement of errors.
   either routine can be replaced by a user-supplied version, if desired.
@@ -801,11 +801,14 @@ where:</p><a href="../proc/initialize.html#variable-dvnorm" class="pull-right"><
   <p>dvode: variable-coefficient ordinary differential equation solver,
   with fixed-leading-coefficient implementation.</p>
 <p>dvode solves the initial value problem for stiff or nonstiff
-  systems of first order odes,</p>
-<div class="codehilite"><pre><span></span><code>  dy/dt = f(t,y) ,  or, in component form,
-  dy(i)/dt = f(i) = f(i,t,y(1),y(2),...,y(neq)) (i = 1,...,neq).
-</code></pre></div>
-
+  systems of first order odes:</p>
+<p>
+<script type="math/tex; mode=display"> \frac{d}{dt} \mathbf{y} = \mathbf{f}(t,\mathbf{y}) </script>
+</p>
+<p>or, in component form:</p>
+<p>
+<script type="math/tex; mode=display"> \frac{d}{dt} \left[ \begin{array}{c} y_1 \\ y_2 \\ \vdots \\ y_{n_{eq}} \end{array} \right] = \left[ \begin{array}{c} f_1 \\ f_2 \\ \vdots \\ f_{n_{eq}} \end{array} \right] = \left[ \begin{array}{c} f(t,y_1) \\ f(t,y_2) \\ \vdots \\ f(t,y_{n_{eq}}) \end{array} \right] </script>
+</p>
 <p>dvode is a package based on the <code>episode</code> and <code>episodeb</code> packages, and
   on the <code>odepack</code> user interface standard, with minor modifications.</p>
 <h3>Interrupting and restarting</h3>
@@ -816,11 +819,10 @@ where:</p><a href="../proc/initialize.html#variable-dvnorm" class="pull-right"><
  prior to the interruption, the contents of the call sequence
  variables and internal variables, and later restore these
  values before the next dvode call for that problem.  to save
- and restore the variables, use subroutine <a href="../proc/dvsrco.html">dvsrco</a>, as
- described below in part ii.</p>
-<p>in addition, if non-default values for either lun or mflag are
+ and restore the variables, use subroutine <a href="../proc/dvsrco.html">dvsrco</a>.</p>
+<p>in addition, if non-default values for either <code>lun</code> or <code>mflag</code> are
  desired, an extra call to <a href="../proc/xsetun.html">xsetun</a> and/or <a href="../proc/xsetf.html">xsetf</a> should be made just
- before continuing the integration.  see part ii below for details.</p>
+ before continuing the integration.</p>
 <h3>Authors:</h3>
 <ul>
 <li>peter n. brown and alan c. hindmarsh,
@@ -878,13 +880,13 @@ where:</p><a href="../proc/initialize.html#variable-dvnorm" class="pull-right"><
 </ul>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>the legality of input parameters will be thoroughly checked on the
       initial call for the problem, but not checked thereafter unless a
-      change in input parameters is flagged by istate = 3 in the input.</p></div>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>the work arrays must not be altered between calls to dvode
-       for the same problem, except possibly for the conditional and
-       optional input, and except for the last 3*neq words of rwork.
-       the latter space is used for internal scratch space, and so is
-       available for use by the user outside dvode between calls, if
-       desired (but not for use by f or jac).</p></div>
+      change in input parameters is flagged by <code>istate = 3</code> in the input.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>the work arrays must not be altered between calls to <a href="../proc/dvode.html">dvode</a>
+      for the same problem, except possibly for the conditional and
+      optional input, and except for the last <code>3*neq</code> words of <code>rwork</code>.
+      the latter space is used for internal scratch space, and so is
+      available for use by the user outside <a href="../proc/dvode.html">dvode</a> between calls, if
+      desired (but not for use by <code>f</code> or <code>jac</code>).</p></div>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2103,8 +2105,7 @@ operations in <a href="../proc/dvnlsd.html">dvnlsd</a>.</p>
  in both cases, <script type="math/tex">x_i(i)</script> is defined by</p>
 <p>
 <script type="math/tex; mode=display"> \begin{align}
-   h x_i(i) &= t_n  -  t_{n-i} \\
-            &= h + \tau(1) + \tau(2) + \cdots + \tau(i-1)
+   h x_i(i) &= t_n  -  t_{n-i} \!             &= h + \tau(1) + \tau(2) + \cdots + \tau(i-1)
     \end{align} </script>
 </p>
 <p>in addition to variables described previously, communication

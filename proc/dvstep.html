@@ -90,16 +90,16 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="13.8% of total for procedures.">280 statements</a>
+               title="14.0% of total for procedures.">285 statements</a>
           </li>
 
             <li id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/dvode_module.f90"> Source File</a>
+              <a href="../src/dvode_module.F90"> Source File</a>
             </li>
         </ul>
         <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/dvode_module.f90.html'>dvode_module.f90</a></li>
+              <li><a href='../sourcefile/dvode_module.f90.html'>dvode_module.F90</a></li>
               <li><a href='../module/dvode_module.html'>dvode_module</a></li>
           <li class="active">dvstep</li>
         </ol>
@@ -396,33 +396,33 @@ operations in <a href="../proc/dvnlsd.html">dvnlsd</a>.</p>
 <path fill="none" stroke="#000000" d="M53.45,-66.15C62.21,-70.33 72.17,-75.08 81.52,-79.54"/>
 <polygon fill="#000000" stroke="#000000" points="80.07,-82.73 90.6,-83.88 83.09,-76.41 80.07,-82.73"/>
 </g>
-<!-- proc~daxpy -->
-<g id="proc~~dvstep~~CallsGraph_node3" class="node">
-<title>proc~daxpy</title>
-<g id="a_proc~~dvstep~~CallsGraph_node3"><a xlink:href=".././proc/daxpy.html" xlink:title="daxpy">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
-<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">daxpy</text>
-</a>
-</g>
-</g>
-<!-- proc~dvstep&#45;&gt;proc~daxpy -->
-<g id="proc~~dvstep~~CallsGraph_edge3" class="edge">
-<title>proc~dvstep&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M54.4,-54C62.39,-54 71.31,-54 79.82,-54"/>
-<polygon fill="#000000" stroke="#000000" points="79.92,-57.5 89.92,-54 79.92,-50.5 79.92,-57.5"/>
-</g>
 <!-- proc~dcopy -->
-<g id="proc~~dvstep~~CallsGraph_node4" class="node">
+<g id="proc~~dvstep~~CallsGraph_node3" class="node">
 <title>proc~dcopy</title>
-<g id="a_proc~~dvstep~~CallsGraph_node4"><a xlink:href=".././proc/dcopy.html" xlink:title="dcopy">
-<polygon fill="#d9534f" stroke="#d9534f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
-<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dcopy</text>
+<g id="a_proc~~dvstep~~CallsGraph_node3"><a xlink:href=".././proc/dcopy.html" xlink:title="dcopy">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-66 90,-66 90,-42 144,-42 144,-66"/>
+<text text-anchor="middle" x="117" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dcopy</text>
 </a>
 </g>
 </g>
 <!-- proc~dvstep&#45;&gt;proc~dcopy -->
 <g id="proc~~dvstep~~CallsGraph_edge2" class="edge">
 <title>proc~dvstep&#45;&gt;proc~dcopy</title>
+<path fill="none" stroke="#000000" d="M54.4,-54C62.39,-54 71.31,-54 79.82,-54"/>
+<polygon fill="#000000" stroke="#000000" points="79.92,-57.5 89.92,-54 79.92,-50.5 79.92,-57.5"/>
+</g>
+<!-- proc~daxpy -->
+<g id="proc~~dvstep~~CallsGraph_node4" class="node">
+<title>proc~daxpy</title>
+<g id="a_proc~~dvstep~~CallsGraph_node4"><a xlink:href=".././proc/daxpy.html" xlink:title="daxpy">
+<polygon fill="#d9534f" stroke="#d9534f" points="144,-24 90,-24 90,0 144,0 144,-24"/>
+<text text-anchor="middle" x="117" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">daxpy</text>
+</a>
+</g>
+</g>
+<!-- proc~dvstep&#45;&gt;proc~daxpy -->
+<g id="proc~~dvstep~~CallsGraph_edge3" class="edge">
+<title>proc~dvstep&#45;&gt;proc~daxpy</title>
 <path fill="none" stroke="#000000" d="M53.45,-41.85C62.21,-37.67 72.17,-32.92 81.52,-28.46"/>
 <polygon fill="#000000" stroke="#000000" points="83.09,-31.59 90.6,-24.12 80.07,-25.27 83.09,-31.59"/>
 </g>
@@ -753,8 +753,9 @@ operations in <a href="../proc/dvnlsd.html">dvnlsd</a>.</p>
 <span class="w">               </span><span class="c">! on a successful return, etamax is reset and acor is scaled.</span>
 <span class="w">               </span><span class="c">!-----------------------------------------------------------------------</span>
 <span class="w">               </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">kflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
-<span class="w">               </span><span class="k">goto</span><span class="w"> </span><span class="mi">600</span><span class="w"></span>
-<span class="w">            </span><span class="k">else</span>
+<span class="w">               </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jstart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">               </span><span class="k">return</span>
+<span class="k">            else</span>
 <span class="k">               </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">etamax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one</span><span class="w"></span>
 <span class="w">               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">kflag</span><span class="o">&gt;</span><span class="n">kfc</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"></span>
 <span class="w">                  </span><span class="c">! compute ratio of new h to current h at the current order. ------------</span>
@@ -773,8 +774,9 @@ operations in <a href="../proc/dvnlsd.html">dvnlsd</a>.</p>
 <span class="w">                  </span><span class="c">!-----------------------------------------------------------------------</span>
 <span class="w">               </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">kflag</span><span class="o">==</span><span class="n">kfh</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">                  </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">kflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
-<span class="w">                  </span><span class="k">goto</span><span class="w"> </span><span class="mi">600</span><span class="w"></span>
-<span class="w">               </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nq</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">                  </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jstart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">                  </span><span class="k">return</span>
+<span class="k">               else if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">nq</span><span class="o">==</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">                  </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">eta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="n">etamin</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">hmin</span><span class="o">/</span><span class="nb">abs</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="p">))</span><span class="w"></span>
 <span class="w">                  </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="o">*</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">eta</span><span class="w"></span>
 <span class="w">                  </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">hscal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="w"></span>
@@ -909,14 +911,17 @@ operations in <a href="../proc/dvnlsd.html">dvnlsd</a>.</p>
 <span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">nflag</span><span class="o">&lt;-</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">nflag</span><span class="o">==-</span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">kflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="w"></span>
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">nflag</span><span class="o">==-</span><span class="mi">3</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">kflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">4</span><span class="w"></span>
-<span class="w">            </span><span class="k">goto</span><span class="w"> </span><span class="mi">600</span><span class="w"></span>
-<span class="w">         </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">hmin</span><span class="o">*</span><span class="n">onepsm</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jstart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span>
+<span class="k">         else if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">hmin</span><span class="o">*</span><span class="n">onepsm</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">kflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="w"></span>
-<span class="w">            </span><span class="k">goto</span><span class="w"> </span><span class="mi">600</span><span class="w"></span>
-<span class="w">         </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ncf</span><span class="o">==</span><span class="n">mxncf</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jstart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span>
+<span class="k">         else if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ncf</span><span class="o">==</span><span class="n">mxncf</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">kflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="w"></span>
-<span class="w">            </span><span class="k">goto</span><span class="w"> </span><span class="mi">600</span><span class="w"></span>
-<span class="w">         </span><span class="k">else</span>
+<span class="w">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jstart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span>
+<span class="k">         else</span>
 <span class="k">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">eta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">etacf</span><span class="w"></span>
 <span class="w">            </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">eta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">eta</span><span class="p">,</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">hmin</span><span class="o">/</span><span class="nb">abs</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">h</span><span class="p">))</span><span class="w"></span>
 <span class="w">            </span><span class="n">nflag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
@@ -929,7 +934,7 @@ operations in <a href="../proc/dvnlsd.html">dvnlsd</a>.</p>
 <span class="w">      </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">one</span><span class="o">/</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">tq</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
 <span class="w">      </span><span class="k">call </span><span class="n">dscal</span><span class="p">(</span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">n</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">acor</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 
-<span class="w"> </span><span class="mi">600</span><span class="w">  </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jstart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">      </span><span class="n">me</span><span class="p">%</span><span class="n">dat</span><span class="p">%</span><span class="n">jstart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
 
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">dvstep</span><span class="w"></span>
 </pre></div>

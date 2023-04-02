@@ -90,16 +90,16 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="23.4% of total for procedures.">474 statements</a>
+               title="23.3% of total for procedures.">474 statements</a>
           </li>
 
             <li id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/dvode_module.f90"> Source File</a>
+              <a href="../src/dvode_module.F90"> Source File</a>
             </li>
         </ul>
         <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/dvode_module.f90.html'>dvode_module.f90</a></li>
+              <li><a href='../sourcefile/dvode_module.f90.html'>dvode_module.F90</a></li>
               <li><a href='../module/dvode_module.html'>dvode_module</a></li>
           <li class="active">dvode</li>
         </ol>
@@ -157,11 +157,14 @@
     <p>dvode: variable-coefficient ordinary differential equation solver,
   with fixed-leading-coefficient implementation.</p>
 <p>dvode solves the initial value problem for stiff or nonstiff
-  systems of first order odes,</p>
-<div class="codehilite"><pre><span></span><code>  dy/dt = f(t,y) ,  or, in component form,
-  dy(i)/dt = f(i) = f(i,t,y(1),y(2),...,y(neq)) (i = 1,...,neq).
-</code></pre></div>
-
+  systems of first order odes:</p>
+<p>
+<script type="math/tex; mode=display"> \frac{d}{dt} \mathbf{y} = \mathbf{f}(t,\mathbf{y}) </script>
+</p>
+<p>or, in component form:</p>
+<p>
+<script type="math/tex; mode=display"> \frac{d}{dt} \left[ \begin{array}{c} y_1 \\ y_2 \\ \vdots \\ y_{n_{eq}} \end{array} \right] = \left[ \begin{array}{c} f_1 \\ f_2 \\ \vdots \\ f_{n_{eq}} \end{array} \right] = \left[ \begin{array}{c} f(t,y_1) \\ f(t,y_2) \\ \vdots \\ f(t,y_{n_{eq}}) \end{array} \right] </script>
+</p>
 <p>dvode is a package based on the <code>episode</code> and <code>episodeb</code> packages, and
   on the <code>odepack</code> user interface standard, with minor modifications.</p>
 <h3>Interrupting and restarting</h3>
@@ -172,11 +175,10 @@
  prior to the interruption, the contents of the call sequence
  variables and internal variables, and later restore these
  values before the next dvode call for that problem.  to save
- and restore the variables, use subroutine <a href="../proc/dvsrco.html">dvsrco</a>, as
- described below in part ii.</p>
-<p>in addition, if non-default values for either lun or mflag are
+ and restore the variables, use subroutine <a href="../proc/dvsrco.html">dvsrco</a>.</p>
+<p>in addition, if non-default values for either <code>lun</code> or <code>mflag</code> are
  desired, an extra call to <a href="../proc/xsetun.html">xsetun</a> and/or <a href="../proc/xsetf.html">xsetf</a> should be made just
- before continuing the integration.  see part ii below for details.</p>
+ before continuing the integration.</p>
 <h3>Authors:</h3>
 <ul>
 <li>peter n. brown and alan c. hindmarsh,
@@ -234,13 +236,13 @@
 </ul>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>the legality of input parameters will be thoroughly checked on the
       initial call for the problem, but not checked thereafter unless a
-      change in input parameters is flagged by istate = 3 in the input.</p></div>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>the work arrays must not be altered between calls to dvode
-       for the same problem, except possibly for the conditional and
-       optional input, and except for the last 3*neq words of rwork.
-       the latter space is used for internal scratch space, and so is
-       available for use by the user outside dvode between calls, if
-       desired (but not for use by f or jac).</p></div>
+      change in input parameters is flagged by <code>istate = 3</code> in the input.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>the work arrays must not be altered between calls to <a href="../proc/dvode.html">dvode</a>
+      for the same problem, except possibly for the conditional and
+      optional input, and except for the last <code>3*neq</code> words of <code>rwork</code>.
+      the latter space is used for internal scratch space, and so is
+      available for use by the user outside <a href="../proc/dvode.html">dvode</a> between calls, if
+      desired (but not for use by <code>f</code> or <code>jac</code>).</p></div>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -405,20 +407,20 @@ an array of length <code>neq</code>.  see description under <code>atol</code>.</
             <td>
                 <p>an absolute error tolerance parameter, either a scalar or
  an array of length <code>neq</code>.</p>
-<p>the input parameters itol, rtol, and atol determine
+<p>the input parameters <code>itol</code>, <code>rtol</code>, and <code>atol</code> determine
  the error control performed by the solver.  the solver will
- control the vector e = (e(i)) of estimated local errors
- in y, according to an inequality of the form</p>
-<div class="codehilite"><pre><span></span><code>             rms-norm of ( e(i)/ewt(i) )   &lt;=   1,
- where       ewt(i) = rtol(i)*abs(y(i)) + atol(i),
+ control the vector <code>e = (e(i))</code> of estimated local errors
+ in <code>y</code>, according to an inequality of the form</p>
+<div class="codehilite"><pre><span></span><code>        rms-norm of ( e(i)/ewt(i) )   &lt;=   1,
+ where  ewt(i) = rtol(i)*abs(y(i)) + atol(i),
 </code></pre></div>
 
 <p>and the rms-norm (root-mean-square norm) here is
- rms-norm(v) = sqrt(sum v(i)**2 / neq).  here ewt = (ewt(i))
+ <code>rms-norm(v) = sqrt(sum v(i)**2 / neq)</code>.  here <code>ewt = (ewt(i))</code>
  is a vector of weights which must always be positive, and
- the values of rtol and atol should all be non-negative.
+ the values of <code>rtol</code> and <code>atol</code> should all be non-negative.
  the following table gives the types (scalar/array) of
- rtol and atol, and the corresponding form of ewt(i).</p>
+ <code>rtol</code> and <code>atol</code>, and the corresponding form of <code>ewt(i)</code>.</p>
 <div class="codehilite"><pre><span></span><code>    itol    rtol       atol          ewt(i)
      1     scalar     scalar     rtol*abs(y(i)) + atol
      2     scalar     array      rtol*abs(y(i)) + atol(i)
@@ -428,17 +430,17 @@ an array of length <code>neq</code>.  see description under <code>atol</code>.</
 
 <p>when either of these parameters is a scalar, it need not
  be dimensioned in the user's calling program.</p>
-<p>if none of the above choices (with itol, rtol, and atol
+<p>if none of the above choices (with <code>itol</code>, <code>rtol</code>, and <code>atol</code>
  fixed throughout the problem) is suitable, more general
  error controls can be obtained by substituting
- user-supplied routines for the setting of ewt and/or for
- the norm calculation.  see part iv below.</p>
+ user-supplied routines for the setting of <code>ewt</code> and/or for
+ the norm calculation.</p>
 <p>if global errors are to be estimated by making a repeated
  run on the same problem with smaller tolerances, then all
- components of rtol and atol (i.e. of ewt) should be scaled
+ components of <code>rtol</code> and <code>atol</code> (i.e. of <code>ewt</code>) should be scaled
  down uniformly.</p>
-<p>use rtol = 0.0 for pure absolute error control, and
- use atol = 0.0 (or atol(i) = 0.0) for pure relative error
+<p>use <code>rtol = 0.0</code> for pure absolute error control, and
+ use <code>atol = 0.0</code> (or <code>atol(i) = 0.0</code>) for pure relative error
  control.  caution: actual (global) errors may exceed these
  local tolerances, so choose them conservatively.</p>
             </td>
@@ -605,39 +607,39 @@ the optional input is listed separately below.</p>
 the length of <code>rwork</code> must be at least
 <code>20 + nyh*(maxord + 1) + 3*neq + lwm</code> where:</p>
 <ul>
-<li>nyh    = the initial value of neq,</li>
-<li>maxord = 12 (if meth = 1) or 5 (if meth = 2) (unless a
-            smaller value is given as an optional input),</li>
+<li><code>nyh</code>    = the initial value of neq,</li>
+<li><code>maxord</code> = 12 (if <code>meth</code> = 1) or 5 (if <code>meth</code> = 2) (unless a
+              smaller value is given as an optional input),</li>
 <li>
-<p>lwm = length of work space for matrix-related data:</p>
+<p><code>lwm</code> = length of work space for matrix-related data:</p>
 <ul>
-<li><code>lwm = 0</code> if miter = 0,</li>
-<li><code>lwm = 2*neq**2 + 2</code> if miter = 1 or 2, and mf&gt;0,</li>
-<li><code>lwm = neq**2 + 2</code> if miter = 1 or 2, and mf&lt;0,</li>
-<li><code>lwm = neq + 2</code> if miter = 3,</li>
-<li><code>lwm = (3*ml+2*mu+2)*neq + 2</code> if miter = 4 or 5, and mf&gt;0,</li>
-<li><code>lwm = (2*ml+mu+1)*neq + 2</code> if miter = 4 or 5, and mf&lt;0.</li>
+<li><code>lwm = 0</code> if <code>miter</code> = 0,</li>
+<li><code>lwm = 2*neq**2 + 2</code> if <code>miter</code> = 1 or 2, and <code>mf</code>&gt;0,</li>
+<li><code>lwm = neq**2 + 2</code> if <code>miter</code> = 1 or 2, and <code>mf</code>&lt;0,</li>
+<li><code>lwm = neq + 2</code> if <code>miter</code> = 3,</li>
+<li><code>lwm = (3*ml+2*mu+2)*neq + 2</code> if <code>miter</code> = 4 or 5, and <code>mf</code>&gt;0,</li>
+<li><code>lwm = (2*ml+mu+1)*neq + 2</code> if <code>miter</code> = 4 or 5, and <code>mf</code>&lt;0.</li>
 </ul>
 </li>
 </ul>
-<p>(see the mf description for meth and miter.)
-thus if maxord has its default value and neq is constant,
+<p>(see the <code>mf</code> description for <code>meth</code> and <code>miter</code>.)
+thus if maxord has its default value and <code>neq</code> is constant,
 this length is:</p>
 <ul>
-<li><code>20 + 16*neq</code>  for mf = 10,</li>
-<li><code>22 + 16*neq + 2*neq**2</code>  for mf = 11 or 12,</li>
-<li><code>22 + 16*neq + neq**2</code>  for mf = -11 or -12,</li>
-<li><code>22 + 17*neq</code>  for mf = 13,</li>
-<li><code>22 + 18*neq + (3*ml+2*mu)*neq</code>  for mf = 14 or 15,</li>
-<li><code>22 + 17*neq + (2*ml+mu)*neq</code>  for mf = -14 or -15,</li>
-<li><code>20 +  9*neq</code>  for mf = 20,</li>
-<li><code>22 +  9*neq + 2*neq**2</code>  for mf = 21 or 22,</li>
-<li><code>22 +  9*neq + neq**2</code>  for mf = -21 or -22,</li>
-<li><code>22 + 10*neq</code>  for mf = 23,</li>
-<li><code>22 + 11*neq + (3*ml+2*mu)*neq</code>  for mf = 24 or 25.</li>
-<li><code>22 + 10*neq + (2*ml+mu)*neq</code>  for mf = -24 or -25.</li>
+<li><code>20 + 16*neq</code>  for <code>mf</code> = 10,</li>
+<li><code>22 + 16*neq + 2*neq**2</code>  for <code>mf</code> = 11 or 12,</li>
+<li><code>22 + 16*neq + neq**2</code>  for <code>mf</code> = -11 or -12,</li>
+<li><code>22 + 17*neq</code>  for <code>mf</code> = 13,</li>
+<li><code>22 + 18*neq + (3*ml+2*mu)*neq</code>  for <code>mf</code> = 14 or 15,</li>
+<li><code>22 + 17*neq + (2*ml+mu)*neq</code>  for <code>mf</code> = -14 or -15,</li>
+<li><code>20 +  9*neq</code>  for <code>mf</code> = 20,</li>
+<li><code>22 +  9*neq + 2*neq**2</code>  for <code>mf</code> = 21 or 22,</li>
+<li><code>22 +  9*neq + neq**2</code>  for <code>mf</code> = -21 or -22,</li>
+<li><code>22 + 10*neq</code>  for <code>mf</code> = 23,</li>
+<li><code>22 + 11*neq + (3*ml+2*mu)*neq</code>  for <code>mf</code> = 24 or 25.</li>
+<li><code>22 + 10*neq + (2*ml+mu)*neq</code>  for <code>mf</code> = -24 or -25.</li>
 </ul>
-<p>the first 20 words of rwork are reserved for conditional
+<p>the first 20 words of <code>rwork</code> are reserved for conditional
 and optional input and optional output.</p>
 <p><code>rwork</code> can also used for conditional and
 optional input and optional output.</p>
@@ -1124,20 +1126,20 @@ for other values of miter, a dummy argument can be used.</p>
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">atol</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="c">!! an absolute error tolerance parameter, either a scalar or</span>
 <span class="w">                                     </span><span class="c">!! an array of length `neq`.</span>
 <span class="w">                                     </span><span class="c">!!</span>
-<span class="w">                                     </span><span class="c">!! the input parameters itol, rtol, and atol determine</span>
+<span class="w">                                     </span><span class="c">!! the input parameters `itol`, `rtol`, and `atol` determine</span>
 <span class="w">                                     </span><span class="c">!! the error control performed by the solver.  the solver will</span>
-<span class="w">                                     </span><span class="c">!! control the vector e = (e(i)) of estimated local errors</span>
-<span class="w">                                     </span><span class="c">!! in y, according to an inequality of the form</span>
+<span class="w">                                     </span><span class="c">!! control the vector `e = (e(i))` of estimated local errors</span>
+<span class="w">                                     </span><span class="c">!! in `y`, according to an inequality of the form</span>
 <span class="w">                                     </span><span class="c">!!```</span>
-<span class="w">                                     </span><span class="c">!!             rms-norm of ( e(i)/ewt(i) )   &lt;=   1,</span>
-<span class="w">                                     </span><span class="c">!! where       ewt(i) = rtol(i)*abs(y(i)) + atol(i),</span>
+<span class="w">                                     </span><span class="c">!!        rms-norm of ( e(i)/ewt(i) )   &lt;=   1,</span>
+<span class="w">                                     </span><span class="c">!! where  ewt(i) = rtol(i)*abs(y(i)) + atol(i),</span>
 <span class="w">                                     </span><span class="c">!!```</span>
 <span class="w">                                     </span><span class="c">!! and the rms-norm (root-mean-square norm) here is</span>
-<span class="w">                                     </span><span class="c">!! rms-norm(v) = sqrt(sum v(i)**2 / neq).  here ewt = (ewt(i))</span>
+<span class="w">                                     </span><span class="c">!! `rms-norm(v) = sqrt(sum v(i)**2 / neq)`.  here `ewt = (ewt(i))`</span>
 <span class="w">                                     </span><span class="c">!! is a vector of weights which must always be positive, and</span>
-<span class="w">                                     </span><span class="c">!! the values of rtol and atol should all be non-negative.</span>
+<span class="w">                                     </span><span class="c">!! the values of `rtol` and `atol` should all be non-negative.</span>
 <span class="w">                                     </span><span class="c">!! the following table gives the types (scalar/array) of</span>
-<span class="w">                                     </span><span class="c">!! rtol and atol, and the corresponding form of ewt(i).</span>
+<span class="w">                                     </span><span class="c">!! `rtol` and `atol`, and the corresponding form of `ewt(i)`.</span>
 <span class="w">                                     </span><span class="c">!!</span>
 <span class="w">                                     </span><span class="c">!!```</span>
 <span class="w">                                     </span><span class="c">!!    itol    rtol       atol          ewt(i)</span>
@@ -1150,19 +1152,19 @@ for other values of miter, a dummy argument can be used.</p>
 <span class="w">                                     </span><span class="c">!! when either of these parameters is a scalar, it need not</span>
 <span class="w">                                     </span><span class="c">!! be dimensioned in the user&#39;s calling program.</span>
 <span class="w">                                     </span><span class="c">!!</span>
-<span class="w">                                     </span><span class="c">!! if none of the above choices (with itol, rtol, and atol</span>
+<span class="w">                                     </span><span class="c">!! if none of the above choices (with `itol`, `rtol`, and `atol`</span>
 <span class="w">                                     </span><span class="c">!! fixed throughout the problem) is suitable, more general</span>
 <span class="w">                                     </span><span class="c">!! error controls can be obtained by substituting</span>
-<span class="w">                                     </span><span class="c">!! user-supplied routines for the setting of ewt and/or for</span>
-<span class="w">                                     </span><span class="c">!! the norm calculation.  see part iv below.</span>
+<span class="w">                                     </span><span class="c">!! user-supplied routines for the setting of `ewt` and/or for</span>
+<span class="w">                                     </span><span class="c">!! the norm calculation.</span>
 <span class="w">                                     </span><span class="c">!!</span>
 <span class="w">                                     </span><span class="c">!! if global errors are to be estimated by making a repeated</span>
 <span class="w">                                     </span><span class="c">!! run on the same problem with smaller tolerances, then all</span>
-<span class="w">                                     </span><span class="c">!! components of rtol and atol (i.e. of ewt) should be scaled</span>
+<span class="w">                                     </span><span class="c">!! components of `rtol` and `atol` (i.e. of `ewt`) should be scaled</span>
 <span class="w">                                     </span><span class="c">!! down uniformly.</span>
 <span class="w">                                     </span><span class="c">!!</span>
-<span class="w">                                     </span><span class="c">!! use rtol = 0.0 for pure absolute error control, and</span>
-<span class="w">                                     </span><span class="c">!! use atol = 0.0 (or atol(i) = 0.0) for pure relative error</span>
+<span class="w">                                     </span><span class="c">!! use `rtol = 0.0` for pure absolute error control, and</span>
+<span class="w">                                     </span><span class="c">!! use `atol = 0.0` (or `atol(i) = 0.0`) for pure relative error</span>
 <span class="w">                                     </span><span class="c">!! control.  caution: actual (global) errors may exceed these</span>
 <span class="w">                                     </span><span class="c">!! local tolerances, so choose them conservatively.</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lrw</span><span class="w"> </span><span class="c">!! the length of the array rwork, as declared by the user.</span>
@@ -1171,36 +1173,36 @@ for other values of miter, a dummy argument can be used.</p>
 <span class="w">                             </span><span class="c">!! the length of `rwork` must be at least</span>
 <span class="w">                             </span><span class="c">!! `20 + nyh*(maxord + 1) + 3*neq + lwm` where:</span>
 <span class="w">                             </span><span class="c">!!</span>
-<span class="w">                             </span><span class="c">!!  * nyh    = the initial value of neq,</span>
-<span class="w">                             </span><span class="c">!!  * maxord = 12 (if meth = 1) or 5 (if meth = 2) (unless a</span>
-<span class="w">                             </span><span class="c">!!             smaller value is given as an optional input),</span>
-<span class="w">                             </span><span class="c">!!  * lwm = length of work space for matrix-related data:</span>
+<span class="w">                             </span><span class="c">!!  * `nyh`    = the initial value of neq,</span>
+<span class="w">                             </span><span class="c">!!  * `maxord` = 12 (if `meth` = 1) or 5 (if `meth` = 2) (unless a</span>
+<span class="w">                             </span><span class="c">!!               smaller value is given as an optional input),</span>
+<span class="w">                             </span><span class="c">!!  * `lwm` = length of work space for matrix-related data:</span>
 <span class="w">                             </span><span class="c">!!</span>
-<span class="w">                             </span><span class="c">!!      * `lwm = 0                    ` if miter = 0,</span>
-<span class="w">                             </span><span class="c">!!      * `lwm = 2*neq**2 + 2         ` if miter = 1 or 2, and mf&gt;0,</span>
-<span class="w">                             </span><span class="c">!!      * `lwm = neq**2 + 2           ` if miter = 1 or 2, and mf&lt;0,</span>
-<span class="w">                             </span><span class="c">!!      * `lwm = neq + 2              ` if miter = 3,</span>
-<span class="w">                             </span><span class="c">!!      * `lwm = (3*ml+2*mu+2)*neq + 2` if miter = 4 or 5, and mf&gt;0,</span>
-<span class="w">                             </span><span class="c">!!      * `lwm = (2*ml+mu+1)*neq + 2  ` if miter = 4 or 5, and mf&lt;0.</span>
+<span class="w">                             </span><span class="c">!!      * `lwm = 0                    ` if `miter` = 0,</span>
+<span class="w">                             </span><span class="c">!!      * `lwm = 2*neq**2 + 2         ` if `miter` = 1 or 2, and `mf`&gt;0,</span>
+<span class="w">                             </span><span class="c">!!      * `lwm = neq**2 + 2           ` if `miter` = 1 or 2, and `mf`&lt;0,</span>
+<span class="w">                             </span><span class="c">!!      * `lwm = neq + 2              ` if `miter` = 3,</span>
+<span class="w">                             </span><span class="c">!!      * `lwm = (3*ml+2*mu+2)*neq + 2` if `miter` = 4 or 5, and `mf`&gt;0,</span>
+<span class="w">                             </span><span class="c">!!      * `lwm = (2*ml+mu+1)*neq + 2  ` if `miter` = 4 or 5, and `mf`&lt;0.</span>
 <span class="w">                             </span><span class="c">!!</span>
-<span class="w">                             </span><span class="c">!! (see the mf description for meth and miter.)</span>
-<span class="w">                             </span><span class="c">!! thus if maxord has its default value and neq is constant,</span>
+<span class="w">                             </span><span class="c">!! (see the `mf` description for `meth` and `miter`.)</span>
+<span class="w">                             </span><span class="c">!! thus if maxord has its default value and `neq` is constant,</span>
 <span class="w">                             </span><span class="c">!! this length is:</span>
 <span class="w">                             </span><span class="c">!!</span>
-<span class="w">                             </span><span class="c">!!  * `20 + 16*neq                  `  for mf = 10,</span>
-<span class="w">                             </span><span class="c">!!  * `22 + 16*neq + 2*neq**2       `  for mf = 11 or 12,</span>
-<span class="w">                             </span><span class="c">!!  * `22 + 16*neq + neq**2         `  for mf = -11 or -12,</span>
-<span class="w">                             </span><span class="c">!!  * `22 + 17*neq                  `  for mf = 13,</span>
-<span class="w">                             </span><span class="c">!!  * `22 + 18*neq + (3*ml+2*mu)*neq`  for mf = 14 or 15,</span>
-<span class="w">                             </span><span class="c">!!  * `22 + 17*neq + (2*ml+mu)*neq  `  for mf = -14 or -15,</span>
-<span class="w">                             </span><span class="c">!!  * `20 +  9*neq                  `  for mf = 20,</span>
-<span class="w">                             </span><span class="c">!!  * `22 +  9*neq + 2*neq**2       `  for mf = 21 or 22,</span>
-<span class="w">                             </span><span class="c">!!  * `22 +  9*neq + neq**2         `  for mf = -21 or -22,</span>
-<span class="w">                             </span><span class="c">!!  * `22 + 10*neq                  `  for mf = 23,</span>
-<span class="w">                             </span><span class="c">!!  * `22 + 11*neq + (3*ml+2*mu)*neq`  for mf = 24 or 25.</span>
-<span class="w">                             </span><span class="c">!!  * `22 + 10*neq + (2*ml+mu)*neq  `  for mf = -24 or -25.</span>
+<span class="w">                             </span><span class="c">!!  * `20 + 16*neq                  `  for `mf` = 10,</span>
+<span class="w">                             </span><span class="c">!!  * `22 + 16*neq + 2*neq**2       `  for `mf` = 11 or 12,</span>
+<span class="w">                             </span><span class="c">!!  * `22 + 16*neq + neq**2         `  for `mf` = -11 or -12,</span>
+<span class="w">                             </span><span class="c">!!  * `22 + 17*neq                  `  for `mf` = 13,</span>
+<span class="w">                             </span><span class="c">!!  * `22 + 18*neq + (3*ml+2*mu)*neq`  for `mf` = 14 or 15,</span>
+<span class="w">                             </span><span class="c">!!  * `22 + 17*neq + (2*ml+mu)*neq  `  for `mf` = -14 or -15,</span>
+<span class="w">                             </span><span class="c">!!  * `20 +  9*neq                  `  for `mf` = 20,</span>
+<span class="w">                             </span><span class="c">!!  * `22 +  9*neq + 2*neq**2       `  for `mf` = 21 or 22,</span>
+<span class="w">                             </span><span class="c">!!  * `22 +  9*neq + neq**2         `  for `mf` = -21 or -22,</span>
+<span class="w">                             </span><span class="c">!!  * `22 + 10*neq                  `  for `mf` = 23,</span>
+<span class="w">                             </span><span class="c">!!  * `22 + 11*neq + (3*ml+2*mu)*neq`  for `mf` = 24 or 25.</span>
+<span class="w">                             </span><span class="c">!!  * `22 + 10*neq + (2*ml+mu)*neq  `  for `mf` = -24 or -25.</span>
 <span class="w">                             </span><span class="c">!!</span>
-<span class="w">                             </span><span class="c">!! the first 20 words of rwork are reserved for conditional</span>
+<span class="w">                             </span><span class="c">!! the first 20 words of `rwork` are reserved for conditional</span>
 <span class="w">                             </span><span class="c">!! and optional input and optional output.</span>
 <span class="w">                             </span><span class="c">!!</span>
 <span class="w">                             </span><span class="c">!! `rwork` can also used for conditional and</span>

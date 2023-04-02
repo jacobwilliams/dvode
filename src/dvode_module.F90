@@ -13,14 +13,24 @@
 
 module dvode_module
 
+#ifndef HAS_BLAS
     use dvode_blas_module
+#endif
     use dvode_linpack_module
-    use dvode_kinds_module, only: wp => dvode_wp
+    use dvode_kinds_module, only: dvode_wp 
     use iso_fortran_env,    only: output_unit
 
     implicit none
 
     private
+
+    integer,parameter :: wp = dvode_wp !! real kind to use
+    public :: dvode_wp
+
+#ifdef HAS_BLAS
+   ! user is linking against an external BLAS library
+   external :: daxpy,dcopy,dscal
+#endif
 
     real(wp),parameter :: zero = 0.0_wp
     real(wp),parameter :: epmach = epsilon(1.0_wp) !! machine epsilon
@@ -349,7 +359,7 @@ contains
 
 !*****************************************************************************************
 !>
-!  Set the function pointers.
+!  Set the function pointers. This must be called before [[dvode]] is called.
 !
 !### optionally replaceable solver routines
 !
@@ -501,11 +511,14 @@ contains
 !  with fixed-leading-coefficient implementation.
 !
 !  dvode solves the initial value problem for stiff or nonstiff
-!  systems of first order odes,
-!```
-!  dy/dt = f(t,y) ,  or, in component form,
-!  dy(i)/dt = f(i) = f(i,t,y(1),y(2),...,y(neq)) (i = 1,...,neq).
-!```
+!  systems of first order odes:
+!
+!  $$ \frac{d}{dt} \mathbf{y} = \mathbf{f}(t,\mathbf{y}) $$
+!
+!  or, in component form:
+!
+!  $$ \frac{d}{dt} \left[ \begin{array}{c} y_1 \\ y_2 \\ \vdots \\ y_{n_{eq}} \end{array} \right] = \left[ \begin{array}{c} f_1 \\ f_2 \\ \vdots \\ f_{n_{eq}} \end{array} \right] = \left[ \begin{array}{c} f(t,y_1) \\ f(t,y_2) \\ \vdots \\ f(t,y_{n_{eq}}) \end{array} \right] $$
+!
 !  dvode is a package based on the `episode` and `episodeb` packages, and
 !  on the `odepack` user interface standard, with minor modifications.
 !
@@ -518,12 +531,11 @@ contains
 ! prior to the interruption, the contents of the call sequence
 ! variables and internal variables, and later restore these
 ! values before the next dvode call for that problem.  to save
-! and restore the variables, use subroutine [[dvsrco]], as
-! described below in part ii.
+! and restore the variables, use subroutine [[dvsrco]].
 !
-! in addition, if non-default values for either lun or mflag are
+! in addition, if non-default values for either `lun` or `mflag` are
 ! desired, an extra call to [[xsetun]] and/or [[xsetf]] should be made just
-! before continuing the integration.  see part ii below for details.
+! before continuing the integration.
 !
 !### Authors:
 !  * peter n. brown and alan c. hindmarsh,
@@ -580,14 +592,14 @@ contains
 !
 !@note the legality of input parameters will be thoroughly checked on the
 !      initial call for the problem, but not checked thereafter unless a
-!      change in input parameters is flagged by istate = 3 in the input.
+!      change in input parameters is flagged by `istate = 3` in the input.
 !
-!@note  the work arrays must not be altered between calls to dvode
-!       for the same problem, except possibly for the conditional and
-!       optional input, and except for the last 3*neq words of rwork.
-!       the latter space is used for internal scratch space, and so is
-!       available for use by the user outside dvode between calls, if
-!       desired (but not for use by f or jac).
+!@note the work arrays must not be altered between calls to [[dvode]]
+!      for the same problem, except possibly for the conditional and
+!      optional input, and except for the last `3*neq` words of `rwork`.
+!      the latter space is used for internal scratch space, and so is
+!      available for use by the user outside [[dvode]] between calls, if
+!      desired (but not for use by `f` or `jac`).
 
    subroutine dvode(me,neq,y,t,tout,itol,rtol,atol,itask,istate,iopt, &
                     rwork,lrw,iwork,liw,mf)
@@ -632,20 +644,20 @@ contains
       real(wp),intent(in) :: atol(*) !! an absolute error tolerance parameter, either a scalar or
                                      !! an array of length `neq`.
                                      !!
-                                     !! the input parameters itol, rtol, and atol determine
+                                     !! the input parameters `itol`, `rtol`, and `atol` determine
                                      !! the error control performed by the solver.  the solver will
-                                     !! control the vector e = (e(i)) of estimated local errors
-                                     !! in y, according to an inequality of the form
+                                     !! control the vector `e = (e(i))` of estimated local errors
+                                     !! in `y`, according to an inequality of the form
                                      !!```
-                                     !!             rms-norm of ( e(i)/ewt(i) )   <=   1,
-                                     !! where       ewt(i) = rtol(i)*abs(y(i)) + atol(i),
+                                     !!        rms-norm of ( e(i)/ewt(i) )   <=   1,
+                                     !! where  ewt(i) = rtol(i)*abs(y(i)) + atol(i),
                                      !!```
                                      !! and the rms-norm (root-mean-square norm) here is
-                                     !! rms-norm(v) = sqrt(sum v(i)**2 / neq).  here ewt = (ewt(i))
+                                     !! `rms-norm(v) = sqrt(sum v(i)**2 / neq)`.  here `ewt = (ewt(i))`
                                      !! is a vector of weights which must always be positive, and
-                                     !! the values of rtol and atol should all be non-negative.
+                                     !! the values of `rtol` and `atol` should all be non-negative.
                                      !! the following table gives the types (scalar/array) of
-                                     !! rtol and atol, and the corresponding form of ewt(i).
+                                     !! `rtol` and `atol`, and the corresponding form of `ewt(i)`.
                                      !!
                                      !!```
                                      !!    itol    rtol       atol          ewt(i)
@@ -658,19 +670,19 @@ contains
                                      !! when either of these parameters is a scalar, it need not
                                      !! be dimensioned in the user's calling program.
                                      !!
-                                     !! if none of the above choices (with itol, rtol, and atol
+                                     !! if none of the above choices (with `itol`, `rtol`, and `atol`
                                      !! fixed throughout the problem) is suitable, more general
                                      !! error controls can be obtained by substituting
-                                     !! user-supplied routines for the setting of ewt and/or for
-                                     !! the norm calculation.  see part iv below.
+                                     !! user-supplied routines for the setting of `ewt` and/or for
+                                     !! the norm calculation.
                                      !!
                                      !! if global errors are to be estimated by making a repeated
                                      !! run on the same problem with smaller tolerances, then all
-                                     !! components of rtol and atol (i.e. of ewt) should be scaled
+                                     !! components of `rtol` and `atol` (i.e. of `ewt`) should be scaled
                                      !! down uniformly.
                                      !!
-                                     !! use rtol = 0.0 for pure absolute error control, and
-                                     !! use atol = 0.0 (or atol(i) = 0.0) for pure relative error
+                                     !! use `rtol = 0.0` for pure absolute error control, and
+                                     !! use `atol = 0.0` (or `atol(i) = 0.0`) for pure relative error
                                      !! control.  caution: actual (global) errors may exceed these
                                      !! local tolerances, so choose them conservatively.
       integer,intent(in) :: lrw !! the length of the array rwork, as declared by the user.
@@ -679,36 +691,36 @@ contains
                              !! the length of `rwork` must be at least
                              !! `20 + nyh*(maxord + 1) + 3*neq + lwm` where:
                              !!
-                             !!  * nyh    = the initial value of neq,
-                             !!  * maxord = 12 (if meth = 1) or 5 (if meth = 2) (unless a
-                             !!             smaller value is given as an optional input),
-                             !!  * lwm = length of work space for matrix-related data:
+                             !!  * `nyh`    = the initial value of neq,
+                             !!  * `maxord` = 12 (if `meth` = 1) or 5 (if `meth` = 2) (unless a
+                             !!               smaller value is given as an optional input),
+                             !!  * `lwm` = length of work space for matrix-related data:
                              !!
-                             !!      * `lwm = 0                    ` if miter = 0,
-                             !!      * `lwm = 2*neq**2 + 2         ` if miter = 1 or 2, and mf>0,
-                             !!      * `lwm = neq**2 + 2           ` if miter = 1 or 2, and mf<0,
-                             !!      * `lwm = neq + 2              ` if miter = 3,
-                             !!      * `lwm = (3*ml+2*mu+2)*neq + 2` if miter = 4 or 5, and mf>0,
-                             !!      * `lwm = (2*ml+mu+1)*neq + 2  ` if miter = 4 or 5, and mf<0.
+                             !!      * `lwm = 0                    ` if `miter` = 0,
+                             !!      * `lwm = 2*neq**2 + 2         ` if `miter` = 1 or 2, and `mf`>0,
+                             !!      * `lwm = neq**2 + 2           ` if `miter` = 1 or 2, and `mf`<0,
+                             !!      * `lwm = neq + 2              ` if `miter` = 3,
+                             !!      * `lwm = (3*ml+2*mu+2)*neq + 2` if `miter` = 4 or 5, and `mf`>0,
+                             !!      * `lwm = (2*ml+mu+1)*neq + 2  ` if `miter` = 4 or 5, and `mf`<0.
                              !!
-                             !! (see the mf description for meth and miter.)
-                             !! thus if maxord has its default value and neq is constant,
+                             !! (see the `mf` description for `meth` and `miter`.)
+                             !! thus if maxord has its default value and `neq` is constant,
                              !! this length is:
                              !!
-                             !!  * `20 + 16*neq                  `  for mf = 10,
-                             !!  * `22 + 16*neq + 2*neq**2       `  for mf = 11 or 12,
-                             !!  * `22 + 16*neq + neq**2         `  for mf = -11 or -12,
-                             !!  * `22 + 17*neq                  `  for mf = 13,
-                             !!  * `22 + 18*neq + (3*ml+2*mu)*neq`  for mf = 14 or 15,
-                             !!  * `22 + 17*neq + (2*ml+mu)*neq  `  for mf = -14 or -15,
-                             !!  * `20 +  9*neq                  `  for mf = 20,
-                             !!  * `22 +  9*neq + 2*neq**2       `  for mf = 21 or 22,
-                             !!  * `22 +  9*neq + neq**2         `  for mf = -21 or -22,
-                             !!  * `22 + 10*neq                  `  for mf = 23,
-                             !!  * `22 + 11*neq + (3*ml+2*mu)*neq`  for mf = 24 or 25.
-                             !!  * `22 + 10*neq + (2*ml+mu)*neq  `  for mf = -24 or -25.
+                             !!  * `20 + 16*neq                  `  for `mf` = 10,
+                             !!  * `22 + 16*neq + 2*neq**2       `  for `mf` = 11 or 12,
+                             !!  * `22 + 16*neq + neq**2         `  for `mf` = -11 or -12,
+                             !!  * `22 + 17*neq                  `  for `mf` = 13,
+                             !!  * `22 + 18*neq + (3*ml+2*mu)*neq`  for `mf` = 14 or 15,
+                             !!  * `22 + 17*neq + (2*ml+mu)*neq  `  for `mf` = -14 or -15,
+                             !!  * `20 +  9*neq                  `  for `mf` = 20,
+                             !!  * `22 +  9*neq + 2*neq**2       `  for `mf` = 21 or 22,
+                             !!  * `22 +  9*neq + neq**2         `  for `mf` = -21 or -22,
+                             !!  * `22 + 10*neq                  `  for `mf` = 23,
+                             !!  * `22 + 11*neq + (3*ml+2*mu)*neq`  for `mf` = 24 or 25.
+                             !!  * `22 + 10*neq + (2*ml+mu)*neq  `  for `mf` = -24 or -25.
                              !!
-                             !! the first 20 words of rwork are reserved for conditional
+                             !! the first 20 words of `rwork` are reserved for conditional
                              !! and optional input and optional output.
                              !!
                              !! `rwork` can also used for conditional and
@@ -2084,7 +2096,8 @@ contains
                ! on a successful return, etamax is reset and acor is scaled.
                !-----------------------------------------------------------------------
                me%dat%kflag = -1
-               goto 600
+               me%dat%jstart = 1
+               return
             else
                me%dat%etamax = one
                if ( me%dat%kflag>kfc ) then
@@ -2104,7 +2117,8 @@ contains
                   !-----------------------------------------------------------------------
                else if ( me%dat%kflag==kfh ) then
                   me%dat%kflag = -1
-                  goto 600
+                  me%dat%jstart = 1
+                  return
                else if ( me%dat%nq==1 ) then
                   me%dat%eta = max(etamin,me%dat%hmin/abs(me%dat%h))
                   me%dat%h = me%dat%h*me%dat%eta
@@ -2240,13 +2254,16 @@ contains
          if ( nflag<-1 ) then
             if ( nflag==-2 ) me%dat%kflag = -3
             if ( nflag==-3 ) me%dat%kflag = -4
-            goto 600
+            me%dat%jstart = 1
+            return
          else if ( abs(me%dat%h)<=me%dat%hmin*onepsm ) then
             me%dat%kflag = -2
-            goto 600
+            me%dat%jstart = 1
+            return
          else if ( ncf==mxncf ) then
             me%dat%kflag = -2
-            goto 600
+            me%dat%jstart = 1
+            return
          else
             me%dat%eta = etacf
             me%dat%eta = max(me%dat%eta,me%dat%hmin/abs(me%dat%h))
@@ -2260,7 +2277,7 @@ contains
       r = one/me%dat%tq(2)
       call dscal(me%dat%n,r,acor,1)
 
- 600  me%dat%jstart = 1
+      me%dat%jstart = 1
 
    end subroutine dvstep
 
