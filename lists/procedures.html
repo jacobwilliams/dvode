@@ -148,77 +148,83 @@ problem for a system of ordinary differential equations.</p><a href="../proc/dvs
 <g id="call~~graph~~CallGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 698)">
 <title>call~~graph~~CallGraph</title>
 <polygon fill="white" stroke="transparent" points="-4,4 -4,-698 281,-698 281,4 -4,4"/>
-<!-- proc~dvindy -->
-<g id="call~~graph~~CallGraph_node1" class="node">
-<title>proc~dvindy</title>
-<g id="a_call~~graph~~CallGraph_node1"><a xlink:href=".././proc/dvindy.html" xlink:title="dvindy">
-<polygon fill="#d9534f" stroke="#d9534f" points="187,-272 133,-272 133,-248 187,-248 187,-272"/>
-<text text-anchor="middle" x="160" y="-257.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvindy</text>
-</a>
-</g>
-</g>
 <!-- proc~dscal -->
-<g id="call~~graph~~CallGraph_node4" class="node">
+<g id="call~~graph~~CallGraph_node1" class="node">
 <title>proc~dscal</title>
-<g id="a_call~~graph~~CallGraph_node4"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
+<g id="a_call~~graph~~CallGraph_node1"><a xlink:href=".././proc/dscal.html" xlink:title="dscal">
 <polygon fill="#d9534f" stroke="#d9534f" points="277,-272 223,-272 223,-248 277,-248 277,-272"/>
 <text text-anchor="middle" x="250" y="-257.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dscal</text>
 </a>
 </g>
 </g>
-<!-- proc~dvindy&#45;&gt;proc~dscal -->
-<g id="call~~graph~~CallGraph_edge1" class="edge">
-<title>proc~dvindy&#45;&gt;proc~dscal</title>
-<path fill="none" stroke="#000000" d="M187.4,-260C195.39,-260 204.31,-260 212.82,-260"/>
-<polygon fill="#000000" stroke="#000000" points="212.92,-263.5 222.92,-260 212.92,-256.5 212.92,-263.5"/>
-</g>
-<!-- proc~dewset_default -->
+<!-- proc~dgesl -->
 <g id="call~~graph~~CallGraph_node2" class="node">
-<title>proc~dewset_default</title>
-<g id="a_call~~graph~~CallGraph_node2"><a xlink:href=".././proc/dewset_default.html" xlink:title="dewset_default">
-<polygon fill="#d9534f" stroke="#d9534f" points="95,-274 2,-274 2,-250 95,-250 95,-274"/>
-<text text-anchor="middle" x="48.5" y="-259.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dewset_default</text>
+<title>proc~dgesl</title>
+<g id="a_call~~graph~~CallGraph_node2"><a xlink:href=".././proc/dgesl.html" xlink:title="dgesl">
+<polygon fill="#d9534f" stroke="#d9534f" points="187,-66 133,-66 133,-42 187,-42 187,-66"/>
+<text text-anchor="middle" x="160" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgesl</text>
 </a>
 </g>
 </g>
-<!-- proc~dgefa -->
+<!-- proc~ddot -->
 <g id="call~~graph~~CallGraph_node3" class="node">
+<title>proc~ddot</title>
+<g id="a_call~~graph~~CallGraph_node3"><a xlink:href=".././proc/ddot.html" xlink:title="ddot">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="277,-45 223,-45 223,-21 277,-21 277,-45"/>
+<text text-anchor="middle" x="250" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">ddot</text>
+</a>
+</g>
+</g>
+<!-- proc~dgesl&#45;&gt;proc~ddot -->
+<g id="call~~graph~~CallGraph_edge1" class="edge">
+<title>proc~dgesl&#45;&gt;proc~ddot</title>
+<path fill="none" stroke="#000000" d="M187.4,-47.7C195.48,-45.77 204.51,-43.62 213.1,-41.57"/>
+<polygon fill="#000000" stroke="#000000" points="214,-44.95 222.92,-39.22 212.38,-38.14 214,-44.95"/>
+</g>
+<!-- proc~daxpy -->
+<g id="call~~graph~~CallGraph_node25" class="node">
+<title>proc~daxpy</title>
+<g id="a_call~~graph~~CallGraph_node25"><a xlink:href=".././proc/daxpy.html" xlink:title="daxpy">
+<polygon fill="#d9534f" stroke="#d9534f" points="277,-150 223,-150 223,-126 277,-126 277,-150"/>
+<text text-anchor="middle" x="250" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">daxpy</text>
+</a>
+</g>
+</g>
+<!-- proc~dgesl&#45;&gt;proc~daxpy -->
+<g id="call~~graph~~CallGraph_edge2" class="edge">
+<title>proc~dgesl&#45;&gt;proc~daxpy</title>
+<path fill="none" stroke="#000000" d="M176.64,-66.15C180.11,-68.98 183.73,-72.04 187,-75 202.44,-89 218.95,-105.87 231.04,-118.64"/>
+<polygon fill="#000000" stroke="#000000" points="228.56,-121.1 237.96,-125.99 233.66,-116.3 228.56,-121.1"/>
+</g>
+<!-- proc~dgefa -->
+<g id="call~~graph~~CallGraph_node4" class="node">
 <title>proc~dgefa</title>
-<g id="a_call~~graph~~CallGraph_node3"><a xlink:href=".././proc/dgefa.html" xlink:title="dgefa">
+<g id="a_call~~graph~~CallGraph_node4"><a xlink:href=".././proc/dgefa.html" xlink:title="dgefa">
 <polygon fill="#d9534f" stroke="#d9534f" points="187,-192 133,-192 133,-168 187,-168 187,-192"/>
 <text text-anchor="middle" x="160" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgefa</text>
 </a>
 </g>
 </g>
 <!-- proc~dgefa&#45;&gt;proc~dscal -->
-<g id="call~~graph~~CallGraph_edge3" class="edge">
+<g id="call~~graph~~CallGraph_edge5" class="edge">
 <title>proc~dgefa&#45;&gt;proc~dscal</title>
 <path fill="none" stroke="#000000" d="M174.37,-192.15C188.66,-205.15 211.53,-225.93 228.18,-241.08"/>
 <polygon fill="#000000" stroke="#000000" points="226.04,-243.86 235.8,-248 230.75,-238.68 226.04,-243.86"/>
 </g>
 <!-- proc~idamax -->
-<g id="call~~graph~~CallGraph_node14" class="node">
+<g id="call~~graph~~CallGraph_node16" class="node">
 <title>proc~idamax</title>
-<g id="a_call~~graph~~CallGraph_node14"><a xlink:href=".././proc/idamax.html" xlink:title="idamax">
+<g id="a_call~~graph~~CallGraph_node16"><a xlink:href=".././proc/idamax.html" xlink:title="idamax">
 <polygon fill="#d94e8f" stroke="#d94e8f" points="277,-192 223,-192 223,-168 277,-168 277,-192"/>
 <text text-anchor="middle" x="250" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">idamax</text>
 </a>
 </g>
 </g>
 <!-- proc~dgefa&#45;&gt;proc~idamax -->
-<g id="call~~graph~~CallGraph_edge2" class="edge">
+<g id="call~~graph~~CallGraph_edge3" class="edge">
 <title>proc~dgefa&#45;&gt;proc~idamax</title>
 <path fill="none" stroke="#000000" d="M187.4,-180C195.39,-180 204.31,-180 212.82,-180"/>
 <polygon fill="#000000" stroke="#000000" points="212.92,-183.5 222.92,-180 212.92,-176.5 212.92,-183.5"/>
-</g>
-<!-- proc~daxpy -->
-<g id="call~~graph~~CallGraph_node15" class="node">
-<title>proc~daxpy</title>
-<g id="a_call~~graph~~CallGraph_node15"><a xlink:href=".././proc/daxpy.html" xlink:title="daxpy">
-<polygon fill="#d9534f" stroke="#d9534f" points="277,-150 223,-150 223,-126 277,-126 277,-150"/>
-<text text-anchor="middle" x="250" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">daxpy</text>
-</a>
-</g>
 </g>
 <!-- proc~dgefa&#45;&gt;proc~daxpy -->
 <g id="call~~graph~~CallGraph_edge4" class="edge">
@@ -226,227 +232,104 @@ problem for a system of ordinary differential equations.</p><a href="../proc/dvs
 <path fill="none" stroke="#000000" d="M186.45,-167.85C195.21,-163.67 205.17,-158.92 214.52,-154.46"/>
 <polygon fill="#000000" stroke="#000000" points="216.09,-157.59 223.6,-150.12 213.07,-151.27 216.09,-157.59"/>
 </g>
-<!-- proc~ixsav -->
+<!-- proc~dvsrco -->
 <g id="call~~graph~~CallGraph_node5" class="node">
-<title>proc~ixsav</title>
-<g id="a_call~~graph~~CallGraph_node5"><a xlink:href=".././proc/ixsav.html" xlink:title="ixsav">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="75.5,-316 21.5,-316 21.5,-292 75.5,-292 75.5,-316"/>
-<text text-anchor="middle" x="48.5" y="-301.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">ixsav</text>
-</a>
-</g>
-</g>
-<!-- proc~dgbsl -->
-<g id="call~~graph~~CallGraph_node6" class="node">
-<title>proc~dgbsl</title>
-<g id="a_call~~graph~~CallGraph_node6"><a xlink:href=".././proc/dgbsl.html" xlink:title="dgbsl">
-<polygon fill="#d9534f" stroke="#d9534f" points="187,-66 133,-66 133,-42 187,-42 187,-66"/>
-<text text-anchor="middle" x="160" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgbsl</text>
-</a>
-</g>
-</g>
-<!-- proc~dgbsl&#45;&gt;proc~daxpy -->
-<g id="call~~graph~~CallGraph_edge6" class="edge">
-<title>proc~dgbsl&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M176.64,-66.15C180.11,-68.98 183.73,-72.04 187,-75 202.44,-89 218.95,-105.87 231.04,-118.64"/>
-<polygon fill="#000000" stroke="#000000" points="228.56,-121.1 237.96,-125.99 233.66,-116.3 228.56,-121.1"/>
-</g>
-<!-- proc~ddot -->
-<g id="call~~graph~~CallGraph_node26" class="node">
-<title>proc~ddot</title>
-<g id="a_call~~graph~~CallGraph_node26"><a xlink:href=".././proc/ddot.html" xlink:title="ddot">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="277,-45 223,-45 223,-21 277,-21 277,-45"/>
-<text text-anchor="middle" x="250" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">ddot</text>
-</a>
-</g>
-</g>
-<!-- proc~dgbsl&#45;&gt;proc~ddot -->
-<g id="call~~graph~~CallGraph_edge5" class="edge">
-<title>proc~dgbsl&#45;&gt;proc~ddot</title>
-<path fill="none" stroke="#000000" d="M187.4,-47.7C195.48,-45.77 204.51,-43.62 213.1,-41.57"/>
-<polygon fill="#000000" stroke="#000000" points="214,-44.95 222.92,-39.22 212.38,-38.14 214,-44.95"/>
-</g>
-<!-- proc~dvset -->
-<g id="call~~graph~~CallGraph_node7" class="node">
-<title>proc~dvset</title>
-<g id="a_call~~graph~~CallGraph_node7"><a xlink:href=".././proc/dvset.html" xlink:title="dvset">
-<polygon fill="#d9534f" stroke="#d9534f" points="75.5,-358 21.5,-358 21.5,-334 75.5,-334 75.5,-358"/>
-<text text-anchor="middle" x="48.5" y="-343.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvset</text>
-</a>
-</g>
-</g>
-<!-- proc~dvhin -->
-<g id="call~~graph~~CallGraph_node8" class="node">
-<title>proc~dvhin</title>
-<g id="a_call~~graph~~CallGraph_node8"><a xlink:href=".././proc/dvhin.html" xlink:title="dvhin">
-<polygon fill="#d9534f" stroke="#d9534f" points="75.5,-400 21.5,-400 21.5,-376 75.5,-376 75.5,-400"/>
-<text text-anchor="middle" x="48.5" y="-385.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvhin</text>
-</a>
-</g>
-</g>
-<!-- proc~xerrwd -->
-<g id="call~~graph~~CallGraph_node9" class="node">
-<title>proc~xerrwd</title>
-<g id="a_call~~graph~~CallGraph_node9"><a xlink:href=".././proc/xerrwd.html" xlink:title="xerrwd">
-<polygon fill="#d9534f" stroke="#d9534f" points="75.5,-442 21.5,-442 21.5,-418 75.5,-418 75.5,-442"/>
-<text text-anchor="middle" x="48.5" y="-427.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">xerrwd</text>
-</a>
-</g>
-</g>
-<!-- proc~initialize -->
-<g id="call~~graph~~CallGraph_node10" class="node">
-<title>proc~initialize</title>
-<g id="a_call~~graph~~CallGraph_node10"><a xlink:href=".././proc/initialize.html" xlink:title="initialize">
-<polygon fill="#d9534f" stroke="#d9534f" points="77,-484 20,-484 20,-460 77,-460 77,-484"/>
-<text text-anchor="middle" x="48.5" y="-469.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">initialize</text>
-</a>
-</g>
-</g>
-<!-- proc~dacopy -->
-<g id="call~~graph~~CallGraph_node11" class="node">
-<title>proc~dacopy</title>
-<g id="a_call~~graph~~CallGraph_node11"><a xlink:href=".././proc/dacopy.html" xlink:title="dacopy">
-<polygon fill="#d9534f" stroke="#d9534f" points="187,-478 133,-478 133,-454 187,-454 187,-478"/>
-<text text-anchor="middle" x="160" y="-463.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dacopy</text>
+<title>proc~dvsrco</title>
+<g id="a_call~~graph~~CallGraph_node5"><a xlink:href=".././proc/dvsrco.html" xlink:title="dvsrco">
+<polygon fill="#d9534f" stroke="#d9534f" points="75.5,-274 21.5,-274 21.5,-250 75.5,-250 75.5,-274"/>
+<text text-anchor="middle" x="48.5" y="-259.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvsrco</text>
 </a>
 </g>
 </g>
 <!-- proc~dcopy -->
-<g id="call~~graph~~CallGraph_node20" class="node">
+<g id="call~~graph~~CallGraph_node6" class="node">
 <title>proc~dcopy</title>
-<g id="a_call~~graph~~CallGraph_node20"><a xlink:href=".././proc/dcopy.html" xlink:title="dcopy">
+<g id="a_call~~graph~~CallGraph_node6"><a xlink:href=".././proc/dcopy.html" xlink:title="dcopy">
 <polygon fill="#d9534f" stroke="#d9534f" points="277,-398 223,-398 223,-374 277,-374 277,-398"/>
 <text text-anchor="middle" x="250" y="-383.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dcopy</text>
 </a>
 </g>
 </g>
+<!-- proc~dacopy -->
+<g id="call~~graph~~CallGraph_node7" class="node">
+<title>proc~dacopy</title>
+<g id="a_call~~graph~~CallGraph_node7"><a xlink:href=".././proc/dacopy.html" xlink:title="dacopy">
+<polygon fill="#d9534f" stroke="#d9534f" points="187,-478 133,-478 133,-454 187,-454 187,-478"/>
+<text text-anchor="middle" x="160" y="-463.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dacopy</text>
+</a>
+</g>
+</g>
 <!-- proc~dacopy&#45;&gt;proc~dcopy -->
-<g id="call~~graph~~CallGraph_edge7" class="edge">
+<g id="call~~graph~~CallGraph_edge6" class="edge">
 <title>proc~dacopy&#45;&gt;proc~dcopy</title>
 <path fill="none" stroke="#000000" d="M174.37,-453.85C188.66,-440.85 211.53,-420.07 228.18,-404.92"/>
 <polygon fill="#000000" stroke="#000000" points="230.75,-407.32 235.8,-398 226.04,-402.14 230.75,-407.32"/>
 </g>
-<!-- proc~dnrm2 -->
-<g id="call~~graph~~CallGraph_node12" class="node">
-<title>proc~dnrm2</title>
-<g id="a_call~~graph~~CallGraph_node12"><a xlink:href=".././proc/dnrm2.html" xlink:title="dnrm2">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="75.5,-526 21.5,-526 21.5,-502 75.5,-502 75.5,-526"/>
-<text text-anchor="middle" x="48.5" y="-511.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dnrm2</text>
-</a>
-</g>
-</g>
-<!-- proc~dgesl -->
-<g id="call~~graph~~CallGraph_node13" class="node">
-<title>proc~dgesl</title>
-<g id="a_call~~graph~~CallGraph_node13"><a xlink:href=".././proc/dgesl.html" xlink:title="dgesl">
-<polygon fill="#d9534f" stroke="#d9534f" points="187,-24 133,-24 133,0 187,0 187,-24"/>
-<text text-anchor="middle" x="160" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgesl</text>
-</a>
-</g>
-</g>
-<!-- proc~dgesl&#45;&gt;proc~daxpy -->
-<g id="call~~graph~~CallGraph_edge9" class="edge">
-<title>proc~dgesl&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M177.75,-24.05C181.02,-26.79 184.27,-29.84 187,-33 209.44,-58.98 228.33,-94.18 239.16,-116.49"/>
-<polygon fill="#000000" stroke="#000000" points="236.11,-118.22 243.56,-125.76 242.43,-115.22 236.11,-118.22"/>
-</g>
-<!-- proc~dgesl&#45;&gt;proc~ddot -->
-<g id="call~~graph~~CallGraph_edge8" class="edge">
-<title>proc~dgesl&#45;&gt;proc~ddot</title>
-<path fill="none" stroke="#000000" d="M187.4,-18.3C195.48,-20.23 204.51,-22.38 213.1,-24.43"/>
-<polygon fill="#000000" stroke="#000000" points="212.38,-27.86 222.92,-26.78 214,-21.05 212.38,-27.86"/>
-</g>
-<!-- proc~dvjust -->
-<g id="call~~graph~~CallGraph_node16" class="node">
-<title>proc~dvjust</title>
-<g id="a_call~~graph~~CallGraph_node16"><a xlink:href=".././proc/dvjust.html" xlink:title="dvjust">
-<polygon fill="#d9534f" stroke="#d9534f" points="187,-108 133,-108 133,-84 187,-84 187,-108"/>
-<text text-anchor="middle" x="160" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvjust</text>
-</a>
-</g>
-</g>
-<!-- proc~dvjust&#45;&gt;proc~daxpy -->
-<g id="call~~graph~~CallGraph_edge10" class="edge">
-<title>proc~dvjust&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M186.45,-108.15C195.21,-112.33 205.17,-117.08 214.52,-121.54"/>
-<polygon fill="#000000" stroke="#000000" points="213.07,-124.73 223.6,-125.88 216.09,-118.41 213.07,-124.73"/>
-</g>
-<!-- proc~xsetf -->
-<g id="call~~graph~~CallGraph_node17" class="node">
-<title>proc~xsetf</title>
-<g id="a_call~~graph~~CallGraph_node17"><a xlink:href=".././proc/xsetf.html" xlink:title="xsetf">
-<polygon fill="#d9534f" stroke="#d9534f" points="75.5,-568 21.5,-568 21.5,-544 75.5,-544 75.5,-568"/>
-<text text-anchor="middle" x="48.5" y="-553.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">xsetf</text>
-</a>
-</g>
-</g>
-<!-- proc~xsetun -->
-<g id="call~~graph~~CallGraph_node18" class="node">
-<title>proc~xsetun</title>
-<g id="a_call~~graph~~CallGraph_node18"><a xlink:href=".././proc/xsetun.html" xlink:title="xsetun">
-<polygon fill="#d9534f" stroke="#d9534f" points="75.5,-610 21.5,-610 21.5,-586 75.5,-586 75.5,-610"/>
-<text text-anchor="middle" x="48.5" y="-595.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">xsetun</text>
-</a>
-</g>
-</g>
-<!-- proc~dvsrco -->
-<g id="call~~graph~~CallGraph_node19" class="node">
-<title>proc~dvsrco</title>
-<g id="a_call~~graph~~CallGraph_node19"><a xlink:href=".././proc/dvsrco.html" xlink:title="dvsrco">
-<polygon fill="#d9534f" stroke="#d9534f" points="75.5,-652 21.5,-652 21.5,-628 75.5,-628 75.5,-652"/>
-<text text-anchor="middle" x="48.5" y="-637.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvsrco</text>
-</a>
-</g>
-</g>
 <!-- proc~dvstep -->
-<g id="call~~graph~~CallGraph_node21" class="node">
+<g id="call~~graph~~CallGraph_node8" class="node">
 <title>proc~dvstep</title>
-<g id="a_call~~graph~~CallGraph_node21"><a xlink:href=".././proc/dvstep.html" xlink:title="dvstep">
+<g id="a_call~~graph~~CallGraph_node8"><a xlink:href=".././proc/dvstep.html" xlink:title="dvstep">
 <polygon fill="#d9534f" stroke="#d9534f" points="187,-356 133,-356 133,-332 187,-332 187,-356"/>
 <text text-anchor="middle" x="160" y="-341.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvstep</text>
 </a>
 </g>
 </g>
 <!-- proc~dvstep&#45;&gt;proc~dscal -->
-<g id="call~~graph~~CallGraph_edge11" class="edge">
+<g id="call~~graph~~CallGraph_edge7" class="edge">
 <title>proc~dvstep&#45;&gt;proc~dscal</title>
 <path fill="none" stroke="#000000" d="M176.64,-331.85C180.11,-329.02 183.73,-325.96 187,-323 202.44,-309 218.95,-292.13 231.04,-279.36"/>
 <polygon fill="#000000" stroke="#000000" points="233.66,-281.7 237.96,-272.01 228.56,-276.9 233.66,-281.7"/>
 </g>
-<!-- proc~dvstep&#45;&gt;proc~daxpy -->
-<g id="call~~graph~~CallGraph_edge13" class="edge">
-<title>proc~dvstep&#45;&gt;proc~daxpy</title>
-<path fill="none" stroke="#000000" d="M179.38,-331.85C182.28,-329.23 184.99,-326.26 187,-323 226.24,-259.53 183.76,-222.47 223,-159 223.25,-158.59 223.51,-158.19 223.79,-157.79"/>
-<polygon fill="#000000" stroke="#000000" points="226.56,-159.94 230.62,-150.15 221.35,-155.27 226.56,-159.94"/>
-</g>
 <!-- proc~dvstep&#45;&gt;proc~dcopy -->
-<g id="call~~graph~~CallGraph_edge12" class="edge">
+<g id="call~~graph~~CallGraph_edge9" class="edge">
 <title>proc~dvstep&#45;&gt;proc~dcopy</title>
 <path fill="none" stroke="#000000" d="M186.45,-356.15C195.21,-360.33 205.17,-365.08 214.52,-369.54"/>
 <polygon fill="#000000" stroke="#000000" points="213.07,-372.73 223.6,-373.88 216.09,-366.41 213.07,-372.73"/>
 </g>
-<!-- proc~dvnorm_default -->
-<g id="call~~graph~~CallGraph_node22" class="node">
-<title>proc~dvnorm_default</title>
-<g id="a_call~~graph~~CallGraph_node22"><a xlink:href=".././proc/dvnorm_default.html" xlink:title="dvnorm_default">
-<polygon fill="#d94e8f" stroke="#d94e8f" points="97,-694 0,-694 0,-670 97,-670 97,-694"/>
-<text text-anchor="middle" x="48.5" y="-679.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvnorm_default</text>
+<!-- proc~dvstep&#45;&gt;proc~daxpy -->
+<g id="call~~graph~~CallGraph_edge8" class="edge">
+<title>proc~dvstep&#45;&gt;proc~daxpy</title>
+<path fill="none" stroke="#000000" d="M179.38,-331.85C182.28,-329.23 184.99,-326.26 187,-323 226.24,-259.53 183.76,-222.47 223,-159 223.25,-158.59 223.51,-158.19 223.79,-157.79"/>
+<polygon fill="#000000" stroke="#000000" points="226.56,-159.94 230.62,-150.15 221.35,-155.27 226.56,-159.94"/>
+</g>
+<!-- proc~dvode -->
+<g id="call~~graph~~CallGraph_node9" class="node">
+<title>proc~dvode</title>
+<g id="a_call~~graph~~CallGraph_node9"><a xlink:href=".././proc/dvode.html" xlink:title="dvode">
+<polygon fill="#d9534f" stroke="#d9534f" points="187,-398 133,-398 133,-374 187,-374 187,-398"/>
+<text text-anchor="middle" x="160" y="-383.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode</text>
+</a>
+</g>
+</g>
+<!-- proc~dvode&#45;&gt;proc~dscal -->
+<g id="call~~graph~~CallGraph_edge11" class="edge">
+<title>proc~dvode&#45;&gt;proc~dscal</title>
+<path fill="none" stroke="#000000" d="M177.75,-373.95C181.02,-371.21 184.27,-368.16 187,-365 209.44,-339.02 228.33,-303.82 239.16,-281.51"/>
+<polygon fill="#000000" stroke="#000000" points="242.43,-282.78 243.56,-272.24 236.11,-279.78 242.43,-282.78"/>
+</g>
+<!-- proc~dvode&#45;&gt;proc~dcopy -->
+<g id="call~~graph~~CallGraph_edge10" class="edge">
+<title>proc~dvode&#45;&gt;proc~dcopy</title>
+<path fill="none" stroke="#000000" d="M187.4,-386C195.39,-386 204.31,-386 212.82,-386"/>
+<polygon fill="#000000" stroke="#000000" points="212.92,-389.5 222.92,-386 212.92,-382.5 212.92,-389.5"/>
+</g>
+<!-- proc~ixsav -->
+<g id="call~~graph~~CallGraph_node10" class="node">
+<title>proc~ixsav</title>
+<g id="a_call~~graph~~CallGraph_node10"><a xlink:href=".././proc/ixsav.html" xlink:title="ixsav">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="75.5,-316 21.5,-316 21.5,-292 75.5,-292 75.5,-316"/>
+<text text-anchor="middle" x="48.5" y="-301.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">ixsav</text>
 </a>
 </g>
 </g>
 <!-- proc~dvjac -->
-<g id="call~~graph~~CallGraph_node23" class="node">
+<g id="call~~graph~~CallGraph_node11" class="node">
 <title>proc~dvjac</title>
-<g id="a_call~~graph~~CallGraph_node23"><a xlink:href=".././proc/dvjac.html" xlink:title="dvjac">
+<g id="a_call~~graph~~CallGraph_node11"><a xlink:href=".././proc/dvjac.html" xlink:title="dvjac">
 <polygon fill="#d9534f" stroke="#d9534f" points="75.5,-232 21.5,-232 21.5,-208 75.5,-208 75.5,-232"/>
 <text text-anchor="middle" x="48.5" y="-217.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvjac</text>
 </a>
 </g>
-</g>
-<!-- proc~dvjac&#45;&gt;proc~dgefa -->
-<g id="call~~graph~~CallGraph_edge18" class="edge">
-<title>proc~dvjac&#45;&gt;proc~dgefa</title>
-<path fill="none" stroke="#000000" d="M75.73,-210.42C89.95,-205.22 107.73,-198.73 123.21,-193.07"/>
-<polygon fill="#000000" stroke="#000000" points="124.79,-196.22 132.99,-189.5 122.39,-189.65 124.79,-196.22"/>
 </g>
 <!-- proc~dvjac&#45;&gt;proc~dscal -->
 <g id="call~~graph~~CallGraph_edge15" class="edge">
@@ -454,22 +337,28 @@ problem for a system of ordinary differential equations.</p><a href="../proc/dvs
 <path fill="none" stroke="#000000" d="M75.62,-222.13C103.48,-224.74 148.77,-229.97 187,-239 195.59,-241.03 204.66,-243.76 213.15,-246.58"/>
 <polygon fill="#000000" stroke="#000000" points="212.18,-249.94 222.77,-249.89 214.45,-243.32 212.18,-249.94"/>
 </g>
-<!-- proc~dvjac&#45;&gt;proc~dacopy -->
-<g id="call~~graph~~CallGraph_edge17" class="edge">
-<title>proc~dvjac&#45;&gt;proc~dacopy</title>
-<path fill="none" stroke="#000000" d="M75.7,-226.38C83.63,-229.54 91.65,-234.2 97,-241 152.58,-311.63 91.32,-360.37 133,-440 134.08,-442.07 135.39,-444.08 136.83,-446"/>
-<polygon fill="#000000" stroke="#000000" points="134.49,-448.64 143.74,-453.8 139.73,-444 134.49,-448.64"/>
+<!-- proc~dvjac&#45;&gt;proc~dgefa -->
+<g id="call~~graph~~CallGraph_edge14" class="edge">
+<title>proc~dvjac&#45;&gt;proc~dgefa</title>
+<path fill="none" stroke="#000000" d="M75.73,-210.42C89.95,-205.22 107.73,-198.73 123.21,-193.07"/>
+<polygon fill="#000000" stroke="#000000" points="124.79,-196.22 132.99,-189.5 122.39,-189.65 124.79,-196.22"/>
 </g>
 <!-- proc~dvjac&#45;&gt;proc~dcopy -->
-<g id="call~~graph~~CallGraph_edge14" class="edge">
+<g id="call~~graph~~CallGraph_edge12" class="edge">
 <title>proc~dvjac&#45;&gt;proc~dcopy</title>
 <path fill="none" stroke="#000000" d="M75.56,-226.49C83.48,-229.66 91.53,-234.29 97,-241 144.71,-299.51 74.23,-359.61 133,-407 157.44,-426.71 194.24,-415.26 219.82,-402.91"/>
 <polygon fill="#000000" stroke="#000000" points="221.71,-405.87 229.02,-398.2 218.52,-399.64 221.71,-405.87"/>
 </g>
+<!-- proc~dvjac&#45;&gt;proc~dacopy -->
+<g id="call~~graph~~CallGraph_edge13" class="edge">
+<title>proc~dvjac&#45;&gt;proc~dacopy</title>
+<path fill="none" stroke="#000000" d="M75.7,-226.38C83.63,-229.54 91.65,-234.2 97,-241 152.58,-311.63 91.32,-360.37 133,-440 134.08,-442.07 135.39,-444.08 136.83,-446"/>
+<polygon fill="#000000" stroke="#000000" points="134.49,-448.64 143.74,-453.8 139.73,-444 134.49,-448.64"/>
+</g>
 <!-- proc~dgbfa -->
-<g id="call~~graph~~CallGraph_node25" class="node">
+<g id="call~~graph~~CallGraph_node15" class="node">
 <title>proc~dgbfa</title>
-<g id="a_call~~graph~~CallGraph_node25"><a xlink:href=".././proc/dgbfa.html" xlink:title="dgbfa">
+<g id="a_call~~graph~~CallGraph_node15"><a xlink:href=".././proc/dgbfa.html" xlink:title="dgbfa">
 <polygon fill="#d9534f" stroke="#d9534f" points="187,-150 133,-150 133,-126 187,-126 187,-150"/>
 <text text-anchor="middle" x="160" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgbfa</text>
 </a>
@@ -481,92 +370,203 @@ problem for a system of ordinary differential equations.</p><a href="../proc/dvs
 <path fill="none" stroke="#000000" d="M65.66,-207.9C83.85,-194.27 113.62,-171.98 134.64,-156.24"/>
 <polygon fill="#000000" stroke="#000000" points="136.87,-158.94 142.78,-150.15 132.67,-153.34 136.87,-158.94"/>
 </g>
-<!-- proc~dvode -->
-<g id="call~~graph~~CallGraph_node24" class="node">
-<title>proc~dvode</title>
-<g id="a_call~~graph~~CallGraph_node24"><a xlink:href=".././proc/dvode.html" xlink:title="dvode">
-<polygon fill="#d9534f" stroke="#d9534f" points="187,-398 133,-398 133,-374 187,-374 187,-398"/>
-<text text-anchor="middle" x="160" y="-383.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode</text>
+<!-- proc~dvindy -->
+<g id="call~~graph~~CallGraph_node12" class="node">
+<title>proc~dvindy</title>
+<g id="a_call~~graph~~CallGraph_node12"><a xlink:href=".././proc/dvindy.html" xlink:title="dvindy">
+<polygon fill="#d9534f" stroke="#d9534f" points="187,-272 133,-272 133,-248 187,-248 187,-272"/>
+<text text-anchor="middle" x="160" y="-257.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvindy</text>
 </a>
 </g>
 </g>
-<!-- proc~dvode&#45;&gt;proc~dscal -->
-<g id="call~~graph~~CallGraph_edge20" class="edge">
-<title>proc~dvode&#45;&gt;proc~dscal</title>
-<path fill="none" stroke="#000000" d="M177.75,-373.95C181.02,-371.21 184.27,-368.16 187,-365 209.44,-339.02 228.33,-303.82 239.16,-281.51"/>
-<polygon fill="#000000" stroke="#000000" points="242.43,-282.78 243.56,-272.24 236.11,-279.78 242.43,-282.78"/>
+<!-- proc~dvindy&#45;&gt;proc~dscal -->
+<g id="call~~graph~~CallGraph_edge17" class="edge">
+<title>proc~dvindy&#45;&gt;proc~dscal</title>
+<path fill="none" stroke="#000000" d="M187.4,-260C195.39,-260 204.31,-260 212.82,-260"/>
+<polygon fill="#000000" stroke="#000000" points="212.92,-263.5 222.92,-260 212.92,-256.5 212.92,-263.5"/>
 </g>
-<!-- proc~dvode&#45;&gt;proc~dcopy -->
-<g id="call~~graph~~CallGraph_edge19" class="edge">
-<title>proc~dvode&#45;&gt;proc~dcopy</title>
-<path fill="none" stroke="#000000" d="M187.4,-386C195.39,-386 204.31,-386 212.82,-386"/>
-<polygon fill="#000000" stroke="#000000" points="212.92,-389.5 222.92,-386 212.92,-382.5 212.92,-389.5"/>
+<!-- proc~dvjust -->
+<g id="call~~graph~~CallGraph_node13" class="node">
+<title>proc~dvjust</title>
+<g id="a_call~~graph~~CallGraph_node13"><a xlink:href=".././proc/dvjust.html" xlink:title="dvjust">
+<polygon fill="#d9534f" stroke="#d9534f" points="187,-108 133,-108 133,-84 187,-84 187,-108"/>
+<text text-anchor="middle" x="160" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvjust</text>
+</a>
+</g>
+</g>
+<!-- proc~dvjust&#45;&gt;proc~daxpy -->
+<g id="call~~graph~~CallGraph_edge18" class="edge">
+<title>proc~dvjust&#45;&gt;proc~daxpy</title>
+<path fill="none" stroke="#000000" d="M186.45,-108.15C195.21,-112.33 205.17,-117.08 214.52,-121.54"/>
+<polygon fill="#000000" stroke="#000000" points="213.07,-124.73 223.6,-125.88 216.09,-118.41 213.07,-124.73"/>
+</g>
+<!-- proc~dvhin -->
+<g id="call~~graph~~CallGraph_node14" class="node">
+<title>proc~dvhin</title>
+<g id="a_call~~graph~~CallGraph_node14"><a xlink:href=".././proc/dvhin.html" xlink:title="dvhin">
+<polygon fill="#d9534f" stroke="#d9534f" points="75.5,-358 21.5,-358 21.5,-334 75.5,-334 75.5,-358"/>
+<text text-anchor="middle" x="48.5" y="-343.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvhin</text>
+</a>
+</g>
 </g>
 <!-- proc~dgbfa&#45;&gt;proc~dscal -->
-<g id="call~~graph~~CallGraph_edge22" class="edge">
+<g id="call~~graph~~CallGraph_edge21" class="edge">
 <title>proc~dgbfa&#45;&gt;proc~dscal</title>
 <path fill="none" stroke="#000000" d="M177.71,-150.09C180.98,-152.83 184.24,-155.86 187,-159 208.81,-183.82 227.65,-217.24 238.67,-238.7"/>
 <polygon fill="#000000" stroke="#000000" points="235.68,-240.56 243.29,-247.92 241.94,-237.42 235.68,-240.56"/>
 </g>
 <!-- proc~dgbfa&#45;&gt;proc~idamax -->
-<g id="call~~graph~~CallGraph_edge21" class="edge">
+<g id="call~~graph~~CallGraph_edge19" class="edge">
 <title>proc~dgbfa&#45;&gt;proc~idamax</title>
 <path fill="none" stroke="#000000" d="M186.45,-150.15C195.21,-154.33 205.17,-159.08 214.52,-163.54"/>
 <polygon fill="#000000" stroke="#000000" points="213.07,-166.73 223.6,-167.88 216.09,-160.41 213.07,-166.73"/>
 </g>
 <!-- proc~dgbfa&#45;&gt;proc~daxpy -->
-<g id="call~~graph~~CallGraph_edge23" class="edge">
+<g id="call~~graph~~CallGraph_edge20" class="edge">
 <title>proc~dgbfa&#45;&gt;proc~daxpy</title>
 <path fill="none" stroke="#000000" d="M187.4,-138C195.39,-138 204.31,-138 212.82,-138"/>
 <polygon fill="#000000" stroke="#000000" points="212.92,-141.5 222.92,-138 212.92,-134.5 212.92,-141.5"/>
 </g>
 <!-- proc~dvsol -->
-<g id="call~~graph~~CallGraph_node27" class="node">
+<g id="call~~graph~~CallGraph_node17" class="node">
 <title>proc~dvsol</title>
-<g id="a_call~~graph~~CallGraph_node27"><a xlink:href=".././proc/dvsol.html" xlink:title="dvsol">
+<g id="a_call~~graph~~CallGraph_node17"><a xlink:href=".././proc/dvsol.html" xlink:title="dvsol">
 <polygon fill="#d9534f" stroke="#d9534f" points="75.5,-45 21.5,-45 21.5,-21 75.5,-21 75.5,-45"/>
 <text text-anchor="middle" x="48.5" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvsol</text>
 </a>
 </g>
 </g>
-<!-- proc~dvsol&#45;&gt;proc~dgbsl -->
-<g id="call~~graph~~CallGraph_edge24" class="edge">
-<title>proc~dvsol&#45;&gt;proc~dgbsl</title>
+<!-- proc~dvsol&#45;&gt;proc~dgesl -->
+<g id="call~~graph~~CallGraph_edge23" class="edge">
+<title>proc~dvsol&#45;&gt;proc~dgesl</title>
 <path fill="none" stroke="#000000" d="M75.73,-38.03C89.81,-40.73 107.39,-44.1 122.77,-47.05"/>
 <polygon fill="#000000" stroke="#000000" points="122.51,-50.56 132.99,-49.01 123.82,-43.69 122.51,-50.56"/>
 </g>
-<!-- proc~dvsol&#45;&gt;proc~dgesl -->
-<g id="call~~graph~~CallGraph_edge25" class="edge">
-<title>proc~dvsol&#45;&gt;proc~dgesl</title>
+<!-- proc~dgbsl -->
+<g id="call~~graph~~CallGraph_node28" class="node">
+<title>proc~dgbsl</title>
+<g id="a_call~~graph~~CallGraph_node28"><a xlink:href=".././proc/dgbsl.html" xlink:title="dgbsl">
+<polygon fill="#d9534f" stroke="#d9534f" points="187,-24 133,-24 133,0 187,0 187,-24"/>
+<text text-anchor="middle" x="160" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dgbsl</text>
+</a>
+</g>
+</g>
+<!-- proc~dvsol&#45;&gt;proc~dgbsl -->
+<g id="call~~graph~~CallGraph_edge22" class="edge">
+<title>proc~dvsol&#45;&gt;proc~dgbsl</title>
 <path fill="none" stroke="#000000" d="M75.73,-27.97C89.81,-25.27 107.39,-21.9 122.77,-18.95"/>
 <polygon fill="#000000" stroke="#000000" points="123.82,-22.31 132.99,-16.99 122.51,-15.44 123.82,-22.31"/>
 </g>
+<!-- proc~initialize -->
+<g id="call~~graph~~CallGraph_node18" class="node">
+<title>proc~initialize</title>
+<g id="a_call~~graph~~CallGraph_node18"><a xlink:href=".././proc/initialize.html" xlink:title="initialize">
+<polygon fill="#d9534f" stroke="#d9534f" points="77,-400 20,-400 20,-376 77,-376 77,-400"/>
+<text text-anchor="middle" x="48.5" y="-385.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">initialize</text>
+</a>
+</g>
+</g>
 <!-- proc~dvnlsd -->
-<g id="call~~graph~~CallGraph_node28" class="node">
+<g id="call~~graph~~CallGraph_node19" class="node">
 <title>proc~dvnlsd</title>
-<g id="a_call~~graph~~CallGraph_node28"><a xlink:href=".././proc/dvnlsd.html" xlink:title="dvnlsd">
+<g id="a_call~~graph~~CallGraph_node19"><a xlink:href=".././proc/dvnlsd.html" xlink:title="dvnlsd">
 <polygon fill="#d9534f" stroke="#d9534f" points="187,-314 133,-314 133,-290 187,-290 187,-314"/>
 <text text-anchor="middle" x="160" y="-299.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvnlsd</text>
 </a>
 </g>
 </g>
 <!-- proc~dvnlsd&#45;&gt;proc~dscal -->
-<g id="call~~graph~~CallGraph_edge27" class="edge">
+<g id="call~~graph~~CallGraph_edge26" class="edge">
 <title>proc~dvnlsd&#45;&gt;proc~dscal</title>
 <path fill="none" stroke="#000000" d="M186.45,-289.85C195.21,-285.67 205.17,-280.92 214.52,-276.46"/>
 <polygon fill="#000000" stroke="#000000" points="216.09,-279.59 223.6,-272.12 213.07,-273.27 216.09,-279.59"/>
 </g>
+<!-- proc~dvnlsd&#45;&gt;proc~dcopy -->
+<g id="call~~graph~~CallGraph_edge24" class="edge">
+<title>proc~dvnlsd&#45;&gt;proc~dcopy</title>
+<path fill="none" stroke="#000000" d="M176.64,-314.15C180.11,-316.98 183.73,-320.04 187,-323 202.44,-337 218.95,-353.87 231.04,-366.64"/>
+<polygon fill="#000000" stroke="#000000" points="228.56,-369.1 237.96,-373.99 233.66,-364.3 228.56,-369.1"/>
+</g>
 <!-- proc~dvnlsd&#45;&gt;proc~daxpy -->
-<g id="call~~graph~~CallGraph_edge28" class="edge">
+<g id="call~~graph~~CallGraph_edge25" class="edge">
 <title>proc~dvnlsd&#45;&gt;proc~daxpy</title>
 <path fill="none" stroke="#000000" d="M178.92,-289.97C181.95,-287.3 184.81,-284.28 187,-281 218.41,-234 191.59,-206 223,-159 223.34,-158.49 223.7,-157.98 224.07,-157.48"/>
 <polygon fill="#000000" stroke="#000000" points="226.78,-159.72 231.08,-150.03 221.68,-154.92 226.78,-159.72"/>
 </g>
-<!-- proc~dvnlsd&#45;&gt;proc~dcopy -->
-<g id="call~~graph~~CallGraph_edge26" class="edge">
-<title>proc~dvnlsd&#45;&gt;proc~dcopy</title>
-<path fill="none" stroke="#000000" d="M176.64,-314.15C180.11,-316.98 183.73,-320.04 187,-323 202.44,-337 218.95,-353.87 231.04,-366.64"/>
-<polygon fill="#000000" stroke="#000000" points="228.56,-369.1 237.96,-373.99 233.66,-364.3 228.56,-369.1"/>
+<!-- proc~dvnorm_default -->
+<g id="call~~graph~~CallGraph_node20" class="node">
+<title>proc~dvnorm_default</title>
+<g id="a_call~~graph~~CallGraph_node20"><a xlink:href=".././proc/dvnorm_default.html" xlink:title="dvnorm_default">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="97,-442 0,-442 0,-418 97,-418 97,-442"/>
+<text text-anchor="middle" x="48.5" y="-427.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvnorm_default</text>
+</a>
+</g>
+</g>
+<!-- proc~dvset -->
+<g id="call~~graph~~CallGraph_node21" class="node">
+<title>proc~dvset</title>
+<g id="a_call~~graph~~CallGraph_node21"><a xlink:href=".././proc/dvset.html" xlink:title="dvset">
+<polygon fill="#d9534f" stroke="#d9534f" points="75.5,-484 21.5,-484 21.5,-460 75.5,-460 75.5,-484"/>
+<text text-anchor="middle" x="48.5" y="-469.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvset</text>
+</a>
+</g>
+</g>
+<!-- proc~xerrwd -->
+<g id="call~~graph~~CallGraph_node22" class="node">
+<title>proc~xerrwd</title>
+<g id="a_call~~graph~~CallGraph_node22"><a xlink:href=".././proc/xerrwd.html" xlink:title="xerrwd">
+<polygon fill="#d9534f" stroke="#d9534f" points="75.5,-526 21.5,-526 21.5,-502 75.5,-502 75.5,-526"/>
+<text text-anchor="middle" x="48.5" y="-511.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">xerrwd</text>
+</a>
+</g>
+</g>
+<!-- proc~dewset_default -->
+<g id="call~~graph~~CallGraph_node23" class="node">
+<title>proc~dewset_default</title>
+<g id="a_call~~graph~~CallGraph_node23"><a xlink:href=".././proc/dewset_default.html" xlink:title="dewset_default">
+<polygon fill="#d9534f" stroke="#d9534f" points="95,-568 2,-568 2,-544 95,-544 95,-568"/>
+<text text-anchor="middle" x="48.5" y="-553.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dewset_default</text>
+</a>
+</g>
+</g>
+<!-- proc~dnrm2 -->
+<g id="call~~graph~~CallGraph_node24" class="node">
+<title>proc~dnrm2</title>
+<g id="a_call~~graph~~CallGraph_node24"><a xlink:href=".././proc/dnrm2.html" xlink:title="dnrm2">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="75.5,-610 21.5,-610 21.5,-586 75.5,-586 75.5,-610"/>
+<text text-anchor="middle" x="48.5" y="-595.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dnrm2</text>
+</a>
+</g>
+</g>
+<!-- proc~xsetf -->
+<g id="call~~graph~~CallGraph_node26" class="node">
+<title>proc~xsetf</title>
+<g id="a_call~~graph~~CallGraph_node26"><a xlink:href=".././proc/xsetf.html" xlink:title="xsetf">
+<polygon fill="#d9534f" stroke="#d9534f" points="75.5,-652 21.5,-652 21.5,-628 75.5,-628 75.5,-652"/>
+<text text-anchor="middle" x="48.5" y="-637.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">xsetf</text>
+</a>
+</g>
+</g>
+<!-- proc~xsetun -->
+<g id="call~~graph~~CallGraph_node27" class="node">
+<title>proc~xsetun</title>
+<g id="a_call~~graph~~CallGraph_node27"><a xlink:href=".././proc/xsetun.html" xlink:title="xsetun">
+<polygon fill="#d9534f" stroke="#d9534f" points="75.5,-694 21.5,-694 21.5,-670 75.5,-670 75.5,-694"/>
+<text text-anchor="middle" x="48.5" y="-679.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">xsetun</text>
+</a>
+</g>
+</g>
+<!-- proc~dgbsl&#45;&gt;proc~ddot -->
+<g id="call~~graph~~CallGraph_edge27" class="edge">
+<title>proc~dgbsl&#45;&gt;proc~ddot</title>
+<path fill="none" stroke="#000000" d="M187.4,-18.3C195.48,-20.23 204.51,-22.38 213.1,-24.43"/>
+<polygon fill="#000000" stroke="#000000" points="212.38,-27.86 222.92,-26.78 214,-21.05 212.38,-27.86"/>
+</g>
+<!-- proc~dgbsl&#45;&gt;proc~daxpy -->
+<g id="call~~graph~~CallGraph_edge28" class="edge">
+<title>proc~dgbsl&#45;&gt;proc~daxpy</title>
+<path fill="none" stroke="#000000" d="M177.75,-24.05C181.02,-26.79 184.27,-29.84 187,-33 209.44,-58.98 228.33,-94.18 239.16,-116.49"/>
+<polygon fill="#000000" stroke="#000000" points="236.11,-118.22 243.56,-125.76 242.43,-115.22 236.11,-118.22"/>
 </g>
 </g>
 </svg>
