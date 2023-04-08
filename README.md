@@ -70,4 +70,4 @@ However, note that an external BLAS can only be used if the library is compiled 
 ### See also
  * [SUNDIALS](https://computing.llnl.gov/projects/sundials) The successor to VODE and other codes from LLNL. [(GitHub repo)](https://github.com/LLNL/sundials)
  * A backup of another DVODE refactoring formerly located at  https://www.radford.edu/~thompson/vodef90web/vodef90source/misc.html can be found at [CRquantum/dvode_backup](https://gitlab.com/CRquantum/dvode_backup).
- * [DDEABM](https://github.com/jacobwilliams/ddeabm)
+ * [DDEABM](https://github.com/jacobwilliams/ddeabm) Modern Fortran implementation of the DDEABM Adams-Bashforth algorithm.
