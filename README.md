@@ -17,7 +17,7 @@ The latest API documentation can be found [here](https://jacobwilliams.github.io
 
 The library can be compiled with recent versions the Intel Fortran Compiler and GFortran (and presumably any other Fortran compiler that supports modern standards).
 
-A `fmp.toml` file is provided for compiling dvode with the [Fortran Package Manager](https://github.com/fortran-lang/fpm). For example, to build:
+A `fpm.toml` file is provided for compiling dvode with the [Fortran Package Manager](https://github.com/fortran-lang/fpm). For example, to build:
 
 ```
 fpm build --profile release
