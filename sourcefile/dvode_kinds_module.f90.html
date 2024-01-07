@@ -1,80 +1,67 @@
+<!-- -*- mode: jinja2 -*- -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-   <meta name="description" content="Modern Fortran Edition of the DVODE ODE Solver">
+      <meta name="description" content="Modern Fortran Edition of the DVODE ODE Solver">
     <meta name="author" content="Jacob Williams" >
     <link rel="icon" href="../favicon.png">
 
     <title>dvode_kinds_module.F90 &ndash; dvode</title>
 
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
-    <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    
-    <script src="../js/jquery-2.1.3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="../js/svg-pan-zoom.min.js"></script>
-
   </head>
 
   <body>
 
     <!-- Fixed navbar -->
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
           <a class="navbar-brand" href="../index.html">dvode </a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
-              <a href="#" class="dropdown-toggle"
-              data-toggle="dropdown" role="button"
-              aria-haspopup="true"
-     aria-expanded="false">Contents <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-            <li><a href="../lists/files.html">Source Files</a></li>
-            <li><a href="../lists/modules.html">Modules</a></li>
-            <li><a href="../lists/procedures.html">Procedures</a></li>
-            <li><a href="../lists/absint.html">Abstract Interfaces</a></li>
-                   <li><a href="../lists/types.html">Derived Types</a></li>
-       
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
             </ul>
-        
-            </li>
-<li class="visible-xs hidden-sm visible-lg"><a href="../lists/files.html">Source Files</a></li>
-<li class="visible-xs hidden-sm visible-lg"><a href="../lists/modules.html">Modules</a></li>
-<li class="visible-xs hidden-sm visible-lg"><a href="../lists/procedures.html">Procedures</a></li>
-<li class="visible-xs hidden-sm visible-lg"><a href="../lists/absint.html">Abstract Interfaces</a></li>
-                             <li class="visible-xs hidden-sm visible-lg"><a href="../lists/types.html">Derived Types</a></li>
-          </ul>
-        <form action="../search.html" class="navbar-form navbar-right" role="search">
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
         </div>
-<!--
-        <button type="submit" class="btn btn-default">Submit</button>
--->
-        </form>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+      </nav>
+    </div>
 
     <div class="container">
   <div class="row">
@@ -82,52 +69,55 @@
       <small>Source File</small>
       
     </h1>
-      <div class="row" id="info-bar">
-    <div class="col-lg-12">
-      <div class="well well-sm">
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
         <ul class="list-inline" style="margin-bottom:0px;display:inline">
 
-          <li id="statements"><i class="fa fa-list-ol"></i>
-            <a data-toggle="tooltip"
-               data-placement="bottom" data-html="true"
-               title=" 0.3% of total for source files.">6 statements</a>
-          </li>
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip"
+                 data-bs-placement="bottom" data-html="true"
+                 title=" 0.3% of total for source files.">6 statements</a>
+            </li>
 
-            <li id="source-file">
+            <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
               <a href="../src/dvode_kinds_module.F90"> Source File</a>
             </li>
         </ul>
-        <ol class="breadcrumb in-well text-right">
-          <li class="active">dvode_kinds_module.F90</li>
-        </ol>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+            <li class="breadcrumb-item active" aria-current="page">dvode_kinds_module.F90</li>
+          </ol>
+        </nav>
       </div>
     </div>
   </div>
   <script>
     $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-bs-toggle="tooltip"]').tooltip()
     })
   </script>
 
   </div>
   <div class="row">
     <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
-      <div id="sidebar">
+        <div id="sidebar">
       <h3>Contents</h3>
   
   
   
   
   
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#mods-0">Modules</a>
-        </h3>
-      </div>
-      <div id="mods-0" class="panel-collapse collapse">
-        <div class="list-group">
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#mods-0"
+         aria-expanded="false" aria-controls="mods-0">
+         <h4 class="card-header bg-primary text-white">Modules</h4>
+      </a>
+      <div id="mods-0" class="collapse">
+        <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/dvode_kinds_module.html">dvode_kinds_module</a>
         </div>
       </div>
@@ -146,8 +136,9 @@
   
   
   
-    <div class="panel panel-primary">
-      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+  
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
       <div class="list-group">
         <a class="list-group-item" href="../sourcefile/dvode_kinds_module.f90.html#src">dvode_kinds_module.F90</a>
       </div>
@@ -160,96 +151,111 @@
     <div class="col-md-9" id='text'>
       
       <br>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-  <h3 class="panel-title">Files dependent on this one</h3>
-      </div>
-      <div class="panel-body">
-  <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Files dependent on this one</h3>
+          </div>
+          <div class="card-body">
+            <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <!-- Generated by graphviz version 2.43.0 (0)
  -->
 <!-- Title: sourcefile~~dvode_kinds_module.f90~~AfferentGraph Pages: 1 -->
-<svg id="sourcefiledvode_kinds_modulef90AfferentGraph" width="641pt" height="71pt"
- viewBox="0.00 0.00 641.00 70.94" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph" class="graph" transform="scale(1.05 1.05) rotate(0) translate(4 70.7)">
+<svg id="sourcefiledvode_kinds_modulef90AfferentGraph" width="641pt" height="70pt"
+ viewBox="0.00 0.00 641.00 69.95" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph" class="graph" transform="scale(1.05 1.05) rotate(0) translate(4 69.66)">
 <title>sourcefile~~dvode_kinds_module.f90~~AfferentGraph</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-70.7 671,-70.7 671,4 -4,4"/>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-69.66 671,-69.66 671,4 -4,4"/>
 <!-- sourcefile~dvode_kinds_module.f90 -->
 <g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_node1" class="node">
 <title>sourcefile~dvode_kinds_module.f90</title>
-<polygon fill="none" stroke="black" points="147,-58.62 0,-58.62 0,-34.62 147,-34.62 147,-58.62"/>
-<text text-anchor="middle" x="73.5" y="-44.22" font-family="Helvetica,sans-Serif" font-size="10.50">dvode_kinds_module.F90</text>
+<polygon fill="none" stroke="black" points="147,-37.42 0,-37.42 0,-13.42 147,-13.42 147,-37.42"/>
+<text text-anchor="middle" x="73.5" y="-23.02" font-family="Helvetica,sans-Serif" font-size="10.50">dvode_kinds_module.F90</text>
+</g>
+<!-- sourcefile~dvode_blas_module.f90 -->
+<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_node2" class="node">
+<title>sourcefile~dvode_blas_module.f90</title>
+<g id="a_sourcefile~~dvode_kinds_module.f90~~AfferentGraph_node2"><a xlink:href="../sourcefile/dvode_blas_module.f90.html" xlink:title="dvode_blas_module.F90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="324,-37.42 183,-37.42 183,-13.42 324,-13.42 324,-37.42"/>
+<text text-anchor="middle" x="253.5" y="-23.02" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode_blas_module.F90</text>
+</a>
+</g>
+</g>
+<!-- sourcefile~dvode_blas_module.f90&#45;&gt;sourcefile~dvode_kinds_module.f90 -->
+<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_edge1" class="edge">
+<title>sourcefile~dvode_blas_module.f90&#45;&gt;sourcefile~dvode_kinds_module.f90</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M182.92,-25.42C174.51,-25.42 165.85,-25.42 157.28,-25.42"/>
+<polygon fill="#000000" stroke="#000000" points="157.26,-21.92 147.26,-25.42 157.26,-28.92 157.26,-21.92"/>
 </g>
 <!-- sourcefile~dvode_linpack_module.f90 -->
-<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_node2" class="node">
+<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_node3" class="node">
 <title>sourcefile~dvode_linpack_module.f90</title>
-<g id="a_sourcefile~~dvode_kinds_module.f90~~AfferentGraph_node2"><a xlink:href=".././sourcefile/dvode_linpack_module.f90.html" xlink:title="dvode_linpack_module.F90">
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="517,-38.62 360,-38.62 360,-14.62 517,-14.62 517,-38.62"/>
-<text text-anchor="middle" x="438.5" y="-24.22" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode_linpack_module.F90</text>
+<g id="a_sourcefile~~dvode_kinds_module.f90~~AfferentGraph_node3"><a xlink:href="../sourcefile/dvode_linpack_module.f90.html" xlink:title="dvode_linpack_module.F90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="517,-37.42 360,-37.42 360,-13.42 517,-13.42 517,-37.42"/>
+<text text-anchor="middle" x="438.5" y="-23.02" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode_linpack_module.F90</text>
 </a>
 </g>
 </g>
 <!-- sourcefile~dvode_linpack_module.f90&#45;&gt;sourcefile~dvode_kinds_module.f90 -->
-<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_edge1" class="edge">
+<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_edge2" class="edge">
 <title>sourcefile~dvode_linpack_module.f90&#45;&gt;sourcefile~dvode_kinds_module.f90</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M403.58,-38.65C367.2,-50.46 307.51,-66.7 254.5,-66.62"/>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M252.5,-66.62C221.21,-66.57 187.01,-63.47 157.04,-59.73"/>
-<polygon fill="#000000" stroke="#000000" points="157.41,-56.24 147.04,-58.43 156.51,-63.19 157.41,-56.24"/>
-</g>
-<!-- sourcefile~dvode_blas_module.f90 -->
-<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_node3" class="node">
-<title>sourcefile~dvode_blas_module.f90</title>
-<g id="a_sourcefile~~dvode_kinds_module.f90~~AfferentGraph_node3"><a xlink:href=".././sourcefile/dvode_blas_module.f90.html" xlink:title="dvode_blas_module.F90">
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="324,-38.62 183,-38.62 183,-14.62 324,-14.62 324,-38.62"/>
-<text text-anchor="middle" x="253.5" y="-24.22" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode_blas_module.F90</text>
-</a>
-</g>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M383.8,-13.4C364.99,-9.75 343.66,-6.22 324,-4.42 261.6,1.3 245.38,1.56 183,-4.42 167.57,-5.9 151.07,-8.54 135.71,-11.46"/>
+<polygon fill="#000000" stroke="#000000" points="134.95,-8.04 125.81,-13.4 136.3,-14.91 134.95,-8.04"/>
 </g>
 <!-- sourcefile~dvode_linpack_module.f90&#45;&gt;sourcefile~dvode_blas_module.f90 -->
-<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_edge5" class="edge">
+<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_edge4" class="edge">
 <title>sourcefile~dvode_linpack_module.f90&#45;&gt;sourcefile~dvode_blas_module.f90</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M359.89,-26.62C351.44,-26.62 342.83,-26.62 334.36,-26.62"/>
-<polygon fill="#000000" stroke="#000000" points="334.1,-23.12 324.1,-26.62 334.1,-30.12 334.1,-23.12"/>
-</g>
-<!-- sourcefile~dvode_blas_module.f90&#45;&gt;sourcefile~dvode_kinds_module.f90 -->
-<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_edge2" class="edge">
-<title>sourcefile~dvode_blas_module.f90&#45;&gt;sourcefile~dvode_kinds_module.f90</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M182.92,-34.44C174.51,-35.38 165.85,-36.35 157.28,-37.32"/>
-<polygon fill="#000000" stroke="#000000" points="156.81,-33.85 147.26,-38.44 157.59,-40.8 156.81,-33.85"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M359.89,-25.42C351.44,-25.42 342.83,-25.42 334.36,-25.42"/>
+<polygon fill="#000000" stroke="#000000" points="334.1,-21.92 324.1,-25.42 334.1,-28.92 334.1,-21.92"/>
 </g>
 <!-- sourcefile~dvode_module.f90 -->
 <g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_node4" class="node">
 <title>sourcefile~dvode_module.f90</title>
-<g id="a_sourcefile~~dvode_kinds_module.f90~~AfferentGraph_node4"><a xlink:href=".././sourcefile/dvode_module.f90.html" xlink:title="dvode_module.F90">
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="667,-38.62 553,-38.62 553,-14.62 667,-14.62 667,-38.62"/>
-<text text-anchor="middle" x="610" y="-24.22" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode_module.F90</text>
+<g id="a_sourcefile~~dvode_kinds_module.f90~~AfferentGraph_node4"><a xlink:href="../sourcefile/dvode_module.f90.html" xlink:title="dvode_module.F90">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="667,-57.42 553,-57.42 553,-33.42 667,-33.42 667,-57.42"/>
+<text text-anchor="middle" x="610" y="-43.02" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode_module.F90</text>
 </a>
 </g>
 </g>
 <!-- sourcefile~dvode_module.f90&#45;&gt;sourcefile~dvode_kinds_module.f90 -->
 <g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_edge3" class="edge">
 <title>sourcefile~dvode_module.f90&#45;&gt;sourcefile~dvode_kinds_module.f90</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M562.46,-38.69C547.98,-42.05 531.91,-45.39 517,-47.62 401.31,-64.91 371.47,-66.79 254.5,-66.62"/>
-</g>
-<!-- sourcefile~dvode_module.f90&#45;&gt;sourcefile~dvode_linpack_module.f90 -->
-<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_edge4" class="edge">
-<title>sourcefile~dvode_module.f90&#45;&gt;sourcefile~dvode_linpack_module.f90</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M552.56,-26.62C544.39,-26.62 535.83,-26.62 527.22,-26.62"/>
-<polygon fill="#000000" stroke="#000000" points="527.12,-23.12 517.12,-26.62 527.12,-30.12 527.12,-23.12"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M437.5,-65.42C324.08,-65.9 295.43,-61.45 183,-46.42 169.07,-44.56 154.24,-42.05 140.15,-39.4"/>
+<polygon fill="#000000" stroke="#000000" points="140.53,-35.91 130.05,-37.47 139.21,-42.79 140.53,-35.91"/>
 </g>
 <!-- sourcefile~dvode_module.f90&#45;&gt;sourcefile~dvode_blas_module.f90 -->
-<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_edge6" class="edge">
+<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_edge5" class="edge">
 <title>sourcefile~dvode_module.f90&#45;&gt;sourcefile~dvode_blas_module.f90</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M565.36,-14.55C550.18,-10.91 532.95,-7.42 517,-5.62 447.66,2.2 429.44,1.23 360,-5.62 345.13,-7.08 329.24,-9.69 314.43,-12.57"/>
-<polygon fill="#000000" stroke="#000000" points="313.48,-9.19 304.38,-14.6 314.87,-16.05 313.48,-9.19"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M552.7,-55.3C519.8,-60.26 477.43,-65.26 439.5,-65.42"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M437.5,-65.42C389.05,-65.63 335.01,-52.04 298.29,-40.65"/>
+<polygon fill="#000000" stroke="#000000" points="299.01,-37.21 288.42,-37.51 296.89,-43.88 299.01,-37.21"/>
+</g>
+<!-- sourcefile~dvode_module.f90&#45;&gt;sourcefile~dvode_linpack_module.f90 -->
+<g id="sourcefile~~dvode_kinds_module.f90~~AfferentGraph_edge6" class="edge">
+<title>sourcefile~dvode_module.f90&#45;&gt;sourcefile~dvode_linpack_module.f90</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M552.56,-38.76C544.39,-37.8 535.83,-36.79 527.22,-35.77"/>
+<polygon fill="#000000" stroke="#000000" points="527.46,-32.28 517.12,-34.58 526.64,-39.23 527.46,-32.28"/>
 </g>
 </g>
 </svg>
-</div><script>var pansourcefiledvode_kinds_modulef90AfferentGraph = svgPanZoom('#sourcefiledvode_kinds_modulef90AfferentGraph', {zoomEnabled: true,controlIconsEnabled: true, fit: true, center: true,}); </script><div><a type="button" class="graph-help" data-toggle="modal" href="#graph-help-text">Help</a></div><div class="modal fade" id="graph-help-text" tabindex="-1" role="dialog"><div class="modal-dialog modal-lg" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title" id="-graph-help-label">Graph Key</h4></div><div class="modal-body">
-    <p>Nodes of different colours represent the following: </p>
-    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+</div>                <script>
+                  var pansourcefiledvode_kinds_modulef90AfferentGraph = svgPanZoom('#sourcefiledvode_kinds_modulef90AfferentGraph',
+                    {zoomEnabled: true, controlIconsEnabled: true, fit: true, center: true,}
+                  );
+                </script>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#AfferentGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="AfferentGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <!-- Generated by graphviz version 2.43.0 (0)
@@ -275,62 +281,20 @@
 </g>
 </svg>
 
-    
-    <p>Solid arrows point from a file to a file which it depends on. A file
-    is dependent upon another if the latter must be compiled before the former
-    can be.
-    </p>
-    </div></div></div></div>
-      </div>
-    </div>
-<br>
-    <section class="visible-xs visible-sm hidden-md">
-        <h3>Contents</h3>
-  
-  
-  
-  
-  
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#mods-1">Modules</a>
-        </h3>
-      </div>
-      <div id="mods-1" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../module/dvode_kinds_module.html">dvode_kinds_module</a>
+<p>Solid arrows point from a file to a file which it depends on. A file
+is dependent upon another if the latter must be compiled before the former
+can be.
+</p>
+ </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-    <div class="panel panel-primary">
-      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
-      <div class="list-group">
-        <a class="list-group-item" href="../sourcefile/dvode_kinds_module.f90.html#src">dvode_kinds_module.F90</a>
-      </div>
-    </div>
-
-
-    </section>
-    <br class="visible-xs visible-sm hidden-md">
-
-    <section>
-      <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl"><pre><span></span><a id="ln-1" name="ln-1" href="#ln-1"></a><span class="c">!*****************************************************************************************</span>
+          </div>
+        </div>
+<br>
+      <section>
+        <h2><span class="anchor" id="src"></span>Source Code</h2>
+        <div class="hl codehilite"><pre><span></span><a id="ln-1" name="ln-1" href="#ln-1"></a><span class="c">!*****************************************************************************************</span>
 <a id="ln-2" name="ln-2" href="#ln-2"></a><span class="c">!&gt; author: Jacob Williams</span>
 <a id="ln-3" name="ln-3" href="#ln-3"></a><span class="c">!  date: 12/22/2015</span>
 <a id="ln-4" name="ln-4" href="#ln-4"></a><span class="c">!  license: BSD</span>
@@ -350,13 +314,13 @@
 <a id="ln-18" name="ln-18" href="#ln-18"></a><span class="c">!      `real(kind=real64)` [8 bytes]</span>
 <a id="ln-19" name="ln-19" href="#ln-19"></a><span class="cp">#endif</span>
 <a id="ln-20" name="ln-20" href="#ln-20"></a>
-<a id="ln-21" name="ln-21" href="#ln-21"></a><span class="w">    </span><span class="k">module </span><span class="n">dvode_kinds_module</span><span class="w"></span>
+<a id="ln-21" name="ln-21" href="#ln-21"></a><span class="w">    </span><span class="k">module </span><span class="n">dvode_kinds_module</span>
 <a id="ln-22" name="ln-22" href="#ln-22"></a>
 <a id="ln-23" name="ln-23" href="#ln-23"></a><span class="w">    </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span><span class="w"> </span>
 <a id="ln-24" name="ln-24" href="#ln-24"></a>
 <a id="ln-25" name="ln-25" href="#ln-25"></a><span class="w">    </span><span class="k">implicit none</span>
 <a id="ln-26" name="ln-26" href="#ln-26"></a>
-<a id="ln-27" name="ln-27" href="#ln-27"></a><span class="k">    private</span><span class="w"></span>
+<a id="ln-27" name="ln-27" href="#ln-27"></a><span class="k">    private</span>
 <a id="ln-28" name="ln-28" href="#ln-28"></a>
 <a id="ln-29" name="ln-29" href="#ln-29"></a><span class="cp">#ifdef REAL32</span>
 <a id="ln-30" name="ln-30" href="#ln-30"></a><span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="k">parameter</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvode_wp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">real32</span><span class="w">   </span><span class="c">!! real kind used by this module [4 bytes]</span>
@@ -368,58 +332,53 @@
 <a id="ln-36" name="ln-36" href="#ln-36"></a><span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="k">parameter</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvode_wp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">real64</span><span class="w">   </span><span class="c">!! real kind used by this module [8 bytes]</span>
 <a id="ln-37" name="ln-37" href="#ln-37"></a><span class="cp">#endif</span>
 <a id="ln-38" name="ln-38" href="#ln-38"></a>
-<a id="ln-39" name="ln-39" href="#ln-39"></a><span class="w">    </span><span class="k">end module </span><span class="n">dvode_kinds_module</span><span class="w"></span>
+<a id="ln-39" name="ln-39" href="#ln-39"></a><span class="w">    </span><span class="k">end module </span><span class="n">dvode_kinds_module</span>
 <a id="ln-40" name="ln-40" href="#ln-40"></a><span class="c">!*****************************************************************************************</span>
 </pre></div>
 
-    </section>
+      </section>
     </div>
   </div>
 
-    <hr>    
+      <hr>
     </div> <!-- /container -->
     <footer>
       <div class="container">
-      <div class="row">
-        <div class="col-xs-6 col-md-6"><p>dvode was developed by Jacob Williams<br>&copy; 2023 
+        <div class="row justify-content-between">
+          <div class="col"><p>dvode was developed by Jacob Williams<br>&copy; 2024 
 </p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
         </div>
-        <div class="col-xs-6 col-md-6">
-          <p class="text-right">
-            Documentation generated by 
-            <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
-          </p>
-        </div>
-      </div>
-      <br>
-      </div> <!-- /container -->    
+        <br>
+      </div> <!-- /container -->
     </footer>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
+    <!-- Bootstrap core JavaScript -->
     <!-- Placed at the end of the document so the pages load faster -->
-<!--
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
--->
-    <script src="../js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../js/ie10-viewport-bug-workaround.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
 
     <!-- MathJax JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
-        jax: ['input/TeX','input/MathML','output/HTML-CSS'],
-        extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
-      });
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script src="../tipuesearch/tipuesearch_content.js"></script>
-    <script src="../tipuesearch/tipuesearch_set.js"></script>
-    <script src="../tipuesearch/tipuesearch.js"></script>
-    
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
+
   </body>
 </html>
