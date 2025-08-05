@@ -5,7 +5,7 @@
 !  These have been refactored into modern Fortran.
 
     module dvode_blas_module
-      
+
 #ifndef HAS_BLAS
 
     use dvode_kinds_module, only: wp => dvode_wp
@@ -21,7 +21,7 @@
     real(wp),parameter :: ten    = 10.0_wp
     real(wp),parameter :: hun    = 100.0_wp
 
-    public :: daxpy,dcopy,ddot,dnrm2,dscal,idamax
+    public :: daxpy,dcopy,ddot,dscal,idamax
 
     contains
 !*******************************************************************************
@@ -39,8 +39,8 @@
 
       integer,intent(in) :: n
       real(wp),intent(in) :: da
-      real(wp),intent(in)  :: dx(*) 
-      integer,intent(in)  :: incx  
+      real(wp),intent(in)  :: dx(*)
+      integer,intent(in)  :: incx
       real(wp),intent(inout) :: dy(*)
       integer,intent(in)  :: incy
 
@@ -101,13 +101,13 @@
 
       implicit none
 
-      integer,intent(in) :: n 
-      real(wp),intent(in) :: dx(*) 
-      integer,intent(in) :: incx 
+      integer,intent(in) :: n
+      real(wp),intent(in) :: dx(*)
+      integer,intent(in) :: incx
       real(wp),intent(inout) :: dy(*)
-      integer,intent(in) :: incy 
+      integer,intent(in) :: incy
 
-      integer :: i , ix , iy , m , mp1 
+      integer :: i , ix , iy , m , mp1
 
       if ( n<=0 ) return
       if ( incx==1 .and. incy==1 ) then
@@ -224,61 +224,6 @@
 
 !*******************************************************************************
 !>
-!  Function that returns the Euclidean norm
-!  \( \sqrt{ \mathbf{x}^T \mathbf{x} } \) of a vector \( \mathbf{x} \).
-!
-!### Further details
-!
-!  * this version written on 25-october-1982.
-!  * modified on 14-october-1993 to inline the call to dlassq.
-!    sven hammarling, nag ltd.
-!  * Converted to modern Fortran, Jacob Williams, Jan. 2016.
-!
-!@note Replaced original SLSQP routine with this one from
-!      [BLAS](http://netlib.sandia.gov/blas/dnrm2.f).
-
-    real(wp) function dnrm2(n,x,incx)
-
-        implicit none
-
-        integer,intent(in)               :: incx
-        integer,intent(in)               :: n
-        real(wp),dimension(*),intent(in) :: x
-
-        real(wp) :: absxi , norm , scale , ssq
-        integer :: ix
-
-        if ( n<1 .or. incx<1 ) then
-           norm = zero
-        else if ( n==1 ) then
-           norm = abs(x(1))
-        else
-           scale = zero
-           ssq = one
-           ! the following loop is equivalent to this call to the lapack
-           ! auxiliary routine:
-           ! call dlassq( n, x, incx, scale, ssq )
-           do ix = 1 , 1 + (n-1)*incx , incx
-              if ( x(ix)/=zero ) then
-                 absxi = abs(x(ix))
-                 if ( scale<absxi ) then
-                    ssq = one + ssq*(scale/absxi)**2
-                    scale = absxi
-                 else
-                    ssq = ssq + (absxi/scale)**2
-                 end if
-              end if
-           end do
-           norm = scale*sqrt(ssq)
-        end if
-
-        dnrm2 = norm
-
-    end function dnrm2
-!*******************************************************************************
-
-!*******************************************************************************
-!>
 !  scales a vector by a constant.
 !  uses unrolled loops for increment equal to one.
 !
@@ -290,7 +235,7 @@
       implicit none
 
       integer,intent(in) :: n
-      real(wp),intent(in) :: da 
+      real(wp),intent(in) :: da
       real(wp),intent(inout) :: dx(*)
       integer,intent(in) :: incx
 

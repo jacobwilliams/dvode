@@ -17,7 +17,7 @@ module dvode_module
     use dvode_blas_module
 #endif
     use dvode_linpack_module
-    use dvode_kinds_module, only: dvode_wp 
+    use dvode_kinds_module, only: dvode_wp
     use iso_fortran_env,    only: output_unit
 
     implicit none
@@ -1080,317 +1080,408 @@ contains
          !-----------------------------------------------------------------------
          msg = 'dvode--  istate (=i1) illegal '
          call me%xerrwd(msg,30,1,1,1,istate,0,0,zero,zero)
-         if ( istate>=0 ) goto 1500
+         if ( istate>=0 ) then
+            istate = -3
+            return
+         end if
          msg = 'dvode--  run aborted:  apparent infinite loop     '
          call me%xerrwd(msg,50,303,2,0,0,0,0,zero,zero)
          return
-      else
-         if ( itask<1 .or. itask>5 ) then
-            msg = 'dvode--  itask (=i1) illegal  '
-            call me%xerrwd(msg,30,2,1,1,itask,0,0,zero,zero)
-            goto 1500
-         else
-            if ( istate==1 ) then
-               me%dat%init = 0
-               if ( tout==t ) return
-            else if ( me%dat%init/=1 ) then
-               msg = 'dvode--  istate (=i1) > 1 but dvode not initialized      '
-               call me%xerrwd(msg,60,3,1,1,istate,0,0,zero,zero)
-               goto 1500
-            else if ( istate==2 ) then
-               goto 50
-            endif
-            !-----------------------------------------------------------------------
-            ! block b.
-            ! the next code block is executed for the initial call (istate = 1),
-            ! or for a continuation call with parameter changes (istate = 3).
-            ! it contains checking of all input and various initializations.
-            !
-            ! first check legality of the non-optional input neq, itol, iopt,
-            ! mf, ml, and mu.
-            !-----------------------------------------------------------------------
-            if ( neq<=0 ) then
-               msg = 'dvode--  neq (=i1) < 1     '
-               call me%xerrwd(msg,30,4,1,1,neq,0,0,zero,zero)
-               goto 1500
-            else
-               if ( istate/=1 ) then
-                  if ( neq>me%dat%n ) then
-                     msg = 'dvode--  istate = 3 and neq increased (i1 to i2)  '
-                     call me%xerrwd(msg,50,5,1,2,me%dat%n,neq,0,zero,zero)
-                     goto 1500
-                  endif
-               endif
-               me%dat%n = neq
-               if ( itol<1 .or. itol>4 ) then
-                  msg = 'dvode--  itol (=i1) illegal   '
-                  call me%xerrwd(msg,30,6,1,1,itol,0,0,zero,zero)
-                  goto 1500
-               else if ( iopt<0 .or. iopt>1 ) then
-                  msg = 'dvode--  iopt (=i1) illegal   '
-                  call me%xerrwd(msg,30,7,1,1,iopt,0,0,zero,zero)
-                  goto 1500
-               else
-                  me%dat%jsv = sign(1,mf)
-                  mfa = abs(mf)
-                  me%dat%meth = mfa/10
-                  me%dat%miter = mfa - 10*me%dat%meth
-                  if ( me%dat%meth<1 .or. me%dat%meth>2 ) goto 800
-                  if ( me%dat%miter<0 .or. me%dat%miter>5 ) goto 800
-                  if ( me%dat%miter>3 ) then
-                     ml = iwork(1)
-                     mu = iwork(2)
-                     if ( ml<0 .or. ml>=me%dat%n ) then
-                        msg = 'dvode--  ml (=i1) illegal:  <0 or >=neq (=i2)'
-                        call me%xerrwd(msg,50,9,1,2,ml,neq,0,zero,zero)
-                        goto 1500
-                     else if ( mu<0 .or. mu>=me%dat%n ) then
-                        msg = 'dvode--  mu (=i1) illegal:  <0 or >=neq (=i2)'
-                        call me%xerrwd(msg,50,10,1,2,mu,neq,0,zero,zero)
-                        goto 1500
-                     endif
-                  endif
-                  ! next process and check the optional input. ---------------------------
-                  if ( iopt==1 ) then
-                     me%dat%maxord = iwork(5)
-                     if ( me%dat%maxord<0 ) then
-                        msg = 'dvode--  maxord (=i1) < 0  '
-                        call me%xerrwd(msg,30,11,1,1,me%dat%maxord,0,0,zero,zero)
-                        goto 1500
-                     else
-                        if ( me%dat%maxord==0 ) me%dat%maxord = 100
-                        me%dat%maxord = min(me%dat%maxord,mord(me%dat%meth))
-                        me%dat%mxstep = iwork(6)
-                        if ( me%dat%mxstep<0 ) then
-                           msg = 'dvode--  mxstep (=i1) < 0  '
-                           call me%xerrwd(msg,30,12,1,1,me%dat%mxstep,0,0,zero,zero)
-                           goto 1500
-                        else
-                           if ( me%dat%mxstep==0 ) me%dat%mxstep = mxstp0
-                           me%dat%mxhnil = iwork(7)
-                           if ( me%dat%mxhnil<0 ) then
-                              msg = 'dvode--  mxhnil (=i1) < 0  '
-                              call me%xerrwd(msg,30,13,1,1,me%dat%mxhnil,0,0,zero,zero)
-                              goto 1500
-                           else
-                              if ( me%dat%mxhnil==0 ) me%dat%mxhnil = mxhnl0
-                              if ( istate==1 ) then
-                                 h0 = rwork(5)
-                                 if ( (tout-t)*h0<zero ) then
-                                    msg = 'dvode--  tout (=r1) behind t (=r2)      '
-                                    call me%xerrwd(msg,40,14,1,0,0,0,2,tout,t)
-                                    msg = '      integration direction is given by h0 (=r1)  '
-                                    call me%xerrwd(msg,50,14,1,0,0,0,1,h0,zero)
-                                    goto 1500
-                                 endif
-                              endif
-                              hmax = rwork(6)
-                              if ( hmax<zero ) then
-                                 msg = 'dvode--  hmax (=r1) < 0.0  '
-                                 call me%xerrwd(msg,30,15,1,0,0,0,1,hmax,zero)
-                                 goto 1500
-                              else
-                                 me%dat%hmxi = zero
-                                 if ( hmax>zero ) me%dat%hmxi = one/hmax
-                                 me%dat%hmin = rwork(7)
-                                 if ( me%dat%hmin<zero ) then
-                                    msg = 'dvode--  hmin (=r1) < 0.0  '
-                                    call me%xerrwd(msg,30,16,1,0,0,0,1,me%dat%hmin,zero)
-                                    goto 1500
-                                 endif
-                              endif
-                           endif
-                        endif
-                     endif
-                  else
-                     me%dat%maxord = mord(me%dat%meth)
-                     me%dat%mxstep = mxstp0
-                     me%dat%mxhnil = mxhnl0
-                     if ( istate==1 ) h0 = zero
-                     me%dat%hmxi = zero
-                     me%dat%hmin = zero
-                  endif
-                  !-----------------------------------------------------------------------
-                  ! set work array pointers and check lengths lrw and liw.
-                  ! pointers to segments of rwork and iwork are named by prefixing l to
-                  ! the name of the segment.  e.g., the segment yh starts at rwork(lyh).
-                  ! segments of rwork (in order) are denoted  yh, wm, ewt, savf, acor.
-                  ! within wm, locjs is the location of the saved jacobian (jsv > 0).
-                  !-----------------------------------------------------------------------
-                  me%dat%lyh = 21
-                  if ( istate==1 ) me%dat%nyh = me%dat%n
-                  me%dat%lwm = me%dat%lyh + (me%dat%maxord+1)*me%dat%nyh
-                  jco = max(0,me%dat%jsv)
-                  select case (me%dat%miter)
-                  case(0)
-                     lenwm = 0
-                  case(1:2)
-                     lenwm = 2 + (1+jco)*me%dat%n*me%dat%n
-                     me%dat%locjs = me%dat%n*me%dat%n + 3
-                  case(3)
-                     lenwm = 2 + me%dat%n
-                  case(4:5)
-                     mband = ml + mu + 1
-                     lenp = (mband+ml)*me%dat%n
-                     lenj = mband*me%dat%n
-                     lenwm = 2 + lenp + jco*lenj
-                     me%dat%locjs = lenp + 3
-                  end select
-                  me%dat%lewt = me%dat%lwm + lenwm
-                  me%dat%lsavf = me%dat%lewt + me%dat%n
-                  me%dat%lacor = me%dat%lsavf + me%dat%n
-                  lenrw = me%dat%lacor + me%dat%n - 1
-                  iwork(17) = lenrw
-                  me%dat%liwm = 1
-                  leniw = 30 + me%dat%n
-                  if ( me%dat%miter==0 .or. me%dat%miter==3 ) leniw = 30
-                  iwork(18) = leniw
-                  if ( lenrw>lrw ) then
-                     msg = 'dvode--  rwork length needed, lenrw (=i1), exceeds lrw (=i2)'
-                     call me%xerrwd(msg,60,17,1,2,lenrw,lrw,0,zero,zero)
-                     goto 1500
-                  else if ( leniw>liw ) then
-                     msg = 'dvode--  iwork length needed, leniw (=i1), exceeds liw (=i2)'
-                     call me%xerrwd(msg,60,18,1,2,leniw,liw,0,zero,zero)
-                     goto 1500
-                  else
-                     ! check rtol and atol for legality. ------------------------------------
-                     rtoli = rtol(1)
-                     atoli = atol(1)
-                     do i = 1 , me%dat%n
-                        if ( itol>=3 ) rtoli = rtol(i)
-                        if ( itol==2 .or. itol==4 ) atoli = atol(i)
-                        if ( rtoli<zero ) goto 900
-                        if ( atoli<zero ) goto 1000
-                     enddo
-                     if ( istate==1 ) then
-                        !-----------------------------------------------------------------------
-                        ! block c.
-                        ! the next block is for the initial call only (istate = 1).
-                        ! it contains all remaining initializations, the initial call to f,
-                        ! and the calculation of the initial step size.
-                        ! the error weights in ewt are inverted after being loaded.
-                        !-----------------------------------------------------------------------
-                        me%dat%uround = epmach
-                        me%dat%tn = t
-                        if ( itask==4 .or. itask==5 ) then
-                           tcrit = rwork(1)
-                           if ( (tcrit-tout)*(tout-t)<zero ) goto 1300
-                           if ( h0/=zero .and. (t+h0-tcrit)*h0>zero ) &
-                                h0 = tcrit - t
-                        endif
-                        me%dat%jstart = 0
-                        if ( me%dat%miter>0 ) rwork(me%dat%lwm) = sqrt(me%dat%uround)
-                        me%dat%ccmxj = pt2
-                        me%dat%msbj = 50
-                        me%dat%nhnil = 0
-                        me%dat%nst = 0
-                        me%dat%nje = 0
-                        me%dat%nni = 0
-                        me%dat%ncfn = 0
-                        me%dat%netf = 0
-                        me%dat%nlu = 0
-                        me%dat%nslj = 0
-                        nslast = 0
-                        me%dat%hu = zero
-                        me%dat%nqu = 0
-                        ! initial call to f.  (lf0 points to yh(*,2).) -------------------------
-                        lf0 = me%dat%lyh + me%dat%nyh
-                        call me%f(me%dat%n,t,y(1:me%dat%n),rwork(lf0))
-                        me%dat%nfe = 1
-                        ! load the initial value vector in yh. ---------------------------------
-                        call dcopy(me%dat%n,y,1,rwork(me%dat%lyh),1)
-                        ! load and invert the ewt array.  (h is temporarily set to 1.0.) -------
-                        me%dat%nq = 1
-                        me%dat%h = one
-                        call me%dewset(me%dat%n,itol,rtol(1:me%dat%n),atol(1:me%dat%n),&
-                                       rwork(me%dat%lyh), rwork(me%dat%lewt))
-                        do i = 1 , me%dat%n
-                           if ( rwork(i+me%dat%lewt-1)<=zero ) goto 1100
-                           rwork(i+me%dat%lewt-1) = one/rwork(i+me%dat%lewt-1)
-                        enddo
-                        if ( h0==zero ) then
-                           ! call dvhin to set initial step size h0 to be attempted. --------------
-                           call me%dvhin(me%dat%n,t,rwork(me%dat%lyh),rwork(lf0), &
-                                         tout,me%dat%uround,rwork(me%dat%lewt),itol,&
-                                         atol,y,rwork(me%dat%lacor),h0,niter,ier)
-                           me%dat%nfe = me%dat%nfe + niter
-                           if ( ier/=0 ) then
-                              msg = &
-                              'dvode--  tout (=r1) too close to t(=r2) to start integration'
-                              call me%xerrwd(msg,60,22,1,0,0,0,2,tout,t)
-                              goto 1500
-                           endif
-                        endif
-                        ! adjust h0 if necessary to meet hmax bound. ---------------------------
-                        rh = abs(h0)*me%dat%hmxi
-                        if ( rh>one ) h0 = h0/rh
-                        ! load h with h0 and scale yh(*,2) by h0. ------------------------------
-                        me%dat%h = h0
-                        call dscal(me%dat%n,h0,rwork(lf0),1)
-                        goto 200
-                     else
-                        ! if istate = 3, set flag to signal parameter changes to dvstep. -------
-                        me%dat%jstart = -1
-                        ! maxord was reduced below nq.  copy yh(*,maxord+2) into savf. ---------
-                        if ( me%dat%nq>me%dat%maxord ) &
-                             call dcopy(me%dat%n,rwork(me%dat%lwm),1,rwork(me%dat%lsavf),1)
-                        ! reload wm(1) = rwork(lwm), since lwm may have changed. ---------------
-                        if ( me%dat%miter>0 ) rwork(me%dat%lwm) = sqrt(me%dat%uround)
-                     endif
-                  endif
-               endif
-            endif
-         endif
-         !-----------------------------------------------------------------------
-         ! block d.
-         ! the next code block is for continuation calls only (istate = 2 or 3)
-         ! and is to check stop conditions before taking a step.
-         !-----------------------------------------------------------------------
- 50      nslast = me%dat%nst
-         me%dat%kuth = 0
-         select case (itask)
-         case (2)
-            goto 100
-         case (3)
-            tp = me%dat%tn - me%dat%hu*(one+hun*me%dat%uround)
-            if ( (tp-tout)*me%dat%h>zero ) then
-               msg = 'dvode--  itask = i1 and tout (=r1) behind tcur - hu (= r2)  '
-               call me%xerrwd(msg,60,23,1,1,itask,0,2,tout,tp)
-               goto 1500
-            else
-               if ( (me%dat%tn-tout)*me%dat%h>=zero ) goto 300
-               goto 100
-            endif
-         case (4)
-            tcrit = rwork(1)
-            if ( (me%dat%tn-tcrit)*me%dat%h>zero ) goto 1200
-            if ( (tcrit-tout)*me%dat%h<zero ) goto 1300
-            if ( (me%dat%tn-tout)*me%dat%h>=zero ) then
-               call me%dvindy(tout,0,rwork(me%dat%lyh),me%dat%nyh,y,iflag)
-               if ( iflag/=0 ) goto 1400
-               t = tout
-               goto 400
-            endif
-         case (5)
-            tcrit = rwork(1)
-            if ( (me%dat%tn-tcrit)*me%dat%h>zero ) goto 1200
-         case default
-            if ( (me%dat%tn-tout)*me%dat%h<zero ) goto 100
-            call me%dvindy(tout,0,rwork(me%dat%lyh),me%dat%nyh,y,iflag)
-            if ( iflag/=0 ) goto 1400
-            t = tout
-            goto 400
-         end select
-         hmx = abs(me%dat%tn) + abs(me%dat%h)
-         ihit = abs(me%dat%tn-tcrit)<=hun*me%dat%uround*hmx
-         if ( ihit ) goto 300
-         tnext = me%dat%tn + me%dat%hnew*(one+four*me%dat%uround)
-         if ( (tnext-tcrit)*me%dat%h>zero ) then
-            me%dat%h = (tcrit-me%dat%tn)*(one-four*me%dat%uround)
-            me%dat%kuth = 1
+      end if
+
+      if ( itask<1 .or. itask>5 ) then
+         msg = 'dvode--  itask (=i1) illegal  '
+         call me%xerrwd(msg,30,2,1,1,itask,0,0,zero,zero)
+         istate = -3
+         return
+      end if
+
+      if ( istate==1 ) then
+         me%dat%init = 0
+         if ( tout==t ) return
+      else if ( me%dat%init/=1 ) then
+         msg = 'dvode--  istate (=i1) > 1 but dvode not initialized      '
+         call me%xerrwd(msg,60,3,1,1,istate,0,0,zero,zero)
+         istate = -3
+         return
+      else if ( istate==2 ) then
+         goto 50
+      endif
+
+      !-----------------------------------------------------------------------
+      ! block b.
+      ! the next code block is executed for the initial call (istate = 1),
+      ! or for a continuation call with parameter changes (istate = 3).
+      ! it contains checking of all input and various initializations.
+      !
+      ! first check legality of the non-optional input neq, itol, iopt,
+      ! mf, ml, and mu.
+      !-----------------------------------------------------------------------
+      if ( neq<=0 ) then
+         msg = 'dvode--  neq (=i1) < 1     '
+         call me%xerrwd(msg,30,4,1,1,neq,0,0,zero,zero)
+         istate = -3
+         return
+      end if
+
+      if ( istate/=1 ) then
+         if ( neq>me%dat%n ) then
+            msg = 'dvode--  istate = 3 and neq increased (i1 to i2)  '
+            call me%xerrwd(msg,50,5,1,2,me%dat%n,neq,0,zero,zero)
+            istate = -3
+            return
          endif
       endif
+      me%dat%n = neq
+      if ( itol<1 .or. itol>4 ) then
+         msg = 'dvode--  itol (=i1) illegal   '
+         call me%xerrwd(msg,30,6,1,1,itol,0,0,zero,zero)
+         istate = -3
+         return
+      else if ( iopt<0 .or. iopt>1 ) then
+         msg = 'dvode--  iopt (=i1) illegal   '
+         call me%xerrwd(msg,30,7,1,1,iopt,0,0,zero,zero)
+         istate = -3
+         return
+      else
+         me%dat%jsv = sign(1,mf)
+         mfa = abs(mf)
+         me%dat%meth = mfa/10
+         me%dat%miter = mfa - 10*me%dat%meth
+         if (( me%dat%meth<1 .or. me%dat%meth>2 ) .or. &
+               ( me%dat%miter<0 .or. me%dat%miter>5 )) then
+            msg = 'dvode--  mf (=i1) illegal     '
+            call me%xerrwd(msg,30,8,1,1,mf,0,0,zero,zero)
+            istate = -3
+            return
+         end if
+         if ( me%dat%miter>3 ) then
+            ml = iwork(1)
+            mu = iwork(2)
+            if ( ml<0 .or. ml>=me%dat%n ) then
+               msg = 'dvode--  ml (=i1) illegal:  <0 or >=neq (=i2)'
+               call me%xerrwd(msg,50,9,1,2,ml,neq,0,zero,zero)
+               istate = -3
+               return
+            else if ( mu<0 .or. mu>=me%dat%n ) then
+               msg = 'dvode--  mu (=i1) illegal:  <0 or >=neq (=i2)'
+               call me%xerrwd(msg,50,10,1,2,mu,neq,0,zero,zero)
+               istate = -3
+               return
+            endif
+         endif
+         ! next process and check the optional input. ---------------------------
+         if ( iopt==1 ) then
+            me%dat%maxord = iwork(5)
+            if ( me%dat%maxord<0 ) then
+               msg = 'dvode--  maxord (=i1) < 0  '
+               call me%xerrwd(msg,30,11,1,1,me%dat%maxord,0,0,zero,zero)
+               istate = -3
+               return
+            else
+               if ( me%dat%maxord==0 ) me%dat%maxord = 100
+               me%dat%maxord = min(me%dat%maxord,mord(me%dat%meth))
+               me%dat%mxstep = iwork(6)
+               if ( me%dat%mxstep<0 ) then
+                  msg = 'dvode--  mxstep (=i1) < 0  '
+                  call me%xerrwd(msg,30,12,1,1,me%dat%mxstep,0,0,zero,zero)
+                  istate = -3
+                  return
+               else
+                  if ( me%dat%mxstep==0 ) me%dat%mxstep = mxstp0
+                  me%dat%mxhnil = iwork(7)
+                  if ( me%dat%mxhnil<0 ) then
+                     msg = 'dvode--  mxhnil (=i1) < 0  '
+                     call me%xerrwd(msg,30,13,1,1,me%dat%mxhnil,0,0,zero,zero)
+                     istate = -3
+                     return
+                  else
+                     if ( me%dat%mxhnil==0 ) me%dat%mxhnil = mxhnl0
+                     if ( istate==1 ) then
+                        h0 = rwork(5)
+                        if ( (tout-t)*h0<zero ) then
+                           msg = 'dvode--  tout (=r1) behind t (=r2)      '
+                           call me%xerrwd(msg,40,14,1,0,0,0,2,tout,t)
+                           msg = '      integration direction is given by h0 (=r1)  '
+                           call me%xerrwd(msg,50,14,1,0,0,0,1,h0,zero)
+                           istate = -3
+                           return
+                        endif
+                     endif
+                     hmax = rwork(6)
+                     if ( hmax<zero ) then
+                        msg = 'dvode--  hmax (=r1) < 0.0  '
+                        call me%xerrwd(msg,30,15,1,0,0,0,1,hmax,zero)
+                        istate = -3
+                        return
+                     else
+                        me%dat%hmxi = zero
+                        if ( hmax>zero ) me%dat%hmxi = one/hmax
+                        me%dat%hmin = rwork(7)
+                        if ( me%dat%hmin<zero ) then
+                           msg = 'dvode--  hmin (=r1) < 0.0  '
+                           call me%xerrwd(msg,30,16,1,0,0,0,1,me%dat%hmin,zero)
+                           istate = -3
+                           return
+                        endif
+                     endif
+                  endif
+               endif
+            endif
+         else
+            me%dat%maxord = mord(me%dat%meth)
+            me%dat%mxstep = mxstp0
+            me%dat%mxhnil = mxhnl0
+            if ( istate==1 ) h0 = zero
+            me%dat%hmxi = zero
+            me%dat%hmin = zero
+         endif
+         !-----------------------------------------------------------------------
+         ! set work array pointers and check lengths lrw and liw.
+         ! pointers to segments of rwork and iwork are named by prefixing l to
+         ! the name of the segment.  e.g., the segment yh starts at rwork(lyh).
+         ! segments of rwork (in order) are denoted  yh, wm, ewt, savf, acor.
+         ! within wm, locjs is the location of the saved jacobian (jsv > 0).
+         !-----------------------------------------------------------------------
+         me%dat%lyh = 21
+         if ( istate==1 ) me%dat%nyh = me%dat%n
+         me%dat%lwm = me%dat%lyh + (me%dat%maxord+1)*me%dat%nyh
+         jco = max(0,me%dat%jsv)
+         select case (me%dat%miter)
+         case(0)
+            lenwm = 0
+         case(1:2)
+            lenwm = 2 + (1+jco)*me%dat%n*me%dat%n
+            me%dat%locjs = me%dat%n*me%dat%n + 3
+         case(3)
+            lenwm = 2 + me%dat%n
+         case(4:5)
+            mband = ml + mu + 1
+            lenp = (mband+ml)*me%dat%n
+            lenj = mband*me%dat%n
+            lenwm = 2 + lenp + jco*lenj
+            me%dat%locjs = lenp + 3
+         end select
+         me%dat%lewt = me%dat%lwm + lenwm
+         me%dat%lsavf = me%dat%lewt + me%dat%n
+         me%dat%lacor = me%dat%lsavf + me%dat%n
+         lenrw = me%dat%lacor + me%dat%n - 1
+         iwork(17) = lenrw
+         me%dat%liwm = 1
+         leniw = 30 + me%dat%n
+         if ( me%dat%miter==0 .or. me%dat%miter==3 ) leniw = 30
+         iwork(18) = leniw
+         if ( lenrw>lrw ) then
+            msg = 'dvode--  rwork length needed, lenrw (=i1), exceeds lrw (=i2)'
+            call me%xerrwd(msg,60,17,1,2,lenrw,lrw,0,zero,zero)
+            istate = -3
+            return
+         else if ( leniw>liw ) then
+            msg = 'dvode--  iwork length needed, leniw (=i1), exceeds liw (=i2)'
+            call me%xerrwd(msg,60,18,1,2,leniw,liw,0,zero,zero)
+            istate = -3
+            return
+         else
+            ! check rtol and atol for legality. ------------------------------------
+            rtoli = rtol(1)
+            atoli = atol(1)
+            do i = 1 , me%dat%n
+               if ( itol>=3 ) rtoli = rtol(i)
+               if ( itol==2 .or. itol==4 ) atoli = atol(i)
+               if ( rtoli<zero ) then
+                  msg = 'dvode--  rtol(i1) is r1 < 0.0        '
+                  call me%xerrwd(msg,40,19,1,1,i,0,1,rtoli,zero)
+                  istate = -3
+                  return
+               end if
+               if ( atoli<zero ) then
+                  msg = 'dvode--  atol(i1) is r1 < 0.0        '
+                  call me%xerrwd(msg,40,20,1,1,i,0,1,atoli,zero)
+                  istate = -3
+                  return
+               end if
+            enddo
+            if ( istate==1 ) then
+               !-----------------------------------------------------------------------
+               ! block c.
+               ! the next block is for the initial call only (istate = 1).
+               ! it contains all remaining initializations, the initial call to f,
+               ! and the calculation of the initial step size.
+               ! the error weights in ewt are inverted after being loaded.
+               !-----------------------------------------------------------------------
+               me%dat%uround = epmach
+               me%dat%tn = t
+               if ( itask==4 .or. itask==5 ) then
+                  tcrit = rwork(1)
+                  if ( (tcrit-tout)*(tout-t)<zero ) then
+                     msg = 'dvode--  itask = 4 or 5 and tcrit (=r1) behind tout (=r2)   '
+                     call me%xerrwd(msg,60,25,1,0,0,0,2,tcrit,tout)
+                     istate = -3
+                     return
+                  end if
+                  if ( h0/=zero .and. (t+h0-tcrit)*h0>zero ) &
+                        h0 = tcrit - t
+               endif
+               me%dat%jstart = 0
+               if ( me%dat%miter>0 ) rwork(me%dat%lwm) = sqrt(me%dat%uround)
+               me%dat%ccmxj = pt2
+               me%dat%msbj = 50
+               me%dat%nhnil = 0
+               me%dat%nst = 0
+               me%dat%nje = 0
+               me%dat%nni = 0
+               me%dat%ncfn = 0
+               me%dat%netf = 0
+               me%dat%nlu = 0
+               me%dat%nslj = 0
+               nslast = 0
+               me%dat%hu = zero
+               me%dat%nqu = 0
+               ! initial call to f.  (lf0 points to yh(*,2).) -------------------------
+               lf0 = me%dat%lyh + me%dat%nyh
+               call me%f(me%dat%n,t,y(1:me%dat%n),rwork(lf0))
+               me%dat%nfe = 1
+               ! load the initial value vector in yh. ---------------------------------
+               call dcopy(me%dat%n,y,1,rwork(me%dat%lyh),1)
+               ! load and invert the ewt array.  (h is temporarily set to 1.0.) -------
+               me%dat%nq = 1
+               me%dat%h = one
+               call me%dewset(me%dat%n,itol,rtol(1:me%dat%n),atol(1:me%dat%n),&
+                              rwork(me%dat%lyh), rwork(me%dat%lewt))
+               do i = 1 , me%dat%n
+                  if ( rwork(i+me%dat%lewt-1)<=zero ) then
+                     ewti = rwork(me%dat%lewt+i-1)
+                     msg = 'dvode--  ewt(i1) is r1 <= 0.0         '
+                     call me%xerrwd(msg,40,21,1,1,i,0,1,ewti,zero)
+                     istate = -3
+                     return
+                  end if
+                  rwork(i+me%dat%lewt-1) = one/rwork(i+me%dat%lewt-1)
+               enddo
+               if ( h0==zero ) then
+                  ! call dvhin to set initial step size h0 to be attempted. --------------
+                  call me%dvhin(me%dat%n,t,rwork(me%dat%lyh),rwork(lf0), &
+                                 tout,me%dat%uround,rwork(me%dat%lewt),itol,&
+                                 atol,y,rwork(me%dat%lacor),h0,niter,ier)
+                  me%dat%nfe = me%dat%nfe + niter
+                  if ( ier/=0 ) then
+                     msg = &
+                     'dvode--  tout (=r1) too close to t(=r2) to start integration'
+                     call me%xerrwd(msg,60,22,1,0,0,0,2,tout,t)
+                     istate = -3
+                     return
+                  endif
+               endif
+               ! adjust h0 if necessary to meet hmax bound. ---------------------------
+               rh = abs(h0)*me%dat%hmxi
+               if ( rh>one ) h0 = h0/rh
+               ! load h with h0 and scale yh(*,2) by h0. ------------------------------
+               me%dat%h = h0
+               call dscal(me%dat%n,h0,rwork(lf0),1)
+               goto 200
+            else
+               ! if istate = 3, set flag to signal parameter changes to dvstep. -------
+               me%dat%jstart = -1
+               ! maxord was reduced below nq.  copy yh(*,maxord+2) into savf. ---------
+               if ( me%dat%nq>me%dat%maxord ) &
+                     call dcopy(me%dat%n,rwork(me%dat%lwm),1,rwork(me%dat%lsavf),1)
+               ! reload wm(1) = rwork(lwm), since lwm may have changed. ---------------
+               if ( me%dat%miter>0 ) rwork(me%dat%lwm) = sqrt(me%dat%uround)
+            endif
+         endif
+      endif
+
+      !-----------------------------------------------------------------------
+      ! block d.
+      ! the next code block is for continuation calls only (istate = 2 or 3)
+      ! and is to check stop conditions before taking a step.
+      !-----------------------------------------------------------------------
+50    nslast = me%dat%nst
+      me%dat%kuth = 0
+      select case (itask)
+      case (2)
+         goto 100
+      case (3)
+         tp = me%dat%tn - me%dat%hu*(one+hun*me%dat%uround)
+         if ( (tp-tout)*me%dat%h>zero ) then
+            msg = 'dvode--  itask = i1 and tout (=r1) behind tcur - hu (= r2)  '
+            call me%xerrwd(msg,60,23,1,1,itask,0,2,tout,tp)
+            istate = -3
+            return
+         else
+            if ( (me%dat%tn-tout)*me%dat%h>=zero ) then
+               call set_y_and_t()
+               if ( itask==4 .or. itask==5 ) then
+                  if ( ihit ) t = tcrit
+               endif
+               call continue()
+               return
+            end if
+            goto 100
+         endif
+      case (4)
+         tcrit = rwork(1)
+         if ( (me%dat%tn-tcrit)*me%dat%h>zero ) then
+            msg = 'dvode--  itask = 4 or 5 and tcrit (=r1) behind tcur (=r2)   '
+            call me%xerrwd(msg,60,24,1,0,0,0,2,tcrit,me%dat%tn)
+            istate = -3
+            return
+         end if
+         if ( (tcrit-tout)*me%dat%h<zero ) then
+            msg = 'dvode--  itask = 4 or 5 and tcrit (=r1) behind tout (=r2)   '
+            call me%xerrwd(msg,60,25,1,0,0,0,2,tcrit,tout)
+            istate = -3
+            return
+         end if
+         if ( (me%dat%tn-tout)*me%dat%h>=zero ) then
+            call me%dvindy(tout,0,rwork(me%dat%lyh),me%dat%nyh,y,iflag)
+            if ( iflag/=0 ) then
+               msg = 'dvode--  trouble from dvindy.  itask = i1, tout = r1.       '
+               call me%xerrwd(msg,60,27,1,1,itask,0,1,tout,zero)
+               istate = -3
+               return
+            end if
+            t = tout
+            call continue()
+            return
+         endif
+      case (5)
+         tcrit = rwork(1)
+         if ( (me%dat%tn-tcrit)*me%dat%h>zero ) then
+            msg = 'dvode--  itask = 4 or 5 and tcrit (=r1) behind tcur (=r2)   '
+            call me%xerrwd(msg,60,24,1,0,0,0,2,tcrit,me%dat%tn)
+            istate = -3
+            return
+         end if
+      case default
+         if ( (me%dat%tn-tout)*me%dat%h<zero ) goto 100
+         call me%dvindy(tout,0,rwork(me%dat%lyh),me%dat%nyh,y,iflag)
+         if ( iflag/=0 ) then
+            msg = 'dvode--  trouble from dvindy.  itask = i1, tout = r1.       '
+            call me%xerrwd(msg,60,27,1,1,itask,0,1,tout,zero)
+            istate = -3
+            return
+         end if
+         t = tout
+         call continue()
+         return
+      end select
+      hmx = abs(me%dat%tn) + abs(me%dat%h)
+      ihit = abs(me%dat%tn-tcrit)<=hun*me%dat%uround*hmx
+      if ( ihit ) then
+         call set_y_and_t()
+         if ( itask==4 .or. itask==5 ) then
+            if ( ihit ) t = tcrit
+         endif
+         call continue()
+         return
+      end if
+      tnext = me%dat%tn + me%dat%hnew*(one+four*me%dat%uround)
+      if ( (tnext-tcrit)*me%dat%h>zero ) then
+         me%dat%h = (tcrit-me%dat%tn)*(one-four*me%dat%uround)
+         me%dat%kuth = 1
+      endif
+
       !-----------------------------------------------------------------------
       ! block e.
       ! the next block is normally executed for all calls and contains
@@ -1417,12 +1508,17 @@ contains
          msg = '      taken on this call before reaching tout     '
          call me%xerrwd(msg,50,201,1,1,me%dat%mxstep,0,1,me%dat%tn,zero)
          istate = -1
-         goto 700
+         call finish()
+         return
       else
          call me%dewset(me%dat%n,itol,rtol(1:me%dat%n),atol(1:me%dat%n),&
                         rwork(me%dat%lyh),rwork(me%dat%lewt))
          do i = 1 , me%dat%n
-            if ( rwork(i+me%dat%lewt-1)<=zero ) goto 500
+            if ( rwork(i+me%dat%lewt-1)<=zero ) then
+               call ewt_error()
+               call finish()
+               return
+            end if
             rwork(i+me%dat%lewt-1) = one/rwork(i+me%dat%lewt-1)
          enddo
       endif
@@ -1466,7 +1562,9 @@ contains
             msg = '      test failed repeatedly or with abs(h) = hmin'
             call me%xerrwd(msg,50,204,1,0,0,0,2,me%dat%tn,me%dat%h)
             istate = -4
-            goto 600
+            call compute_imxer()
+            call finish()
+            return
          case (3)
             ! kflag = -2.  convergence failed repeatedly or with abs(h) = hmin. ----
             msg = 'dvode--  at t (=r1) and step size h (=r2), the    '
@@ -1476,7 +1574,9 @@ contains
             msg = '      or with abs(h) = hmin   '
             call me%xerrwd(msg,30,205,1,0,0,0,2,me%dat%tn,me%dat%h)
             istate = -5
-            goto 600
+            call compute_imxer()
+            call finish()
+            return
          case default
             !-----------------------------------------------------------------------
             ! block f.
@@ -1506,7 +1606,8 @@ contains
                else
                   call me%dvindy(tout,0,rwork(me%dat%lyh),me%dat%nyh,y,iflag)
                   t = tout
-                  goto 400
+                  call continue()
+                  return
                endif
             case (5)
                ! itask = 5.  see if tcrit was reached and jump to exit. ---------------
@@ -1517,7 +1618,8 @@ contains
                if ( (me%dat%tn-tout)*me%dat%h<zero ) goto 100
                call me%dvindy(tout,0,rwork(me%dat%lyh),me%dat%nyh,y,iflag)
                t = tout
-               goto 400
+               call continue()
+               return
             end select
          end select
       else
@@ -1528,7 +1630,8 @@ contains
             msg = '      requested for precision of machine:   see tolsf (=r1) '
             call me%xerrwd(msg,60,26,1,0,0,0,1,tolsf,zero)
             rwork(14) = tolsf
-            goto 1500
+            istate = -3
+            return
          else
             ! too much accuracy requested for machine precision. -------------------
             msg = 'dvode--  at t (=r1), too much accuracy requested  '
@@ -1537,9 +1640,19 @@ contains
             call me%xerrwd(msg,50,203,1,0,0,0,2,me%dat%tn,tolsf)
             rwork(14) = tolsf
             istate = -2
-            goto 700
+            call finish()
+            return
          endif
       endif
+
+      call set_y_and_t()
+      if ( itask==4 .or. itask==5 ) then
+         if ( ihit ) t = tcrit
+      endif
+      call continue()
+
+   contains
+
       !-----------------------------------------------------------------------
       ! block g.
       ! the following block handles all successful returns from dvode.
@@ -1547,85 +1660,67 @@ contains
       ! istate is set to 2, and the optional output is loaded into the work
       ! arrays before returning.
       !-----------------------------------------------------------------------
- 300  call dcopy(me%dat%n,rwork(me%dat%lyh),1,y,1)
-      t = me%dat%tn
-      if ( itask==4 .or. itask==5 ) then
-         if ( ihit ) t = tcrit
-      endif
- 400  istate = 2
-      rwork(11) = me%dat%hu
-      rwork(12) = me%dat%hnew
-      rwork(13) = me%dat%tn
-      iwork(11) = me%dat%nst
-      iwork(12) = me%dat%nfe
-      iwork(13) = me%dat%nje
-      iwork(14) = me%dat%nqu
-      iwork(15) = me%dat%newq
-      iwork(19) = me%dat%nlu
-      iwork(20) = me%dat%nni
-      iwork(21) = me%dat%ncfn
-      iwork(22) = me%dat%netf
-      return
 
-      ! ewt(i) <= 0.0 for some i (not at start of problem). ----------------
- 500  ewti = rwork(me%dat%lewt+i-1)
-      msg = 'dvode--  at t (=r1), ewt(i1) has become r2 <= 0.'
-      call me%xerrwd(msg,50,202,1,1,i,0,2,me%dat%tn,ewti)
-      istate = -6
-      goto 700
+      subroutine set_y_and_t()
+         !! set y vector, t
+         call dcopy(me%dat%n,rwork(me%dat%lyh),1,y,1)
+         t = me%dat%tn
+      end subroutine set_y_and_t
 
-      ! compute imxer if relevant. -------------------------------------------
- 600  big = zero
-      imxer = 1
-      do i = 1 , me%dat%n
-         size = abs(rwork(i+me%dat%lacor-1)*rwork(i+me%dat%lewt-1))
-         if ( big<size ) then
-            big = size
-            imxer = i
-         endif
-      enddo
-      iwork(16) = imxer
-      ! set y vector, t, and optional output. --------------------------------
- 700  call dcopy(me%dat%n,rwork(me%dat%lyh),1,y,1)
-      t = me%dat%tn
-      rwork(11) = me%dat%hu
-      rwork(12) = me%dat%h
-      rwork(13) = me%dat%tn
-      iwork(11) = me%dat%nst
-      iwork(12) = me%dat%nfe
-      iwork(13) = me%dat%nje
-      iwork(14) = me%dat%nqu
-      iwork(15) = me%dat%nq
-      iwork(19) = me%dat%nlu
-      iwork(20) = me%dat%nni
-      iwork(21) = me%dat%ncfn
-      iwork(22) = me%dat%netf
+      subroutine continue()
+         istate = 2
+         rwork(11) = me%dat%hu
+         rwork(12) = me%dat%hnew
+         rwork(13) = me%dat%tn
+         iwork(11) = me%dat%nst
+         iwork(12) = me%dat%nfe
+         iwork(13) = me%dat%nje
+         iwork(14) = me%dat%nqu
+         iwork(15) = me%dat%newq
+         iwork(19) = me%dat%nlu
+         iwork(20) = me%dat%nni
+         iwork(21) = me%dat%ncfn
+         iwork(22) = me%dat%netf
+      end subroutine continue
 
-      return
+      subroutine ewt_error()
+         !! ewt(i) <= 0.0 for some i (not at start of problem).
+         ewti = rwork(me%dat%lewt+i-1)
+         msg = 'dvode--  at t (=r1), ewt(i1) has become r2 <= 0.'
+         call me%xerrwd(msg,50,202,1,1,i,0,2,me%dat%tn,ewti)
+         istate = -6
+      end subroutine ewt_error
 
- 800  msg = 'dvode--  mf (=i1) illegal     '
-      call me%xerrwd(msg,30,8,1,1,mf,0,0,zero,zero)
-      goto 1500
- 900  msg = 'dvode--  rtol(i1) is r1 < 0.0        '
-      call me%xerrwd(msg,40,19,1,1,i,0,1,rtoli,zero)
-      goto 1500
- 1000 msg = 'dvode--  atol(i1) is r1 < 0.0        '
-      call me%xerrwd(msg,40,20,1,1,i,0,1,atoli,zero)
-      goto 1500
- 1100 ewti = rwork(me%dat%lewt+i-1)
-      msg = 'dvode--  ewt(i1) is r1 <= 0.0         '
-      call me%xerrwd(msg,40,21,1,1,i,0,1,ewti,zero)
-      goto 1500
- 1200 msg = 'dvode--  itask = 4 or 5 and tcrit (=r1) behind tcur (=r2)   '
-      call me%xerrwd(msg,60,24,1,0,0,0,2,tcrit,me%dat%tn)
-      goto 1500
- 1300 msg = 'dvode--  itask = 4 or 5 and tcrit (=r1) behind tout (=r2)   '
-      call me%xerrwd(msg,60,25,1,0,0,0,2,tcrit,tout)
-      goto 1500
- 1400 msg = 'dvode--  trouble from dvindy.  itask = i1, tout = r1.       '
-      call me%xerrwd(msg,60,27,1,1,itask,0,1,tout,zero)
+      subroutine compute_imxer()
+         !! compute imxer if relevant.
+         big = zero
+         imxer = 1
+         do i = 1 , me%dat%n
+            size = abs(rwork(i+me%dat%lacor-1)*rwork(i+me%dat%lewt-1))
+            if ( big<size ) then
+               big = size
+               imxer = i
+            endif
+         enddo
+         iwork(16) = imxer
+      end subroutine compute_imxer
 
- 1500 istate = -3
+      subroutine finish()
+         !! set y vector, t, and optional output.
+         call set_y_and_t()
+         rwork(11) = me%dat%hu
+         rwork(12) = me%dat%h
+         rwork(13) = me%dat%tn
+         iwork(11) = me%dat%nst
+         iwork(12) = me%dat%nfe
+         iwork(13) = me%dat%nje
+         iwork(14) = me%dat%nqu
+         iwork(15) = me%dat%nq
+         iwork(19) = me%dat%nlu
+         iwork(20) = me%dat%nni
+         iwork(21) = me%dat%ncfn
+         iwork(22) = me%dat%netf
+      end subroutine finish
 
    end subroutine dvode
 
