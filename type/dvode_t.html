@@ -1,0 +1,3038 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Modern Fortran Edition of the DVODE ODE Solver">
+    <meta name="author" content="Jacob Williams" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>dvode_t &ndash; dvode </title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">dvode </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>dvode_t
+      <small>Derived Type</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title="<p>30.9% of total for derived types.</p>Including implementation: 1660 statements, 96.2% of total for derived types.">29 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/dvode_module.F90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/dvode_module.f90.html'>dvode_module.F90</a></li>
+                <li class="breadcrumb-item"><a href='../module/dvode_module.html'>dvode_module</a></li>
+            <li class="breadcrumb-item active" aria-current="page">dvode_t</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#vars-0"
+         aria-expanded="false" aria-controls="vars-0">
+         <h4 class="card-header bg-primary text-white">Variables</h4>
+      </a>
+      <div id="vars-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../type/dvode_t.html#variable-dat">dat</a>
+            <a class="list-group-item" href="../type/dvode_t.html#variable-etaq">etaq</a>
+            <a class="list-group-item" href="../type/dvode_t.html#variable-etaqm1">etaqm1</a>
+            <a class="list-group-item" href="../type/dvode_t.html#variable-lunit">lunit</a>
+            <a class="list-group-item" href="../type/dvode_t.html#variable-mesflg">mesflg</a>
+            <a class="list-group-item" href="../type/dvode_t.html#variable-f">f</a>
+            <a class="list-group-item" href="../type/dvode_t.html#variable-jac">jac</a>
+            <a class="list-group-item" href="../type/dvode_t.html#variable-dewset">dewset</a>
+            <a class="list-group-item" href="../type/dvode_t.html#variable-dvnorm">dvnorm</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#boundprocs-0"
+         aria-expanded="false" aria-controls="boundprocs-0">
+         <h4 class="card-header bg-primary text-white">Type-Bound Procedures</h4>
+      </a>
+      <div id="boundprocs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-initialize">initialize</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-solve">solve</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xsetun">xsetun</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xsetf">xsetf</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvsrco">dvsrco</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvindy">dvindy</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvhin">dvhin</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvstep">dvstep</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvset">dvset</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvjust">dvjust</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvnlsd">dvnlsd</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvjac">dvjac</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-dvsol">dvsol</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-ixsav">ixsav</a>
+            <a class="list-group-item" href="../type/dvode_t.html#boundprocedure-xerrwd">xerrwd</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../type/dvode_t.html#src">dvode_t</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+      <h2 id="type-def-statement">
+        type, public :: dvode_t</h2>
+    <p>Main DVODE class.</p>
+<h3>Summary of usage.</h3>
+<p>communication between the user and the dvode package, for normal
+ situations, is summarized here.  this summary describes only a subset
+ of the full set of options available.  see the full description under
+ <a href="../proc/dvode.html">dvode</a> for details, including optional communication, nonstandard
+ options,  and instructions for special situations.</p>
+<ol>
+<li>
+<p>first provide a subroutine <code>f</code> of the form <a href="../interface/f_func.html">f_func</a>:
+    which supplies the vector function f by loading ydot(i) with f(i).</p>
+</li>
+<li>
+<p>next determine (or guess) whether or not the problem is stiff.
+    stiffness occurs when the jacobian matrix df/dy has an eigenvalue
+    whose real part is negative and large in magnitude, compared to the
+    reciprocal of the t span of interest.  if the problem is nonstiff,
+    use a method flag mf = 10.  if it is stiff, there are four standard
+    choices for mf (21, 22, 24, 25), and dvode requires the jacobian
+    matrix in some form.  in these cases (mf &gt; 0), dvode will use a
+    saved copy of the jacobian matrix.  if this is undesirable because of
+    storage limitations, set mf to the corresponding negative value
+    (-21, -22, -24, -25).  (see full description of mf below.)
+    the jacobian matrix is regarded either as full (mf = 21 or 22),
+    or banded (mf = 24 or 25).  in the banded case, dvode requires two
+    half-bandwidth parameters ml and mu.  these are, respectively, the
+    widths of the lower and upper parts of the band, excluding the main
+    diagonal.  thus the band consists of the locations (i,j) with
+    i-ml &lt;= j &lt;= i+mu, and the full bandwidth is ml+mu+1.</p>
+</li>
+<li>
+<p>if the problem is stiff, you are encouraged to supply the jacobian
+    directly (mf = 21 or 24), but if this is not feasible, dvode will
+    compute it internally by difference quotients (mf = 22 or 25).
+    if you are supplying the jacobian, provide a subroutine of the form <a href="../interface/f_jac.html">f_jac</a>
+    which supplies df/dy by loading pd as follows (in either case, only nonzero elements need be loaded):</p>
+<ul>
+<li>for a full jacobian (mf = 21), load pd(i,j) with df(i)/dy(j),
+    the partial derivative of f(i) with respect to y(j).  (ignore the
+    ml and mu arguments in this case.)</li>
+<li>for a banded jacobian (mf = 24), load pd(i-j+mu+1,j) with
+    df(i)/dy(j), i.e. load the diagonal lines of df/dy into the rows of
+    pd from the top down.</li>
+</ul>
+</li>
+<li>
+<p>write a main program which calls subroutine dvode once for
+    each point at which answers are desired.  this should also provide
+    for possible use of logical unit 6 for output of error messages
+    by dvode.  on the first call to dvode, supply arguments as follows:</p>
+<ul>
+<li>f      = name of subroutine for right-hand side vector f.</li>
+<li>jac    = name of subroutine for jacobian matrix (mf = 21 or 24).</li>
+<li>neq    = number of first order odes.</li>
+<li>y      = array of initial values, of length neq.</li>
+<li>t      = the initial value of the independent variable.</li>
+<li>tout   = first point where output is desired (/= t).</li>
+<li>itol   = 1 or 2 according as atol (below) is a scalar or array.</li>
+<li>rtol   = relative tolerance parameter.</li>
+<li>atol   = absolute tolerance parameter.</li>
+<li>itask  = 1 for normal computation of output values of y at t = tout.</li>
+<li>istate = integer flag (input and output).  set istate = 1.</li>
+<li>iopt   = 0 to indicate no optional input used.</li>
+<li>rwork  = real work array</li>
+<li>lrw    = declared length of rwork.</li>
+<li>iwork  = integer work array.</li>
+<li>liw    = declared length of iwork (in user's dimension statement).</li>
+<li>mf     = method flag.</li>
+</ul>
+</li>
+<li>
+<p>the output from the first call (or any call) is:</p>
+<ul>
+<li>y = array of computed values of y(t) vector.</li>
+<li>t = corresponding value of independent variable (normally tout).</li>
+<li>istate = 2  if dvode was successful, negative otherwise.<ul>
+<li>-1 means excess work done on this call. (perhaps wrong mf.)</li>
+<li>-2 means excess accuracy requested. (tolerances too small.)</li>
+<li>-3 means illegal input detected. (see printed message.)</li>
+<li>-4 means repeated error test failures. (check all input.)</li>
+<li>-5 means repeated convergence failures. (perhaps bad
+     jacobian supplied or wrong choice of mf or tolerances.)</li>
+<li>-6 means error weight became zero during problem. (solution
+     component i vanished, and atol or atol(i) = 0.)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>to continue the integration after a successful return, simply
+    reset tout and call <a href="../proc/dvode.html">dvode</a> again.  no other parameters need be reset.</p>
+</li>
+</ol>
+<h3>Other routines callable</h3>
+<p>the following are optional calls which the user may make to
+ gain additional capabilities in conjunction with dvode.
+ (the routines <a href="../type/dvode_t.html#boundprocedure-xsetun">xsetun</a> and <a href="../type/dvode_t.html#boundprocedure-xsetf">xsetf</a> are designed to conform to the
+ slatec error handling package.)</p>
+<ul>
+<li><a href="../type/dvode_t.html#boundprocedure-xsetun">xsetun</a></li>
+<li><a href="../type/dvode_t.html#boundprocedure-xsetf">xsetf</a></li>
+<li><a href="../type/dvode_t.html#boundprocedure-dvsrco">dvsrco</a></li>
+<li><a href="../type/dvode_t.html#boundprocedure-dvindy">dvindy</a></li>
+</ul>
+<br>      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Inherits</h3>
+        </div>
+        <div class="card-body">
+          <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: type~~dvode_t~~InheritsGraph Pages: 1 -->
+<svg id="typedvode_tInheritsGraph" width="199pt" height="32pt"
+ viewBox="0.00 0.00 199.00 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="type~~dvode_t~~InheritsGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>type~~dvode_t~~InheritsGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 195,-28 195,4 -4,4"/>
+<!-- type~dvode_t -->
+<g id="type~~dvode_t~~InheritsGraph_node1" class="node">
+<title>type~dvode_t</title>
+<polygon fill="none" stroke="black" points="191,-24 136,-24 136,0 191,0 191,-24"/>
+<text text-anchor="middle" x="163.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">dvode_t</text>
+</g>
+<!-- type~dvode_data_t -->
+<g id="type~~dvode_t~~InheritsGraph_node2" class="node">
+<title>type~dvode_data_t</title>
+<g id="a_type~~dvode_t~~InheritsGraph_node2"><a xlink:href="../type/dvode_data_t.html" xlink:title="dvode_data_t">
+<polygon fill="#5cb85c" stroke="#5cb85c" points="84,-24 0,-24 0,0 84,0 84,-24"/>
+<text text-anchor="middle" x="42" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">dvode_data_t</text>
+</a>
+</g>
+</g>
+<!-- type~dvode_t&#45;&gt;type~dvode_data_t -->
+<g id="type~~dvode_t~~InheritsGraph_edge1" class="edge">
+<title>type~dvode_t&#45;&gt;type~dvode_data_t</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M135.98,-12C123.7,-12 108.66,-12 94.3,-12"/>
+<polygon fill="#000000" stroke="#000000" points="94,-8.5 84,-12 94,-15.5 94,-8.5"/>
+<text text-anchor="middle" x="110" y="-14.4" font-family="Helvetica,sans-Serif" font-size="9.50">dat</text>
+</g>
+</g>
+</svg>
+</div>          <div>
+            <a type="button" class="graph-help" data-bs-toggle="modal" href="#InheritsGraph-help-text">Help</a>
+          </div>
+          <div class="modal fade" id="InheritsGraph-help-text" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<p>Nodes of different colours represent the following: </p>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="186pt" height="32pt"
+ viewBox="0.00 0.00 185.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 181.5,-28 181.5,4 -4,4"/>
+<!-- Type -->
+<g id="node1" class="node">
+<title>Type</title>
+<polygon fill="#5cb85c" stroke="#5cb85c" points="54,-24 0,-24 0,0 54,0 54,-24"/>
+<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Type</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node2" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="177.5,-24 72.5,-24 72.5,0 177.5,0 177.5,-24"/>
+<text text-anchor="middle" x="125" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<p>Solid arrows point from a derived type to the parent type which it
+extends. Dashed arrows point from a derived type to the other
+types it contains as a components, with a label listing the name(s) of
+said component(s).
+</p>
+ </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    <br>
+
+    <section>
+    <h2>Components</h2>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dat"></span>
+              type(<a href='dvode_data_t.html'>dvode_data_t</a>),
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dat</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                <p>internal data (formerly in common blocks)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-etaq"></span>
+              real(kind=wp),
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>etaq</strong></td>
+<td> =</td>
+                <td>zero</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-etaqm1"></span>
+              real(kind=wp),
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>etaqm1</strong></td>
+<td> =</td>
+                <td>zero</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-lunit"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lunit</strong></td>
+<td> =</td>
+                <td>-1</td>
+            <td>
+                <p>logical unit number for messages.  the default is obtained
+by a call to iumach (may be machine-dependent).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-mesflg"></span>
+              integer,
+            </td>
+              <td>private</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>mesflg</strong></td>
+<td> =</td>
+                <td>1</td>
+            <td>
+                <p>print control flag:</p>
+<ul>
+<li>1 means print all messages (the default).</li>
+<li>0 means no printing.</li>
+</ul>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-f"></span>
+              procedure(<a href='../interface/f_func.html'>f_func</a>),
+            </td>
+              <td>private,</td>
+            <td>
+              pointer
+            </td>
+            <td>::</td>
+            <td><strong>f</strong></td>
+<td>=&gt; </td>
+                <td>null()</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-jac"></span>
+              procedure(<a href='../interface/f_jac.html'>f_jac</a>),
+            </td>
+              <td>private,</td>
+            <td>
+              pointer
+            </td>
+            <td>::</td>
+            <td><strong>jac</strong></td>
+<td>=&gt; </td>
+                <td>null()</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dewset"></span>
+              procedure(<a href='../interface/f_dewset.html'>f_dewset</a>),
+            </td>
+              <td>private,</td>
+            <td>
+              pointer
+            </td>
+            <td>::</td>
+            <td><strong>dewset</strong></td>
+<td>=&gt; </td>
+                <td>null()</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dvnorm"></span>
+              procedure(<a href='../interface/f_dvnorm.html'>f_dvnorm</a>),
+            </td>
+              <td>private,</td>
+            <td>
+              pointer
+            </td>
+            <td>::</td>
+            <td><strong>dvnorm</strong></td>
+<td>=&gt; </td>
+                <td>null()</td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    </section>
+    <br>
+    
+
+
+      <section>
+        <h2>Type-Bound Procedures</h2>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-initialize"></span>
+      <h3>
+          procedure, public ::
+  <strong>initialize</strong>
+        
+      </h3>
+    </div>
+        <div class="card-body">
+          
+          <p>this routine must be called first before using the solver.</p>
+        </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/initialize.html'>initialize</a>(me, f, jac, dewset, dvnorm)  
+</h3>
+    
+
+  <p>Set the function pointers. This must be called before <a href="../proc/dvode.html">dvode</a> is called.</p><a href="../proc/initialize.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              procedure(<a href='../interface/f_func.html'>f_func</a>)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>f</strong></td>
+            <td>
+<p>the name of the user-supplied subroutine defining the
+ode system.  the system must be put in the first-order
+form dy/dt = f(t,y), where f is a vector-valued function
+of the scalar t and the vector y.  subroutine f is to
+compute the function f.  it is to have the form
+     subroutine f (neq, t, y, ydot)
+     real(wp) t, y(neq), ydot(neq)
+where neq, t, and y are input, and the array ydot = f(t,y)
+is output.  y and ydot are arrays of length neq.
+subroutine f should not alter y(1),...,y(neq).
+f must be declared external in the calling program.</p><a href="../proc/initialize.html#variable-f~2" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              procedure(<a href='../interface/f_jac.html'>f_jac</a>),
+            </td>
+<td></td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>jac</strong></td>
+            <td>
+<p>the name of the user-supplied routine (miter = 1 or 4) to
+compute the jacobian matrix, df/dy, as a function of
+the scalar t and the vector y.  it is to have the form <a href="../interface/f_jac.html">f_jac</a>,
+where neq, t, y, ml, mu, and nrowpd are input and the array
+pd is to be loaded with partial derivatives (elements of the
+jacobian matrix) in the output.  pd must be given a first
+dimension of nrowpd.  t and y have the same meaning as in
+subroutine f.</p><a href="../proc/initialize.html#variable-jac~2" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              procedure(<a href='../interface/f_dewset.html'>f_dewset</a>),
+            </td>
+<td></td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dewset</strong></td>
+            <td>
+<p>the following subroutine is called just before each internal
+ integration step, and sets the array of error weights, ewt, as
+ described under itol/rtol/atol above:
+ <code>subroutine dewset (neq, itol, rtol, atol, ycur, ewt)</code>
+ where neq, itol, rtol, and atol are as in the <a href="../proc/dvode.html">dvode</a> call sequence,
+ ycur contains the current dependent variable vector, and
+ ewt is the array of weights set by dewset.</p><a href="../proc/initialize.html#variable-dewset~2" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              procedure(<a href='../interface/f_dvnorm.html'>f_dvnorm</a>),
+            </td>
+<td></td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dvnorm</strong></td>
+            <td>
+<p>the following is a real function routine which computes the weighted
+root-mean-square norm of a vector v:
+<code>d = dvnorm (n, v, w)</code>
+where:</p><a href="../proc/initialize.html#variable-dvnorm~2" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-solve"></span>
+      <h3>
+          procedure, public ::
+  <strong>solve</strong> => <a href='/home/runner/work/dvode/dvode/doc/proc/dvode.html'>dvode</a>
+        
+      </h3>
+    </div>
+        <div class="card-body">
+          
+          <p>main solver routine.</p>
+        </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    public  subroutine <a href='../proc/dvode.html'>dvode</a>(me, neq, y, t, tout, itol, rtol, atol, itask, istate, iopt, rwork, lrw, iwork, liw, mf)  
+</h3>
+    
+
+  <p>dvode: variable-coefficient ordinary differential equation solver,
+  with fixed-leading-coefficient implementation.</p><a href="../proc/dvode.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>neq</strong></td>
+            <td>
+<p>the size of the ode system (number of first order
+ordinary differential equations).
+<code>neq</code> may not be increased during the problem, but
+can be decreased (with <code>istate = 3</code> in the input).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>y</strong>(*)</td>
+            <td>
+<p>a real array for the vector of dependent variables, of
+length <code>neq</code> or more.  used for both input and output on the
+first call (<code>istate = 1</code>), and only for output on other calls.
+on the first call, <code>y</code> must contain the vector of initial
+values.  in the output, <code>y</code> contains the computed solution
+evaluated at <code>t</code>.  if desired, the <code>y</code> array may be used
+for other purposes between calls to the solver.</p><a href="../proc/dvode.html#variable-y~3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>t</strong></td>
+            <td>
+<p>the independent variable.  in the input, <code>t</code> is used only on
+the first call, as the initial point of the integration.
+in the output, after each call, <code>t</code> is the value at which a
+computed solution <code>y</code> is evaluated (usually the same as <code>tout</code>).
+on an error return, <code>t</code> is the farthest point reached.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tout</strong></td>
+            <td>
+<p>the next value of <code>t</code> at which a computed solution is desired.</p><a href="../proc/dvode.html#variable-tout" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>itol</strong></td>
+            <td>
+<p>an indicator for the type of error control.
+1 or 2 according as <code>atol</code> is a scalar or array.
+see description under <code>atol</code>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rtol</strong>(*)</td>
+            <td>
+<p>a relative error tolerance parameter, either a scalar or
+an array of length <code>neq</code>.  see description under <code>atol</code>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>atol</strong>(*)</td>
+            <td>
+<p>an absolute error tolerance parameter, either a scalar or
+ an array of length <code>neq</code>.</p><a href="../proc/dvode.html#variable-atol~2" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>itask</strong></td>
+            <td>
+<p>an index specifying the task to be performed.
+input only.  itask has the following values and meanings:</p><a href="../proc/dvode.html#variable-itask" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>istate</strong></td>
+            <td>
+<p>an index used for input and output to specify the
+the state of the calculation.</p><a href="../proc/dvode.html#variable-istate" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iopt</strong></td>
+            <td>
+<p>an integer flag to specify whether or not any optional
+input is being used on this call.
+the optional input is listed separately below.</p><a href="../proc/dvode.html#variable-iopt" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>rwork</strong>(lrw)</td>
+            <td>
+<p>a real working array.
+the length of <code>rwork</code> must be at least
+<code>20 + nyh*(maxord + 1) + 3*neq + lwm</code> where:</p><a href="../proc/dvode.html#variable-rwork" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lrw</strong></td>
+            <td>
+<p>the length of the array rwork, as declared by the user.
+(this will be checked by the solver.)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iwork</strong>(liw)</td>
+            <td>
+<p>an integer work array.  the length of iwork must be at least:</p><a href="../proc/dvode.html#variable-iwork" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>liw</strong></td>
+            <td>
+<p>the length of the array iwork, as declared by the user.
+(this will be checked by the solver.)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>mf</strong></td>
+            <td>
+<p>method flag.  standard values are:</p><a href="../proc/dvode.html#variable-mf" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-xsetun"></span>
+      <h3>
+          procedure, public ::
+  <strong>xsetun</strong>
+        
+      </h3>
+    </div>
+        <div class="card-body">
+          
+          <p>set the logical unit number, <code>lun</code>, for
+output of messages from <a href="../proc/dvode.html">dvode</a>, if
+the default is not desired.
+the default value of <code>lun</code> is <code>output_unit</code>.
+this call may be made at any time and
+will take effect immediately.</p>
+        </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/xsetun.html'>xsetun</a>(me, lun)  
+</h3>
+    
+
+  <p>reset the logical unit number for error messages.</p><a href="../proc/xsetun.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>lun</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-xsetf"></span>
+      <h3>
+          procedure, public ::
+  <strong>xsetf</strong>
+        
+      </h3>
+    </div>
+        <div class="card-body">
+          
+          <p>set a flag to control the printing of
+messages by <a href="../proc/dvode.html">dvode</a>:</p>
+<ul>
+<li><code>mflag = 0</code> means do not print. (danger:
+   this risks losing valuable information.)</li>
+<li><code>mflag = 1</code> means print (the default).</li>
+</ul>
+<p>this call may be made at any time and
+will take effect immediately.</p>
+        </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/xsetf.html'>xsetf</a>(me, mflag)  
+</h3>
+    
+
+  <p>reset the error print control flag.</p><a href="../proc/xsetf.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>mflag</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-dvsrco"></span>
+      <h3>
+          procedure, public ::
+  <strong>dvsrco</strong>
+        
+      </h3>
+    </div>
+        <div class="card-body">
+          
+          <p>saves and restores the contents of
+the internal variables used by <a href="../proc/dvode.html">dvode</a>.
+<a href="../proc/dvsrco.html">dvsrco</a> is useful if one is
+interrupting a run and restarting
+later, or alternating between two or
+more problems solved with <a href="../proc/dvode.html">dvode</a>.</p>
+        </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/dvsrco.html'>dvsrco</a>(me, sav, job)  
+</h3>
+    
+
+  <p>this routine saves or restores (depending on <code>job</code>) the contents of the
+dvode internal variables.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='dvode_data_t.html'>dvode_data_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>sav</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>job</strong></td>
+            <td>
+<p>flag indicating to save or restore the data:</p><a href="../proc/dvsrco.html#variable-job~3" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-dvindy"></span>
+      <h3>
+          procedure, public ::
+  <strong>dvindy</strong>
+        
+      </h3>
+    </div>
+        <div class="card-body">
+          
+          <p>provide derivatives of y, of various
+orders, at a specified point <code>t</code>, if
+desired.  it may be called only after
+a successful return from <a href="../proc/dvode.html">dvode</a>.</p>
+        </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/dvindy.html'>dvindy</a>(me, t, k, yh, ldyh, dky, iflag)  
+</h3>
+    
+
+  <p>dvindy computes interpolated values of the k-th derivative of the
+  dependent variable vector y, and stores it in dky.  this routine
+  is called within the package with k = 0 and t = tout, but may
+  also be called by the user for any k up to the current order.
+  (see detailed instructions in the usage documentation.)</p><a href="../proc/dvindy.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>t</strong></td>
+            <td>
+<p>value of independent variable where answers are desired
+(normally the same as the t last returned by <a href="../proc/dvode.html">dvode</a>).
+for valid results, t must lie between tcur - hu and tcur.
+(see optional output for tcur and hu.)</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>k</strong></td>
+            <td>
+<p>integer order of the derivative desired.  k must satisfy
+0 &lt;= k &lt;= nqcur, where nqcur is the current order
+(see optional output).  the capability corresponding
+to k = 0, i.e. computing y(t), is already provided
+by <a href="../proc/dvode.html">dvode</a> directly.  since nqcur &gt;= 1, the first
+derivative dy/dt is always available with <a href="../proc/dvindy.html">dvindy</a>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>yh</strong>(ldyh,*)</td>
+            <td>
+<p>the history array yh</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ldyh</strong></td>
+            <td>
+<p>column length of yh, equal to the initial value of neq.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dky</strong>(*)</td>
+            <td>
+<p>a real array of length neq containing the computed value
+of the k-th derivative of y(t).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iflag</strong></td>
+            <td>
+<p>integer flag, returned as 0 if k and t were legal,
+-1 if k was illegal, and -2 if t was illegal.
+on an error return, a message is also written.</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-dvhin"></span>
+      <h3>
+          procedure, private ::
+  <strong>dvhin</strong>
+        
+      </h3>
+    </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/dvhin.html'>dvhin</a>(me, n, t0, y0, ydot, tout, uround, ewt, itol, atol, y, temp, h0, niter, ier)  
+</h3>
+    
+
+  <p>this routine computes the step size, h0, to be attempted on the
+first step, when the user has not supplied a value for this.</p><a href="../proc/dvhin.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>n</strong></td>
+            <td>
+<p>size of ode system</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>t0</strong></td>
+            <td>
+<p>initial value of independent variable</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>y0</strong>(*)</td>
+            <td>
+<p>vector of initial conditions</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ydot</strong>(*)</td>
+            <td>
+<p>vector of initial first derivatives</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tout</strong></td>
+            <td>
+<p>first output value of independent variable</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>uround</strong></td>
+            <td>
+<p>machine unit roundoff</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ewt</strong>(*)</td>
+            <td>
+<p>error weights and tolerance parameters as described in the driver routine</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>itol</strong></td>
+            <td>
+<p>error weights and tolerance parameters as described in the driver routine</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>atol</strong>(*)</td>
+            <td>
+<p>error weights and tolerance parameters as described in the driver routine</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>y</strong>(n)</td>
+            <td>
+<p>work array of length n</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>temp</strong>(n)</td>
+            <td>
+<p>work array of length n</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>h0</strong></td>
+            <td>
+<p>step size to be attempted</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>niter</strong></td>
+            <td>
+<p>number of iterations (and of f evaluations) to compute h0</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ier</strong></td>
+            <td>
+<p>the error flag, returned with the value:</p><a href="../proc/dvhin.html#variable-ier~2" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-dvstep"></span>
+      <h3>
+          procedure, private ::
+  <strong>dvstep</strong>
+        
+      </h3>
+    </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/dvstep.html'>dvstep</a>(me, y, yh, ldyh, yh1, ewt, savf, vsav, acor, wm, iwm)  
+</h3>
+    
+
+  <p>dvstep performs one step of the integration of an initial value
+problem for a system of ordinary differential equations.</p><a href="../proc/dvstep.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>y</strong>(*)</td>
+            <td>
+<p>an array of length n used for the dependent variable vector.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>yh</strong>(ldyh,*)</td>
+            <td>
+<p>an ldyh by lmax array containing the dependent variables
+and their approximate scaled derivatives, where
+lmax = maxord + 1.  yh(i,j+1) contains the approximate
+j-th derivative of y(i), scaled by h**j/factorial(j)
+(j = 0,1,...,nq).  on entry for the first step, the first
+two columns of yh must be set from the initial values.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ldyh</strong></td>
+            <td>
+<p>a constant integer &gt;= n, the first dimension of yh.
+n is the number of odes in the system.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>yh1</strong>(*)</td>
+            <td>
+<p>a one-dimensional array occupying the same space as yh.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ewt</strong>(*)</td>
+            <td>
+<p>an array of length n containing multiplicative weights
+for local error measurements.  local errors in y(i) are
+compared to 1.0/ewt(i) in various error tests.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>savf</strong>(*)</td>
+            <td>
+<p>an array of working storage, of length n.
+also used for input of yh(*,maxord+2) when jstart = -1
+and maxord &lt; the current order nq.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>vsav</strong>(*)</td>
+            <td>
+<p>a work array of length n passed to subroutine <a href="../proc/dvnlsd.html">dvnlsd</a>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>acor</strong>(*)</td>
+            <td>
+<p>a work array of length n, used for the accumulated
+corrections.  on a successful return, acor(i) contains
+the estimated one-step local error in y(i).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wm</strong>(*)</td>
+            <td>
+<p>real work array associated with matrix
+operations in <a href="../proc/dvnlsd.html">dvnlsd</a>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iwm</strong>(*)</td>
+            <td>
+<p>integer work array associated with matrix
+operations in <a href="../proc/dvnlsd.html">dvnlsd</a>.</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-dvset"></span>
+      <h3>
+          procedure, private ::
+  <strong>dvset</strong>
+        
+      </h3>
+    </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/dvset.html'>dvset</a>(me)  
+</h3>
+    
+
+  <p>dvset is called by <a href="../proc/dvstep.html">dvstep</a> and sets coefficients for use there.</p><a href="../proc/dvset.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-dvjust"></span>
+      <h3>
+          procedure, private ::
+  <strong>dvjust</strong>
+        
+      </h3>
+    </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/dvjust.html'>dvjust</a>(me, yh, ldyh, iord)  
+</h3>
+    
+
+  <p>this subroutine adjusts the <code>yh</code> array on reduction of order,
+and also when the order is increased for the stiff option (meth = 2).</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>yh</strong>(ldyh,*)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ldyh</strong></td>
+            <td>
+<p>leading dimension of <code>yh</code></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iord</strong></td>
+            <td>
+<p>an integer flag used when meth = 2 to indicate an order
+increase (iord = +1) or an order decrease (iord = -1).</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-dvnlsd"></span>
+      <h3>
+          procedure, private ::
+  <strong>dvnlsd</strong>
+        
+      </h3>
+    </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/dvnlsd.html'>dvnlsd</a>(me, y, yh, ldyh, vsav, savf, ewt, acor, iwm, wm, nflag)  
+</h3>
+    
+
+  <p>subroutine dvnlsd is a nonlinear system solver, which uses functional
+iteration or a chord (modified newton) method.  for the chord method
+direct linear algebraic system solvers are used.  subroutine dvnlsd
+then handles the corrector phase of this integration package.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>y</strong>(*)</td>
+            <td>
+<p>the dependent variable, a vector of length n</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>yh</strong>(ldyh,*)</td>
+            <td>
+<p>the nordsieck (taylor) array, ldyh by lmax, input
+and output.  on input, it contains predicted values.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ldyh</strong></td>
+            <td>
+<p>a constant &gt;= n, the first dimension of yh</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>vsav</strong>(*)</td>
+            <td>
+<p>unused work array.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>savf</strong>(*)</td>
+            <td>
+<p>a work array of length n.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ewt</strong>(*)</td>
+            <td>
+<p>an error weight vector of length n</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>acor</strong>(*)</td>
+            <td>
+<p>a work array of length n, used for the accumulated
+corrections to the predicted y vector.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iwm</strong>(*)</td>
+            <td>
+<p>integer work array associated with matrix
+operations in chord iteration (miter /= 0).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wm</strong>(*)</td>
+            <td>
+<p>real work array associated with matrix
+operations in chord iteration (miter /= 0).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nflag</strong></td>
+            <td>
+<p>input/output flag, with values and meanings as follows:</p><a href="../proc/dvnlsd.html#variable-nflag~2" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-dvjac"></span>
+      <h3>
+          procedure, private ::
+  <strong>dvjac</strong>
+        
+      </h3>
+    </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/dvjac.html'>dvjac</a>(me, y, yh, ldyh, ewt, ftem, savf, wm, iwm, ierpj)  
+</h3>
+    
+
+  <p>dvjac is called by <a href="../proc/dvnlsd.html">dvnlsd</a> to compute and process the matrix
+<code>p = i - h*rl1*j</code> , where j is an approximation to the jacobian.</p><a href="../proc/dvjac.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>y</strong>(*)</td>
+            <td>
+<p>vector containing predicted values on entry.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>yh</strong>(ldyh,*)</td>
+            <td>
+<p>the nordsieck array, an <code>ldyh</code> by <code>lmax</code> array.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ldyh</strong></td>
+            <td>
+<p>a constant &gt;= n, the first dimension of <code>yh</code>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ewt</strong>(*)</td>
+            <td>
+<p>an error weight vector of length <code>n</code>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ftem</strong>(*)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>savf</strong>(*)</td>
+            <td>
+<p>array containing f evaluated at predicted y.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wm</strong>(*)</td>
+            <td>
+<p>real work space for matrices.  in the output, it contains
+the inverse diagonal matrix if miter = 3 and the lu
+decomposition of p if miter is 1, 2 , 4, or 5.
+storage of matrix elements starts at wm(3).
+storage of the saved jacobian starts at wm(locjs).
+wm also contains the following matrix-related data:
+wm(1) = sqrt(uround), used in numerical jacobian step.
+wm(2) = h*rl1, saved for later use if miter = 3.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iwm</strong>(*)</td>
+            <td>
+<p>integer work space containing pivot information,
+starting at iwm(31), if miter is 1, 2, 4, or 5.
+iwm also contains band parameters ml = iwm(1) and
+mu = iwm(2) if miter is 4 or 5.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ierpj</strong></td>
+            <td>
+<p>output error flag,  = 0 if no trouble, 1 if the p
+matrix is found to be singular.</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-dvsol"></span>
+      <h3>
+          procedure, private ::
+  <strong>dvsol</strong>
+        
+      </h3>
+    </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/dvsol.html'>dvsol</a>(me, wm, iwm, x, iersl)  
+</h3>
+    
+
+  <p>This routine manages the solution of the linear system arising from
+a chord iteration.  it is called if <code>miter /= 0</code>:</p><a href="../proc/dvsol.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>wm</strong>(*)</td>
+            <td>
+<p>real work space containing the inverse diagonal matrix if
+miter = 3 and the lu decomposition of the matrix otherwise.
+storage of matrix elements starts at wm(3).
+wm also contains the following matrix-related data:
+wm(1) = sqrt(uround) (not used here),
+wm(2) = hrl1, the previous value of h*rl1, used if miter = 3.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iwm</strong>(*)</td>
+            <td>
+<p>integer work space containing pivot information, starting at
+iwm(31), if miter is 1, 2, 4, or 5.  iwm also contains band
+parameters ml = iwm(1) and mu = iwm(2) if miter is 4 or 5.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong>(*)</td>
+            <td>
+<p>the right-hand side vector on input,
+and the solution vector
+on output, of length n.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iersl</strong></td>
+            <td>
+<p>output flag.  iersl = 0 if no trouble occurred.
+iersl = 1 if a singular matrix arose with miter = 3.</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-ixsav"></span>
+      <h3>
+          procedure, private ::
+  <strong>ixsav</strong>
+        
+      </h3>
+    </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  function <a href='../proc/ixsav.html'>ixsav</a>(me, ipar, ivalue, iset)  
+</h3>
+    
+
+  <p>save and recall error message control parameters.</p><a href="../proc/ixsav.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ipar</strong></td>
+            <td>
+<p>parameter indicator (1 for <code>lunit</code>, 2 for <code>mesflg</code>).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ivalue</strong></td>
+            <td>
+<p>the value to be set for the parameter, if iset = .true.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              logical,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>iset</strong></td>
+            <td>
+<p>logical flag to indicate whether to read or write.
+if <code>iset = .true.</code>, the parameter will be given
+the value <code>ivalue</code>.  if <code>iset = .false.</code>, the parameter
+will be unchanged, and <code>ivalue</code> is a dummy argument.</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer</small>
+    </h4>
+    
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-xerrwd"></span>
+      <h3>
+          procedure, private ::
+  <strong>xerrwd</strong>
+        
+      </h3>
+    </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+                    <h3>
+    private  subroutine <a href='../proc/xerrwd.html'>xerrwd</a>(me, msg, nmes, nerr, level, ni, i1, i2, nr, r1, r2)  
+</h3>
+    
+
+  <p>write error message with values.</p><a href="../proc/xerrwd.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>msg</strong></td>
+            <td>
+<p>the message (character array).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nmes</strong></td>
+            <td>
+<p>the length of msg (number of characters).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nerr</strong></td>
+            <td>
+<p>the error number (not used).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>level</strong></td>
+            <td>
+<p>the error level:</p><a href="../proc/xerrwd.html#variable-level" class="pull-right"><emph>Read more&hellip;</emph></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ni</strong></td>
+            <td>
+<p>number of integers (0, 1, or 2) to be printed with message.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>i1</strong></td>
+            <td>
+<p>integer to be printed, depending on <code>ni</code>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>i2</strong></td>
+            <td>
+<p>integer to be printed, depending on <code>ni</code>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nr</strong></td>
+            <td>
+<p>number of reals (0, 1, or 2) to be printed with message.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>r1</strong></td>
+            <td>
+<p>real to be printed, depending on <code>nr</code>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>r2</strong></td>
+            <td>
+<p>real to be printed, depending on <code>nr</code>.</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+      </ul>
+  </div>
+
+          </div>
+      </section>
+
+    <section>
+    <h3><span class="anchor" id="src"></span>Source Code</h3>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">type</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvode_t</span>
+
+<span class="w">      </span><span class="k">private</span>
+
+<span class="k">      type</span><span class="p">(</span><span class="n">dvode_data_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="c">!! internal data (formerly in common blocks)</span>
+
+<span class="w">      </span><span class="c">! formerly save variables</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">etaq</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span>
+<span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">etaqm1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zero</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lunit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="c">!! logical unit number for messages.  the default is obtained</span>
+<span class="w">                            </span><span class="c">!! by a call to iumach (may be machine-dependent).</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mesflg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c">!! print control flag:</span>
+<span class="w">                            </span><span class="c">!!</span>
+<span class="w">                            </span><span class="c">!!  * 1 means print all messages (the default).</span>
+<span class="w">                            </span><span class="c">!!  * 0 means no printing.</span>
+
+<span class="w">      </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_func</span><span class="p">),</span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_jac</span><span class="p">),</span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">jac</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_dewset</span><span class="p">),</span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dewset</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_dvnorm</span><span class="p">),</span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvnorm</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
+
+<span class="w">      </span><span class="k">contains</span>
+
+<span class="k">      private</span>
+
+<span class="k">      procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">initialize</span><span class="w"> </span><span class="c">!! this routine must be called first before using the solver.</span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">solve</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dvode</span><span class="w"> </span><span class="c">!! main solver routine.</span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xsetun</span><span class="w"> </span><span class="c">!! set the logical unit number, `lun`, for</span>
+<span class="w">                                 </span><span class="c">!! output of messages from [[dvode]], if</span>
+<span class="w">                                 </span><span class="c">!! the default is not desired.</span>
+<span class="w">                                 </span><span class="c">!! the default value of `lun` is `output_unit`.</span>
+<span class="w">                                 </span><span class="c">!! this call may be made at any time and</span>
+<span class="w">                                 </span><span class="c">!! will take effect immediately.</span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xsetf</span><span class="w"> </span><span class="c">!! set a flag to control the printing of</span>
+<span class="w">                                </span><span class="c">!! messages by [[dvode]]:</span>
+<span class="w">                                </span><span class="c">!!</span>
+<span class="w">                                </span><span class="c">!!  * `mflag = 0` means do not print. (danger:</span>
+<span class="w">                                </span><span class="c">!!    this risks losing valuable information.)</span>
+<span class="w">                                </span><span class="c">!!  * `mflag = 1` means print (the default).</span>
+<span class="w">                                </span><span class="c">!!</span>
+<span class="w">                                </span><span class="c">!! this call may be made at any time and</span>
+<span class="w">                                </span><span class="c">!! will take effect immediately.</span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvsrco</span><span class="w"> </span><span class="c">!! saves and restores the contents of</span>
+<span class="w">                                 </span><span class="c">!! the internal variables used by [[dvode]].</span>
+<span class="w">                                 </span><span class="c">!! [[dvsrco]] is useful if one is</span>
+<span class="w">                                 </span><span class="c">!! interrupting a run and restarting</span>
+<span class="w">                                 </span><span class="c">!! later, or alternating between two or</span>
+<span class="w">                                 </span><span class="c">!! more problems solved with [[dvode]].</span>
+<span class="w">      </span><span class="k">procedure</span><span class="p">,</span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvindy</span><span class="w"> </span><span class="c">!! provide derivatives of y, of various</span>
+<span class="w">                                 </span><span class="c">!! orders, at a specified point `t`, if</span>
+<span class="w">                                 </span><span class="c">!! desired.  it may be called only after</span>
+<span class="w">                                 </span><span class="c">!! a successful return from [[dvode]].</span>
+
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvhin</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvstep</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvset</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvjust</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvnlsd</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvjac</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvsol</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ixsav</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xerrwd</span>
+
+<span class="w">    </span><span class="k">end type </span><span class="n">dvode_t</span>
+</pre></div>
+
+    </section>
+    
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              dvode
+ was developed by Jacob Williams<br>              &copy; 2025 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

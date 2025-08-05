@@ -1,0 +1,543 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Modern Fortran Edition of the DVODE ODE Solver">
+    <meta name="author" content="Jacob Williams" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>initialize &ndash; dvode</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="../css/local.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">dvode </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>initialize
+      <small>Subroutine</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 1.1% of total for procedures.">24 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/dvode_module.F90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/dvode_module.f90.html'>dvode_module.F90</a></li>
+                <li class="breadcrumb-item"><a href='../module/dvode_module.html'>dvode_module</a></li>
+            <li class="breadcrumb-item active" aria-current="page">initialize</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../proc/initialize.html#src">initialize</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    <h2>private  subroutine initialize(me, f, jac, dewset, dvnorm)  
+</h2>
+    
+
+    <p>Set the function pointers. This must be called before <a href="../proc/dvode.html">dvode</a> is called.</p>
+<h3>optionally replaceable solver routines</h3>
+<p>The two routines (<code>dewset</code> and <code>dvnorm</code>) relate to the measurement of errors.
+  either routine can be replaced by a user-supplied version, if desired.
+  however, since such a replacement may have a major impact on performance,
+  it should be done only when absolutely necessary, and only with great caution.
+  (note: the means by which the package version of a routine is
+  superseded by the user's version may be system-dependent.)
+  If not changed by the users, the defaults are used:</p>
+<ul>
+<li><a href="../proc/dewset_default.html">dewset_default</a></li>
+<li><a href="../proc/dvnorm_default.html">dvnorm_default</a></li>
+</ul>
+
+    <h3>Type Bound</h3>
+    <p><a href='../type/dvode_t.html'>dvode_t</a></p>
+
+    <h3>Arguments</h3>
+        <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-me~5"></span>
+              class(<a href='../type/dvode_t.html'>dvode_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>me</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-f~2"></span>
+              procedure(<a href='../interface/f_func.html'>f_func</a>)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>f</strong></td>
+            <td>
+                <p>the name of the user-supplied subroutine defining the
+ode system.  the system must be put in the first-order
+form dy/dt = f(t,y), where f is a vector-valued function
+of the scalar t and the vector y.  subroutine f is to
+compute the function f.  it is to have the form
+     subroutine f (neq, t, y, ydot)
+     real(wp) t, y(neq), ydot(neq)
+where neq, t, and y are input, and the array ydot = f(t,y)
+is output.  y and ydot are arrays of length neq.
+subroutine f should not alter y(1),...,y(neq).
+f must be declared external in the calling program.</p>
+<p>if quantities computed in the f routine are needed
+externally to dvode, an extra call to f should be made
+for this purpose, for consistent and accurate results.
+if only the derivative dy/dt is needed, use <a href="../proc/dvindy.html">dvindy</a> instead.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-jac~2"></span>
+              procedure(<a href='../interface/f_jac.html'>f_jac</a>),
+            </td>
+<td></td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>jac</strong></td>
+            <td>
+                <p>the name of the user-supplied routine (miter = 1 or 4) to
+compute the jacobian matrix, df/dy, as a function of
+the scalar t and the vector y.  it is to have the form <a href="../interface/f_jac.html">f_jac</a>,
+where neq, t, y, ml, mu, and nrowpd are input and the array
+pd is to be loaded with partial derivatives (elements of the
+jacobian matrix) in the output.  pd must be given a first
+dimension of nrowpd.  t and y have the same meaning as in
+subroutine f.</p>
+<ul>
+<li>
+<p>in the full matrix case (miter = 1), ml and mu are
+   ignored, and the jacobian is to be loaded into pd in
+   columnwise manner, with df(i)/dy(j) loaded into pd(i,j).</p>
+</li>
+<li>
+<p>in the band matrix case (miter = 4), the elements
+   within the band are to be loaded into pd in columnwise
+   manner, with diagonal lines of df/dy loaded into the rows
+   of pd. thus df(i)/dy(j) is to be loaded into pd(i-j+mu+1,j).
+   ml and mu are the half-bandwidth parameters. (see iwork).
+   the locations in pd in the two triangular areas which
+   correspond to nonexistent matrix elements can be ignored
+   or loaded arbitrarily, as they are overwritten by dvode.</p>
+</li>
+</ul>
+<p>jac need not provide df/dy exactly.  a crude
+approximation (possibly with a smaller bandwidth) will do.</p>
+<p>in either case, pd is preset to zero by the solver,
+so that only the nonzero elements need be loaded by jac.
+each call to jac is preceded by a call to f with the same
+arguments neq, t, and y.  thus to gain some efficiency,
+intermediate quantities shared by both calculations may be
+saved in a user common block by f and not recomputed by jac,
+if desired.  also, jac may alter the y array, if desired.
+jac must be declared external in the calling program.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dewset~2"></span>
+              procedure(<a href='../interface/f_dewset.html'>f_dewset</a>),
+            </td>
+<td></td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dewset</strong></td>
+            <td>
+                <p>the following subroutine is called just before each internal
+ integration step, and sets the array of error weights, ewt, as
+ described under itol/rtol/atol above:
+ <code>subroutine dewset (neq, itol, rtol, atol, ycur, ewt)</code>
+ where neq, itol, rtol, and atol are as in the <a href="../proc/dvode.html">dvode</a> call sequence,
+ ycur contains the current dependent variable vector, and
+ ewt is the array of weights set by dewset.</p>
+<p>if the user supplies this subroutine, it must return in ewt(i)
+ (i = 1,...,neq) a positive quantity suitable for comparison with
+ errors in y(i).  the ewt array returned by dewset is passed to the
+ dvnorm routine (see below.), and also used by dvode in the computation
+ of the optional output imxer, the diagonal jacobian approximation,
+ and the increments for difference quotient jacobians.</p>
+<p>in the user-supplied version of dewset, it may be desirable to use
+ the current values of derivatives of y.  derivatives up to order nq
+ are available from the history array yh, described above under
+ optional output.  in dewset, yh is identical to the ycur array,
+ extended to nq + 1 columns with a column length of nyh and scale
+ factors of h**j/factorial(j).  on the first call for the problem,
+ given by nst = 0, nq is 1 and h is temporarily set to 1.0.
+ nyh is the initial value of neq.  the quantities nq, h, and nst
+ can be obtained by including in dewset the statements:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="k">type</span><span class="p">(</span><span class="n">dvode_data_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sav</span>
+<span class="w">  </span><span class="k">call </span><span class="n">me</span><span class="p">%</span><span class="n">dvsrco</span><span class="p">(</span><span class="n">sav</span><span class="p">,</span><span class="n">job</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">  </span><span class="n">nq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sav</span><span class="p">%</span><span class="n">nq</span>
+<span class="w">  </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sav</span><span class="p">%</span><span class="n">h</span>
+<span class="w">  </span><span class="n">nst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sav</span><span class="p">%</span><span class="n">nst</span>
+</code></pre></div>
+
+<p>thus, for example, the current value of dy/dt can be obtained as
+ <code>ycur(nyh+i)/h  (i=1,...,neq)</code>  (and the division by h is
+ unnecessary when nst = 0).</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dvnorm~2"></span>
+              procedure(<a href='../interface/f_dvnorm.html'>f_dvnorm</a>),
+            </td>
+<td></td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dvnorm</strong></td>
+            <td>
+                <p>the following is a real function routine which computes the weighted
+root-mean-square norm of a vector v:
+<code>d = dvnorm (n, v, w)</code>
+where:</p>
+<ul>
+<li>n = the length of the vector,</li>
+<li>v = real array of length n containing the vector,</li>
+<li>w = real array of length n containing weights,</li>
+<li>d = <code>sqrt( (1/n) * sum(v(i)*w(i))**2 )</code>.</li>
+</ul>
+<p>dvnorm is called with n = neq and with w(i) = 1.0/ewt(i), where
+ewt is as set by subroutine dewset.</p>
+<p>if the user supplies this function, it should return a non-negative
+value of dvnorm suitable for use in the error control in dvode.
+none of the arguments should be altered by dvnorm.
+for example, a user-supplied dvnorm routine might:</p>
+<ul>
+<li>substitute a max-norm of (v(i)*w(i)) for the rms-norm, or</li>
+<li>ignore some components of v in the norm, with the effect of
+    suppressing the error control on those components of y.</li>
+</ul>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <br>
+
+
+    
+    
+
+    
+    
+
+
+
+    
+    <section>
+    <h2><span class="anchor" id="src"></span>Source Code</h2>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">initialize</span><span class="p">(</span><span class="n">me</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">jac</span><span class="p">,</span><span class="n">dewset</span><span class="p">,</span><span class="n">dvnorm</span><span class="p">)</span>
+
+<span class="w">   </span><span class="k">implicit none</span>
+
+<span class="k">   class</span><span class="p">(</span><span class="n">dvode_t</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">me</span>
+<span class="w">   </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_func</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="c">!! the name of the user-supplied subroutine defining the</span>
+<span class="w">                          </span><span class="c">!! ode system.  the system must be put in the first-order</span>
+<span class="w">                          </span><span class="c">!! form dy/dt = f(t,y), where f is a vector-valued function</span>
+<span class="w">                          </span><span class="c">!! of the scalar t and the vector y.  subroutine f is to</span>
+<span class="w">                          </span><span class="c">!! compute the function f.  it is to have the form</span>
+<span class="w">                          </span><span class="c">!!      subroutine f (neq, t, y, ydot)</span>
+<span class="w">                          </span><span class="c">!!      real(wp) t, y(neq), ydot(neq)</span>
+<span class="w">                          </span><span class="c">!! where neq, t, and y are input, and the array ydot = f(t,y)</span>
+<span class="w">                          </span><span class="c">!! is output.  y and ydot are arrays of length neq.</span>
+<span class="w">                          </span><span class="c">!! subroutine f should not alter y(1),...,y(neq).</span>
+<span class="w">                          </span><span class="c">!! f must be declared external in the calling program.</span>
+<span class="w">                          </span><span class="c">!!</span>
+<span class="w">                          </span><span class="c">!! if quantities computed in the f routine are needed</span>
+<span class="w">                          </span><span class="c">!! externally to dvode, an extra call to f should be made</span>
+<span class="w">                          </span><span class="c">!! for this purpose, for consistent and accurate results.</span>
+<span class="w">                          </span><span class="c">!! if only the derivative dy/dt is needed, use [[dvindy]] instead.</span>
+<span class="w">   </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_jac</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">jac</span><span class="w"> </span><span class="c">!! the name of the user-supplied routine (miter = 1 or 4) to</span>
+<span class="w">                                    </span><span class="c">!! compute the jacobian matrix, df/dy, as a function of</span>
+<span class="w">                                    </span><span class="c">!! the scalar t and the vector y.  it is to have the form [[f_jac]],</span>
+<span class="w">                                    </span><span class="c">!! where neq, t, y, ml, mu, and nrowpd are input and the array</span>
+<span class="w">                                    </span><span class="c">!! pd is to be loaded with partial derivatives (elements of the</span>
+<span class="w">                                    </span><span class="c">!! jacobian matrix) in the output.  pd must be given a first</span>
+<span class="w">                                    </span><span class="c">!! dimension of nrowpd.  t and y have the same meaning as in</span>
+<span class="w">                                    </span><span class="c">!! subroutine f.</span>
+<span class="w">                                    </span><span class="c">!!</span>
+<span class="w">                                    </span><span class="c">!!  * in the full matrix case (miter = 1), ml and mu are</span>
+<span class="w">                                    </span><span class="c">!!    ignored, and the jacobian is to be loaded into pd in</span>
+<span class="w">                                    </span><span class="c">!!    columnwise manner, with df(i)/dy(j) loaded into pd(i,j).</span>
+<span class="w">                                    </span><span class="c">!!</span>
+<span class="w">                                    </span><span class="c">!!  * in the band matrix case (miter = 4), the elements</span>
+<span class="w">                                    </span><span class="c">!!    within the band are to be loaded into pd in columnwise</span>
+<span class="w">                                    </span><span class="c">!!    manner, with diagonal lines of df/dy loaded into the rows</span>
+<span class="w">                                    </span><span class="c">!!    of pd. thus df(i)/dy(j) is to be loaded into pd(i-j+mu+1,j).</span>
+<span class="w">                                    </span><span class="c">!!    ml and mu are the half-bandwidth parameters. (see iwork).</span>
+<span class="w">                                    </span><span class="c">!!    the locations in pd in the two triangular areas which</span>
+<span class="w">                                    </span><span class="c">!!    correspond to nonexistent matrix elements can be ignored</span>
+<span class="w">                                    </span><span class="c">!!    or loaded arbitrarily, as they are overwritten by dvode.</span>
+<span class="w">                                    </span><span class="c">!!</span>
+<span class="w">                                    </span><span class="c">!! jac need not provide df/dy exactly.  a crude</span>
+<span class="w">                                    </span><span class="c">!! approximation (possibly with a smaller bandwidth) will do.</span>
+<span class="w">                                    </span><span class="c">!!</span>
+<span class="w">                                    </span><span class="c">!! in either case, pd is preset to zero by the solver,</span>
+<span class="w">                                    </span><span class="c">!! so that only the nonzero elements need be loaded by jac.</span>
+<span class="w">                                    </span><span class="c">!! each call to jac is preceded by a call to f with the same</span>
+<span class="w">                                    </span><span class="c">!! arguments neq, t, and y.  thus to gain some efficiency,</span>
+<span class="w">                                    </span><span class="c">!! intermediate quantities shared by both calculations may be</span>
+<span class="w">                                    </span><span class="c">!! saved in a user common block by f and not recomputed by jac,</span>
+<span class="w">                                    </span><span class="c">!! if desired.  also, jac may alter the y array, if desired.</span>
+<span class="w">                                    </span><span class="c">!! jac must be declared external in the calling program.</span>
+<span class="w">   </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_dewset</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dewset</span><span class="w"> </span><span class="c">!! the following subroutine is called just before each internal</span>
+<span class="w">                                          </span><span class="c">!! integration step, and sets the array of error weights, ewt, as</span>
+<span class="w">                                          </span><span class="c">!! described under itol/rtol/atol above:</span>
+<span class="w">                                          </span><span class="c">!! `subroutine dewset (neq, itol, rtol, atol, ycur, ewt)`</span>
+<span class="w">                                          </span><span class="c">!! where neq, itol, rtol, and atol are as in the [[dvode]] call sequence,</span>
+<span class="w">                                          </span><span class="c">!! ycur contains the current dependent variable vector, and</span>
+<span class="w">                                          </span><span class="c">!! ewt is the array of weights set by dewset.</span>
+<span class="w">                                          </span><span class="c">!!</span>
+<span class="w">                                          </span><span class="c">!! if the user supplies this subroutine, it must return in ewt(i)</span>
+<span class="w">                                          </span><span class="c">!! (i = 1,...,neq) a positive quantity suitable for comparison with</span>
+<span class="w">                                          </span><span class="c">!! errors in y(i).  the ewt array returned by dewset is passed to the</span>
+<span class="w">                                          </span><span class="c">!! dvnorm routine (see below.), and also used by dvode in the computation</span>
+<span class="w">                                          </span><span class="c">!! of the optional output imxer, the diagonal jacobian approximation,</span>
+<span class="w">                                          </span><span class="c">!! and the increments for difference quotient jacobians.</span>
+<span class="w">                                          </span><span class="c">!!</span>
+<span class="w">                                          </span><span class="c">!! in the user-supplied version of dewset, it may be desirable to use</span>
+<span class="w">                                          </span><span class="c">!! the current values of derivatives of y.  derivatives up to order nq</span>
+<span class="w">                                          </span><span class="c">!! are available from the history array yh, described above under</span>
+<span class="w">                                          </span><span class="c">!! optional output.  in dewset, yh is identical to the ycur array,</span>
+<span class="w">                                          </span><span class="c">!! extended to nq + 1 columns with a column length of nyh and scale</span>
+<span class="w">                                          </span><span class="c">!! factors of h**j/factorial(j).  on the first call for the problem,</span>
+<span class="w">                                          </span><span class="c">!! given by nst = 0, nq is 1 and h is temporarily set to 1.0.</span>
+<span class="w">                                          </span><span class="c">!! nyh is the initial value of neq.  the quantities nq, h, and nst</span>
+<span class="w">                                          </span><span class="c">!! can be obtained by including in dewset the statements:</span>
+<span class="w">                                          </span><span class="c">!!```fortran</span>
+<span class="w">                                          </span><span class="c">!!  type(dvode_data_t) :: sav</span>
+<span class="w">                                          </span><span class="c">!!  call me%dvsrco(sav,job=1)</span>
+<span class="w">                                          </span><span class="c">!!  nq = sav%nq</span>
+<span class="w">                                          </span><span class="c">!!  h = sav%h</span>
+<span class="w">                                          </span><span class="c">!!  nst = sav%nst</span>
+<span class="w">                                          </span><span class="c">!!```</span>
+<span class="w">                                          </span><span class="c">!! thus, for example, the current value of dy/dt can be obtained as</span>
+<span class="w">                                          </span><span class="c">!! `ycur(nyh+i)/h  (i=1,...,neq)`  (and the division by h is</span>
+<span class="w">                                          </span><span class="c">!! unnecessary when nst = 0).</span>
+<span class="w">   </span><span class="k">procedure</span><span class="p">(</span><span class="n">f_dvnorm</span><span class="p">),</span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvnorm</span><span class="w"> </span><span class="c">!! the following is a real function routine which computes the weighted</span>
+<span class="w">                                          </span><span class="c">!! root-mean-square norm of a vector v:</span>
+<span class="w">                                          </span><span class="c">!! `d = dvnorm (n, v, w)`</span>
+<span class="w">                                          </span><span class="c">!! where:</span>
+<span class="w">                                          </span><span class="c">!!</span>
+<span class="w">                                          </span><span class="c">!!   * n = the length of the vector,</span>
+<span class="w">                                          </span><span class="c">!!   * v = real array of length n containing the vector,</span>
+<span class="w">                                          </span><span class="c">!!   * w = real array of length n containing weights,</span>
+<span class="w">                                          </span><span class="c">!!   * d = `sqrt( (1/n) * sum(v(i)*w(i))**2 )`.</span>
+<span class="w">                                          </span><span class="c">!!</span>
+<span class="w">                                          </span><span class="c">!! dvnorm is called with n = neq and with w(i) = 1.0/ewt(i), where</span>
+<span class="w">                                          </span><span class="c">!! ewt is as set by subroutine dewset.</span>
+<span class="w">                                          </span><span class="c">!!</span>
+<span class="w">                                          </span><span class="c">!! if the user supplies this function, it should return a non-negative</span>
+<span class="w">                                          </span><span class="c">!! value of dvnorm suitable for use in the error control in dvode.</span>
+<span class="w">                                          </span><span class="c">!! none of the arguments should be altered by dvnorm.</span>
+<span class="w">                                          </span><span class="c">!! for example, a user-supplied dvnorm routine might:</span>
+<span class="w">                                          </span><span class="c">!!</span>
+<span class="w">                                          </span><span class="c">!!   * substitute a max-norm of (v(i)*w(i)) for the rms-norm, or</span>
+<span class="w">                                          </span><span class="c">!!   * ignore some components of v in the norm, with the effect of</span>
+<span class="w">                                          </span><span class="c">!!     suppressing the error control on those components of y.</span>
+
+<span class="w">   </span><span class="n">me</span><span class="p">%</span><span class="n">f</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">f</span>
+
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">jac</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      </span><span class="n">me</span><span class="p">%</span><span class="n">jac</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">jac</span>
+<span class="w">   </span><span class="k">else</span>
+<span class="k">      </span><span class="n">me</span><span class="p">%</span><span class="n">jac</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
+<span class="w">   </span><span class="k">end if</span>
+<span class="k">   if</span><span class="w"> </span><span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">dewset</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      </span><span class="n">me</span><span class="p">%</span><span class="n">dewset</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dewset</span>
+<span class="w">   </span><span class="k">else</span>
+<span class="k">      </span><span class="n">me</span><span class="p">%</span><span class="n">dewset</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dewset_default</span>
+<span class="w">   </span><span class="k">end if</span>
+<span class="k">   if</span><span class="w"> </span><span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">dvnorm</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      </span><span class="n">me</span><span class="p">%</span><span class="n">dvnorm</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dvnorm</span>
+<span class="w">   </span><span class="k">else</span>
+<span class="k">      </span><span class="n">me</span><span class="p">%</span><span class="n">dvnorm</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dvnorm_default</span>
+<span class="w">   </span><span class="k">end if</span>
+
+<span class="k">   end subroutine </span><span class="n">initialize</span>
+</pre></div>
+
+    </section>
+    <br>
+    
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              dvode
+ was developed by Jacob Williams<br>              &copy; 2025 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>
